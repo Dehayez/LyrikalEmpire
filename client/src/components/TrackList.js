@@ -37,12 +37,18 @@ const TrackList = () => {
     <div>
       <h2>Track List</h2>
       <ul>
-        {tracks.map(track => (
-          <li key={track.id}>
-            Title: {track.title} | Genre: {track.genre} | BPM: {track.bpm} | Mood: {track.mood}
-            <button onClick={() => handleDelete(track.id)}>Delete</button>
-          </li>
-        ))}
+        {tracks.map(track => {
+          return (
+            <li key={track.id}>
+              Title: {track.title} | Genre: {track.genre} | BPM: {track.bpm} | Mood: {track.mood}
+              <audio controls>
+                <source src={`/${track.audio}`} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+              <button onClick={() => handleDelete(track.id)}>Delete</button>
+            </li>
+          );
+        })}
       </ul>
       <ConfirmDialog
         isOpen={isConfirmOpen}

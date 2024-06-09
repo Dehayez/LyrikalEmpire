@@ -12,8 +12,8 @@ const AddTrack = ({ onAdd }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newTrack = { title, audio, bpm, genre, tierlist, mood, keywords };
-        await addTrack(newTrack);
+        const newTrack = { title, bpm, genre, tierlist, mood, keywords };
+        await addTrack(newTrack, audio);
         onAdd();
         setTitle('');
         setAudio('');

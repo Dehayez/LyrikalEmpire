@@ -3,16 +3,23 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
+const path = require('path');
 
 const app = express();
 const expressPort = 4000;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, path.join(__dirname, '../client/public/uploads/'));
   },
   filename: function(req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const newFileName = uniqueSuffix + '-' + file.originalname;
+    cb(null, newFileName);
+    req.body.filePath = path.join('uploads', newFileName);
   }
 });
 
@@ -20,6 +27,7 @@ const upload = multer({ storage: storage });
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
 
 // Create a connection to the database
 const db = mysql.createConnection({
@@ -44,11 +52,11 @@ app.get('/api/tracks', (req, res) => {
 });
 
 app.post('/api/tracks', upload.single('audio'), (req, res) => {
+  
   // Insert a new track into the database
-  const { title, bpm, genre, tierlist, mood, keywords } = req.body;
-  const audio = req.file.path;
+  const { title, bpm, genre, tierlist, mood, keywords, filePath } = req.body;
   db.query('INSERT INTO tracks (title, audio, bpm, genre, tierlist, mood, keywords) VALUES (?, ?, ?, ?, ?, ?, ?)', 
-  [title, audio, bpm, genre, tierlist, mood, keywords], (err, results) => {
+  [title, filePath, bpm, genre, tierlist, mood, keywords], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'An error occurred while adding the track' });
