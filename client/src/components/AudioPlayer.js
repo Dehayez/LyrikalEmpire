@@ -12,18 +12,19 @@ const AudioPlayer = ({ currentTrack }) => {
 
   useEffect(() => {
     if (currentTrack && currentTrack.audio) {
-      if (currentPlaying && currentPlaying !== playerRef.current) {
-        currentPlaying.audio.current.pause();
-      }
-      setIsPlaying(true);
-      currentPlaying = playerRef.current;
+        if (currentPlaying && currentPlaying !== playerRef.current) {
+            currentPlaying.audio.current.pause();
+        }
+        setIsPlaying(true);
+        currentPlaying = playerRef.current;
+        playerRef.current.audio.current.play(); // Manually play the audio
     } else {
-      setIsPlaying(false);
-      if (playerRef.current) {
-        playerRef.current.audio.current.currentTime = 0;
-      }
+        setIsPlaying(false);
+        if (playerRef.current) {
+            playerRef.current.audio.current.currentTime = 0;
+        }
     }
-  }, [currentTrack]);
+}, [currentTrack]);
 
   const handleListen = () => {
     if (playerRef.current) {
