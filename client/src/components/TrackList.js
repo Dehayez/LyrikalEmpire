@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getTracks, deleteTrack } from '../services/trackService';
 import ConfirmDialog from './ConfirmDialog';
-import AudioPlayer from './AudioPlayer';
 
-const TrackList = () => {
+const TrackList = ({ onPlay }) => {
   const [tracks, setTracks] = useState([]);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [trackToDelete, setTrackToDelete] = useState(null);
-  const [currentTrack, setCurrentTrack] = useState(null);
 
   const fetchTracks = async () => {
     const tracks = await getTracks();
@@ -33,14 +31,6 @@ const TrackList = () => {
 
   const handleCancel = () => {
     setConfirmOpen(false);
-  };
-
-  const handlePlay = (track) => {
-    if (currentTrack && currentTrack.id === track.id) {
-      setCurrentTrack(null); // pause the current track
-    } else {
-      setCurrentTrack(track); // play the selected track
-    }
   };
 
   const styles = {
@@ -84,8 +74,8 @@ const TrackList = () => {
                   <td>{track.bpm}</td>
                   <td>{track.mood}</td>
                   <td>
-                    <button onClick={() => handlePlay(track)}>
-                      {currentTrack && currentTrack.id === track.id ? 'Pause' : 'Play'}
+                    <button onClick={() => onPlay(track)}>
+                      Play
                     </button>
                   </td>
                   <td>
@@ -96,7 +86,6 @@ const TrackList = () => {
             })}
           </tbody>
         </table>
-        <AudioPlayer currentTrack={currentTrack} />
       </div>
       <ConfirmDialog
         isOpen={isConfirmOpen}
