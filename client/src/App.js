@@ -40,7 +40,7 @@ function App() {
             <TrackList key={refresh} onPlay={handlePlay} />
         </div>
         <div style={{ 
-            display: 'flex', 
+            display: currentTrack ? 'flex' : 'none', // Only display when a track is playing
             alignItems: 'center', 
             position: 'fixed', 
             bottom: 0, 
@@ -52,7 +52,7 @@ function App() {
                 {currentTrack && <div>{currentTrack.title}</div>}
             </div>
             <div style={{ flex: '2' }}>
-                <AudioPlayer currentTrack={currentTrack} />
+                {currentTrack && <AudioPlayer currentTrack={currentTrack} />} {/* Only render when a track is playing */}
             </div>
             <div style={{ flex: '1' }}></div>
         </div>
