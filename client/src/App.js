@@ -40,14 +40,15 @@ function App() {
             <TrackList key={refresh} onPlay={handlePlay} />
         </div>
         <div style={{ 
-            display: currentTrack ? 'flex' : 'none', // Only display when a track is playing
+            display: 'flex', // Always display, but will be offscreen when not playing
             alignItems: 'center', 
             position: 'fixed', 
-            bottom: 0, 
+            bottom: currentTrack ? 0 : '-100%', // Move offscreen when not playing
             width: '100%', 
             backgroundColor: '#fff', // or any color you prefer
-            padding: '10px 0' 
-        }}>
+            padding: '10px 0',
+            transition: 'bottom 0.4s cubic-bezier(0.1, 0.7, 1.0, 1.0)' // Animate the bottom property
+        }} className="animated-div">
             <div style={{ flex: '1' }}>
                 {currentTrack && <div>{currentTrack.title}</div>}
             </div>
