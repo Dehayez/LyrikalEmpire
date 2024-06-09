@@ -2,9 +2,21 @@ const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const multer = require('multer');
 
 const app = express();
 const expressPort = 4000;
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function(req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -31,9 +43,10 @@ app.get('/api/tracks', (req, res) => {
   });
 });
 
-app.post('/api/tracks', (req, res) => {
+app.post('/api/tracks', upload.single('audio'), (req, res) => {
   // Insert a new track into the database
-  const { title, audio, bpm, genre, tierlist, mood, keywords } = req.body;
+  const { title, bpm, genre, tierlist, mood, keywords } = req.body;
+  const audio = req.file.path;
   db.query('INSERT INTO tracks (title, audio, bpm, genre, tierlist, mood, keywords) VALUES (?, ?, ?, ?, ?, ?, ?)', 
   [title, audio, bpm, genre, tierlist, mood, keywords], (err, results) => {
     if (err) {
