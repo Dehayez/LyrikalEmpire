@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ConfirmDialog from './ConfirmDialog';
 import { getTracks, deleteTrack } from '../services/trackService';
 
@@ -6,6 +6,8 @@ const TrackList = () => {
   const [tracks, setTracks] = useState([]);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [trackToDelete, setTrackToDelete] = useState(null);
+  const [currentTrack, setCurrentTrack] = useState(null);
+  const audioRefs = useRef({});
 
   const fetchTracks = async () => {
     const tracks = await getTracks();
@@ -33,12 +35,20 @@ const TrackList = () => {
     setConfirmOpen(false);
   };
 
+  const handlePlay = (id) => {
+    if (currentTrack && currentTrack !== id && audioRefs.current[currentTrack]) {
+      audioRefs.current[currentTrack].pause();
+      audioRefs.current[currentTrack].currentTime = 0;
+    }
+    setCurrentTrack(id);
+  };
+
   const styles = {
     tableContainer: {
-      overflowX: 'auto', // Add horizontal scrolling
+      overflowX: 'auto',
     },
     table: {
-      minWidth: '600px', // Set a minimum width for the table
+      minWidth: '600px',
       width: '100%',
       tableLayout: 'auto',
     },
@@ -46,7 +56,7 @@ const TrackList = () => {
       position: 'sticky',
       top: 0,
       backgroundColor: '#fff',
-      textAlign: 'left', // Left align headers
+      textAlign: 'left',
     },
   };
 
@@ -54,39 +64,39 @@ const TrackList = () => {
     <div>
       <h2>Track List</h2>
       <div style={styles.tableContainer}>
-      <table style={styles.table}>
-        <thead style={styles.thead}>
-          <tr>
-            <th>Title</th>
-            <th>Genre</th>
-            <th>BPM</th>
-            <th>Mood</th>
-            <th>Audio</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tracks.map(track => {
-            return (
-              <tr key={track.id}>
-                <td>{track.title}</td>
-                <td>{track.genre}</td>
-                <td>{track.bpm}</td>
-                <td>{track.mood}</td>
-                <td>
-                  <audio controls>
-                    <source src={`/${track.audio}`} type="audio/mpeg" />
-                    Your browser does not support the audio element.
-                  </audio>
-                </td>
-                <td style={styles.td}>
-                  <button style={styles.deleteButton} onClick={() => handleDelete(track.id)}>Delete</button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+        <table style={styles.table}>
+          <thead style={styles.thead}>
+            <tr>
+              <th>Title</th>
+              <th>Genre</th>
+              <th>BPM</th>
+              <th>Mood</th>
+              <th>Audio</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tracks.map(track => {
+              return (
+                <tr key={track.id}>
+                  <td>{track.title}</td>
+                  <td>{track.genre}</td>
+                  <td>{track.bpm}</td>
+                  <td>{track.mood}</td>
+                  <td>
+                    <audio ref={ref => audioRefs.current[track.id] = ref} controls onPlay={() => handlePlay(track.id)}>
+                      <source src={`/${track.audio}`} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </td>
+                  <td>
+                    <button onClick={() => handleDelete(track.id)}>Delete</button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
       <ConfirmDialog
         isOpen={isConfirmOpen}
