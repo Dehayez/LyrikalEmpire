@@ -31,16 +31,32 @@ function App() {
 
     return (
         <div className="App">
-            <div style={styles.container}>
-                <Header />
+        <div style={styles.container}>
+            <Header />
+        </div>
+        <div style={styles.container}>
+            <h1>Music Library</h1>
+            <AddTrack onAdd={handleAdd} />
+            <TrackList key={refresh} onPlay={handlePlay} />
+        </div>
+        <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            position: 'fixed', 
+            bottom: 0, 
+            width: '100%', 
+            backgroundColor: '#fff', // or any color you prefer
+            padding: '10px 0' 
+        }}>
+            <div style={{ flex: '1' }}>
+                {currentTrack && <div>{currentTrack.title}</div>}
             </div>
-            <div style={styles.container}>
-                <h1>Music Library</h1>
-                <AddTrack onAdd={handleAdd} />
-                <TrackList key={refresh} onPlay={handlePlay} />
+            <div style={{ flex: '2' }}>
                 <AudioPlayer currentTrack={currentTrack} />
             </div>
+            <div style={{ flex: '1' }}></div>
         </div>
+    </div>
     );
 }
 
