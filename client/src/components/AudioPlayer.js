@@ -36,20 +36,24 @@ const AudioPlayer = ({ currentTrack }) => {
   };
 
   return (
-  <H5AudioPlayer
-    autoPlayAfterSrcChange={true} // Set this to true
-    src={currentTrack ? currentTrack.audio : ''}
-    ref={playerRef}
-    onPlay={() => setIsPlaying(true)}
-    onPause={() => setIsPlaying(false)}
-    onListen={handleListen}
-    customProgressBarSection={[
-      RHAP_UI.PROGRESS_BAR,
-      RHAP_UI.CURRENT_TIME,
-      RHAP_UI.DURATION
-    ]}
-    customControlsSection={isPlaying ? [RHAP_UI.MAIN_CONTROLS, RHAP_UI.VOLUME_CONTROLS] : [RHAP_UI.MAIN_CONTROLS]}
-  />
+    <div className="audio-player-wrapper">
+    <H5AudioPlayer
+      autoPlayAfterSrcChange={true}
+      src={currentTrack ? currentTrack.audio : ''}
+      ref={playerRef}
+      onPlay={() => setIsPlaying(true)}
+      onPause={() => setIsPlaying(false)}
+      onListen={handleListen}
+      customProgressBarSection={[
+          RHAP_UI.CURRENT_TIME,
+          RHAP_UI.PROGRESS_BAR,
+          RHAP_UI.DURATION
+      ]}
+      customControlsSection={[
+          RHAP_UI.MAIN_CONTROLS
+      ]}
+    />
+  </div>
   );
 };
 
