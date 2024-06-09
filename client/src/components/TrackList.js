@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ConfirmDialog from './ConfirmDialog';
 import { getTracks, deleteTrack } from '../services/trackService';
+import ConfirmDialog from './ConfirmDialog';
+import AudioPlayer from './AudioPlayer';
 
 const TrackList = () => {
   const [tracks, setTracks] = useState([]);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [trackToDelete, setTrackToDelete] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
-  const audioRefs = useRef({});
 
   const fetchTracks = async () => {
     const tracks = await getTracks();
@@ -35,12 +35,12 @@ const TrackList = () => {
     setConfirmOpen(false);
   };
 
-  const handlePlay = (id) => {
-    if (currentTrack && currentTrack !== id && audioRefs.current[currentTrack]) {
-      audioRefs.current[currentTrack].pause();
-      audioRefs.current[currentTrack].currentTime = 0;
+  const handlePlay = (track) => {
+    if (currentTrack && currentTrack.id === track.id) {
+      setCurrentTrack(null); // pause the current track
+    } else {
+      setCurrentTrack(track); // play the selected track
     }
-    setCurrentTrack(id);
   };
 
   const styles = {
@@ -84,10 +84,9 @@ const TrackList = () => {
                   <td>{track.bpm}</td>
                   <td>{track.mood}</td>
                   <td>
-                    <audio ref={ref => audioRefs.current[track.id] = ref} controls onPlay={() => handlePlay(track.id)}>
-                      <source src={`/${track.audio}`} type="audio/mpeg" />
-                      Your browser does not support the audio element.
-                    </audio>
+                    <button onClick={() => handlePlay(track)}>
+                      {currentTrack && currentTrack.id === track.id ? 'Pause' : 'Play'}
+                    </button>
                   </td>
                   <td>
                     <button onClick={() => handleDelete(track.id)}>Delete</button>
@@ -97,6 +96,7 @@ const TrackList = () => {
             })}
           </tbody>
         </table>
+        <AudioPlayer currentTrack={currentTrack} />
       </div>
       <ConfirmDialog
         isOpen={isConfirmOpen}
