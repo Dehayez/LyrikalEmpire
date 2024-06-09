@@ -32,7 +32,7 @@ const AddTrack = ({ onAdd }) => {
             </div>
             <div>
                 <label>Audio:</label>
-                <input type="text" value={audio} onChange={(e) => setAudio(e.target.value)} required />
+                <input type="file" onChange={(e) => setAudio(e.target.files[0])} required />
             </div>
             <div>
                 <label>BPM:</label>
