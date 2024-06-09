@@ -24,7 +24,5 @@ export const addTrack = async (track, audioFile) => {
 };
 
 export const deleteTrack = async (id) => {
-  if (window.confirm('Are you sure you want to delete this track?')) {
-    await axios.delete(`${API_URL}/${id}`);
-  }
+  await axios.delete(`${API_URL}/${id}`);
 };
