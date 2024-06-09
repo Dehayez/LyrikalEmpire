@@ -9,17 +9,24 @@ export const getTracks = async () => {
 
 export const addTrack = async (track, audioFile) => {
   let formData = new FormData();
+
   for (let key in track) {
     formData.append(key, track[key]);
   }
+
   if (audioFile) {
     formData.append('audio', audioFile, audioFile.name);
   }
+
   const response = await axios.post(API_URL, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   });
+
+  // Log the response data
+  console.log(response.data);
+
   return response.data;
 };
 
