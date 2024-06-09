@@ -3,7 +3,7 @@ import { addTrack } from '../services/trackService';
 
 const AddTrack = ({ onAdd }) => {
     const [title, setTitle] = useState('');
-    const [audio, setAudio] = useState('');
+    const [audio, setAudio] = useState(null);
     const [bpm, setBpm] = useState(0);
     const [genre, setGenre] = useState('');
     const [tierlist, setTierlist] = useState('');
@@ -16,7 +16,7 @@ const AddTrack = ({ onAdd }) => {
         await addTrack(newTrack, audio);
         onAdd();
         setTitle('');
-        setAudio('');
+        setAudio(null);
         setBpm(0);
         setGenre('');
         setTierlist('');
@@ -57,7 +57,7 @@ const AddTrack = ({ onAdd }) => {
                 <input type="text" value={mood} onChange={(e) => setMood(e.target.value)} required />
             </div>
             <div>
-            <label>Keywords:</label>
+                <label>Keywords:</label>
                 <textarea value={keywords} onChange={(e) => setKeywords(e.target.value)} required />
             </div>
             <button type="submit">Add Track</button>

@@ -1,16 +1,25 @@
+// Import required modules
 const express = require('express');
 const mysql = require('mysql2');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 
+// Create an Express app
 const app = express();
 const expressPort = 4000;
 
+// Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware for handling CORS
+app.use(cors());
+
+// Middleware for serving static files
+app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
+
+// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, path.join(__dirname, '../client/public/uploads/'));
@@ -22,12 +31,7 @@ const storage = multer.diskStorage({
     req.body.filePath = path.join('uploads', newFileName);
   }
 });
-
 const upload = multer({ storage: storage });
-
-app.use(cors());
-app.use(bodyParser.json());
-app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
 
 // Create a connection to the database
 const db = mysql.createConnection({
@@ -35,12 +39,11 @@ const db = mysql.createConnection({
   user: 'root',
   password: 'root',
   database: 'lyrikalempire',
-  port: 8889 // This remains the same as your MySQL server is running on this port
+  port: 8889
 });
 
 // Define the /api/tracks endpoint handlers
 app.get('/api/tracks', (req, res) => {
-  // Query the database and return the result
   db.query('SELECT * FROM tracks', (err, results) => {
     if (err) {
       console.error(err);
@@ -52,8 +55,6 @@ app.get('/api/tracks', (req, res) => {
 });
 
 app.post('/api/tracks', upload.single('audio'), (req, res) => {
-  
-  // Insert a new track into the database
   const { title, bpm, genre, tierlist, mood, keywords, filePath } = req.body;
   db.query('INSERT INTO tracks (title, audio, bpm, genre, tierlist, mood, keywords) VALUES (?, ?, ?, ?, ?, ?, ?)', 
   [title, filePath, bpm, genre, tierlist, mood, keywords], (err, results) => {
@@ -67,7 +68,6 @@ app.post('/api/tracks', upload.single('audio'), (req, res) => {
 });
 
 app.delete('/api/tracks/:id', (req, res) => {
-  // Delete a track from the database
   const { id } = req.params;
   db.query('DELETE FROM tracks WHERE id = ?', [id], (err, results) => {
     if (err) {
@@ -79,14 +79,13 @@ app.delete('/api/tracks/:id', (req, res) => {
   });
 });
 
-// Connect to the database
+// Connect to the database and start the server
 db.connect(err => {
   if (err) {
     console.error('An error occurred while connecting to the database:', err);
     process.exit(1);
   }
 
-  // Start the Express server
   app.listen(expressPort, () => {
     console.log(`Server is running on port ${expressPort}`);
   });

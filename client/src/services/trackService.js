@@ -3,14 +3,14 @@ import axios from 'axios';
 const API_URL = 'http://localhost:4000/api/tracks';
 
 export const getTracks = async () => {
-  const response = await axios.get(API_URL);
-  return response.data;
+  const { data } = await axios.get(API_URL);
+  return data;
 };
 
 export const addTrack = async (track, audioFile) => {
-  let formData = new FormData();
+  const formData = new FormData();
 
-  for (let key in track) {
+  for (const key in track) {
     formData.append(key, track[key]);
   }
 
@@ -18,18 +18,13 @@ export const addTrack = async (track, audioFile) => {
     formData.append('audio', audioFile, audioFile.name);
   }
 
-  const response = await axios.post(API_URL, formData, {
+  const { data } = await axios.post(API_URL, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   });
 
-  // Log the response data
-  console.log(response.data);
-
-  return response.data;
+  return data;
 };
 
-export const deleteTrack = async (id) => {
-  await axios.delete(`${API_URL}/${id}`);
-};
+export const deleteTrack = (id) => axios.delete(`${API_URL}/${id}`);
