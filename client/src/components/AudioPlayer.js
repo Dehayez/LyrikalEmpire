@@ -5,7 +5,7 @@ import './AudioPlayer.css';
 
 let currentPlaying;
 
-const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying }) => {
+const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) => {
   const playerRef = useRef();
 
   useEffect(() => {
@@ -47,7 +47,9 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying }) => {
             RHAP_UI.DURATION
         ]}
         customControlsSection={[
-            RHAP_UI.MAIN_CONTROLS
+          <button onClick={onPrev}>Prev</button>,
+          RHAP_UI.MAIN_CONTROLS,
+          <button onClick={onNext}>Next</button>
         ]}
       />
     </div>

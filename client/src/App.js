@@ -17,13 +17,15 @@ function App() {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState(null);
+  const [tracks, setTracks] = useState([]);
 
   const handleAdd = () => {
     setRefresh(!refresh);
   };
 
-  const handlePlay = (track, play) => {
+  const handlePlay = (track, play, tracks) => {
     setSelectedTrack(track);
+    setTracks(tracks);
     if (track === null) {
       setCurrentTrack(null);
       setIsPlaying(false);
@@ -34,6 +36,20 @@ function App() {
       setIsPlaying(true);
     }
   };
+
+  const handleNext = () => {
+    const currentIndex = tracks.findIndex(track => track.id === currentTrack.id);
+    const nextIndex = (currentIndex + 1) % tracks.length;
+    handlePlay(tracks[nextIndex], true, tracks);
+  };
+
+  const handlePrev = () => {
+    const currentIndex = tracks.findIndex(track => track.id === currentTrack.id);
+    const prevIndex = (currentIndex - 1 + tracks.length) % tracks.length;
+    handlePlay(tracks[prevIndex], true, tracks);
+  };
+
+
   return (
     <div className="App">
       <div style={styles.container}>
@@ -58,7 +74,7 @@ function App() {
           {currentTrack && <div>{currentTrack.title}</div>}
         </div>
         <div style={{ flex: '2' }}>
-          {currentTrack && <AudioPlayer currentTrack={currentTrack} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />}
+          {currentTrack && <AudioPlayer currentTrack={currentTrack} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} />}
         </div>
         <div style={{ flex: '1' }}></div>
       </div>
