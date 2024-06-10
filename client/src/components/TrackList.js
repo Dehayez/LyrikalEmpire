@@ -35,7 +35,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
   const handlePlayPause = (track) => {
     const isCurrentTrackPlaying = selectedTrack && selectedTrack.id === track.id;
     onPlay(track, !isCurrentTrackPlaying || !isPlaying);
-    setPlayingTrack(track); // Add this line
+    setPlayingTrack(track);
   };
 
   const styles = {
@@ -68,11 +68,11 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                 onMouseEnter={(e) => e.currentTarget.querySelector('button').style.opacity = 1}
                 onMouseLeave={(e) => e.currentTarget.querySelector('button').style.opacity = 0}
               >
-              <td style={styles.tdata} className="track-number">
+                <td style={styles.tdata} className="track-number">
                   <div style={{ position: 'relative' }}>
                     <div className="center-container">
                       {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
-                        <div>
+                        <div style={{ animationDuration: `${60 / track.bpm}s` }}>
                           <div className="bar"></div>
                           <div className="bar"></div>
                           <div className="bar"></div>
@@ -89,13 +89,13 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                     </div>
                   </div>
                 </td>
-                  <td style={{ color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{track.title}</td>
-                  <td style={styles.tdata}>{track.genre}</td>
-                  <td style={styles.tdata}>{track.bpm}</td>
-                  <td style={styles.tdata}>{track.mood}</td>
-                  <td style={styles.tdata}>
-                    <button onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
-                  </td>
+                <td style={{ color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{track.title}</td>
+                <td style={styles.tdata}>{track.genre}</td>
+                <td style={styles.tdata}>{track.bpm}</td>
+                <td style={styles.tdata}>{track.mood}</td>
+                <td style={styles.tdata}>
+                  <button onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
+                </td>
               </tr>
             ))}
           </tbody>
