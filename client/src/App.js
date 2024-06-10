@@ -16,6 +16,7 @@ function App() {
   const [refresh, setRefresh] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [paused, setPaused] = useState(false);
+  const [playingTrack, setPlayingTrack] = useState(null);
 
   const handleAdd = () => {
     setRefresh(!refresh);
@@ -41,7 +42,7 @@ function App() {
       <div style={styles.container}>
         <h1>Music Library</h1>
         <AddTrack onAdd={handleAdd} />
-        <TrackList key={refresh} onPlay={handlePlay} />
+        <TrackList key={refresh} onPlay={handlePlay} setPlayingTrack={setPlayingTrack} /> {/* Pass setPlayingTrack */}
       </div>
       <div style={{
         display: 'flex',
