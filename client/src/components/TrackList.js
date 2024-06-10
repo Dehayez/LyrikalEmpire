@@ -42,7 +42,8 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
     tableContainer: { overflowX: 'auto' },
     table: { minWidth: '600px', width: '100%', tableLayout: 'auto' },
     thead: { position: 'sticky', top: 0, backgroundColor: '#fff', textAlign: 'left' },
-    tdata: { padding: '8px' }
+    tdata: { padding: '8px' },
+    theadFirstChild: { textAlign: 'center' }
   };
 
   return (
@@ -52,7 +53,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
         <table style={styles.table}>
           <thead style={styles.thead}>
             <tr>
-              <th>#</th>
+              <th style={styles.theadFirstChild}>#</th>
               <th>Title</th>
               <th>Genre</th>
               <th>BPM</th>
