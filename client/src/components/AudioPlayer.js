@@ -1,3 +1,4 @@
+// AudioPlayer.js
 import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
@@ -40,6 +41,10 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
     setTimeout(() => setAnimatePlayPause(false), 200);
   };
 
+  const handleEnded = () => {
+    onNext();
+  };
+
   return (
     <div className="audio-player-wrapper">
       <H5AudioPlayer
@@ -49,6 +54,7 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onListen={handleListen}
+        onEnded={handleEnded}
         customProgressBarSection={[
             RHAP_UI.CURRENT_TIME,
             RHAP_UI.PROGRESS_BAR,

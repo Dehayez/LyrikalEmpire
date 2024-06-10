@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getTracks, deleteTrack } from '../services/trackService';
 import ConfirmDialog from './ConfirmDialog';
-import { IoIosPause, IoIosPlay, IoIosTrash } from "react-icons/io";
-import { IoPlaySharp, IoPauseSharp } from "react-icons/io5";
+import { IoPlaySharp, IoPauseSharp, IoTrash } from "react-icons/io5";
 import './TrackList.css';
 
 const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
@@ -118,7 +117,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                 <td style={styles.tdata}>{track.bpm}</td>
                 <td style={styles.tdata}>{track.mood}</td>
                 <td style={styles.tdata}>
-                  <button className="icon-button" onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
+                  <button className="icon-button" onClick={() => handleDelete(track.id)}><IoTrash /></button>
                 </td>
               </tr>
             ))}
