@@ -70,6 +70,7 @@ const TrackList = ({ onPlay, setPlayingTrack: setPlayingTrackProp }) => {
         <table style={styles.table}>
           <thead style={styles.thead}>
             <tr>
+              <th>#</th>
               <th>Title</th>
               <th>Genre</th>
               <th>BPM</th>
@@ -79,9 +80,10 @@ const TrackList = ({ onPlay, setPlayingTrack: setPlayingTrackProp }) => {
             </tr>
           </thead>
           <tbody>
-            {tracks.map(track => {
+            {tracks.map((track, index) => {
               return (
                 <tr className="track-row" key={track.id}>
+                  <td>{index + 1}</td>
                   <td>{track.title}</td>
                   <td>{track.genre}</td>
                   <td>{track.bpm}</td>
