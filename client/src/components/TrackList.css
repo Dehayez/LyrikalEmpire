@@ -47,31 +47,22 @@
 .animation-container {
   position: absolute;
   top: 0;
-  left: 0;
-  height: 100%;
+  left: 10%; /* Move the animation to the left */
+  height: 80%; /* Make the animation smaller */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-@keyframes barAnimation {
-  0% { transform: scaleY(0.2); }
-  15% { transform: scaleY(0.8); }
-  30% { transform: scaleY(0.4); }
-  45% { transform: scaleY(1); }
-  60% { transform: scaleY(0.6); }
-  75% { transform: scaleY(0.9); }
-  90% { transform: scaleY(0.5); }
-  100% { transform: scaleY(0.2); }
-}
+
   
 .bar {
   width: 4px;
-  height: 20px; /* Set this to the maximum height of the bars */
+  height: 16px; /* Make the bars smaller */
   background-color: #FFCC44;
   margin: 0 1px;
   display: inline-block;
-  animation: barAnimation 1.8s infinite; /* Adjust this value to make the animation slower or faster */
+  animation: barAnimation 1.8s infinite;
   transform-origin: center;
 }
 .bar:nth-child(1) {
@@ -88,6 +79,17 @@
 
 .bar:nth-child(4) {
   animation-delay: 0s;
+}
+
+@keyframes barAnimation {
+  0% { transform: scaleY(0.2); }
+  15% { transform: scaleY(0.8); }
+  30% { transform: scaleY(0.4); }
+  45% { transform: scaleY(1); }
+  60% { transform: scaleY(0.6); }
+  75% { transform: scaleY(0.9); }
+  90% { transform: scaleY(0.5); }
+  100% { transform: scaleY(0.2); }
 }
 
 .icon-button {
