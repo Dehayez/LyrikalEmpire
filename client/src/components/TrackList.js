@@ -68,23 +68,25 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                 onMouseEnter={(e) => e.currentTarget.querySelector('button').style.opacity = 1}
                 onMouseLeave={(e) => e.currentTarget.querySelector('button').style.opacity = 0}
               >
-               <td style={styles.tdata} className="track-number">
+              <td style={styles.tdata} className="track-number">
                   <div style={{ position: 'relative' }}>
-                    {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
-                      <div>
-                        <div className="bar"></div>
-                        <div className="bar"></div>
-                        <div className="bar"></div>
-                        <div className="bar"></div>
-                      </div> : 
-                      <div style={{ zIndex: 1, color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{index + 1}</div>
-                    }
-                    <button
-                      style={{ position: 'absolute', top: 0, left: 0, opacity: 0, zIndex: 2 }}
-                      onClick={() => handlePlayPause(track)}
-                    >
-                      {playingTrack && playingTrack.id === track.id && isPlaying ? <IoIosPause /> : <IoIosPlay />}
-                    </button>
+                    <div className="center-container">
+                      {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
+                        <div>
+                          <div className="bar"></div>
+                          <div className="bar"></div>
+                          <div className="bar"></div>
+                          <div className="bar"></div>
+                        </div> : 
+                        <div style={{ zIndex: 1, color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{index + 1}</div>
+                      }
+                      <button
+                        style={{ position: 'absolute', top: 0, left: 0, opacity: 0, zIndex: 2 }}
+                        onClick={() => handlePlayPause(track)}
+                      >
+                        {playingTrack && playingTrack.id === track.id && isPlaying ? <IoIosPause /> : <IoIosPlay />}
+                      </button>
+                    </div>
                   </div>
                 </td>
                   <td style={{ color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{track.title}</td>
