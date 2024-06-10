@@ -7,3 +7,29 @@
 .rhap_forward-button {
   display: none;
 }
+
+.animate-scale {
+  animation: scale-up 0.2s ease-in-out;
+}
+
+.icon-button {
+  font-size: 24px; /* adjust this value to make the icons bigger */
+}
+
+.icon-button.play-pause {
+  background: #f0f0f0; /* adjust this value to change the background color */
+  border-radius: 50%; /* this makes the background a circle */
+  padding: 10px; /* adjust this value to change the size of the circle */
+}
+
+@keyframes scale-up {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
