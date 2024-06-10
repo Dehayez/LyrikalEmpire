@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getTracks, deleteTrack } from '../services/trackService';
 import ConfirmDialog from './ConfirmDialog';
+import { IoIosPause, IoIosPlay, IoIosTrash } from "react-icons/io";
 import './TrackList.css';
 
 const TrackList = ({ onPlay, setPlayingTrack: setPlayingTrackProp }) => {
@@ -87,11 +88,11 @@ const TrackList = ({ onPlay, setPlayingTrack: setPlayingTrackProp }) => {
                   <td>{track.mood}</td>
                   <td>
                     <button onClick={() => handlePlayPause(track)}>
-                      {playingTrack && playingTrack.id === track.id ? 'Pause' : 'Play'}
+                      {playingTrack && playingTrack.id === track.id ? <IoIosPause /> : <IoIosPlay />}
                     </button>
                   </td>
                   <td>
-                    <button onClick={() => handleDelete(track.id)}>Delete</button>
+                    <button onClick={() => handleDelete(track.id)}><IoIosTrash />                    </button>
                   </td>
                 </tr>
               );
