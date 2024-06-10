@@ -4,11 +4,11 @@ import ConfirmDialog from './ConfirmDialog';
 import { IoIosPause, IoIosPlay, IoIosTrash } from "react-icons/io";
 import './TrackList.css';
 
-const TrackList = ({ onPlay, setPlayingTrack: setPlayingTrackProp }) => {
+const TrackList = ({ onPlay, isPlaying }) => {
   const [tracks, setTracks] = useState([]);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [trackToDelete, setTrackToDelete] = useState(null);
-  const [playingTrack, setPlayingTrack] = useState(null); // Add this line
+  const [playingTrack, setPlayingTrack] = useState(null);
 
   const fetchTracks = async () => {
     const tracks = await getTracks();
@@ -38,11 +38,11 @@ const TrackList = ({ onPlay, setPlayingTrack: setPlayingTrackProp }) => {
 
   const handlePlayPause = (track) => {
     if (playingTrack && playingTrack.id === track.id) {
-      setPlayingTrack(null); // Add this line
-      onPlay(track, !playingTrack);
+      setPlayingTrack(null);
+      onPlay(track, !isPlaying);
     } else {
       setPlayingTrack(track);
-      onPlay(track);
+      onPlay(track, true);
     }
   };
 
@@ -84,23 +84,23 @@ const TrackList = ({ onPlay, setPlayingTrack: setPlayingTrackProp }) => {
                 <tr className="track-row" key={track.id}
                 onMouseEnter={(e) => e.currentTarget.querySelector('button').style.opacity = 1}
                 onMouseLeave={(e) => e.currentTarget.querySelector('button').style.opacity = 0}>
-              <td>
-                <div style={{position: 'relative'}}>
-                  <div style={{zIndex: 1}}>{index + 1}</div>
-                  <button style={{position: 'absolute', top: 0, left: 0, opacity: 0, zIndex: 2}} 
-                          onClick={() => handlePlayPause(track)}>
-                    {playingTrack && playingTrack.id === track.id ? <IoIosPause /> : <IoIosPlay />}
-                  </button>
-                </div>
-              </td>
-              <td>{track.title}</td>
-              <td>{track.genre}</td>
-              <td>{track.bpm}</td>
-              <td>{track.mood}</td>
-              <td>
-                <button onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
-              </td>
-            </tr>
+                  <td>
+                    <div style={{position: 'relative'}}>
+                      <div style={{zIndex: 1}}>{index + 1}</div>
+                      <button style={{position: 'absolute', top: 0, left: 0, opacity: 0, zIndex: 2}} 
+                              onClick={() => handlePlayPause(track)}>
+                        {playingTrack && playingTrack.id === track.id && isPlaying ? <IoIosPause /> : <IoIosPlay />}
+                      </button>
+                    </div>
+                  </td>
+                  <td>{track.title}</td>
+                  <td>{track.genre}</td>
+                  <td>{track.bpm}</td>
+                  <td>{track.mood}</td>
+                  <td>
+                    <button onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
+                  </td>
+                </tr>
               );
             })}
           </tbody>

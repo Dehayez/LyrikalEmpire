@@ -15,22 +15,21 @@ const styles = {
 function App() {
   const [refresh, setRefresh] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(null);
-  const [paused, setPaused] = useState(false);
-  const [playingTrack, setPlayingTrack] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handleAdd = () => {
     setRefresh(!refresh);
   };
 
-  const handlePlay = (track) => {
+  const handlePlay = (track, play) => {
     if (track === null) {
       setCurrentTrack(null);
-      setPaused(false);
+      setIsPlaying(false);
     } else if (currentTrack && currentTrack.id === track.id) {
-      setPaused(!paused);
+      setIsPlaying(play);
     } else {
       setCurrentTrack(track);
-      setPaused(false);
+      setIsPlaying(true);
     }
   };
 
@@ -42,7 +41,7 @@ function App() {
       <div style={styles.container}>
         <h1>Music Library</h1>
         <AddTrack onAdd={handleAdd} />
-        <TrackList key={refresh} onPlay={handlePlay} setPlayingTrack={setPlayingTrack} /> {/* Pass setPlayingTrack */}
+        <TrackList key={refresh} onPlay={handlePlay} isPlaying={isPlaying} />
       </div>
       <div style={{
         display: 'flex',
@@ -58,7 +57,7 @@ function App() {
           {currentTrack && <div>{currentTrack.title}</div>}
         </div>
         <div style={{ flex: '2' }}>
-          {currentTrack && <AudioPlayer currentTrack={currentTrack} paused={paused} />}
+          {currentTrack && <AudioPlayer currentTrack={currentTrack} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />}
         </div>
         <div style={{ flex: '1' }}></div>
       </div>
