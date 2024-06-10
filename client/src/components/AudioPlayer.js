@@ -17,8 +17,10 @@ const AudioPlayer = ({ currentTrack, paused }) => { // Add paused prop
       }
       setIsPlaying(true);
       currentPlaying = playerRef.current;
-      if (!paused) { // Only play if not paused
-        playerRef.current.audio.current.play(); 
+      if (paused) {
+        playerRef.current.audio.current.pause();
+      } else {
+        playerRef.current.audio.current.play();
       }
     } else {
       setIsPlaying(false);
@@ -26,7 +28,7 @@ const AudioPlayer = ({ currentTrack, paused }) => { // Add paused prop
         playerRef.current.audio.current.currentTime = 0;
       }
     }
-  }, [currentTrack, paused]); // Add paused to dependency array
+  }, [currentTrack, paused]);
 
   const handleListen = () => {
     if (playerRef.current) {
