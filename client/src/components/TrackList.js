@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getTracks, deleteTrack } from '../services/trackService';
 import ConfirmDialog from './ConfirmDialog';
+import './TrackList.css';
 
-const TrackList = ({ onPlay }) => {
+const TrackList = ({ onPlay, setPlayingTrack: setPlayingTrackProp }) => {
   const [tracks, setTracks] = useState([]);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [trackToDelete, setTrackToDelete] = useState(null);
@@ -36,12 +37,13 @@ const TrackList = ({ onPlay }) => {
 
   const handlePlayPause = (track) => {
     if (playingTrack && playingTrack.id === track.id) {
+      setPlayingTrack(null); // Add this line
       onPlay(track, !playingTrack);
     } else {
       setPlayingTrack(track);
       onPlay(track);
     }
-};
+  };
 
   const styles = {
     tableContainer: {
@@ -78,7 +80,7 @@ const TrackList = ({ onPlay }) => {
           <tbody>
             {tracks.map(track => {
               return (
-                <tr key={track.id}>
+                <tr className="track-row" key={track.id}>
                   <td>{track.title}</td>
                   <td>{track.genre}</td>
                   <td>{track.bpm}</td>
