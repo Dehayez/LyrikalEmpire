@@ -5,26 +5,28 @@ import './AudioPlayer.css';
 
 let currentPlaying;
 
-const AudioPlayer = ({ currentTrack }) => {
+const AudioPlayer = ({ currentTrack, paused }) => { // Add paused prop
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0); // Define setProgress
+  const [progress, setProgress] = useState(0); 
   const playerRef = useRef();
 
   useEffect(() => {
     if (currentTrack && currentTrack.audio) {
-        if (currentPlaying && currentPlaying !== playerRef.current) {
-            currentPlaying.audio.current.pause();
-        }
-        setIsPlaying(true);
-        currentPlaying = playerRef.current;
-        playerRef.current.audio.current.play(); // Manually play the audio
+      if (currentPlaying && currentPlaying !== playerRef.current && currentPlaying.audio && currentPlaying.audio.current) {
+        currentPlaying.audio.current.pause();
+      }
+      setIsPlaying(true);
+      currentPlaying = playerRef.current;
+      if (!paused) { // Only play if not paused
+        playerRef.current.audio.current.play(); 
+      }
     } else {
-        setIsPlaying(false);
-        if (playerRef.current) {
-            playerRef.current.audio.current.currentTime = 0;
-        }
+      setIsPlaying(false);
+      if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
+        playerRef.current.audio.current.currentTime = 0;
+      }
     }
-}, [currentTrack]);
+  }, [currentTrack, paused]); // Add paused to dependency array
 
   const handleListen = () => {
     if (playerRef.current) {

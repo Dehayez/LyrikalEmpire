@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getTracks, deleteTrack } from '../services/trackService';
 import ConfirmDialog from './ConfirmDialog';
 
@@ -6,6 +6,7 @@ const TrackList = ({ onPlay }) => {
   const [tracks, setTracks] = useState([]);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [trackToDelete, setTrackToDelete] = useState(null);
+  const [playingTrack, setPlayingTrack] = useState(null); // Add this line
 
   const fetchTracks = async () => {
     const tracks = await getTracks();
@@ -31,6 +32,16 @@ const TrackList = ({ onPlay }) => {
 
   const handleCancel = () => {
     setConfirmOpen(false);
+  };
+
+  const handlePlayPause = (track) => {
+    if (playingTrack && playingTrack.id === track.id) {
+      setPlayingTrack(null); // pause the track
+      onPlay(null);
+    } else {
+      setPlayingTrack(track); // play the track
+      onPlay(track);
+    }
   };
 
   const styles = {
@@ -74,8 +85,8 @@ const TrackList = ({ onPlay }) => {
                   <td>{track.bpm}</td>
                   <td>{track.mood}</td>
                   <td>
-                    <button onClick={() => onPlay(track)}>
-                      Play
+                    <button onClick={() => handlePlayPause(track)}>
+                      {playingTrack && playingTrack.id === track.id ? 'Pause' : 'Play'}
                     </button>
                   </td>
                   <td>
