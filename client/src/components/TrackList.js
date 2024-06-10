@@ -42,6 +42,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
     tableContainer: { overflowX: 'auto' },
     table: { minWidth: '600px', width: '100%', tableLayout: 'auto' },
     thead: { position: 'sticky', top: 0, backgroundColor: '#fff', textAlign: 'left' },
+    tdata: { padding: '8px' }
   };
 
   return (
@@ -67,17 +68,17 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                 onMouseEnter={(e) => e.currentTarget.querySelector('button').style.opacity = 1}
                 onMouseLeave={(e) => e.currentTarget.querySelector('button').style.opacity = 0}
               >
-              <td>
-<div style={{ position: 'relative' }}>
-  {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
-    <div>
-      <div className="bar"></div>
-      <div className="bar"></div>
-      <div className="bar"></div>
-      <div className="bar"></div>
-    </div> : 
-    <div style={{ zIndex: 1 }}>{index + 1}</div>
-  }
+               <td style={styles.tdata}>
+                  <div style={{ position: 'relative' }}>
+                    {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
+                      <div>
+                        <div className="bar"></div>
+                        <div className="bar"></div>
+                        <div className="bar"></div>
+                        <div className="bar"></div>
+                      </div> : 
+                      <div style={{ zIndex: 1, color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{index + 1}</div>
+                    }
                     <button
                       style={{ position: 'absolute', top: 0, left: 0, opacity: 0, zIndex: 2 }}
                       onClick={() => handlePlayPause(track)}
@@ -86,13 +87,13 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                     </button>
                   </div>
                 </td>
-                <td style={{ color: selectedTrack && selectedTrack.id === track.id ? 'green' : 'black' }}>{track.title}</td>
-                <td>{track.genre}</td>
-                <td>{track.bpm}</td>
-                <td>{track.mood}</td>
-                <td>
-                  <button onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
-                </td>
+                  <td style={{ color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{track.title}</td>
+                  <td style={styles.tdata}>{track.genre}</td>
+                  <td style={styles.tdata}>{track.bpm}</td>
+                  <td style={styles.tdata}>{track.mood}</td>
+                  <td style={styles.tdata}>
+                    <button onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
+                  </td>
               </tr>
             ))}
           </tbody>
