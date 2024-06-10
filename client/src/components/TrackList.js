@@ -42,7 +42,10 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
     tableContainer: { overflowX: 'auto' },
     table: { minWidth: '600px', width: '100%', tableLayout: 'auto' },
     thead: { position: 'sticky', top: 0, backgroundColor: '#fff', textAlign: 'left' },
-    tdata: { padding: '14px' },
+    tdata: { padding: '14px', paddingLeft: '0'},
+    numberColumnCell: {
+      paddingLeft: '14px',
+    },
     theadFirstChild: { textAlign: 'center' },
     buttonCell: { 
       position: 'relative', 
@@ -57,7 +60,6 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
       opacity: 0, 
       zIndex: 2 
     },
-    
   };
 
   return (
@@ -83,7 +85,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                 onMouseEnter={(e) => e.currentTarget.querySelector('button').style.opacity = 1}
                 onMouseLeave={(e) => e.currentTarget.querySelector('button').style.opacity = 0}
               >
-                <td style={styles.tdata} className="track-number">
+                <td style={{ ...styles.tdata, ...styles.numberColumnCell }} className="track-number">
                   <div style={styles.buttonCell}>
                     {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
                       <div className="animation-container" style={{ animationDuration: `${60 / track.bpm}s` }}>
