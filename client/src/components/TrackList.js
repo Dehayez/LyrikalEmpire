@@ -35,7 +35,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
 
   const handlePlayPause = (track) => {
     const isCurrentTrackPlaying = selectedTrack && selectedTrack.id === track.id;
-    onPlay(track, !isCurrentTrackPlaying || !isPlaying);
+    onPlay(track, !isCurrentTrackPlaying || !isPlaying, tracks);
     setPlayingTrack(track);
   };
 
