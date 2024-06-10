@@ -68,7 +68,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                 onMouseEnter={(e) => e.currentTarget.querySelector('button').style.opacity = 1}
                 onMouseLeave={(e) => e.currentTarget.querySelector('button').style.opacity = 0}
               >
-               <td style={styles.tdata}>
+               <td style={styles.tdata} className="track-number">
                   <div style={{ position: 'relative' }}>
                     {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
                       <div>

@@ -6,6 +6,11 @@
     background-color: #f0f0f0;
   }
 
+  .track-number {
+    width: 30px; /* Adjust this value to your liking */
+    text-align: center;
+}
+
   @keyframes barAnimation {
     0% { height: 5px; }
     25% { height: 15px; }
