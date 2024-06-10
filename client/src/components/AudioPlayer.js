@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.css';
-import { IoIosPlay, IoIosPause, IoIosSkipForward, IoIosSkipBackward } from "react-icons/io";
+import { IoPlaySkipBackSharp, IoPlaySkipForwardSharp, IoPlaySharp, IoPauseSharp } from "react-icons/io5";
 
 let currentPlaying;
 
@@ -55,12 +55,12 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
             RHAP_UI.DURATION
         ]}
         customControlsSection={[
-          <button className="icon-button" onClick={onPrev}><IoIosSkipBackward /></button>,
-          <button className={`icon-button play-pause ${animatePlayPause ? 'animate-scale' : ''}`} onClick={handlePlayPause}>
-            {isPlaying ? <IoIosPause /> : <IoIosPlay />}
-          </button>,
-          <button className="icon-button" onClick={onNext}><IoIosSkipForward /></button>
-        ]}
+        <button className="icon-button" onClick={onPrev}><IoPlaySkipBackSharp size={24} /></button>,
+        <button className={`icon-button play-pause ${animatePlayPause ? 'animate-scale' : ''}`} onClick={handlePlayPause}>
+          {isPlaying ? <IoPauseSharp size={24} /> : <IoPlaySharp size={24} />}
+        </button>,
+        <button className="icon-button" onClick={onNext}><IoPlaySkipForwardSharp size={24} /></button>
+      ]}
       />
     </div>
   );

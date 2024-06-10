@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getTracks, deleteTrack } from '../services/trackService';
 import ConfirmDialog from './ConfirmDialog';
 import { IoIosPause, IoIosPlay, IoIosTrash } from "react-icons/io";
+import { IoPlaySharp, IoPauseSharp } from "react-icons/io5";
 import './TrackList.css';
 
 const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
@@ -108,7 +109,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                       className="icon-button"
                       onClick={() => handlePlayPause(track)}
                     >
-                      {playingTrack && playingTrack.id === track.id && isPlaying ? <IoIosPause /> : <IoIosPlay />}
+                      {playingTrack && playingTrack.id === track.id && isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}
                     </button>
                   </div>
                 </td>
