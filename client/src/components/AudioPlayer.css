@@ -2,3 +2,8 @@
   width: fit-content;
   margin: auto;
 }
+
+.rhap_rewind-button,
+.rhap_forward-button {
+  display: none;
+}
