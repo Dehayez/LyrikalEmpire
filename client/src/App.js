@@ -16,12 +16,14 @@ function App() {
   const [refresh, setRefresh] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState(null);
 
   const handleAdd = () => {
     setRefresh(!refresh);
   };
 
   const handlePlay = (track, play) => {
+    setSelectedTrack(track);
     if (track === null) {
       setCurrentTrack(null);
       setIsPlaying(false);
@@ -32,7 +34,6 @@ function App() {
       setIsPlaying(true);
     }
   };
-
   return (
     <div className="App">
       <div style={styles.container}>
@@ -41,7 +42,7 @@ function App() {
       <div style={styles.container}>
         <h1>Music Library</h1>
         <AddTrack onAdd={handleAdd} />
-        <TrackList key={refresh} onPlay={handlePlay} isPlaying={isPlaying} />
+        <TrackList key={refresh} onPlay={handlePlay} selectedTrack={selectedTrack} isPlaying={isPlaying} />
       </div>
       <div style={{
         display: 'flex',
