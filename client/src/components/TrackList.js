@@ -42,8 +42,22 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
     tableContainer: { overflowX: 'auto' },
     table: { minWidth: '600px', width: '100%', tableLayout: 'auto' },
     thead: { position: 'sticky', top: 0, backgroundColor: '#fff', textAlign: 'left' },
-    tdata: { padding: '8px' },
-    theadFirstChild: { textAlign: 'center' }
+    tdata: { padding: '14px' },
+    theadFirstChild: { textAlign: 'center' },
+    buttonCell: { 
+      position: 'relative', 
+      width: '100%', 
+      height: '100%', 
+    },
+    playPauseButton: { 
+      position: 'absolute', 
+      top: '50%', 
+      left: '50%', 
+      transform: 'translate(-50%, -50%)', 
+      opacity: 0, 
+      zIndex: 2 
+    },
+    
   };
 
   return (
@@ -70,24 +84,22 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                 onMouseLeave={(e) => e.currentTarget.querySelector('button').style.opacity = 0}
               >
                 <td style={styles.tdata} className="track-number">
-                  <div style={{ position: 'relative' }}>
-                    <div className="center-container">
-                      {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
-                        <div style={{ animationDuration: `${60 / track.bpm}s` }}>
-                          <div className="bar"></div>
-                          <div className="bar"></div>
-                          <div className="bar"></div>
-                          <div className="bar"></div>
-                        </div> : 
-                        <div style={{ zIndex: 1, color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{index + 1}</div>
-                      }
-                      <button
-                        style={{ position: 'absolute', top: 0, left: 0, opacity: 0, zIndex: 2 }}
-                        onClick={() => handlePlayPause(track)}
-                      >
-                        {playingTrack && playingTrack.id === track.id && isPlaying ? <IoIosPause /> : <IoIosPlay />}
-                      </button>
-                    </div>
+                  <div style={styles.buttonCell}>
+                    {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
+                      <div className="animation-container" style={{ animationDuration: `${60 / track.bpm}s` }}>
+                        <div className="bar"></div>
+                        <div className="bar"></div>
+                        <div className="bar"></div>
+                        <div className="bar"></div>
+                      </div> : 
+                      <div style={{ zIndex: 1, color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{index + 1}</div>
+                    }
+                    <button
+                      style={styles.playPauseButton}
+                      onClick={() => handlePlayPause(track)}
+                    >
+                      {playingTrack && playingTrack.id === track.id && isPlaying ? <IoIosPause /> : <IoIosPlay />}
+                    </button>
                   </div>
                 </td>
                 <td style={{ color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{track.title}</td>
