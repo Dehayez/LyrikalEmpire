@@ -75,28 +75,32 @@ const TrackList = ({ onPlay, setPlayingTrack: setPlayingTrackProp }) => {
               <th>Genre</th>
               <th>BPM</th>
               <th>Mood</th>
-              <th>Audio</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {tracks.map((track, index) => {
               return (
-                <tr className="track-row" key={track.id}>
-                  <td>{index + 1}</td>
-                  <td>{track.title}</td>
-                  <td>{track.genre}</td>
-                  <td>{track.bpm}</td>
-                  <td>{track.mood}</td>
-                  <td>
-                    <button onClick={() => handlePlayPause(track)}>
-                      {playingTrack && playingTrack.id === track.id ? <IoIosPause /> : <IoIosPlay />}
-                    </button>
-                  </td>
-                  <td>
-                    <button onClick={() => handleDelete(track.id)}><IoIosTrash />                    </button>
-                  </td>
-                </tr>
+                <tr className="track-row" key={track.id}
+                onMouseEnter={(e) => e.currentTarget.querySelector('button').style.opacity = 1}
+                onMouseLeave={(e) => e.currentTarget.querySelector('button').style.opacity = 0}>
+              <td>
+                <div style={{position: 'relative'}}>
+                  <div style={{zIndex: 1}}>{index + 1}</div>
+                  <button style={{position: 'absolute', top: 0, left: 0, opacity: 0, zIndex: 2}} 
+                          onClick={() => handlePlayPause(track)}>
+                    {playingTrack && playingTrack.id === track.id ? <IoIosPause /> : <IoIosPlay />}
+                  </button>
+                </div>
+              </td>
+              <td>{track.title}</td>
+              <td>{track.genre}</td>
+              <td>{track.bpm}</td>
+              <td>{track.mood}</td>
+              <td>
+                <button onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
+              </td>
+            </tr>
               );
             })}
           </tbody>
