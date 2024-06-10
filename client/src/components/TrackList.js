@@ -36,13 +36,12 @@ const TrackList = ({ onPlay }) => {
 
   const handlePlayPause = (track) => {
     if (playingTrack && playingTrack.id === track.id) {
-      setPlayingTrack(null); // pause the track
-      onPlay(null);
+      onPlay(track, !playingTrack);
     } else {
-      setPlayingTrack(track); // play the track
+      setPlayingTrack(track);
       onPlay(track);
     }
-  };
+};
 
   const styles = {
     tableContainer: {
