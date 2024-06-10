@@ -89,3 +89,12 @@
 .bar:nth-child(4) {
   animation-delay: 0s;
 }
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+}

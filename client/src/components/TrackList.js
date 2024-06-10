@@ -9,6 +9,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [trackToDelete, setTrackToDelete] = useState(null);
   const [playingTrack, setPlayingTrack] = useState(null);
+  const [hoveredTrack, setHoveredTrack] = useState(null);
 
   useEffect(() => {
     const fetchTracks = async () => {
@@ -80,24 +81,31 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
           <tbody>
             {tracks.map((track, index) => (
               <tr
-                className="track-row"
-                key={track.id}
-                onMouseEnter={(e) => e.currentTarget.querySelector('button').style.opacity = 1}
-                onMouseLeave={(e) => e.currentTarget.querySelector('button').style.opacity = 0}
-              >
+              className="track-row"
+              key={track.id}
+              onMouseEnter={(e) => {
+                e.currentTarget.querySelector('button').style.opacity = 1;
+                setHoveredTrack(track.id);
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.querySelector('button').style.opacity = 0;
+                setHoveredTrack(null);
+              }}
+            >
                 <td style={{ ...styles.tdata, ...styles.numberColumnCell }} className="track-number">
                   <div style={styles.buttonCell}>
                     {selectedTrack && selectedTrack.id === track.id && isPlaying ? 
-                      <div className="animation-container" style={{ animationDuration: `${60 / track.bpm}s` }}>
+                      <div className="animation-container" style={{ animationDuration: `${60 / track.bpm}s`, opacity: hoveredTrack === track.id ? 0 : 1 }}>
                         <div className="bar"></div>
                         <div className="bar"></div>
                         <div className="bar"></div>
                         <div className="bar"></div>
                       </div> : 
-                      <div style={{ zIndex: 1, color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{index + 1}</div>
+                      <div style={{ zIndex: 1, color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial', opacity: hoveredTrack === track.id ? 0 : 1 }}>{index + 1}</div>
                     }
                     <button
                       style={styles.playPauseButton}
+                      className="icon-button"
                       onClick={() => handlePlayPause(track)}
                     >
                       {playingTrack && playingTrack.id === track.id && isPlaying ? <IoIosPause /> : <IoIosPlay />}
@@ -109,7 +117,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                 <td style={styles.tdata}>{track.bpm}</td>
                 <td style={styles.tdata}>{track.mood}</td>
                 <td style={styles.tdata}>
-                  <button onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
+                  <button className="icon-button" onClick={() => handleDelete(track.id)}><IoIosTrash /></button>
                 </td>
               </tr>
             ))}
