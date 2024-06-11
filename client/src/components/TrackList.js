@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getTracks, deleteTrack } from '../services/trackService';
 import ConfirmDialog from './ConfirmDialog';
-import { IoPlaySharp, IoPauseSharp, IoTrash } from "react-icons/io5";
+import { IoPlaySharp, IoPauseSharp, IoTrashBinOutline } from "react-icons/io5";
 import './TrackList.scss';
 
 const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
@@ -63,7 +63,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
               <th style={styles.th}>Genre</th>
               <th style={styles.th}>BPM</th>
               <th style={styles.th}>Mood</th>
-              <th style={styles.th}>Actions</th>
+              <th style={styles.th}></th>
             </tr>
           </thead>
           <tbody>
@@ -108,7 +108,10 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                 <td style={styles.tdata}>{track.bpm}</td>
                 <td style={styles.tdata}>{track.mood}</td>
                 <td style={styles.tdata}>
-                  <button className="icon-button" onClick={() => handleDelete(track.id)}><IoTrash /></button>
+                  <button className="icon-button" onClick={() => handleDelete(track.id)}>
+                    <IoTrashBinOutline />
+                    <span className="tooltip">Delete</span>
+                  </button>
                 </td>
               </tr>
             ))}
