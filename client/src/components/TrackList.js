@@ -44,23 +44,11 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
     table: { minWidth: '600px', width: '100%', tableLayout: 'auto' },
     thead: { position: 'sticky', top: 0, backgroundColor: '#fff', textAlign: 'left' },
     tdata: { padding: '14px', paddingLeft: '0'},
-    numberColumnCell: {
-      paddingLeft: '14px',
-    },
-    theadFirstChild: { textAlign: 'center' },
-    buttonCell: { 
-      position: 'relative', 
-      width: '100%', 
-      height: '100%', 
-    },
-    playPauseButton: { 
-      position: 'absolute', 
-      top: '50%', 
-      left: '50%', 
-      transform: 'translate(-50%, -50%)', 
-      opacity: 0, 
-      zIndex: 2 
-    },
+    numberColumnCell: { paddingLeft: '14px'},
+    theadFirstChild: { textAlign: 'center'},
+    th: { padding: '10px', paddingLeft: '0'},
+    buttonCell: { position: 'relative', width: '100%', height: '100%'},
+    playPauseButton: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, zIndex: 2 },
   };
 
   return (
@@ -71,11 +59,11 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
           <thead style={styles.thead}>
             <tr>
               <th style={styles.theadFirstChild}>#</th>
-              <th>Title</th>
-              <th>Genre</th>
-              <th>BPM</th>
-              <th>Mood</th>
-              <th>Actions</th>
+              <th style={styles.th}>Title</th>
+              <th style={styles.th}>Genre</th>
+              <th style={styles.th}>BPM</th>
+              <th style={styles.th}>Mood</th>
+              <th style={styles.th}>Actions</th>
             </tr>
           </thead>
           <tbody>
