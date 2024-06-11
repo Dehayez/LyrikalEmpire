@@ -17,6 +17,13 @@
   transition: opacity 0.3s ease;
 }
 
+.rhap_progress-indicator {
+  width: var(--indicator-size);
+  height: var(--indicator-size);
+  top: calc(50% - var(--indicator-half-size));
+  left: 0; /* Update this line */
+}
+
 .audio-player-wrapper .rhap_progress-container:hover .rhap_progress-filled {
   background: #FFCC44 !important;
 }
