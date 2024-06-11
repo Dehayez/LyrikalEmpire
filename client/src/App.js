@@ -74,7 +74,7 @@ function App() {
           position: 'fixed', 
           bottom: `${addTrackButtonBottom}px`, 
           right: '20px', 
-          transition: 'bottom 0.4s cubic-bezier(0.1, 0.7, 1.0, 1.0)' // add transition to the bottom property
+          transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s' // smoother transition
         }} onClick={() => setIsOpen(true)}>Add Track</button>
       </div>
       <div id="audio-player" style={{
@@ -83,7 +83,7 @@ function App() {
         position: 'fixed', 
         bottom: currentTrack ? 0 : '-100%',
         width: '100%',
-        transition: 'bottom 0.4s cubic-bezier(0.1, 0.7, 1.0, 1.0)', 
+        transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)', // smoother transition
         padding: '0 20px',
         boxSizing: 'border-box',
         backgroundColor: '#181818',
