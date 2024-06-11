@@ -26,7 +26,8 @@ const modalStyle = {
     backgroundColor: '#181818',
     color: 'white', 
     border: 'none',
-    width: '50%',
+    borderRadius: '6px',
+    maxWidth: '380px',
     height: '14%',
     margin: 'auto', 
   }
