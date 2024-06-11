@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getTracks, deleteTrack } from '../services/trackService';
-import ConfirmDialog from './ConfirmDialog';
+import ConfirmModal from './ConfirmModal';
 import { IoPlaySharp, IoPauseSharp, IoTrashBinOutline } from "react-icons/io5";
 import './TrackList.scss';
 
@@ -118,7 +118,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
           </tbody>
         </table>
       </div>
-      <ConfirmDialog
+      <ConfirmModal
         isOpen={isConfirmOpen}
         message="Are you sure you want to delete this track?"
         onConfirm={handleConfirm}
