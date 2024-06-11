@@ -93,6 +93,7 @@ function App() {
         onMouseDown={() => setAnimateAddButton(true)}
         onMouseUp={() => setAnimateAddButton(false)}
         onMouseLeave={() => setAnimateAddButton(false)}>
+          <span className="tooltip tooltip__addtrack">Add Track</span>
           <IoAdd />
         </button>
       </div>
