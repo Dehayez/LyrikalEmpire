@@ -10,6 +10,8 @@ let currentPlaying;
 const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) => {
   const playerRef = useRef();
   const [animatePlayPause, setAnimatePlayPause] = useState(false);
+  const [isPrevActive, setIsPrevActive] = useState(false);
+const [isNextActive, setIsNextActive] = useState(false);
 
   useEffect(() => {
     if (currentTrack && currentTrack.audio) {
@@ -61,7 +63,16 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
             RHAP_UI.DURATION
         ]}
         customControlsSection={[
-        <button className="icon-button" onClick={onPrev}><IoPlaySkipBackSharp size={24} /></button>,
+          <button 
+          className={`icon-button icon-button__prev ${isPrevActive ? 'active' : ''}`} 
+          onMouseDown={() => setIsPrevActive(true)}
+          onMouseUp={() => setIsPrevActive(false)}
+          onMouseLeave={() => setIsPrevActive(false)}
+          onClick={onPrev}
+        >
+          <span className="tooltip">Previous</span>
+          <IoPlaySkipBackSharp size={24} />
+        </button>,
         <button 
           className={`icon-button play-pause ${animatePlayPause ? 'animate-scale' : ''}`} 
           onMouseDown={() => setAnimatePlayPause(true)}
@@ -69,9 +80,19 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
           onMouseLeave={() => setAnimatePlayPause(false)}
           onClick={handlePlayPause}
         >
+           <span className="tooltip">{isPlaying ? 'Pause' : 'Play'}</span>
           {isPlaying ? <IoPauseSharp size={24} /> : <IoPlaySharp size={24} />}
         </button>,
-        <button className="icon-button" onClick={onNext}><IoPlaySkipForwardSharp size={24} /></button>
+        <button 
+        className={`icon-button icon-button__next ${isNextActive ? 'active' : ''}`} 
+        onMouseDown={() => setIsNextActive(true)}
+        onMouseUp={() => setIsNextActive(false)}
+        onMouseLeave={() => setIsNextActive(false)}
+        onClick={onNext}
+      >
+        <span className="tooltip">Next</span>
+        <IoPlaySkipForwardSharp size={24} />
+      </button>
       ]}
       />
     </div>
