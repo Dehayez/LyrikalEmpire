@@ -3,7 +3,7 @@ import TrackList from './components/TrackList';
 import AddTrack from './components/AddTrack';
 import Header from './components/Header';
 import AudioPlayer from './components/AudioPlayer';
-import {IoAdd } from 'react-icons/io5';
+import { IoAdd } from 'react-icons/io5';
 import './App.css';
 
 const styles = {
@@ -25,14 +25,12 @@ function App() {
   const [addTrackButtonBottom, setAddTrackButtonBottom] = useState(20);
   const [animateAddButton, setAnimateAddButton] = useState(false);
 
-  const handleAdd = () => {
-    setRefresh(!refresh);
-  };
+  const handleAdd = () => setRefresh(!refresh);
 
   const handlePlay = (track, play, tracks) => {
     setSelectedTrack(track);
     setTracks(tracks);
-    if (track === null) {
+    if (!track) {
       setCurrentTrack(null);
       setIsPlaying(false);
     } else if (currentTrack && currentTrack.id === track.id) {
@@ -73,26 +71,29 @@ function App() {
         <h1>Lyrikal Empire</h1>
         <AddTrack onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <TrackList key={refresh} onPlay={handlePlay} selectedTrack={selectedTrack} isPlaying={isPlaying} />
-        <button style={{
-          position: 'fixed', 
-          bottom: `${addTrackButtonBottom}px`, 
-          right: '20px', 
-          transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s', // smoother transition
-          backgroundColor: '#505050', // button color
-          color: '#fff', // icon color
-          border: 'none', // remove default button border
-          borderRadius: '50%', // make it circular
-          width: '50px', // set width
-          height: '50px', // set height
-          display: 'flex', // use flexbox for centering
-          justifyContent: 'center', // center horizontally
-          alignItems: 'center', // center vertically
-          fontSize: '24px', // set icon size
-        }} onClick={() => setIsOpen(true)}
-        className={`icon-button ${animateAddButton ? 'animate-scale' : ''}`} 
-        onMouseDown={() => setAnimateAddButton(true)}
-        onMouseUp={() => setAnimateAddButton(false)}
-        onMouseLeave={() => setAnimateAddButton(false)}>
+        <button 
+          style={{
+            position: 'fixed', 
+            bottom: `${addTrackButtonBottom}px`, 
+            right: '20px', 
+            transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s',
+            backgroundColor: '#505050',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: '24px',
+          }} 
+          onClick={() => setIsOpen(true)}
+          className={`icon-button ${animateAddButton ? 'animate-scale' : ''}`} 
+          onMouseDown={() => setAnimateAddButton(true)}
+          onMouseUp={() => setAnimateAddButton(false)}
+          onMouseLeave={() => setAnimateAddButton(false)}
+        >
           <span className="tooltip tooltip__addtrack">Add Track</span>
           <IoAdd />
         </button>
@@ -103,7 +104,7 @@ function App() {
         position: 'fixed', 
         bottom: currentTrack ? 0 : '-100%',
         width: '100%',
-        transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)', // smoother transition
+        transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)',
         padding: '0 20px',
         boxSizing: 'border-box',
         backgroundColor: '#181818',
