@@ -97,6 +97,9 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                       onClick={() => handlePlayPause(track)}
                     >
                       {playingTrack && playingTrack.id === track.id && isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}
+                      <span className="tooltip">
+                        {playingTrack && playingTrack.id === track.id && isPlaying ? 'Pause' : 'Play'}
+                      </span>
                     </button>
                   </div>
                 </td>
