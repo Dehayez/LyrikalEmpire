@@ -20,7 +20,7 @@ function App() {
   const [tracks, setTracks] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [audioPlayerHeight, setAudioPlayerHeight] = useState(0);
-
+  const [addTrackButtonBottom, setAddTrackButtonBottom] = useState(20);
 
   const handleAdd = () => {
     setRefresh(!refresh);
@@ -59,6 +59,7 @@ function App() {
       const audioPlayerHeight = audioPlayer.offsetHeight;
       mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
       setAudioPlayerHeight(audioPlayerHeight);
+      setAddTrackButtonBottom(audioPlayerHeight + 20);
     }
   }, [currentTrack]);
 
@@ -69,7 +70,12 @@ function App() {
         <h1>Lyrikal Empire</h1>
         <AddTrack onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <TrackList key={refresh} onPlay={handlePlay} selectedTrack={selectedTrack} isPlaying={isPlaying} />
-        <button style={{position: 'fixed', bottom: `${audioPlayerHeight + 20}px`, right: '20px'}} onClick={() => setIsOpen(true)}>Add Track</button>
+        <button style={{
+          position: 'fixed', 
+          bottom: `${addTrackButtonBottom}px`, 
+          right: '20px', 
+          transition: 'bottom 0.4s cubic-bezier(0.1, 0.7, 1.0, 1.0)' // add transition to the bottom property
+        }} onClick={() => setIsOpen(true)}>Add Track</button>
       </div>
       <div id="audio-player" style={{
         display: 'flex', 
