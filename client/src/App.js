@@ -18,6 +18,8 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [tracks, setTracks] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+
 
   const handleAdd = () => {
     setRefresh(!refresh);
@@ -52,7 +54,6 @@ function App() {
   useEffect(() => {
     const audioPlayer = document.getElementById('audio-player');
     const mainContent = document.getElementById('main-content');
-
     if (audioPlayer && mainContent) {
       const audioPlayerHeight = audioPlayer.offsetHeight;
       mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
@@ -64,8 +65,9 @@ function App() {
       <div id="main-content" style={styles.container}>
         <Header />
         <h1>Lyrikal Empire</h1>
-        <AddTrack onAdd={handleAdd} />
+        <AddTrack onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <TrackList key={refresh} onPlay={handlePlay} selectedTrack={selectedTrack} isPlaying={isPlaying} />
+        <button style={{position: 'fixed', bottom: '20px', right: '20px'}} onClick={() => setIsOpen(true)}>Add Track</button>
       </div>
       <div id="audio-player" style={{
         display: 'flex', 
