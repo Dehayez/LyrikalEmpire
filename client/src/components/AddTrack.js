@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { addTrack } from '../services/trackService';
-import { IoIosCloudUpload } from "react-icons/io";
+import { IoCloudUploadSharp } from "react-icons/io5";
 import './AddTrack.scss'
 
 Modal.setAppElement('#root');
@@ -61,26 +61,31 @@ const AddTrack = ({ onAdd, isOpen, setIsOpen }) => {
                 <h2 style={h2Style}>Add Tracks</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>Title:</label>
+                        <label>Title</label>
                         <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
                     </div>
-                    <div className="form-group file-input">
-                        <label htmlFor="file" className="file-input__label">
-                            <IoIosCloudUpload /> Upload File
-                        </label>
-                        <input type="file" id="file" className="file-input__input" onChange={handleFileChange} required />
-                        <span id="file-name" className="file-input__name">{fileName}</span>
+                    <div className="form-group">
+                        <label>Audio</label>
+                        <div className="file-input">
+                            <div className="file-input__wrapper">
+                            <label htmlFor="file" className="file-input__label no-margin">
+                                <IoCloudUploadSharp /> Upload File
+                            </label>
+                                <input type="file" id="file" className="file-input__input" onChange={handleFileChange} required />
+                                <span id="file-name" className="file-input__name">{fileName}</span>
+                            </div>
+                        </div>
                     </div>
                     <div className="form-group">
-                        <label>BPM:</label>
+                        <label>BPM</label>
                         <input type="number" value={bpm} onChange={(e) => setBpm(e.target.value)} required />
                     </div>
                     <div className="form-group">
-                        <label>Genre:</label>
+                        <label>Genre</label>
                         <input type="text" value={genre} onChange={(e) => setGenre(e.target.value)} required />
                     </div>
                     <div className="form-group">
-                        <label>Tierlist:</label>
+                        <label>Tierlist</label>
                         <select value={tierlist} onChange={(e) => setTierlist(e.target.value)} required>
                             <option value="S">S</option>
                             <option value="A">A</option>
@@ -90,11 +95,11 @@ const AddTrack = ({ onAdd, isOpen, setIsOpen }) => {
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>Mood:</label>
+                        <label>Mood</label>
                         <input type="text" value={mood} onChange={(e) => setMood(e.target.value)} required />
                     </div>
                     <div className="form-group">
-                        <label>Keywords:</label>
+                        <label>Keywords</label>
                         <input type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} required />
                     </div>
                     <div>
