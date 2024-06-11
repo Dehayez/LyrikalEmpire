@@ -1,0 +1,90 @@
+.modal__button {
+    background-color: #202020;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 10px 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal__button:hover {
+    background-color: #1a1a1a
+}
+
+.modal__button--add {
+    background-color: #FFCC44;
+    color: black;
+}
+
+.modal__button--add:hover {
+    background-color: #e6b800;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+}
+
+.form-group select {
+    background-color: #202020;
+    color: white;
+}
+
+.form-group select:hover {
+    background-color: #383838;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border-radius: 4px;
+    outline: none;
+    box-shadow: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:hover,
+.form-group select:hover {
+    background-color: #383838; // adjust this color to your needs
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1); // adjust this shadow to your needs
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    box-shadow: 0 0 0 1px #ccc;
+}
+
+.file-input {
+    position: relative;
+    display: inline-block;
+}
+
+.file-input__input {
+    display: none;
+}
+
+.file-input__label {
+    display: inline-block;
+    padding: 10px;
+    background-color: #202020;
+    color: #FFCC44;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.file-input__label:hover {
+    background-color: #1a1a1a;
+}
+
+.file-input__name {
+    margin-left: 10px;
+    color: #FFCC44;
+}
