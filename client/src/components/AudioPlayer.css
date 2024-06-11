@@ -1,6 +1,6 @@
-.audio-player-wrapper .rhap_controls-section {
-  width: fit-content;
-  margin: auto;
+:root {
+  --indicator-size: 14px;
+  --indicator-half-size: calc(var(--indicator-size) / 2);
 }
 
 .rhap_container {
@@ -15,29 +15,14 @@
   opacity: 0;
   background-color: white;
   transition: opacity 0.3s ease;
-}
-
-.rhap_progress-indicator {
   width: var(--indicator-size);
   height: var(--indicator-size);
   top: calc(50% - var(--indicator-half-size));
-  left: 0; /* Update this line */
+  left: 0;
 }
 
 .audio-player-wrapper .rhap_progress-container:hover .rhap_progress-filled {
   background: #FFCC44 !important;
-}
-
-:root {
-  --indicator-size: 14px;
-  --indicator-half-size: calc(var(--indicator-size) / 2);
-}
-
-.rhap_progress-indicator {
-  width: var(--indicator-size);
-  height: var(--indicator-size);
-  top: calc(50% - var(--indicator-half-size));
-  left: calc(50% - var(--indicator-half-size));
 }
 
 .rhap_progress-container:hover .rhap_progress-indicator {
@@ -46,16 +31,15 @@
 
 .rhap_progress-indicator,
 .rhap_progress-filled,
-.rhap_controls-section {
+.rhap_controls-section,
+.rhap_play-pause-button {
   color: #FFFFFF !important;
 }
 
 .rhap_controls-section {
   padding: 10px 0;
-}
-
-.rhap_play-pause-button {
-  color: #FFFFFF !important;
+  width: fit-content;
+  margin: auto;
 }
 
 .rhap_rewind-button,
@@ -71,16 +55,6 @@
   margin: 0 20px;
 }
 
-.audio-player-wrapper .rhap_time,
-.audio-player-wrapper .rhap_additional-controls,
-.audio-player-wrapper .rhap_controls-section {
-  color: #FFFFFF;
-}
-
-.audio-player-wrapper .rhap_progress-filled {
-  background: #FFFFFF;
-}
-
 .icon-button.play-pause:active {
   transform: scale(0.95);
   transition: transform 0.1s ease-in-out;
@@ -92,10 +66,10 @@
 }
 
 .icon-button__prev:hover,
-.icon-button__next:hover {
+.icon-button__next:hover,
+.icon-button:hover .tooltip {
   color: lightgrey;
 }
-
 
 .icon-button__prev.active,
 .icon-button__next.active {
@@ -123,15 +97,20 @@
 }
 
 .icon-button.play-pause .tooltip {
-  bottom: 125%; /* Adjust this value as needed */
+  bottom: 125%;
 }
 
 .icon-button__prev .tooltip,
 .icon-button__next .tooltip {
-  bottom: 180%; /* Adjust this value to match the play/pause tooltip */
+  bottom: 180%;
 }
 
-.icon-button:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
+.audio-player-wrapper .rhap_time,
+.audio-player-wrapper .rhap_additional-controls,
+.audio-player-wrapper .rhap_controls-section {
+  color: #FFFFFF;
+}
+
+.audio-player-wrapper .rhap_progress-filled {
+  background: #FFFFFF;
 }
