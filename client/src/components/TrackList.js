@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getTracks, deleteTrack } from '../services/trackService';
 import ConfirmDialog from './ConfirmDialog';
 import { IoPlaySharp, IoPauseSharp, IoTrash } from "react-icons/io5";
-import './TrackList.css';
+import './TrackList.scss';
 
 const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
   const [tracks, setTracks] = useState([]);

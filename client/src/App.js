@@ -4,7 +4,7 @@ import AddTrack from './components/AddTrack';
 import Header from './components/Header';
 import AudioPlayer from './components/AudioPlayer';
 import { IoAdd } from 'react-icons/io5';
-import './App.css';
+import './App.scss';
 
 const styles = {
   container: {
