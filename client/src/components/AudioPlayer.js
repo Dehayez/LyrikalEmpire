@@ -62,7 +62,13 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
         ]}
         customControlsSection={[
         <button className="icon-button" onClick={onPrev}><IoPlaySkipBackSharp size={24} /></button>,
-        <button className={`icon-button play-pause ${animatePlayPause ? 'animate-scale' : ''}`} onClick={handlePlayPause}>
+        <button 
+          className={`icon-button play-pause ${animatePlayPause ? 'animate-scale' : ''}`} 
+          onMouseDown={() => setAnimatePlayPause(true)}
+          onMouseUp={() => setAnimatePlayPause(false)}
+          onMouseLeave={() => setAnimatePlayPause(false)}
+          onClick={handlePlayPause}
+        >
           {isPlaying ? <IoPauseSharp size={24} /> : <IoPlaySharp size={24} />}
         </button>,
         <button className="icon-button" onClick={onNext}><IoPlaySkipForwardSharp size={24} /></button>

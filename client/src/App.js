@@ -3,6 +3,7 @@ import TrackList from './components/TrackList';
 import AddTrack from './components/AddTrack';
 import Header from './components/Header';
 import AudioPlayer from './components/AudioPlayer';
+import {IoAdd } from 'react-icons/io5';
 
 const styles = {
   container: {
@@ -74,8 +75,20 @@ function App() {
           position: 'fixed', 
           bottom: `${addTrackButtonBottom}px`, 
           right: '20px', 
-          transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s' // smoother transition
-        }} onClick={() => setIsOpen(true)}>Add Track</button>
+          transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s', // smoother transition
+          backgroundColor: '#505050', // button color
+          color: '#fff', // icon color
+          border: 'none', // remove default button border
+          borderRadius: '50%', // make it circular
+          width: '50px', // set width
+          height: '50px', // set height
+          display: 'flex', // use flexbox for centering
+          justifyContent: 'center', // center horizontally
+          alignItems: 'center', // center vertically
+          fontSize: '24px', // set icon size
+        }} onClick={() => setIsOpen(true)}>
+          <IoAdd />
+        </button>
       </div>
       <div id="audio-player" style={{
         display: 'flex', 
