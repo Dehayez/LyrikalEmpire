@@ -40,20 +40,20 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
   };
 
   const styles = {
-    tableContainer: { overflowX: 'auto', backgroundColor: '#202020', color: '#FFFFFF' },
+    tableContainer: { overflowX: 'auto', backgroundColor: '#181818', color: '#FFFFFF' },
     table: { minWidth: '600px', width: '100%', tableLayout: 'auto' },
-    thead: { position: 'sticky', top: 0, backgroundColor: '#202020', color: '#FFFFFF', textAlign: 'left' },
+    thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left' },
     tdata: { padding: '14px', paddingLeft: '0', color: '#FFFFFF'},
     numberColumnCell: { paddingLeft: '14px'},
     theadFirstChild: { textAlign: 'center'},
     th: { padding: '10px', paddingLeft: '0', color: '#FFFFFF'},
     buttonCell: { position: 'relative', width: '100%', height: '100%'},
-    playPauseButton: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, zIndex: 2, color: '#FFCC44' },
+    playPauseButton: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, zIndex: 2 },
   };
 
   return (
     <div>
-      <h2>Track List</h2>
+      <h2>Tracks</h2>
       <div style={styles.tableContainer}>
         <table style={styles.table}>
           <thead style={styles.thead}>
@@ -89,7 +89,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                         <div className="bar"></div>
                         <div className="bar"></div>
                       </div> : 
-                      <div style={{ zIndex: 1, color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial', opacity: hoveredTrack === track.id ? 0 : 1 }}>{index + 1}</div>
+                      <div style={{ zIndex: 1, color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : '', opacity: hoveredTrack === track.id ? 0 : 1 }}>{index + 1}</div>
                     }
                     <button
                       style={styles.playPauseButton}
@@ -100,7 +100,7 @@ const TrackList = ({ onPlay, selectedTrack, isPlaying }) => {
                     </button>
                   </div>
                 </td>
-                <td style={{ color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : 'initial' }}>{track.title}</td>
+                <td style={{ color: selectedTrack && selectedTrack.id === track.id ? '#FFCC44' : '' }}>{track.title}</td>
                 <td style={styles.tdata}>{track.genre}</td>
                 <td style={styles.tdata}>{track.bpm}</td>
                 <td style={styles.tdata}>{track.mood}</td>
