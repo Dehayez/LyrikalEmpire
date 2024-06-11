@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
-import './AudioPlayer.css';
+import './AudioPlayer.scss';
 import { IoPlaySkipBackSharp, IoPlaySkipForwardSharp, IoPlaySharp, IoPauseSharp } from "react-icons/io5";
 
 let currentPlaying;

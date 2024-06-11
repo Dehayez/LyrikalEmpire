@@ -1,9 +1,0 @@
-{
-  "name": "lyrikal-empire",
-  "version": "1.0.0",
-  "description": "A music library tool",
-  "license": "MIT",
-  "dependencies": {
-    "react-animated-css": "^1.2.1"
-  }
-}
