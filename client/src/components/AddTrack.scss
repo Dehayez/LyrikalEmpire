@@ -71,7 +71,9 @@
 }
 
 .file-input__label {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    gap: 5px;
     padding: 10px;
     background-color: #202020;
     color: #FFCC44;
@@ -80,11 +82,21 @@
     transition: background-color 0.3s ease;
 }
 
+.file-input__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-group .file-input__label.no-margin {
+    margin-bottom: 0;
+}
+
 .file-input__label:hover {
     background-color: #1a1a1a;
 }
 
 .file-input__name {
     margin-left: 10px;
-    color: #FFCC44;
+    color: white;
 }
