@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TrackList from './components/TrackList';
 import AddTrack from './components/AddTrack';
 import Header from './components/Header';
@@ -49,18 +49,25 @@ function App() {
     handlePlay(tracks[prevIndex], true, tracks);
   };
 
+  useEffect(() => {
+    const audioPlayer = document.getElementById('audio-player');
+    const mainContent = document.getElementById('main-content');
+
+    if (audioPlayer && mainContent) {
+      const audioPlayerHeight = audioPlayer.offsetHeight;
+      mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
+    }
+  }, [currentTrack]);
 
   return (
     <div className="App">
-      <div style={styles.container}>
+      <div id="main-content" style={styles.container}>
         <Header />
-      </div>
-      <div style={styles.container}>
-        <h1>Music Library</h1>
+        <h1>Lyrikal Empire</h1>
         <AddTrack onAdd={handleAdd} />
         <TrackList key={refresh} onPlay={handlePlay} selectedTrack={selectedTrack} isPlaying={isPlaying} />
       </div>
-      <div style={{
+      <div id="audio-player" style={{
         display: 'flex', 
         alignItems: 'center', 
         position: 'fixed', 
@@ -68,7 +75,8 @@ function App() {
         width: '100%',
         transition: 'bottom 0.4s cubic-bezier(0.1, 0.7, 1.0, 1.0)', 
         padding: '0 20px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        backgroundColor: '#181818',
       }}>
         <div style={{ flex: '1' }}>
           {currentTrack && <div>{currentTrack.title}</div>}
