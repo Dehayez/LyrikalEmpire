@@ -11,19 +11,21 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
   const playerRef = useRef();
   const [animatePlayPause, setAnimatePlayPause] = useState(false);
   const [isPrevActive, setIsPrevActive] = useState(false);
-const [isNextActive, setIsNextActive] = useState(false);
+  const [isNextActive, setIsNextActive] = useState(false);
+
+  const handlePlayPause = (play) => {
+    if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
+      play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
+    }
+  }
 
   useEffect(() => {
     if (currentTrack && currentTrack.audio) {
-      if (currentPlaying && currentPlaying !== playerRef.current && currentPlaying.audio && currentPlaying.audio.current) {
-        currentPlaying.audio.current.pause();
+      if (currentPlaying && currentPlaying !== playerRef.current) {
+        handlePlayPause(false);
       }
       currentPlaying = playerRef.current;
-      if (isPlaying) {
-        playerRef.current.audio.current.play();
-      } else {
-        playerRef.current.audio.current.pause();
-      }
+      handlePlayPause(isPlaying);
     } else {
       if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
         playerRef.current.audio.current.currentTime = 0;
@@ -37,7 +39,7 @@ const [isNextActive, setIsNextActive] = useState(false);
     }
   };
 
-  const handlePlayPause = () => {
+  const handlePlayPauseClick = () => {
     setIsPlaying(!isPlaying);
     setAnimatePlayPause(true);
     setTimeout(() => setAnimatePlayPause(false), 200);
@@ -78,7 +80,7 @@ const [isNextActive, setIsNextActive] = useState(false);
           onMouseDown={() => setAnimatePlayPause(true)}
           onMouseUp={() => setAnimatePlayPause(false)}
           onMouseLeave={() => setAnimatePlayPause(false)}
-          onClick={handlePlayPause}
+          onClick={handlePlayPauseClick}
         >
            <span className="tooltip">{isPlaying ? 'Pause' : 'Play'}</span>
           {isPlaying ? <IoPauseSharp size={24} /> : <IoPlaySharp size={24} />}

@@ -21,18 +21,16 @@ const styles = {
   }
 };
 
-function Header() {
-  return (
-    <header style={styles.header}>
-      <div style={styles.navGroup}>
-        <a style={styles.navLink} href="/">Home</a>
-        <a style={styles.navLink} href="/tracks">Tracks</a>
-        <img style={styles.navLogo} src="/android-chrome-192x192.png" alt="Logo" />
-        <a style={styles.navLink} href="/info">Info</a>
-        <a style={styles.navLink} href="/contact">Contact</a>
-      </div>
-    </header>
-  );
-}
+const Header = () => (
+  <header style={styles.header}>
+    <div style={styles.navGroup}>
+      <a style={styles.navLink} href="/">Home</a>
+      <a style={styles.navLink} href="/tracks">Tracks</a>
+      <img style={styles.navLogo} src="/android-chrome-192x192.png" alt="Logo" />
+      <a style={styles.navLink} href="/info">Info</a>
+      <a style={styles.navLink} href="/contact">Contact</a>
+    </div>
+  </header>
+);
 
 export default Header;

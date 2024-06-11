@@ -68,7 +68,6 @@ function App() {
     <div className="App">
       <div id="main-content" style={styles.container}>
         <Header />
-        <h1>Lyrikal Empire</h1>
         <AddTrack onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <TrackList key={refresh} onPlay={handlePlay} selectedTrack={selectedTrack} isPlaying={isPlaying} />
         <button 
