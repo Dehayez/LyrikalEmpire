@@ -61,15 +61,15 @@ function App() {
         <TrackList key={refresh} onPlay={handlePlay} selectedTrack={selectedTrack} isPlaying={isPlaying} />
       </div>
       <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        position: 'fixed',
+        display: 'flex', 
+        alignItems: 'center', 
+        position: 'fixed', 
         bottom: currentTrack ? 0 : '-100%',
         width: '100%',
-        backgroundColor: '#fff',
-        padding: '10px 0',
-        transition: 'bottom 0.4s cubic-bezier(0.1, 0.7, 1.0, 1.0)'
-      }} className="animated-div">
+        transition: 'bottom 0.4s cubic-bezier(0.1, 0.7, 1.0, 1.0)', 
+        padding: '0 20px',
+        boxSizing: 'border-box'
+      }}>
         <div style={{ flex: '1' }}>
           {currentTrack && <div>{currentTrack.title}</div>}
         </div>
