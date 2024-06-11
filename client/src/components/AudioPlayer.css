@@ -3,6 +3,54 @@
   margin: auto;
 }
 
+.rhap_container {
+  background-color: #181818 !important;
+}
+
+.rhap_download-progress {
+  background-color: transparent;
+}
+
+.rhap_progress-indicator {
+  opacity: 0;
+  background-color: white;
+  transition: opacity 0.3s ease;
+}
+
+.audio-player-wrapper .rhap_progress-container:hover .rhap_progress-filled {
+  background: #FFCC44 !important;
+}
+
+:root {
+  --indicator-size: 14px;
+  --indicator-half-size: calc(var(--indicator-size) / 2);
+}
+
+.rhap_progress-indicator {
+  width: var(--indicator-size);
+  height: var(--indicator-size);
+  top: calc(50% - var(--indicator-half-size));
+  left: calc(50% - var(--indicator-half-size));
+}
+
+.rhap_progress-container:hover .rhap_progress-indicator {
+  opacity: 1;
+}
+
+.rhap_progress-indicator,
+.rhap_progress-filled,
+.rhap_controls-section {
+  color: #FFFFFF !important;
+}
+
+.rhap_controls-section {
+  padding: 10px 0;
+}
+
+.rhap_play-pause-button {
+  color: #FFFFFF !important;
+}
+
 .rhap_rewind-button,
 .rhap_forward-button {
   display: none;
@@ -13,10 +61,21 @@
 }
 
 .icon-button.play-pause {
-  background: #f0f0f0; /* adjust this value to change the background color */
-  border-radius: 50%; /* this makes the background a circle */
-  padding: 10px; /* adjust this value to change the size of the circle */
-  margin: 0 10px; /* adjust this value to change the space between the icons */
+  background: #f0f0f0; 
+  color: #181818;
+  border-radius: 50%; 
+  padding: 10px;
+  margin: 0 10px;
+}
+
+.audio-player-wrapper .rhap_time,
+.audio-player-wrapper .rhap_additional-controls,
+.audio-player-wrapper .rhap_controls-section {
+  color: #FFFFFF;
+}
+
+.audio-player-wrapper .rhap_progress-filled {
+  background: #FFFFFF;
 }
 
 @keyframes scale-up {

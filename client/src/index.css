@@ -11,3 +11,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+body {
+  background-color: #181818;
+  color: #FFFFFF;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  color: #FFFFFF;
+}
+
+a, button {
+  color: #FFFFFF;
+}
+
+.selected {
+  background-color: #FFCC44;
+  color: #202020;
+}
+
+input {
+  background-color: #202020;
+  color: #FFFFFF;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+}
