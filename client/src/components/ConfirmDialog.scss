@@ -13,4 +13,10 @@
     opacity: 0.7;
 }
 
+.dialog .ReactModal__Content {
+    height: 14%;
   
+    @media (max-width: 427px) {
+      height: 15%;
+    }
+  }

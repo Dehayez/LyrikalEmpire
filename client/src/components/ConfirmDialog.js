@@ -28,7 +28,6 @@ const modalStyle = {
     border: 'none',
     borderRadius: '6px',
     maxWidth: '380px',
-    height: '14%',
     margin: 'auto', 
   }
 };
@@ -45,7 +44,7 @@ const buttonStyle = {
 };
 
 const ConfirmDialog = ({ isOpen, message, onConfirm, onCancel }) => (
-  <Modal isOpen={isOpen} onRequestClose={onCancel} style={modalStyle}>
+  <Modal portalClassName="dialog"  isOpen={isOpen} onRequestClose={onCancel} style={modalStyle}>
     <button onClick={onCancel} style={closeButtonStyle}>
       <IoCloseSharp style={{ fontSize: '18px' }} />
     </button>
