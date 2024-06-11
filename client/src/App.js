@@ -4,6 +4,7 @@ import AddTrack from './components/AddTrack';
 import Header from './components/Header';
 import AudioPlayer from './components/AudioPlayer';
 import {IoAdd } from 'react-icons/io5';
+import './App.css';
 
 const styles = {
   container: {
@@ -22,6 +23,7 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [audioPlayerHeight, setAudioPlayerHeight] = useState(0);
   const [addTrackButtonBottom, setAddTrackButtonBottom] = useState(20);
+  const [animateAddButton, setAnimateAddButton] = useState(false);
 
   const handleAdd = () => {
     setRefresh(!refresh);
@@ -86,7 +88,11 @@ function App() {
           justifyContent: 'center', // center horizontally
           alignItems: 'center', // center vertically
           fontSize: '24px', // set icon size
-        }} onClick={() => setIsOpen(true)}>
+        }} onClick={() => setIsOpen(true)}
+        className={`icon-button ${animateAddButton ? 'animate-scale' : ''}`} 
+        onMouseDown={() => setAnimateAddButton(true)}
+        onMouseUp={() => setAnimateAddButton(false)}
+        onMouseLeave={() => setAnimateAddButton(false)}>
           <IoAdd />
         </button>
       </div>
