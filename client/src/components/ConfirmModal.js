@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 import { IoCloseSharp } from "react-icons/io5";
-import './ConfirmDialog.scss';
+import './ConfirmModal.scss';
 
 Modal.setAppElement('#root');
 
@@ -43,16 +43,16 @@ const buttonStyle = {
   transition: 'all 0.3s ease'
 };
 
-const ConfirmDialog = ({ isOpen, message, onConfirm, onCancel }) => (
-  <Modal portalClassName="dialog"  isOpen={isOpen} onRequestClose={onCancel} style={modalStyle}>
+const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => (
+  <Modal portalClassName="modal" isOpen={isOpen} onRequestClose={onCancel} style={modalStyle}>
     <button onClick={onCancel} style={closeButtonStyle}>
       <IoCloseSharp style={{ fontSize: '18px' }} />
     </button>
     <h2 style={h2Style}>Confirm</h2>
     <p>{message}</p>
-    <button className="dialog-button" onClick={onConfirm} style={buttonStyle}>Delete</button>
-    <button className="dialog-button" onClick={onCancel} style={buttonStyle}>Cancel</button>
+    <button className="modal__button" onClick={onConfirm} style={buttonStyle}>Delete</button>
+    <button className="modal__button" onClick={onCancel} style={buttonStyle}>Cancel</button>
   </Modal>
 );
 
-export default ConfirmDialog;
+export default ConfirmModal;

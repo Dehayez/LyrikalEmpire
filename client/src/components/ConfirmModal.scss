@@ -1,4 +1,4 @@
-.dialog-button {
+.modal__button {
     background-color: #202020;
     color: white;
     border: none;
@@ -9,14 +9,14 @@
     transition: all 0.2s ease;
 }
   
-.dialog-button:hover {
+.modal__button:hover {
     opacity: 0.7;
 }
 
-.dialog .ReactModal__Content {
+.modal .ReactModal__Content {
     height: 14%;
   
     @media (max-width: 427px) {
       height: 15%;
     }
-  }
+}
