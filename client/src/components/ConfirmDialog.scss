@@ -1,0 +1,14 @@
+.dialog-button {
+    background-color: #202020;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 10px 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .dialog-button:hover {
+    opacity: 0.7;
+  }
