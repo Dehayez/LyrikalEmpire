@@ -16,6 +16,9 @@ const styles = {
     textDecoration: 'none',
     color: 'inherit',
   },
+  navLogo: {
+    width: '30px',
+  }
 };
 
 function Header() {
@@ -24,7 +27,7 @@ function Header() {
       <div style={styles.navGroup}>
         <a style={styles.navLink} href="/">Home</a>
         <a style={styles.navLink} href="/tracks">Tracks</a>
-        <div style={styles.logo}>Logo</div>
+        <img style={styles.navLogo} src="/android-chrome-192x192.png" alt="Logo" />
         <a style={styles.navLink} href="/info">Info</a>
         <a style={styles.navLink} href="/contact">Contact</a>
       </div>
