@@ -12,6 +12,7 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) =
   const [animatePlayPause, setAnimatePlayPause] = useState(false);
   const [isPrevActive, setIsPrevActive] = useState(false);
   const [isNextActive, setIsNextActive] = useState(false);
+  const [volume, setVolume] = useState(1.0); // Volume is between 0.0 and 1.0
 
   const handlePlayPause = (play) => {
     if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
@@ -64,6 +65,7 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) =
             RHAP_UI.PROGRESS_BAR,
             RHAP_UI.DURATION
         ]}
+        volume={volume}
         customControlsSection={[
           <button 
           className={`icon-button icon-button__prev ${isPrevActive ? 'active' : ''}`} 
@@ -95,6 +97,7 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) =
         <span className="tooltip">Next</span>
         <IoPlaySkipForwardSharp size={24} />
       </button>
+      
       ]}
       />
     </div>

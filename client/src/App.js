@@ -24,6 +24,7 @@ function App() {
   const [audioPlayerHeight, setAudioPlayerHeight] = useState(0);
   const [addBeatButtonBottom, setAddBeatButtonBottom] = useState(20);
   const [animateAddButton, setAnimateAddButton] = useState(false);
+  const [volume, setVolume] = useState(1.0); // Volume is between 0.0 and 1.0
   const handleAdd = () => setRefresh(!refresh);
   const handlePlay = (beat, play, beats) => {
     setSelectedBeat(beat);
@@ -108,7 +109,16 @@ function App() {
         <div style={{ flex: '2' }}>
           {currentBeat && <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} />}
         </div>
-        <div style={{ flex: '1' }}></div>
+        <div style={{ flex: '1' }}>
+          <input 
+            type="range" 
+            min="0" 
+            max="1" 
+            step="0.01" 
+            value={volume} 
+            onChange={e => setVolume(parseFloat(e.target.value))} 
+          />
+        </div>
       </div>
     </div>
   );
