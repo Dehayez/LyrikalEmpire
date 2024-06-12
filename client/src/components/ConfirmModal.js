@@ -32,17 +32,6 @@ const modalStyle = {
   }
 };
 
-const buttonStyle = {
-  backgroundColor: '#202020',
-  color: 'white',
-  border: 'none',
-  padding: '10px 20px',
-  margin: '10px 10px 10px 0',
-  borderRadius: '5px',
-  cursor: 'pointer',
-  transition: 'all 0.3s ease'
-};
-
 const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => (
   <Modal portalClassName="modal" isOpen={isOpen} onRequestClose={onCancel} style={modalStyle}>
     <button onClick={onCancel} style={closeButtonStyle}>
@@ -50,8 +39,8 @@ const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => (
     </button>
     <h2 style={h2Style}>Confirm</h2>
     <p>{message}</p>
-    <button className="modal__button" onClick={onConfirm} style={buttonStyle}>Delete</button>
-    <button className="modal__button" onClick={onCancel} style={buttonStyle}>Cancel</button>
+    <button className="modal__button modal__button--delete" onClick={onConfirm}>Delete</button>
+    <button className="modal__button" onClick={onCancel}>Cancel</button>
   </Modal>
 );
 
