@@ -18,14 +18,17 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
     const [audio, setAudio] = useState(null);
     const [bpm, setBpm] = useState('');
     const [genre, setGenre] = useState('');
-    const [tierlist, setTierlist] = useState('');
+    const [tierlist, setTierlist] = useState(null);
     const [mood, setMood] = useState('');
     const [keywords, setKeywords] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newBeat = { title, bpm, genre, tierlist, mood, keywords };
+        let newBeat = { title, bpm, genre, mood, keywords };
+        if (tierlist && tierlist !== '') {
+            newBeat.tierlist = tierlist;
+        }
         await addBeat(newBeat, audio);
         onAdd();
         setTitle('');
@@ -87,7 +90,7 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
                     <div className="form-group">
                         <label>Tierlist</label>
                         <div className="select-wrapper">
-                            <select value={tierlist} onChange={(e) => setTierlist(e.target.value)} required>
+                            <select value={tierlist} onChange={(e) => setTierlist(e.target.value)}>
                                 <option value="">Select tier</option>
                                 <option value="S">S</option>
                                 <option value="A">A</option>
