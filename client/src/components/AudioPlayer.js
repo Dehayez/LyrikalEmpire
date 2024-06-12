@@ -7,7 +7,7 @@ import { IoPlaySkipBackSharp, IoPlaySkipForwardSharp, IoPlaySharp, IoPauseSharp 
 
 let currentPlaying;
 
-const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) => {
+const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) => {
   const playerRef = useRef();
   const [animatePlayPause, setAnimatePlayPause] = useState(false);
   const [isPrevActive, setIsPrevActive] = useState(false);
@@ -20,7 +20,7 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
   }
 
   useEffect(() => {
-    if (currentTrack && currentTrack.audio) {
+    if (currentBeat && currentBeat.audio) {
       if (currentPlaying && currentPlaying !== playerRef.current) {
         handlePlayPause(false);
       }
@@ -31,7 +31,7 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
         playerRef.current.audio.current.currentTime = 0;
       }
     }
-  }, [currentTrack, isPlaying]);
+  }, [currentBeat, isPlaying]);
 
   const handleListen = () => {
     if (playerRef.current) {
@@ -53,7 +53,7 @@ const AudioPlayer = ({ currentTrack, isPlaying, setIsPlaying, onNext, onPrev }) 
     <div className="audio-player-wrapper">
       <H5AudioPlayer
         autoPlayAfterSrcChange={true}
-        src={currentTrack ? currentTrack.audio : ''}
+        src={currentBeat ? currentBeat.audio : ''}
         ref={playerRef}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}

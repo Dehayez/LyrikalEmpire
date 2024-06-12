@@ -42,37 +42,37 @@ const db = mysql.createConnection({
   port: 8889
 });
 
-// Define the /api/tracks endpoint handlers
-app.get('/api/tracks', (req, res) => {
-  db.query('SELECT * FROM tracks', (err, results) => {
+// Define the /api/beats endpoint handlers
+app.get('/api/beats', (req, res) => {
+  db.query('SELECT * FROM beats', (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).json({ error: 'An error occurred while fetching tracks' });
+      res.status(500).json({ error: 'An error occurred while fetching beats' });
     } else {
       res.json(results);
     }
   });
 });
 
-app.post('/api/tracks', upload.single('audio'), (req, res) => {
+app.post('/api/beats', upload.single('audio'), (req, res) => {
   const { title, bpm, genre, tierlist, mood, keywords, filePath } = req.body;
-  db.query('INSERT INTO tracks (title, audio, bpm, genre, tierlist, mood, keywords) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+  db.query('INSERT INTO beats (title, audio, bpm, genre, tierlist, mood, keywords) VALUES (?, ?, ?, ?, ?, ?, ?)', 
   [title, filePath, bpm, genre, tierlist, mood, keywords], (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).json({ error: 'An error occurred while adding the track' });
+      res.status(500).json({ error: 'An error occurred while adding the beat' });
     } else {
       res.status(201).json(results);
     }
   });
 });
 
-app.delete('/api/tracks/:id', (req, res) => {
+app.delete('/api/beats/:id', (req, res) => {
   const { id } = req.params;
-  db.query('DELETE FROM tracks WHERE id = ?', [id], (err, results) => {
+  db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).json({ error: 'An error occurred while deleting the track' });
+      res.status(500).json({ error: 'An error occurred while deleting the beat' });
     } else {
       res.status(200).json(results);
     }

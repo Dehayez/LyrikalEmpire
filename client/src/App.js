@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import TrackList from './components/TrackList';
-import AddTrack from './components/AddTrack';
+import BeatList from './components/BeatList';
+import AddBeat from './components/AddBeat';
 import Header from './components/Header';
 import AudioPlayer from './components/AudioPlayer';
 import { IoAdd } from 'react-icons/io5';
@@ -16,43 +16,38 @@ const styles = {
 
 function App() {
   const [refresh, setRefresh] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(null);
+  const [currentBeat, setCurrentBeat] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedTrack, setSelectedTrack] = useState(null);
-  const [tracks, setTracks] = useState([]);
+  const [selectedBeat, setSelectedBeat] = useState(null);
+  const [beats, setBeats] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [audioPlayerHeight, setAudioPlayerHeight] = useState(0);
-  const [addTrackButtonBottom, setAddTrackButtonBottom] = useState(20);
+  const [addBeatButtonBottom, setAddBeatButtonBottom] = useState(20);
   const [animateAddButton, setAnimateAddButton] = useState(false);
-
   const handleAdd = () => setRefresh(!refresh);
-
-  const handlePlay = (track, play, tracks) => {
-    setSelectedTrack(track);
-    setTracks(tracks);
-    if (!track) {
-      setCurrentTrack(null);
+  const handlePlay = (beat, play, beats) => {
+    setSelectedBeat(beat);
+    setBeats(beats);
+    if (!beat) {
+      setCurrentBeat(null);
       setIsPlaying(false);
-    } else if (currentTrack && currentTrack.id === track.id) {
+    } else if (currentBeat && currentBeat.id === beat.id) {
       setIsPlaying(play);
     } else {
-      setCurrentTrack(track);
+      setCurrentBeat(beat);
       setIsPlaying(true);
     }
   };
-
   const handleNext = () => {
-    const currentIndex = tracks.findIndex(track => track.id === currentTrack.id);
-    const nextIndex = (currentIndex + 1) % tracks.length;
-    handlePlay(tracks[nextIndex], true, tracks);
+    const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
+    const nextIndex = (currentIndex + 1) % beats.length;
+    handlePlay(beats[nextIndex], true, beats);
   };
-
   const handlePrev = () => {
-    const currentIndex = tracks.findIndex(track => track.id === currentTrack.id);
-    const prevIndex = (currentIndex - 1 + tracks.length) % tracks.length;
-    handlePlay(tracks[prevIndex], true, tracks);
+    const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
+    const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
+    handlePlay(beats[prevIndex], true, beats);
   };
-
   useEffect(() => {
     const audioPlayer = document.getElementById('audio-player');
     const mainContent = document.getElementById('main-content');
@@ -60,20 +55,19 @@ function App() {
       const audioPlayerHeight = audioPlayer.offsetHeight;
       mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
       setAudioPlayerHeight(audioPlayerHeight);
-      setAddTrackButtonBottom(audioPlayerHeight + 20);
+      setAddBeatButtonBottom(audioPlayerHeight + 20);
     }
-  }, [currentTrack]);
-
+  }, [currentBeat]);
   return (
     <div className="App">
       <div id="main-content" style={styles.container}>
         <Header />
-        <AddTrack onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
-        <TrackList key={refresh} onPlay={handlePlay} selectedTrack={selectedTrack} isPlaying={isPlaying} />
+        <AddBeat onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
+        <BeatList key={refresh} onPlay={handlePlay} selectedBeat={selectedBeat} isPlaying={isPlaying} />
         <button 
           style={{
             position: 'fixed', 
-            bottom: `${addTrackButtonBottom}px`, 
+            bottom: `${addBeatButtonBottom}px`, 
             right: '20px', 
             transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s',
             backgroundColor: '#505050',
@@ -93,7 +87,7 @@ function App() {
           onMouseUp={() => setAnimateAddButton(false)}
           onMouseLeave={() => setAnimateAddButton(false)}
         >
-          <span className="tooltip tooltip__addtrack">Add Track</span>
+          <span className="tooltip tooltip__addbeat">Add Beat</span>
           <IoAdd />
         </button>
       </div>
@@ -101,7 +95,7 @@ function App() {
         display: 'flex', 
         alignItems: 'center', 
         position: 'fixed', 
-        bottom: currentTrack ? 0 : '-100%',
+        bottom: currentBeat ? 0 : '-100%',
         width: '100%',
         transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)',
         padding: '0 20px',
@@ -109,10 +103,10 @@ function App() {
         backgroundColor: '#181818',
       }}>
         <div style={{ flex: '1' }}>
-          {currentTrack && <div>{currentTrack.title}</div>}
+          {currentBeat && <div>{currentBeat.title}</div>}
         </div>
         <div style={{ flex: '2' }}>
-          {currentTrack && <AudioPlayer currentTrack={currentTrack} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} />}
+          {currentBeat && <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} />}
         </div>
         <div style={{ flex: '1' }}></div>
       </div>
