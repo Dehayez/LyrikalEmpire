@@ -3,7 +3,8 @@ import BeatList from './components/BeatList';
 import AddBeat from './components/AddBeat';
 import Header from './components/Header';
 import AudioPlayer from './components/AudioPlayer';
-import { IoAdd } from 'react-icons/io5';
+import { IoAdd, IoVolumeHigh, IoVolumeLow, IoVolumeMute } from 'react-icons/io5';
+
 import './App.scss';
 
 const styles = {
@@ -112,12 +113,17 @@ function App() {
         <div style={{ flex: '1' }}>
           <input 
             type="range" 
+            className='volume-slider'
             min="0" 
             max="1" 
             step="0.01" 
             value={volume} 
             onChange={e => setVolume(parseFloat(e.target.value))} 
           />
+          {volume > 0.66 && <IoVolumeHigh />}
+          {volume > 0.33 && volume <= 0.66 && <IoVolumeMedium />}
+          {volume > 0 && volume <= 0.33 && <IoVolumeLow />}
+          {volume === 0 && <IoVolumeOff />}
         </div>
       </div>
     </div>
