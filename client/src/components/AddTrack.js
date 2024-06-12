@@ -6,6 +6,13 @@ import './AddTrack.scss'
 
 Modal.setAppElement('#root');
 
+const FormInput = ({ label, type, placeholder, value, onChange, required, min, pattern, maxLength }) => (
+    <div className="form-group">
+        <label>{label}</label>
+        <input type={type} placeholder={placeholder} value={value} onChange={onChange} required={required} min={min} pattern={pattern} maxLength={maxLength} />
+    </div>
+);
+
 const AddTrack = ({ onAdd, isOpen, setIsOpen }) => {
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
@@ -57,60 +64,41 @@ const AddTrack = ({ onAdd, isOpen, setIsOpen }) => {
         }
     };
 
-    const h2Style = {
-        marginTop: '0',
-    };
-
     return (
         <div>
             <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
-                <h2 style={h2Style}>Add Tracks</h2>
+                <h2 style={{marginTop: '0'}}>Add Tracks</h2>
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>Title</label>
-                        <input type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required />
-                    </div>
+                    <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required />
                     <div className="form-group">
                         <label>Audio</label>
                         <div className="file-input">
                             <div className="file-input__wrapper">
-                            <label htmlFor="file" className="file-input__label no-margin">
-                                <IoCloudUploadSharp /> Upload File
-                            </label>
+                                <label htmlFor="file" className="file-input__label no-margin">
+                                    <IoCloudUploadSharp /> Upload File
+                                </label>
                                 <input type="file" id="file" className="file-input__input" onChange={handleFileChange} required />
                                 <span id="file-name" className="file-input__name">{fileName}</span>
                             </div>
                         </div>
                     </div>
-                    <div className="form-group">
-                        <label>BPM</label>
-                        <input type="number" placeholder="Enter BPM" min="0" pattern="\d+" maxLength="3" value={bpm} onChange={(e) => handleBpmChange(e.target.value)} required />
-                    </div>
-                    <div className="form-group">
-                        <label>Genre</label>
-                        <input type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} required />
-                    </div>
+                    <FormInput label="BPM" type="number" placeholder='Enter BPM' value={bpm} onChange={(e) => handleBpmChange(e.target.value)} required min="0" pattern="\d+" maxLength="3" />
+                    <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} required />
                     <div className="form-group">
                         <label>Tierlist</label>
                         <div className="select-wrapper">
-                        <select value={tierlist} onChange={(e) => setTierlist(e.target.value)} required>
-                            <option value="S">S</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                        </select>
-                        <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
+                            <select value={tierlist} onChange={(e) => setTierlist(e.target.value)} required>
+                                <option value="S">S</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                            <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
+                        </div>
                     </div>
-                    </div>
-                    <div className="form-group">
-                        <label>Mood</label>
-                        <input type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} required />
-                    </div>
-                    <div className="form-group">
-                        <label>Keywords</label>
-                        <input type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} required />
-                    </div>
+                    <FormInput label="Mood" type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} required />
+                    <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} required />
                     <div>
                         <button className="modal__button modal__button--add" type="submit">Add Track</button>
                         <button className="modal__button" type="button" onClick={() => setIsOpen(false)}>Cancel</button>
