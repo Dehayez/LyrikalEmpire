@@ -4,6 +4,7 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs'); // Add this at the top of your file if it's not already there
 
 // Create an Express app
 const app = express();
@@ -69,12 +70,33 @@ app.post('/api/beats', upload.single('audio'), (req, res) => {
 
 app.delete('/api/beats/:id', (req, res) => {
   const { id } = req.params;
-  db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
+  
+  // Fetch the beat's details
+  db.query('SELECT * FROM beats WHERE id = ?', [id], (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).json({ error: 'An error occurred while deleting the beat' });
+      res.status(500).json({ error: 'An error occurred while fetching the beat' });
     } else {
-      res.status(200).json(results);
+      // Extract the file path
+      const filePath = path.join(__dirname, '../client/public', results[0].audio);
+      
+      // Delete the file
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(`An error occurred while deleting the file at path ${filePath}:`, err);
+          res.status(500).json({ error: 'An error occurred while deleting the audio file' });
+        } else {
+          // Delete the beat from the database
+          db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
+            if (err) {
+              console.error(err);
+              res.status(500).json({ error: 'An error occurred while deleting the beat' });
+            } else {
+              res.status(200).json(results);
+            }
+          });
+        }
+      });
     }
   });
 });
