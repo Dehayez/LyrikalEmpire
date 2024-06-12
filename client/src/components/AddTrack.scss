@@ -100,3 +100,35 @@
     margin-left: 10px;
     color: white;
 }
+
+.form-group select {
+    outline: none;
+    border: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+    background: #202020; // Match the background color of the select
+    select {
+        appearance: none;
+        outline: none;
+        box-shadow: none;
+        border: none;
+        width: 100%;
+        padding-right: 30px; // Adjust as needed
+        background-color: #202020;
+        color: white;
+    }
+}
+

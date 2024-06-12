@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { addTrack } from '../services/trackService';
-import { IoCloudUploadSharp } from "react-icons/io5";
+import { IoCloudUploadSharp, IoChevronDownSharp } from "react-icons/io5";
 import './AddTrack.scss'
 
 Modal.setAppElement('#root');
@@ -9,7 +9,7 @@ Modal.setAppElement('#root');
 const AddTrack = ({ onAdd, isOpen, setIsOpen }) => {
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
-    const [bpm, setBpm] = useState(0);
+    const [bpm, setBpm] = useState('');
     const [genre, setGenre] = useState('');
     const [tierlist, setTierlist] = useState('');
     const [mood, setMood] = useState('');
@@ -35,6 +35,12 @@ const AddTrack = ({ onAdd, isOpen, setIsOpen }) => {
         setAudio(e.target.files[0]);
         setFileName(e.target.files[0].name);
     }
+
+    const handleBpmChange = (value) => {
+        if (String(value).length <= 3) {
+            setBpm(value);
+        }
+    };
 
     const modalStyle = {
         overlay: {
@@ -62,7 +68,7 @@ const AddTrack = ({ onAdd, isOpen, setIsOpen }) => {
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Title</label>
-                        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                        <input type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required />
                     </div>
                     <div className="form-group">
                         <label>Audio</label>
@@ -78,14 +84,15 @@ const AddTrack = ({ onAdd, isOpen, setIsOpen }) => {
                     </div>
                     <div className="form-group">
                         <label>BPM</label>
-                        <input type="number" value={bpm} onChange={(e) => setBpm(e.target.value)} required />
+                        <input type="number" placeholder="Enter BPM" min="0" pattern="\d+" maxLength="3" value={bpm} onChange={(e) => handleBpmChange(e.target.value)} required />
                     </div>
                     <div className="form-group">
                         <label>Genre</label>
-                        <input type="text" value={genre} onChange={(e) => setGenre(e.target.value)} required />
+                        <input type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} required />
                     </div>
                     <div className="form-group">
                         <label>Tierlist</label>
+                        <div className="select-wrapper">
                         <select value={tierlist} onChange={(e) => setTierlist(e.target.value)} required>
                             <option value="S">S</option>
                             <option value="A">A</option>
@@ -93,14 +100,16 @@ const AddTrack = ({ onAdd, isOpen, setIsOpen }) => {
                             <option value="C">C</option>
                             <option value="D">D</option>
                         </select>
+                        <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
+                    </div>
                     </div>
                     <div className="form-group">
                         <label>Mood</label>
-                        <input type="text" value={mood} onChange={(e) => setMood(e.target.value)} required />
+                        <input type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} required />
                     </div>
                     <div className="form-group">
                         <label>Keywords</label>
-                        <input type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} required />
+                        <input type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} required />
                     </div>
                     <div>
                         <button className="modal__button modal__button--add" type="submit">Add Track</button>
