@@ -51,11 +51,14 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
         setFileName(e.target.files[0].name);
     }
 
-    const handleBpmChange = (value) => {
-        if (String(value).length <= 3) {
-            setBpm(value);
+    const handleBpmChange = (event) => {
+        const newValue = event.target.value;
+        // Regular expression to allow only numbers
+        if (/^\d*$/.test(newValue) && newValue.length <= 3) {
+            setBpm(newValue);
         }
     };
+    
 
     const modalStyle = {
         overlay: {
@@ -90,7 +93,7 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
                             </div>
                         </div>
                     </div>
-                    <FormInput label="BPM" type="number" placeholder='Enter BPM' value={bpm} onChange={(e) => handleBpmChange(e.target.value)} required min="0" pattern="\d+" maxLength="3" />
+                    <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} required maxLength="3" />
                     <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} required />
                     <div className="form-group">
                         <label>Tierlist</label>
