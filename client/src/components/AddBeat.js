@@ -18,7 +18,7 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
     const [audio, setAudio] = useState(null);
     const [bpm, setBpm] = useState('');
     const [genre, setGenre] = useState('');
-    const [tierlist, setTierlist] = useState(null);
+    const [tierlist, setTierlist] = useState('');
     const [mood, setMood] = useState('');
     const [keywords, setKeywords] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
@@ -28,7 +28,7 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
         setAudio(null);
         setBpm('');
         setGenre('');
-        setTierlist(null);
+        setTierlist('');
         setMood('');
         setKeywords('');
         setFileName('No file chosen');
