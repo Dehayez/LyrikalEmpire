@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "scripts": {
+    "start": "concurrently \"yarn --cwd ./server start\" \"yarn --cwd ./client start\""
+  },
+  "license": "ISC"
+}
