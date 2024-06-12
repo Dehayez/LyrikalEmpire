@@ -23,6 +23,17 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
     const [keywords, setKeywords] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
 
+    const resetForm = () => {
+        setTitle('');
+        setAudio(null);
+        setBpm('');
+        setGenre('');
+        setTierlist(null);
+        setMood('');
+        setKeywords('');
+        setFileName('No file chosen');
+    };
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         let newBeat = { title, bpm, genre, mood, keywords };
@@ -31,13 +42,7 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
         }
         await addBeat(newBeat, audio);
         onAdd();
-        setTitle('');
-        setAudio(null);
-        setBpm(0);
-        setGenre('');
-        setTierlist('');
-        setMood('');
-        setKeywords('');
+        resetForm();
         setIsOpen(false);
     };
 
@@ -105,7 +110,7 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
                     <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} />
                     <div>
                         <button className="modal__button modal__button--add" type="submit">Add Beat</button>
-                        <button className="modal__button" type="button" onClick={() => setIsOpen(false)}>Cancel</button>
+                        <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
                     </div>
                 </form>
             </Modal>
