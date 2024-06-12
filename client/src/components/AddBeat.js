@@ -88,6 +88,7 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
                         <label>Tierlist</label>
                         <div className="select-wrapper">
                             <select value={tierlist} onChange={(e) => setTierlist(e.target.value)} required>
+                                <option value="">Select tier</option>
                                 <option value="S">S</option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
@@ -97,8 +98,8 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
                             <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
                         </div>
                     </div>
-                    <FormInput label="Mood" type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} required />
-                    <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} required />
+                    <FormInput label="Mood" type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} />
+                    <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} />
                     <div>
                         <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                         <button className="modal__button" type="button" onClick={() => setIsOpen(false)}>Cancel</button>
