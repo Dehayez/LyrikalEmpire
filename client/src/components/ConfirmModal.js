@@ -20,20 +20,29 @@ const h2Style = {
 
 const modalStyle = {
   overlay: {
-    backgroundColor: 'rgba(30, 30, 30, 0.75)'
+    backgroundColor: 'rgba(30, 30, 30, 0.75)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
+    top: 'auto',
+    left: 'auto',
+    right: 'auto',
+    bottom: 'auto',
     backgroundColor: '#181818',
     color: 'white', 
     border: 'none',
     borderRadius: '6px',
     maxWidth: '380px',
-    margin: 'auto', 
+    position: 'relative',
+    margin: 'auto',
+    boxSizing: 'border-box',
   }
 };
 
 const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => (
-  <Modal portalClassName="modal" isOpen={isOpen} onRequestClose={onCancel} style={modalStyle}>
+  <Modal isOpen={isOpen} onRequestClose={onCancel} style={modalStyle}>
     <button onClick={onCancel} style={closeButtonStyle}>
       <IoCloseSharp style={{ fontSize: '18px' }} />
     </button>
