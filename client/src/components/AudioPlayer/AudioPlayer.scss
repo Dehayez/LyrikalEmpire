@@ -16,7 +16,7 @@ $indicator-half-size: $indicator-size / 2;
 }
 
 .smooth-progress-bar .rhap_progress-filled {
-  transition: width 0.1s ease-out;
+  //transition: width 0.2s cubic-bezier(0.4, 0, 0.4, 1);
 }
 
 .rhap_progress-indicator {
