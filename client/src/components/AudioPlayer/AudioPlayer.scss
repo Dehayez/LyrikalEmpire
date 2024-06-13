@@ -29,7 +29,7 @@ $indicator-half-size: $indicator-size / 2;
   left: 0;
 }
 
-.audio-player-wrapper {
+.audio-player {
   .rhap_progress-container:hover {
     .rhap_progress-filled {
       background: #FFCC44 !important;
@@ -64,11 +64,6 @@ $indicator-half-size: $indicator-size / 2;
   padding: 10px 0;
   width: fit-content;
   margin: auto;
-}
-
-.rhap_rewind-button,
-.rhap_forward-button {
-  display: none;
 }
 
 .icon-button {
@@ -120,4 +115,10 @@ $indicator-half-size: $indicator-size / 2;
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 16px;
+}
+
+.audio-player__volume {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
