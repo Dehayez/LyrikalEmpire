@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
@@ -7,8 +7,19 @@ import { IoVolumeHigh, IoVolumeMedium, IoVolumeLow, IoVolumeOff } from 'react-ic
 
 let currentPlaying;
 
-const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, volume, setVolume }) => {
+const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) => {
   const playerRef = useRef();
+  const [volume, setVolume] = useState(() => {
+    const savedVolume = localStorage.getItem('volume');
+    return savedVolume !== null ? parseFloat(savedVolume) : 1.0;
+  });
+
+  const handleVolumeChange = (e) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+
+    localStorage.setItem('volume', newVolume);
+  };
 
   const handlePlayPause = (play) => {
     if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
@@ -110,7 +121,7 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, vol
           max="1" 
           step="0.01" 
           value={volume} 
-          onChange={e => setVolume(parseFloat(e.target.value))} 
+          onChange={handleVolumeChange} 
         />
       </div>
     </div>
