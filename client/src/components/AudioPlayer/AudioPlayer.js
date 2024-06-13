@@ -3,10 +3,11 @@ import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
 import { NextButton, PlayPauseButton, PrevButton } from '../AudioControls';
+import { IoVolumeHigh, IoVolumeMedium, IoVolumeLow, IoVolumeOff } from 'react-icons/io5';
 
 let currentPlaying;
 
-const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) => {
+const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, volume, setVolume }) => {
   const playerRef = useRef();
 
   const handlePlayPause = (play) => {
@@ -56,8 +57,22 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) =
   }, [currentBeat]);
 
   return (
-    <div className="audio-player-wrapper">
-      <H5AudioPlayer
+    <div className="audio-player" id="audio-player" style={{
+      display: 'flex', 
+      alignItems: 'center', 
+      position: 'fixed', 
+      bottom: currentBeat ? 0 : '-100%',
+      width: '100%',
+      transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)',
+      padding: '0 20px',
+      boxSizing: 'border-box',
+      backgroundColor: '#181818',
+    }}>
+      <div style={{ flex: '1' }}>
+        {currentBeat && <div>{currentBeat.title}</div>}
+      </div>
+      <div style={{ flex: '2' }}>
+        <H5AudioPlayer
         className="smooth-progress-bar"
         autoPlayAfterSrcChange={true}
         src={currentBeat ? currentBeat.audio : ''}
@@ -74,7 +89,23 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) =
           <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
           <NextButton onNext={onNext} />
         ]}
-      />
+        />
+      </div>
+      <div className='audio-player__volume' style={{ flex: '1' }}>
+        {volume > 0.66 && <IoVolumeHigh />}
+        {volume > 0.33 && volume <= 0.66 && <IoVolumeMedium />}
+        {volume > 0 && volume <= 0.33 && <IoVolumeLow />}
+        {volume === 0 && <IoVolumeOff />}
+        <input 
+          type="range" 
+          className='volume-slider'
+          min="0" 
+          max="1" 
+          step="0.01" 
+          value={volume} 
+          onChange={e => setVolume(parseFloat(e.target.value))} 
+        />
+      </div>
     </div>
   );
 };
