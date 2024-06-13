@@ -87,7 +87,7 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) =
       backgroundColor: '#181818',
     }}>
       <div style={{ flex: '1' }}>
-        {currentBeat && <div>{currentBeat.title}</div>}
+        {currentBeat && <h3>{currentBeat.title}</h3>}
       </div>
       <div style={{ flex: '2' }}>
         <H5AudioPlayer
