@@ -26,6 +26,7 @@ function App() {
   const [addBeatButtonBottom, setAddBeatButtonBottom] = useState(20);
   const [animateAddButton, setAnimateAddButton] = useState(false);
   const [volume, setVolume] = useState(1.0); // Volume is between 0.0 and 1.0
+  const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
 
   const handleAdd = () => setRefresh(!refresh);
   const handlePlay = (beat, play, beats) => {
@@ -39,6 +40,7 @@ function App() {
     } else {
       setCurrentBeat(beat);
       setIsPlaying(true);
+      setHasBeatPlayed(true); // Set this to true when a beat is played
     }
   };
   const handleNext = () => {
@@ -55,13 +57,13 @@ function App() {
   useEffect(() => {
     const audioPlayer = document.getElementById('audio-player');
     const mainContent = document.getElementById('main-content');
-    if (audioPlayer && mainContent) {
+    if (audioPlayer && mainContent && hasBeatPlayed) {
       const audioPlayerHeight = audioPlayer.offsetHeight;
       mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
       setAudioPlayerHeight(audioPlayerHeight);
       setAddBeatButtonBottom(audioPlayerHeight + 20);
     }
-  }, [currentBeat]);
+  }, [currentBeat, hasBeatPlayed]); 
 
   return (
     <div className="App">
@@ -70,32 +72,6 @@ function App() {
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <BeatList key={refresh} onPlay={handlePlay} selectedBeat={selectedBeat} isPlaying={isPlaying} />
         <AddBeatButton setIsOpen={setIsOpen} addBeatButtonBottom={addBeatButtonBottom} animateAddButton={animateAddButton} setAnimateAddButton={setAnimateAddButton} />
-        <button 
-          style={{
-            position: 'fixed', 
-            bottom: `${addBeatButtonBottom}px`, 
-            right: '20px', 
-            transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s',
-            backgroundColor: '#505050',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '50%',
-            width: '50px',
-            height: '50px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            fontSize: '24px',
-          }} 
-          onClick={() => setIsOpen(true)}
-          className={`icon-button ${animateAddButton ? 'animate-scale' : ''}`} 
-          onMouseDown={() => setAnimateAddButton(true)}
-          onMouseUp={() => setAnimateAddButton(false)}
-          onMouseLeave={() => setAnimateAddButton(false)}
-        >
-          <span className="tooltip tooltip__addbeat">Add Beat</span>
-          <IoAdd />
-        </button>
       </div>
       <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} />
     </div>
