@@ -2,9 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
-import PrevButton from './PrevButton';
-import PlayPauseButton from './PlayPauseButton';
-import NextButton from './NextButton';
+import { NextButton, PlayPauseButton, PrevButton } from '../AudioControls';
 
 let currentPlaying;
 

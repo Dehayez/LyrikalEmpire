@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getBeats, deleteBeat } from '../services/beatService';
-import ConfirmModal from './ConfirmModal';
+import { getBeats, deleteBeat } from '../../services/beatService';
+import ConfirmModal from '../ConfirmModal';
 import { IoPlaySharp, IoPauseSharp, IoTrashBinOutline } from "react-icons/io5";
 import './BeatList.scss';
 
