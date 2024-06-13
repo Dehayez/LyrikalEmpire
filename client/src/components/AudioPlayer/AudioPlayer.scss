@@ -15,6 +15,10 @@ $indicator-half-size: $indicator-size / 2;
   background-color: transparent;
 }
 
+.smooth-progress-bar .rhap_progress-filled {
+  transition: width 0.1s ease-out;
+}
+
 .rhap_progress-indicator {
   opacity: 0;
   background-color: white;

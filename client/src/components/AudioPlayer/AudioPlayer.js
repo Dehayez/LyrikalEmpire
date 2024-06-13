@@ -58,6 +58,7 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) =
   return (
     <div className="audio-player-wrapper">
       <H5AudioPlayer
+        className="smooth-progress-bar"
         autoPlayAfterSrcChange={true}
         src={currentBeat ? currentBeat.audio : ''}
         ref={playerRef}
