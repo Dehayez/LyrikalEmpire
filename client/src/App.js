@@ -3,7 +3,7 @@ import BeatList from './components/BeatList';
 import AddBeat from './components/AddBeat';
 import Header from './components/Header';
 import AudioPlayer from './components/AudioPlayer';
-import { IoAdd, IoVolumeHigh, IoVolumeLow, IoVolumeMute } from 'react-icons/io5';
+import { IoAdd, IoVolumeHigh, IoVolumeMedium, IoVolumeLow, IoVolumeOff } from 'react-icons/io5';
 
 import './App.scss';
 
