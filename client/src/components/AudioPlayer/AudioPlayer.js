@@ -56,6 +56,13 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, vol
     };
   }, [currentBeat]);
 
+  useEffect(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      audioElement.volume = volume;
+    }
+  }, [volume]);
+
   return (
     <div className="audio-player" id="audio-player" style={{
       display: 'flex', 
