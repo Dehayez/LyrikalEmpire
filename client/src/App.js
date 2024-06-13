@@ -110,7 +110,11 @@ function App() {
         <div style={{ flex: '2' }}>
           {currentBeat && <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} />}
         </div>
-        <div style={{ flex: '1' }}>
+        <div className='audio-player__volume' style={{ flex: '1' }}>
+          {volume > 0.66 && <IoVolumeHigh />}
+          {volume > 0.33 && volume <= 0.66 && <IoVolumeMedium />}
+          {volume > 0 && volume <= 0.33 && <IoVolumeLow />}
+          {volume === 0 && <IoVolumeOff />}
           <input 
             type="range" 
             className='volume-slider'
@@ -120,10 +124,6 @@ function App() {
             value={volume} 
             onChange={e => setVolume(parseFloat(e.target.value))} 
           />
-          {volume > 0.66 && <IoVolumeHigh />}
-          {volume > 0.33 && volume <= 0.66 && <IoVolumeMedium />}
-          {volume > 0 && volume <= 0.33 && <IoVolumeLow />}
-          {volume === 0 && <IoVolumeOff />}
         </div>
       </div>
     </div>
