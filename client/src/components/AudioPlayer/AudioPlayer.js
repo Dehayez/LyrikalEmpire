@@ -29,6 +29,18 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) =
     }
   }, [currentBeat, isPlaying]);
 
+  useEffect(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      audioElement.addEventListener('ended', onNext);
+    }
+    return () => {
+      if (audioElement) {
+        audioElement.removeEventListener('ended', onNext);
+      }
+    };
+  }, [onNext]);
+
   return (
     <div className="audio-player-wrapper">
       <H5AudioPlayer
