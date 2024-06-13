@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import Header from './components/Header/Header';
 import BeatList from './components/BeatList';
-import AddBeat from './components/AddBeat';
-import Header from './components/Header';
-import AudioPlayer from './components/AudioPlayer';
+import AddBeatForm from './components/AddBeat/AddBeatForm';
+import AddBeatButton from './components/AddBeat/AddBeatButton';
+import AudioPlayer from './components/AudioPlayer/AudioPlayer';
 import { IoAdd, IoVolumeHigh, IoVolumeMedium, IoVolumeLow, IoVolumeOff } from 'react-icons/io5';
 
 import './App.scss';
@@ -64,8 +65,9 @@ function App() {
     <div className="App">
       <div id="main-content" style={styles.container}>
         <Header />
-        <AddBeat onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
+        <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <BeatList key={refresh} onPlay={handlePlay} selectedBeat={selectedBeat} isPlaying={isPlaying} />
+        <AddBeatButton setIsOpen={setIsOpen} addBeatButtonBottom={addBeatButtonBottom} animateAddButton={animateAddButton} setAnimateAddButton={setAnimateAddButton} />
         <button 
           style={{
             position: 'fixed', 

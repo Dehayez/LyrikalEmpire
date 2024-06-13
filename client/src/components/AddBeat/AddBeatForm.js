@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { addBeat } from '../services/beatService';
+import { addBeat } from '../../services/beatService';
 import { IoCloudUploadSharp, IoChevronDownSharp } from "react-icons/io5";
 import './AddBeat.scss'
 
@@ -13,7 +13,7 @@ const FormInput = ({ label, type, placeholder, value, onChange, required, min, p
     </div>
 );
 
-const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
+const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
     const [bpm, setBpm] = useState('');
@@ -121,4 +121,4 @@ const AddBeat = ({ onAdd, isOpen, setIsOpen }) => {
     );
 };
 
-export default AddBeat;
+export default AddBeatForm;
