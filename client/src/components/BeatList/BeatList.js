@@ -54,7 +54,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     tableContainer: { overflowX: 'auto', backgroundColor: '#181818', color: '#FFFFFF' },
     table: { minWidth: '600px', width: '100%', tableLayout: 'auto' },
     thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left' },
-    tdata: { padding: '14px', paddingLeft: '0', color: '#FFFFFF'},
+    tdata: { padding: '8px', color: '#FFFFFF'},
     numberColumnCell: { paddingLeft: '14px'},
     theadFirstChild: { textAlign: 'center'},
     th: { padding: '10px', paddingLeft: '0', color: '#FFFFFF'},
@@ -116,12 +116,24 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
                     </button>
                   </div>
                 </td>
-                <td style={{ color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '' }} contentEditable onBlur={(e) => handleUpdate(beat.id, 'title', e.target.textContent)}>{beat.title}</td>
-                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.textContent)}>{beat.genre}</td>
-                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.textContent)}>{beat.bpm}</td>
-                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.textContent)}>{beat.tierlist}</td>
-                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.textContent)}>{beat.mood}</td>
-                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.textContent)}>{beat.keywords}</td>
+                <td style={{ color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '' }}>
+                  <input type="text" defaultValue={beat.title} onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} />
+                </td>
+                <td style={styles.tdata}>
+                  <input type="text" defaultValue={beat.genre} onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} />
+                </td>
+                <td style={styles.tdata}>
+                  <input type="text" defaultValue={beat.bpm} onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.value)} />
+                </td>
+                <td style={styles.tdata}>
+                  <input type="text" defaultValue={beat.tierlist} onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.value)} />
+                </td>
+                <td style={styles.tdata}>
+                  <input type="text" defaultValue={beat.mood} onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)} />
+                </td>
+                <td style={styles.tdata}>
+                  <input type="text" defaultValue={beat.keywords} onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} />
+                </td>
                 <td style={styles.tdata}>
                   <button className="icon-button" onClick={() => handleDelete(beat.id)}>
                     <IoTrashBinOutline />
