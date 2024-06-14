@@ -27,4 +27,9 @@ export const addBeat = async (beat, audioFile) => {
   return data;
 };
 
+export const updateBeat = async (id, updatedBeat) => {
+  const { data } = await axios.put(`${API_URL}/${id}`, updatedBeat);
+  return data;
+};
+
 export const deleteBeat = (id) => axios.delete(`${API_URL}/${id}`);
