@@ -82,39 +82,6 @@ app.get('/api/beats/:id', (req, res) => {
   });
 });
 
-app.delete('/api/beats/:id', (req, res) => {
-  const { id } = req.params;
-  
-  // Fetch the beat's details
-  db.query('SELECT * FROM beats WHERE id = ?', [id], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'An error occurred while fetching the beat' });
-    } else {
-      // Extract the file path
-      const filePath = path.join(__dirname, '../client/public', results[0].audio);
-      
-      // Delete the file
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error(`An error occurred while deleting the file at path ${filePath}:`, err);
-          res.status(500).json({ error: 'An error occurred while deleting the audio file' });
-        } else {
-          // Delete the beat from the database
-          db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
-            if (err) {
-              console.error(err);
-              res.status(500).json({ error: 'An error occurred while deleting the beat' });
-            } else {
-              res.status(200).json(results);
-            }
-          });
-        }
-      });
-    }
-  });
-});
-
 app.put('/api/beats/:id', (req, res) => {
   const { id } = req.params;
   let updatedBeat = { ...req.body, edited_at: new Date() };
@@ -147,6 +114,39 @@ app.put('/api/beats/:id', (req, res) => {
       res.status(500).json({ error: 'An error occurred while updating the beat' });
     } else {
       res.json(results);
+    }
+  });
+});
+
+app.delete('/api/beats/:id', (req, res) => {
+  const { id } = req.params;
+  
+  // Fetch the beat's details
+  db.query('SELECT * FROM beats WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching the beat' });
+    } else {
+      // Extract the file path
+      const filePath = path.join(__dirname, '../client/public', results[0].audio);
+      
+      // Delete the file
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(`An error occurred while deleting the file at path ${filePath}:`, err);
+          res.status(500).json({ error: 'An error occurred while deleting the audio file' });
+        } else {
+          // Delete the beat from the database
+          db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
+            if (err) {
+              console.error(err);
+              res.status(500).json({ error: 'An error occurred while deleting the beat' });
+            } else {
+              res.status(200).json(results);
+            }
+          });
+        }
+      });
     }
   });
 });

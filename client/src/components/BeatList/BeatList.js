@@ -73,7 +73,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
               <th style={styles.th}>Title</th>
               <th style={styles.th}>Genre</th>
               <th style={styles.th}>BPM</th>
+              <th style={styles.th}>Tierlist</th>
               <th style={styles.th}>Mood</th>
+              <th style={styles.th}>Keywords</th>
               <th style={styles.th}></th>
             </tr>
           </thead>
@@ -117,7 +119,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
                 <td style={{ color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '' }} contentEditable onBlur={(e) => handleUpdate(beat.id, 'title', e.target.textContent)}>{beat.title}</td>
                 <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.textContent)}>{beat.genre}</td>
                 <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.textContent)}>{beat.bpm}</td>
+                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.textContent)}>{beat.tierlist}</td>
                 <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.textContent)}>{beat.mood}</td>
+                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.textContent)}>{beat.keywords}</td>
                 <td style={styles.tdata}>
                   <button className="icon-button" onClick={() => handleDelete(beat.id)}>
                     <IoTrashBinOutline />
