@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getBeats, deleteBeat } from '../../services/beatService';
+import { getBeats, deleteBeat, updateBeat } from '../../services/beatService';
 import ConfirmModal from '../ConfirmModal';
 import { IoPlaySharp, IoPauseSharp, IoTrashBinOutline } from "react-icons/io5";
 import './BeatList.scss';
@@ -37,6 +37,17 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
     setPlayingBeat(beat);
+  };
+
+  const handleUpdate = async (id, key, value) => {
+    let updatedValue = value;
+    if (key === 'created_at' || key === 'edited_at') {
+      const date = new Date(value);
+      updatedValue = date.toISOString().replace('T', ' ').replace('.000Z', '');
+    }
+    const updatedBeat = { ...beats.find(beat => beat.id === id), [key]: updatedValue };
+    await updateBeat(id, updatedBeat);
+    setBeats(beats.map(beat => beat.id === id ? updatedBeat : beat));
   };
 
   const styles = {
@@ -103,10 +114,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
                     </button>
                   </div>
                 </td>
-                <td style={{ color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '' }}>{beat.title}</td>
-                <td style={styles.tdata}>{beat.genre}</td>
-                <td style={styles.tdata}>{beat.bpm}</td>
-                <td style={styles.tdata}>{beat.mood}</td>
+                <td style={{ color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '' }} contentEditable onBlur={(e) => handleUpdate(beat.id, 'title', e.target.textContent)}>{beat.title}</td>
+                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.textContent)}>{beat.genre}</td>
+                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.textContent)}>{beat.bpm}</td>
+                <td style={styles.tdata} contentEditable onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.textContent)}>{beat.mood}</td>
                 <td style={styles.tdata}>
                   <button className="icon-button" onClick={() => handleDelete(beat.id)}>
                     <IoTrashBinOutline />

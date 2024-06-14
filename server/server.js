@@ -57,13 +57,27 @@ app.get('/api/beats', (req, res) => {
 
 app.post('/api/beats', upload.single('audio'), (req, res) => {
   const { title, bpm, genre, tierlist, mood, keywords, filePath } = req.body;
-  db.query('INSERT INTO beats (title, audio, bpm, genre, tierlist, mood, keywords) VALUES (?, ?, ?, ?, ?, ?, ?)', 
-  [title, filePath, bpm, genre, tierlist, mood, keywords], (err, results) => {
+  const createdAt = new Date();
+  db.query('INSERT INTO beats (title, audio, bpm, genre, tierlist, mood, keywords, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+  [title, filePath, bpm, genre, tierlist, mood, keywords, createdAt], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'An error occurred while adding the beat' });
     } else {
       res.status(201).json(results);
+    }
+  });
+});
+
+app.get('/api/beats/:id', (req, res) => {
+  const { id } = req.params;
+
+  db.query('SELECT * FROM beats WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching the beat' });
+    } else {
+      res.json(results);
     }
   });
 });
@@ -97,6 +111,42 @@ app.delete('/api/beats/:id', (req, res) => {
           });
         }
       });
+    }
+  });
+});
+
+app.put('/api/beats/:id', (req, res) => {
+  const { id } = req.params;
+  let updatedBeat = { ...req.body, edited_at: new Date() };
+
+  // Format the date correctly for MySQL
+  for (let key in updatedBeat) {
+    if (key === 'created_at' || key === 'edited_at') {
+      const date = new Date(updatedBeat[key]);
+      updatedBeat[key] = date.toISOString().split('.')[0].replace('T', ' ').replace('Z', '');
+    }
+  }
+
+  let updateQuery = 'UPDATE beats SET ';
+  let queryParams = [];
+
+  for (let key in updatedBeat) {
+    updateQuery += `${key} = ?, `;
+    queryParams.push(updatedBeat[key]);
+  }
+
+  // Remove the last comma and space
+  updateQuery = updateQuery.slice(0, -2);
+
+  updateQuery += ' WHERE id = ?';
+  queryParams.push(id);
+
+  db.query(updateQuery, queryParams, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while updating the beat' });
+    } else {
+      res.json(results);
     }
   });
 });
