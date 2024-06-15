@@ -26,7 +26,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   const makeResizable = () => {
     const headers = Array.from(tableRef.current.querySelectorAll('th'));
   
-    headers.slice(1).forEach(header => {
+    headers.slice(1, -1).forEach(header => {
       // Add hover effect
       header.classList.add('resizable-header');
       
@@ -109,7 +109,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     th: { 
       boxSizing: 'border-box',
       padding: '10px', 
-      paddingLeft: '0', 
+      paddingLeft: '18px', 
       color: '#FFFFFF',
       minWidth: '60px'
     },
