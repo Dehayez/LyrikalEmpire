@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { IoPlaySkipBackSharp } from "react-icons/io5";
+import './PrevButton.scss';
 
 const PrevButton = ({ onPrev }) => {
   const [isPrevActive, setIsPrevActive] = useState(false);
