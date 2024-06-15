@@ -3,7 +3,32 @@
     justify-content: right;
     align-items: center;
 
-    &__input {
-        padding: 0;
+    &__icon {
+        margin-right: 10px;
+        padding-top: 2px;
+    }
+    
+    &__track {
+        position: relative;
+        width: 50%;
+        height: 5px;
+        background-color: rgba(221, 221, 221, 0.5);
+        border-radius: 2px;
+        cursor: pointer;
+    }
+    &__progress {
+        position: absolute;
+        height: 100%;
+        background: #FFCC44;
+        border-radius: 2px;
+    }
+    &__thumb {
+        position: absolute;
+        top: 50%;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: white;
+        transform: translate(-50%, -50%);
     }
 }
