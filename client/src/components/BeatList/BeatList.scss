@@ -1,6 +1,7 @@
 .resizable-header {
   position: relative;
-  cursor: col-resize; // Add this line
+  cursor: col-resize;
+  border-right: 1px solid transparent;
   
   &::after {
     content: "";
@@ -27,4 +28,9 @@
 .beat-list__table {
   border: none;
   border-collapse: collapse;
+}
+
+.resizable-header:hover,
+.resizable-header.dragging {
+  border-right: 1px solid #505050;
 }

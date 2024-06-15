@@ -41,26 +41,30 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       header.addEventListener('mousedown', e => {
         const initialMouseX = e.clientX;
         const initialWidth = header.offsetWidth;
-  
+      
+        // Add 'dragging' class
+        header.classList.add('dragging');
+      
         // Change cursor to 'drag' type
         document.body.style.cursor = 'col-resize';
-  
+      
         const onMouseMove = e => {
           const newWidth = initialWidth + e.clientX - initialMouseX;
           header.style.width = `${newWidth}px`;
-  
+      
           // Save new width
           localStorage.setItem(`headerWidth${originalIndex + 1}`, newWidth);
         };
-  
+      
         const onMouseUp = () => {
+          // Remove 'dragging' class
+          header.classList.remove('dragging');
+      
+          document.body.style.cursor = '';
           document.removeEventListener('mousemove', onMouseMove);
           document.removeEventListener('mouseup', onMouseUp);
-  
-          // Reset cursor
-          document.body.style.cursor = '';
         };
-  
+      
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
       });
