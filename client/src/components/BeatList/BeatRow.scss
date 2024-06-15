@@ -1,4 +1,8 @@
 .beat-row {
+  margin: 6px 0;
+  &:hover {
+    background-color: #202020;
+  }
   &__input {
     box-sizing: border-box;
     background-color: transparent;
@@ -22,6 +26,11 @@
     background-color: transparent;
     border: none;
     font-size: 18px;
+    &-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     &:hover {
       .beat-row__tooltip {
         visibility: visible;
@@ -47,6 +56,8 @@
   &__data {
     padding: 8px;
     color: #FFFFFF;
+  }
+  &__delete {
   }
   &__tooltip {
     visibility: hidden;
