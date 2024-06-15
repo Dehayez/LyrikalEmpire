@@ -130,7 +130,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     <div>
       <h2>Beats</h2>
       <div>
-        <table style={styles.table} ref={tableRef}>
+        <table className='beat-list__table' style={styles.table} ref={tableRef}>
           <thead style={styles.thead}>
             <tr>
               <th style={styles.theadFirstChild}>#</th>
