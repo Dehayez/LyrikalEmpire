@@ -1,5 +1,7 @@
 import React from 'react';
 import { IoPlaySharp, IoPauseSharp, IoTrashBinOutline } from "react-icons/io5";
+import BeatAnimation from './BeatAnimation';
+import PlayPauseButton from './PlayPauseButton';
 
 const styles = {
   tableContainer: { overflowX: 'auto', backgroundColor: '#181818', color: '#FFFFFF' },
@@ -29,25 +31,20 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
       >
         <td style={{ ...styles.tdata, ...styles.numberColumnCell }} className="beat-number">
           <div style={styles.buttonCell}>
-            {selectedBeat && selectedBeat.id === beat.id && isPlaying ? 
-              <div className="animation-container" style={{ animationDuration: `${60 / beat.bpm}s`, opacity: hoveredBeat === beat.id ? 0 : 1 }}>
-                <div className="bar"></div>
-                <div className="bar"></div>
-                <div className="bar"></div>
-                <div className="bar"></div>
-              </div> : 
-              <div style={{ zIndex: 1, color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '', opacity: hoveredBeat === beat.id ? 0 : 1 }}>{index + 1}</div>
-            }
-            <button
-              style={styles.playPauseButton}
-              className="icon-button"
-              onClick={() => handlePlayPause(beat)}
-            >
-              {selectedBeat && selectedBeat.id === beat.id && isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}
-              <span className="tooltip">
-                {selectedBeat && selectedBeat.id === beat.id && isPlaying ? 'Pause' : 'Play'}
-              </span>
-            </button>
+            <BeatAnimation 
+                beat={beat} 
+                selectedBeat={selectedBeat} 
+                isPlaying={isPlaying} 
+                hoveredBeat={hoveredBeat} 
+                index={index} 
+            />
+            <PlayPauseButton 
+                beat={beat} 
+                handlePlayPause={handlePlayPause} 
+                selectedBeat={selectedBeat} 
+                isPlaying={isPlaying} 
+                styles={styles} 
+            />
           </div>
         </td>
         <td style={{ color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '' }}>
