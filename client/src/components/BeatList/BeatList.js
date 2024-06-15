@@ -17,40 +17,50 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     const fetchBeats = async () => {
       const fetchedBeats = await getBeats();
       setBeats(fetchedBeats);
-      makeResizable(); // Add this line
+      makeResizable();
     };
-
+  
     fetchBeats();
   }, []);
 
   const makeResizable = () => {
     const headers = Array.from(tableRef.current.querySelectorAll('th'));
   
-    headers.slice(1, -1).forEach(header => {
+    // Load saved widths
+    headers.forEach((header, index) => {
+      const savedWidth = localStorage.getItem(`headerWidth${index}`);
+      if (savedWidth) {
+        header.style.width = `${savedWidth}px`;
+      }
+    });
+  
+    headers.slice(1, -1).forEach((header, originalIndex) => {
       // Add hover effect
       header.classList.add('resizable-header');
-      
+  
       header.addEventListener('mousedown', e => {
         const initialMouseX = e.clientX;
         const initialWidth = header.offsetWidth;
-      
+  
         // Change cursor to 'drag' type
         document.body.style.cursor = 'col-resize';
-      
+  
         const onMouseMove = e => {
           const newWidth = initialWidth + e.clientX - initialMouseX;
           header.style.width = `${newWidth}px`;
+  
+          // Save new width
+          localStorage.setItem(`headerWidth${originalIndex + 1}`, newWidth);
         };
-      
+  
         const onMouseUp = () => {
           document.removeEventListener('mousemove', onMouseMove);
           document.removeEventListener('mouseup', onMouseUp);
-      
-          // Reset cursor and border
+  
+          // Reset cursor
           document.body.style.cursor = '';
-          header.classList.remove('resizable-header');
         };
-      
+  
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
       });
