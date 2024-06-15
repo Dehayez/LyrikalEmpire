@@ -2,6 +2,7 @@ import React from 'react';
 import { IoTrashBinOutline } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
+import './BeatRow.scss';
 
 const styles = {
   tdata: { padding: '8px', color: '#FFFFFF'},
@@ -43,22 +44,22 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
           </div>
         </td>
         <td style={{ color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '' }}>
-          <input type="text" defaultValue={beat.title} onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} />
+          <input className='beat-row__input' type="text" defaultValue={beat.title} onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} />
         </td>
         <td style={styles.tdata}>
-          <input type="text" defaultValue={beat.genre} onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} />
+          <input className='beat-row__input' type="text" defaultValue={beat.genre} onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} />
         </td>
         <td style={styles.tdata}>
-          <input type="text" defaultValue={beat.bpm} onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.value)} />
+          <input className='beat-row__input' type="text" defaultValue={beat.bpm} onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.value)} />
         </td>
         <td style={styles.tdata}>
-          <input type="text" defaultValue={beat.tierlist} onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.value)} />
+          <input className='beat-row__input' type="text" defaultValue={beat.tierlist} onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.value)} />
         </td>
         <td style={styles.tdata}>
-          <input type="text" defaultValue={beat.mood} onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)} />
+          <input className='beat-row__input' type="text" defaultValue={beat.mood} onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)} />
         </td>
         <td style={styles.tdata}>
-          <input type="text" defaultValue={beat.keywords} onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} />
+          <input className='beat-row__input' type="text" defaultValue={beat.keywords} onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} />
         </td>
         <td style={styles.tdata}>
           <button className="icon-button" onClick={() => handleDelete(beat.id)}>
