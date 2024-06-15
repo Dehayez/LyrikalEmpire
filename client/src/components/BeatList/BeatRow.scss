@@ -3,7 +3,11 @@
   border: none;
 
   &:focus {
-    background-color: #202020;
+    background-color: #202020; // change this to your preferred color
     outline: none;
+  }
+
+  &--bpm {
+    text-align: right;
   }
 }
