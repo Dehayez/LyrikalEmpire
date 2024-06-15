@@ -1,23 +1,26 @@
 .icon-button {
   transition: transform 0.1s ease-in-out;
+
   &:active {
     transform: scale(0.95);
   }
+
   &:hover {
-    .tooltip {
+    .tooltip,
+    .tooltip__addbeat {
       opacity: 1;
       visibility: visible;
     }
   }
 }
 
-.tooltip {
+.tooltip,
+.tooltip__addbeat {
   visibility: hidden;
   background-color: #333;
   color: #fff;
   text-align: center;
   padding: 8px;
-  border-radius: 6px;
   position: absolute;
   z-index: 1;
   bottom: 125%;
@@ -28,17 +31,6 @@
   font-size: 16px;
 }
 
-.tooltip__addbeat {
-  position: absolute;
-  white-space: nowrap;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 0.3s;
-  visibility: hidden;
-  font-size: 16px;
+.tooltip {
+  border-radius: 6px;
 }

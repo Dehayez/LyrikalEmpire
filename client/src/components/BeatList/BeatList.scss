@@ -55,19 +55,3 @@
 .beat-number {
   text-align: center;
 }
-
-.icon-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  border: none;
-  font-size: 18px;
-
-  &:hover {
-    .tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
-  }
-}

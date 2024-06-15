@@ -62,10 +62,6 @@ $indicator-half-size: $indicator-size / 2;
   margin: auto;
 }
 
-.icon-button {
-  position: relative;
-}
-
 .tooltip {
   visibility: hidden;
   background-color: #333;
@@ -80,4 +76,22 @@ $indicator-half-size: $indicator-size / 2;
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 16px;
+}
+
+
+.icon-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+
+  &:hover {
+    .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 }
