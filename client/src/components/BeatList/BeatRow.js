@@ -4,11 +4,6 @@ import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import './BeatRow.scss';
 
-const styles = {
-  tdata: { padding: '8px', color: '#FFFFFF'},
-  buttonCell: { position: 'relative', width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'},
-};
-
 const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat }) => {
     return (
       <tr
@@ -23,8 +18,8 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
           setHoveredBeat(null);
         }}
       >
-        <td style={{ ...styles.tdata, ...styles.numberColumnCell }} className="beat-number">
-          <div style={styles.buttonCell}>
+        <td className="beat-row__number">
+          <div className="beat-row__button-cell">
             <BeatAnimation 
                 beat={beat} 
                 selectedBeat={selectedBeat} 
@@ -37,20 +32,19 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
                 handlePlayPause={handlePlayPause} 
                 selectedBeat={selectedBeat} 
                 isPlaying={isPlaying} 
-                styles={styles} 
             />
           </div>
         </td>
-        <td style={{ color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '' }}>
+        <td className={selectedBeat && selectedBeat.id === beat.id ? 'beat-row__selected' : ''}>
           <input 
             className='beat-row__input' 
-            type="text" 
+            type="text"
             defaultValue={beat.title} 
             onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
           />
         </td>
-        <td style={styles.tdata}>
+        <td className="beat-row__data">
           <input 
             className='beat-row__input' 
             type="text" 
@@ -59,7 +53,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
           />
         </td>
-        <td style={styles.tdata}>
+        <td className="beat-row__data">
           <input 
             className='beat-row__input beat-row__input--bpm' 
             type="text" 
@@ -68,7 +62,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
           />
         </td>
-        <td style={styles.tdata}>
+        <td className="beat-row__data">
           <input 
             className='beat-row__input' 
             type="text" 
@@ -77,7 +71,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
           />
         </td>
-        <td style={styles.tdata}>
+        <td className="beat-row__data">
           <input 
             className='beat-row__input' 
             type="text" 
@@ -86,19 +80,19 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
           />
         </td>
-        <td style={styles.tdata}>
+        <td className="beat-row__data">
           <input 
             className='beat-row__input' 
             type="text" 
-            defaultValue={beat.keywords} 
+            defaultValue={beat.keywords}
             onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
           />
         </td>
-        <td style={styles.tdata}>
-          <button className="icon-button" onClick={() => handleDelete(beat.id)}>
+        <td className="beat-row__data">
+          <button className="beat-row__icon-button icon-button" onClick={() => handleDelete(beat.id)}>
             <IoTrashBinOutline />
-            <span className="tooltip">Delete</span>
+            <span className="beat-row__tooltip tooltip">Delete</span>
           </button>
         </td>
       </tr>

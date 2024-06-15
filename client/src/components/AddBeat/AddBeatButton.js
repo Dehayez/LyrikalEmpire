@@ -1,5 +1,6 @@
 import React from 'react';
 import { IoAdd } from 'react-icons/io5';
+import './AddBeatButton.scss';
 
 const AddBeatButton = ({ setIsOpen, addBeatButtonBottom, animateAddButton, setAnimateAddButton }) => {
     return (
