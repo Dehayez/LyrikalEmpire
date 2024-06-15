@@ -27,6 +27,7 @@
 
 .resizable-header {
   position: relative;
+  cursor: col-resize; // Add this line
   
   &::after {
     content: "";
@@ -36,7 +37,6 @@
     bottom: 0;
     width: 3px;
     background-color: transparent;
-    cursor: col-resize; // Add this line
   }
 
   &::before {
@@ -49,11 +49,6 @@
     background-color: transparent;
     transition: background-color 0.3s;
     opacity: 0;
-  }
-
-  &:hover::before {
-    background-color: #ccc;
-    opacity: 1;
   }
 }
 
