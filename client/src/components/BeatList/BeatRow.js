@@ -6,7 +6,6 @@ import './BeatRow.scss';
 
 const styles = {
   tdata: { padding: '8px', color: '#FFFFFF'},
-  numberColumnCell: { paddingLeft: '14px'},
   buttonCell: { position: 'relative', width: '100%', height: '100%'},
   playPauseButton: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, zIndex: 2 },
 };

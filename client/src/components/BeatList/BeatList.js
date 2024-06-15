@@ -51,21 +51,17 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   };
 
   const styles = {
-    tableContainer: { overflowX: 'auto', backgroundColor: '#181818', color: '#FFFFFF' },
-    table: { minWidth: '600px', width: '100%', tableLayout: 'auto' },
+    table: { minWidth: '600px', width: '100%' },
     thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left' },
     tdata: { padding: '8px', color: '#FFFFFF'},
-    numberColumnCell: { paddingLeft: '14px'},
     theadFirstChild: { textAlign: 'center'},
     th: { padding: '10px', paddingLeft: '0', color: '#FFFFFF'},
-    buttonCell: { position: 'relative', width: '100%', height: '100%'},
-    playPauseButton: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, zIndex: 2 },
   };
 
   return (
     <div>
       <h2>Beats</h2>
-      <div style={styles.tableContainer}>
+      <div>
         <table style={styles.table}>
           <thead style={styles.thead}>
             <tr>
