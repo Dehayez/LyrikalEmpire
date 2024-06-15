@@ -44,22 +44,58 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
           </div>
         </td>
         <td style={{ color: selectedBeat && selectedBeat.id === beat.id ? '#FFCC44' : '' }}>
-          <input className='beat-row__input' type="text" defaultValue={beat.title} onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} />
+          <input 
+            className='beat-row__input' 
+            type="text" 
+            defaultValue={beat.title} 
+            onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} 
+            onKeyDown={(e) => { if (e.keyCode === 13) e.target.blur(); }}
+          />
         </td>
         <td style={styles.tdata}>
-          <input className='beat-row__input' type="text" defaultValue={beat.genre} onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} />
+          <input 
+            className='beat-row__input' 
+            type="text" 
+            defaultValue={beat.genre} 
+            onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} 
+            onKeyDown={(e) => { if (e.keyCode === 13) e.target.blur(); }}
+          />
         </td>
         <td style={styles.tdata}>
-          <input className='beat-row__input' type="text" defaultValue={beat.bpm} onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.value)} />
+          <input 
+            className='beat-row__input' 
+            type="text" 
+            defaultValue={beat.bpm} 
+            onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.value)} 
+            onKeyDown={(e) => { if (e.keyCode === 13) e.target.blur(); }}
+          />
         </td>
         <td style={styles.tdata}>
-          <input className='beat-row__input' type="text" defaultValue={beat.tierlist} onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.value)} />
+          <input 
+            className='beat-row__input' 
+            type="text" 
+            defaultValue={beat.tierlist} 
+            onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.value)} 
+            onKeyDown={(e) => { if (e.keyCode === 13) e.target.blur(); }}
+          />
         </td>
         <td style={styles.tdata}>
-          <input className='beat-row__input' type="text" defaultValue={beat.mood} onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)} />
+          <input 
+            className='beat-row__input' 
+            type="text" 
+            defaultValue={beat.mood} 
+            onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)} 
+            onKeyDown={(e) => { if (e.keyCode === 13) e.target.blur(); }}
+          />
         </td>
         <td style={styles.tdata}>
-          <input className='beat-row__input' type="text" defaultValue={beat.keywords} onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} />
+          <input 
+            className='beat-row__input' 
+            type="text" 
+            defaultValue={beat.keywords} 
+            onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} 
+            onKeyDown={(e) => { if (e.keyCode === 13) e.target.blur(); }}
+          />
         </td>
         <td style={styles.tdata}>
           <button className="icon-button" onClick={() => handleDelete(beat.id)}>
