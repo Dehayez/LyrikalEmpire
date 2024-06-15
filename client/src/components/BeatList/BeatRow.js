@@ -63,7 +63,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
         </td>
         <td style={styles.tdata}>
           <input 
-            className='beat-row__input' 
+            className='beat-row__input beat-row__input--bpm' 
             type="text" 
             defaultValue={beat.bpm} 
             onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.value)} 
