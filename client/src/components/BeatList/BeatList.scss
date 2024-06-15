@@ -2,10 +2,6 @@
   --border-radius: 5px;
 }
 
-table {
-  border-collapse: collapse;
-}
-
 .beat-row {
   margin: 6px 0;
   &:hover {
@@ -29,16 +25,40 @@ table {
   }
 }
 
-.beat-number {
-  width: 30px;
-  text-align: center;
+.resizable-header {
+  position: relative;
+  
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: transparent;
+    cursor: col-resize; // Add this line
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: transparent;
+    transition: background-color 0.3s;
+    opacity: 0;
+  }
+
+  &:hover::before {
+    background-color: #ccc;
+    opacity: 1;
+  }
 }
 
-.center-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+.beat-number {
+  text-align: center;
 }
 
 .animation-container {
