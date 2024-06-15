@@ -1,16 +1,11 @@
 import React from 'react';
-import { IoPlaySharp, IoPauseSharp, IoTrashBinOutline } from "react-icons/io5";
+import { IoTrashBinOutline } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 
 const styles = {
-  tableContainer: { overflowX: 'auto', backgroundColor: '#181818', color: '#FFFFFF' },
-  table: { minWidth: '600px', width: '100%', tableLayout: 'auto' },
-  thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left' },
   tdata: { padding: '8px', color: '#FFFFFF'},
   numberColumnCell: { paddingLeft: '14px'},
-  theadFirstChild: { textAlign: 'center'},
-  th: { padding: '10px', paddingLeft: '0', color: '#FFFFFF'},
   buttonCell: { position: 'relative', width: '100%', height: '100%'},
   playPauseButton: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, zIndex: 2 },
 };
