@@ -1,11 +1,15 @@
 import React from 'react';
 import { IoPlaySharp, IoPauseSharp } from "react-icons/io5";
 
-const PlayPauseButton = ({ beat, handlePlayPause, selectedBeat, isPlaying, styles }) => {
+const styles = {
+  playPauseButton: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, zIndex: 2 },
+};
+
+const PlayPauseButton = ({ beat, handlePlayPause, selectedBeat, isPlaying }) => {
   return (
     <button
       style={styles.playPauseButton}
-      className="icon-button"
+      className="icon-button icon-button--play-pause"
       onClick={() => handlePlayPause(beat)}
     >
       {selectedBeat && selectedBeat.id === beat.id && isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}

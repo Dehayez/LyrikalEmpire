@@ -51,7 +51,7 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
       <div className='volume-slider' style={{ flex: '1' }}>
         <div className='volume-slider__icon' onClick={toggleMute}>
           {volumeIcon}
-         {/*  <span className="tooltip">{isMuted ? 'Mute' : 'Unmute'}</span> */}
+          <span className="tooltip">{isMuted ? 'Unmute' : 'Mute'}</span>
         </div>
         <div 
           className={`volume-slider__track ${isHovering ? 'hover' : ''}`}

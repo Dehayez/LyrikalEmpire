@@ -111,7 +111,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       tableLayout: 'auto', 
       overflowX: 'auto', 
       display: 'block', 
-      whiteSpace: 'nowrap' 
+      whiteSpace: 'nowrap',
+      overflow: 'visible' 
     },
     thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left' },
     tdata: { padding: '8px', color: '#FFFFFF'},
