@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { IoPlaySkipForwardSharp } from "react-icons/io5";
+import './NextButton.scss';
 
 const NextButton = ({ onNext }) => {
   const [isNextActive, setIsNextActive] = useState(false);

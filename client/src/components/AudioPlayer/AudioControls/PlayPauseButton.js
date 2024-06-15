@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { IoPlaySharp, IoPauseSharp } from "react-icons/io5";
+import './PlayPauseButton.scss';
 
 const PlayPauseButton = ({ isPlaying, setIsPlaying }) => {
   const [animatePlayPause, setAnimatePlayPause] = useState(false);

@@ -15,10 +15,6 @@ $indicator-half-size: $indicator-size / 2;
   background-color: transparent;
 }
 
-.smooth-progress-bar .rhap_progress-filled {
-  //transition: width 0.2s cubic-bezier(0.4, 0, 0.4, 1);
-}
-
 .rhap_progress-indicator {
   opacity: 0;
   background-color: white;
@@ -67,37 +63,6 @@ $indicator-half-size: $indicator-size / 2;
 }
 
 .icon-button {
-  &.play-pause {
-    background: #f0f0f0; 
-    color: #181818;
-    border-radius: 50%; 
-    padding: 10px;
-    margin: 0 20px;
-
-    &:active {
-      transform: scale(0.95);
-      transition: transform 0.1s ease-in-out;
-    }
-
-    .tooltip {
-      bottom: 125%;
-    }
-  }
-
-  &__prev,
-  &__next {
-    color: grey;
-
-    &:hover,
-    &.active {
-      color: lightgrey;
-    }
-
-    .tooltip {
-      bottom: 180%;
-    }
-  }
-
   position: relative;
 }
 
@@ -115,10 +80,4 @@ $indicator-half-size: $indicator-size / 2;
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 16px;
-}
-
-.audio-player__volume {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }

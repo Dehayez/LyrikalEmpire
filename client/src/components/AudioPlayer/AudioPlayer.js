@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
+import { NextButton, PlayPauseButton, PrevButton, VolumeSlider } from './AudioControls';
 import './AudioPlayer.scss';
-import { NextButton, PlayPauseButton, PrevButton } from '../AudioControls';
-import { IoVolumeHigh, IoVolumeMedium, IoVolumeLow, IoVolumeOff } from 'react-icons/io5';
 
 let currentPlaying;
 
@@ -109,21 +108,7 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev }) =
         ]}
         />
       </div>
-      <div className='audio-player__volume' style={{ flex: '1' }}>
-        {volume > 0.66 && <IoVolumeHigh />}
-        {volume > 0.33 && volume <= 0.66 && <IoVolumeMedium />}
-        {volume > 0 && volume <= 0.33 && <IoVolumeLow />}
-        {volume === 0 && <IoVolumeOff />}
-        <input 
-          type="range" 
-          className='volume-slider'
-          min="0" 
-          max="1" 
-          step="0.01" 
-          value={volume} 
-          onChange={handleVolumeChange} 
-        />
-      </div>
+      <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
     </div>
   );
 };
