@@ -1,4 +1,5 @@
 import React from 'react';
+import './BeatAnimation.scss';
 
 const BeatAnimation = ({ beat, selectedBeat, isPlaying, hoveredBeat, index }) => {
   return (

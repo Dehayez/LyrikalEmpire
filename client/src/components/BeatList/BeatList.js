@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getBeats, deleteBeat, updateBeat } from '../../services/beatService';
 import ConfirmModal from '../ConfirmModal';
 import BeatRow from './BeatRow';
@@ -10,6 +10,52 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   const [beatToDelete, setBeatToDelete] = useState(null);
   const [playingBeat, setPlayingBeat] = useState(null);
   const [hoveredBeat, setHoveredBeat] = useState(null);
+
+  const tableRef = useRef(null); // Add this line
+
+  useEffect(() => {
+    const fetchBeats = async () => {
+      const fetchedBeats = await getBeats();
+      setBeats(fetchedBeats);
+      makeResizable(); // Add this line
+    };
+
+    fetchBeats();
+  }, []);
+
+  const makeResizable = () => {
+    const headers = Array.from(tableRef.current.querySelectorAll('th'));
+  
+    headers.slice(1).forEach(header => {
+      // Add hover effect
+      header.classList.add('resizable-header');
+      
+      header.addEventListener('mousedown', e => {
+        const initialMouseX = e.clientX;
+        const initialWidth = header.offsetWidth;
+      
+        // Change cursor to 'drag' type
+        document.body.style.cursor = 'col-resize';
+      
+        const onMouseMove = e => {
+          const newWidth = initialWidth + e.clientX - initialMouseX;
+          header.style.width = `${newWidth}px`;
+        };
+      
+        const onMouseUp = () => {
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+      
+          // Reset cursor and border
+          document.body.style.cursor = '';
+          header.classList.remove('resizable-header');
+        };
+      
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+    });
+  };
 
   useEffect(() => {
     const fetchBeats = async () => {
@@ -51,18 +97,29 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   };
 
   const styles = {
-    table: { minWidth: '600px', width: '100%' },
+    table: { 
+      tableLayout: 'auto', 
+      overflowX: 'auto', 
+      display: 'block', 
+      whiteSpace: 'nowrap' 
+    },
     thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left' },
     tdata: { padding: '8px', color: '#FFFFFF'},
-    theadFirstChild: { textAlign: 'center'},
-    th: { padding: '10px', paddingLeft: '0', color: '#FFFFFF'},
+    theadFirstChild: { textAlign: 'center', width: '50px'},
+    th: { 
+      boxSizing: 'border-box',
+      padding: '10px', 
+      paddingLeft: '0', 
+      color: '#FFFFFF',
+      minWidth: '60px'
+    },
   };
 
   return (
     <div>
       <h2>Beats</h2>
       <div>
-        <table style={styles.table}>
+        <table style={styles.table} ref={tableRef}>
           <thead style={styles.thead}>
             <tr>
               <th style={styles.theadFirstChild}>#</th>

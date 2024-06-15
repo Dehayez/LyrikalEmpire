@@ -9,7 +9,6 @@ import './App.scss';
 
 const styles = {
   container: {
-    maxWidth: '1200px',
     margin: '0 auto',
     padding: '0 20px',
   },
