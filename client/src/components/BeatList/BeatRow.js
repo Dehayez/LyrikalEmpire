@@ -60,8 +60,14 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             className='beat-row__input beat-row__input--bpm' 
             type="text" 
             defaultValue={beat.bpm} 
+            onKeyDown={(e) => {
+              if (!/^[\d.,]+$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Tab') {
+                e.preventDefault();
+              } else if (e.key === "Enter") {
+                e.target.blur();
+              }
+            }}
             onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.value)} 
-            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
             spellCheck="false"
           />
         </td>
