@@ -70,13 +70,21 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
               }
             }}
             onBlur={(e) => {
+              // Replace comma with dot and parse as float
+              let bpm = parseFloat(e.target.value.replace(',', '.'));
+            
+              // Round to nearest integer
+              bpm = Math.round(bpm);
+            
               // Validate that the input is a positive number (integer or decimal)
               // and within the range of 20 to 240 BPM
-              const bpm = Math.round(parseFloat(e.target.value.replace(',', '.')));
               if (isNaN(bpm) || bpm <= 0 || bpm > 240) {
                 alert('Please enter a valid BPM (1-240).');
                 e.target.focus();
               } else {
+                // Update the input field with the rounded BPM value
+                e.target.value = bpm;
+            
                 handleUpdate(beat.id, 'bpm', bpm);
               }
             }}
