@@ -33,10 +33,28 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         setKeywords('');
         setFileName('No file chosen');
     };
-    
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let newBeat = { title, bpm: bpm || null, genre, mood, keywords };
+    
+        let bpmValue = null;
+    
+        // Only parse and validate the BPM if it's not empty
+        if (bpm !== '') {
+            // Replace comma with dot and parse as float
+            bpmValue = parseFloat(bpm.replace(',', '.'));
+    
+            // Round to nearest integer
+            bpmValue = Math.round(bpmValue);
+    
+            // Validate that the input is a positive number (integer or decimal)
+            // and within the range of 20 to 240 BPM
+            if (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240) {
+                alert('Please enter a valid BPM (1-240) or leave it empty.');
+                return; // Don't submit the form
+            }
+        }
+    
+        let newBeat = { title, bpm: bpmValue, genre, mood, keywords };
         if (tierlist && tierlist !== '') {
             newBeat.tierlist = tierlist;
         }
@@ -53,8 +71,8 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
 
     const handleBpmChange = (event) => {
         const newValue = event.target.value;
-        // Regular expression to allow only numbers
-        if (/^\d*$/.test(newValue) && newValue.length <= 3) {
+        // Regular expression to allow only numbers, point, and comma
+        if (/^[\d.,]*$/.test(newValue) && newValue.length <= 11) {
             setBpm(newValue);
         }
     };
@@ -93,7 +111,48 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             </div>
                         </div>
                     </div>
-                    <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} maxLength="11" spellCheck="false" />
+                    <FormInput 
+                        label="BPM" 
+                        type="text" 
+                        placeholder='Enter BPM' 
+                        value={bpm} 
+                        onChange={handleBpmChange} 
+                        onKeyDown={(e) => {
+                            // Allow only numbers, decimal point, comma, Backspace, Tab, and arrow keys
+                            if (!/^[\d.,]+$/.test(e.key) && !['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                                e.preventDefault();
+                            }
+                            if (e.key === "Enter") {
+                                e.target.blur();
+                            }
+                        }} 
+                        onBlur={(e) => {
+                            // If the input is empty, allow it to be null
+                            if (e.target.value === '') {
+                                setBpm(null);
+                                return;
+                            }
+                        
+                            // Replace comma with dot and parse as float
+                            let bpmValue = parseFloat(e.target.value.replace(',', '.'));
+                        
+                            // Round to nearest integer
+                            bpmValue = Math.round(bpmValue);
+                        
+                            // Validate that the input is a positive number (integer or decimal)
+                            // and within the range of 20 to 240 BPM
+                            if (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240) {
+                                alert('Please enter a valid BPM (1-240) or leave it empty.');
+                                e.target.focus();
+                            } else {
+                                // Update the input field with the rounded BPM value
+                                e.target.value = bpmValue;
+                        
+                                setBpm(bpmValue);
+                            }
+                        }}
+                        spellCheck="false" 
+                    />
                     <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} spellCheck="false" />
                     <div className="form-group">
                         <label>Tierlist</label>
