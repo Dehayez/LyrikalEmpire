@@ -93,7 +93,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             </div>
                         </div>
                     </div>
-                    <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} required maxLength="3" spellCheck="false" />
+                    <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} maxLength="11" spellCheck="false" />
                     <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} spellCheck="false" />
                     <div className="form-group">
                         <label>Tierlist</label>
