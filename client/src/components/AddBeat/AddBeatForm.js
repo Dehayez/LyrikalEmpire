@@ -80,7 +80,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
                 <h2 style={{marginTop: '0'}}>Add Beat</h2>
                 <form onSubmit={handleSubmit}>
-                    <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required />
+                    <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
                     <div className="form-group">
                         <label>Audio</label>
                         <div className="file-input">
@@ -93,8 +93,8 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             </div>
                         </div>
                     </div>
-                    <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} required maxLength="3" />
-                    <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} />
+                    <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} required maxLength="3" spellCheck="false" />
+                    <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} spellCheck="false" />
                     <div className="form-group">
                         <label>Tierlist</label>
                         <div className="select-wrapper">
@@ -109,8 +109,8 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
                         </div>
                     </div>
-                    <FormInput label="Mood" type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} />
-                    <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} />
+                    <FormInput label="Mood" type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} spellCheck="false" />
+                    <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} spellCheck="false" />
                     <div>
                         <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                         <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>

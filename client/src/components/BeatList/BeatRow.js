@@ -42,6 +42,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             defaultValue={beat.title} 
             onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+            spellCheck="false"
           />
         </td>
         <td className="beat-row__data">
@@ -51,6 +52,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             defaultValue={beat.genre} 
             onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+            spellCheck="false"
           />
         </td>
         <td className="beat-row__data">
@@ -60,6 +62,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             defaultValue={beat.bpm} 
             onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+            spellCheck="false"
           />
         </td>
         <td className="beat-row__data">
@@ -69,6 +72,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             defaultValue={beat.tierlist} 
             onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+            spellCheck="false"
           />
         </td>
         <td className="beat-row__data">
@@ -78,6 +82,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             defaultValue={beat.mood} 
             onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+            spellCheck="false"
           />
         </td>
         <td className="beat-row__data">
@@ -87,6 +92,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             defaultValue={beat.keywords}
             onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+            spellCheck="false"
           />
         </td>
         <td className="beat-row__delete">
