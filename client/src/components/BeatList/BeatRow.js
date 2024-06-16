@@ -37,7 +37,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
         </td>
         <td className={selectedBeat && selectedBeat.id === beat.id ? 'beat-row__selected' : ''}>
           <input 
-            className='beat-row__input' 
+            className='beat-row__input beat-row__input--title'
             type="text"
             defaultValue={beat.title} 
             onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} 
