@@ -15,21 +15,22 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
     const rect = sliderRef.current.getBoundingClientRect();
     const newVolume = clamp((event.clientX - rect.left) / rect.width, 0, 1);
     handleVolumeChange({ target: { value: newVolume } });
-  }
-
-  const handleMouseMove = (event) => {
-    if (isDragging) calculateVolume(event);
+    setIsMuted(newVolume === 0);
   }
 
   const toggleMute = () => {
-    if (isMuted) {
-      handleVolumeChange({ target: { value: prevVolume } });
+    if (volume === 0) {
+      handleVolumeChange({ target: { value: prevVolume === 0 ? 1 : prevVolume } });
       setIsMuted(false);
     } else {
       setPrevVolume(volume);
       handleVolumeChange({ target: { value: 0 } });
       setIsMuted(true);
     }
+  }
+
+  const handleMouseMove = (event) => {
+    if (isDragging) calculateVolume(event);
   }
 
   useEffect(() => {
@@ -47,35 +48,34 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
     : volume > 0 ? <IoVolumeLowSharp size={22} />
     : <IoVolumeMuteSharp size={22} />;
 
-    return (
-      <div className='volume-slider' style={{ flex: '1' }}>
-        <div className='volume-slider__icon' onClick={toggleMute}>
-          {volumeIcon}
-          <span className="tooltip">{isMuted ? 'Unmute' : 'Mute'}</span>
-        </div>
-        <div 
-          className={`volume-slider__track ${isHovering ? 'hover' : ''}`}
-          ref={sliderRef}
-          onMouseDown={() => setIsDragging(true)}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-        >
-          <div
-            className='volume-slider__progress'
-            style={{ width: `${volume * 100}%` }}
-          />
-          <div 
-            className='volume-slider__thumb'
-            style={{ left: `${volume * 100}%` }}
-          />
-          <div 
-            className='volume-slider__click-capture'
-            onClick={calculateVolume}
-            style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}
-          />
-        </div>
+  return (
+    <div className='volume-slider' style={{ flex: '1' }}>
+      <div className='volume-slider__icon' onClick={toggleMute}>
+        {volumeIcon}
+        <span className="tooltip">{isMuted ? 'Unmute' : 'Mute'}</span>
       </div>
-    );
+      <div 
+        className={`volume-slider__track ${isHovering ? 'hover' : ''}`}
+        ref={sliderRef}
+        onMouseDown={() => setIsDragging(true)}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+      >
+        <div
+          className='volume-slider__progress'
+          style={{ width: `${volume * 100}%` }}
+        />
+        <div 
+          className='volume-slider__thumb'
+          style={{ left: `${volume * 100}%` }}
+        />
+        <div 
+          className='volume-slider__click-capture'
+          onClick={calculateVolume}
+        />
+      </div>
+    </div>
+  );
 }
 
 export default VolumeSlider;

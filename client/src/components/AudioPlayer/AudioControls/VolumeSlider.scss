@@ -1,59 +1,77 @@
 .volume-slider {
-    display: flex;
-    justify-content: right;
-    align-items: center;
-  
-    &:hover {
-      & .volume-slider__track > .volume-slider__progress {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+
+  &:hover {
+    .volume-slider__track {
+      .volume-slider__progress {
         background: #FFCC44;
       }
-  
-      & .volume-slider__track > .volume-slider__thumb {
+
+      .volume-slider__thumb {
         visibility: visible;
       }
     }
-  
-    &__icon {
+  }
+
+  &__icon {
     position: relative;
-      margin-right: 10px;
-      padding-top: 2px;
-      cursor: pointer;
-      color: grey;
+    margin-right: 10px;
+    padding-top: 2px;
+    cursor: pointer;
+    color: grey;
 
-      &:hover {
-        color: white;
+    &:hover {
+      color: white;
 
-        .tooltip {
-          visibility: visible;
-          opacity: 1;
-        }
+      .tooltip {
+        visibility: visible;
+        opacity: 1;
       }
     }
-    
-    &__track {
-      position: relative;
-      width: 50%;
-      height: 5px;
-      background-color: rgba(221, 221, 221, 0.5);
-      border-radius: 2px;
+  }
+
+  &__track {
+    position: relative;
+    width: 50%;
+    height: 5px;
+    background-color: rgba(221, 221, 221, 0.5);
+    border-radius: 2px;
+
+    .volume-slider__click-capture {
+      position: absolute;
+      top: -10px;
+      bottom: -10px;
+      left: 0;
+      right: 0;
       cursor: pointer;
+      z-index: 1;
     }
-    
-    &__progress {
-      position: absolute;
-      height: 100%;
-      background: white;
-      border-radius: 2px;
-    }
-  
-    &__thumb {
-      visibility: hidden;
-      position: absolute;
-      top: 50%;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: white;
-      transform: translate(-50%, -50%);
+
+    &:hover {
+      .volume-slider__thumb {
+        visibility: visible;
+      }
     }
   }
+
+  &__progress {
+    position: absolute;
+    height: 100%;
+    background: white;
+    border-radius: 2px;
+  }
+
+  &__thumb {
+    visibility: hidden;
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+  }
+}
