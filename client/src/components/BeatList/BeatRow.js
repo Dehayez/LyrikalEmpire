@@ -61,13 +61,25 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
             type="text" 
             defaultValue={beat.bpm} 
             onKeyDown={(e) => {
-              if (!/^[\d.,]+$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Tab') {
+              // Allow only numbers, decimal point, comma, Backspace, Tab, and arrow keys
+              if (!/^[\d.,]+$/.test(e.key) && !['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
                 e.preventDefault();
-              } else if (e.key === "Enter") {
+              }
+              if (e.key === "Enter") {
                 e.target.blur();
               }
             }}
-            onBlur={(e) => handleUpdate(beat.id, 'bpm', e.target.value)} 
+            onBlur={(e) => {
+              // Validate that the input is a positive number (integer or decimal)
+              // and within the range of 20 to 240 BPM
+              const bpm = parseFloat(e.target.value.replace(',', '.'));
+              if (isNaN(bpm) || bpm <= 0 || bpm > 240) {
+                alert('Please enter a valid BPM (1-240).');
+                e.target.focus();
+              } else {
+                handleUpdate(beat.id, 'bpm', e.target.value);
+              }
+            }}
             spellCheck="false"
           />
         </td>
