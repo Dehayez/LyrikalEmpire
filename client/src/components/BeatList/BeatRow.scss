@@ -16,6 +16,14 @@
     width: 100%;
     cursor: pointer;
 
+    &--title {
+      color: white;
+
+      &:focus {
+        color: #FFCC44; // Yellow when focused
+      }
+    }
+
     &:focus {
       background-color: #202020;
       outline: none;
@@ -66,6 +74,14 @@
 
   &__selected {
     color: #FFCC44;
+
+    .beat-row__input--title {
+      color: #FFCC44;
+
+      &:focus {
+        color: white;
+      }
+    }
   }
 
   &__data {
