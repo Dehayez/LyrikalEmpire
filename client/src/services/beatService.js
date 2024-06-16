@@ -11,8 +11,10 @@ export const addBeat = async (beat, audioFile) => {
   const formData = new FormData();
 
   for (const key in beat) {
-    formData.append(key, beat[key]);
-  }
+    if (beat[key] !== null) {
+        formData.append(key, beat[key]);
+    }
+}
 
   if (audioFile) {
     formData.append('audio', audioFile, audioFile.name);

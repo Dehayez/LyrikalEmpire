@@ -36,7 +36,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let newBeat = { title, bpm, genre, mood, keywords };
+        let newBeat = { title, bpm: bpm || null, genre, mood, keywords };
         if (tierlist && tierlist !== '') {
             newBeat.tierlist = tierlist;
         }
