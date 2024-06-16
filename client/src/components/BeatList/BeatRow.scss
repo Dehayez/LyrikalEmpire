@@ -1,24 +1,33 @@
 .beat-row {
   margin: 6px 0;
+
   &:hover {
     background-color: #202020;
+
+    .beat-row__delete-button {
+      opacity: 1;
+    }
   }
+
   &__input {
     box-sizing: border-box;
     background-color: transparent;
     border: none;
     width: 100%;
     cursor: pointer;
+
     &:focus {
       background-color: #202020;
       outline: none;
       box-shadow: 0 0 0 1px #ccc;
       cursor: text;
     }
+
     &--bpm {
       text-align: right;
     }
   }
+
   &__icon-button {
     display: flex;
     align-items: center;
@@ -26,11 +35,13 @@
     background-color: transparent;
     border: none;
     font-size: 18px;
+
     &-container {
       display: flex;
       justify-content: center;
       align-items: center;
     }
+
     &:hover {
       .beat-row__tooltip {
         visibility: visible;
@@ -38,10 +49,12 @@
       }
     }
   }
+
   &__number {
     padding: 8px;
     text-align: center;
   }
+
   &__button-cell {
     position: relative;
     width: 100%;
@@ -50,17 +63,23 @@
     justify-content: center;
     align-items: center;
   }
+
   &__selected {
     color: #FFCC44;
   }
+
   &__data {
     padding: 8px;
     color: #FFFFFF;
   }
-  &__delete {
-  }
+
   &__tooltip {
     visibility: hidden;
     opacity: 0;
+  }
+
+  &__delete-button {
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 }

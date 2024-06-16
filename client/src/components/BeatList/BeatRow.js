@@ -97,10 +97,10 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
         </td>
         <td className="beat-row__delete">
           <div className='beat-row__icon-button-container'>
-            <button className="beat-row__icon-button icon-button" onClick={() => handleDelete(beat.id)}>
-              <IoTrashBinOutline />
-              <span className="beat-row__tooltip tooltip">Delete</span>
-            </button>
+          <button className="beat-row__icon-button icon-button beat-row__delete-button" onClick={() => handleDelete(beat.id)}>
+            <IoTrashBinOutline />
+            <span className="beat-row__tooltip tooltip">Delete</span>
+          </button>
           </div>
         </td>
       </tr>
