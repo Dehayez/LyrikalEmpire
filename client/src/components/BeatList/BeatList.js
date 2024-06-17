@@ -24,6 +24,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   }, []);
 
   const makeResizable = () => {
+    if (!tableRef.current) {
+      return;
+    }
+  
     const headers = Array.from(tableRef.current.querySelectorAll('th'));
   
     // Load saved widths
@@ -154,38 +158,42 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   return (
     <div>
       <h2>Beats</h2>
-      <div>
-        <table className='beat-list__table' style={styles.table} ref={tableRef}>
-          <thead style={styles.thead}>
-            <tr>
-              <th style={styles.theadFirstChild}>#</th>
-              <th style={styles.th}>Title</th>
-              <th style={styles.th}>Genre</th>
-              <th style={styles.th}>BPM</th>
-              <th style={styles.th}>Tierlist</th>
-              <th style={styles.th}>Mood</th>
-              <th style={styles.th}>Keywords</th>
-              <th style={styles.th}></th>
-            </tr>
-          </thead>
-          <tbody>
-            {beats.map((beat, index) => (
-              <BeatRow
-                key={beat.id}
-                beat={beat}
-                index={index}
-                handlePlayPause={handlePlayPause}
-                handleUpdate={handleUpdate}
-                handleDelete={handleDelete}
-                selectedBeat={selectedBeat}
-                isPlaying={isPlaying}
-                hoveredBeat={hoveredBeat}
-                setHoveredBeat={setHoveredBeat}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {beats.length > 0 ? (
+        <div>
+          <table className='beat-list__table' style={styles.table} ref={tableRef}>
+            <thead style={styles.thead}>
+              <tr>
+                <th style={styles.theadFirstChild}>#</th>
+                <th style={styles.th}>Title</th>
+                <th style={styles.th}>Genre</th>
+                <th style={styles.th}>BPM</th>
+                <th style={styles.th}>Tierlist</th>
+                <th style={styles.th}>Mood</th>
+                <th style={styles.th}>Keywords</th>
+                <th style={styles.th}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {beats.map((beat, index) => (
+                <BeatRow
+                  key={beat.id}
+                  beat={beat}
+                  index={index}
+                  handlePlayPause={handlePlayPause}
+                  handleUpdate={handleUpdate}
+                  handleDelete={handleDelete}
+                  selectedBeat={selectedBeat}
+                  isPlaying={isPlaying}
+                  hoveredBeat={hoveredBeat}
+                  setHoveredBeat={setHoveredBeat}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className='beat-list__warning'>No beats are added yet.</p>
+      )}
       <ConfirmModal
         isOpen={isConfirmOpen}
         message="Are you sure you want to delete this beat?"
