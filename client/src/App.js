@@ -40,7 +40,7 @@ function App() {
     } else {
       setCurrentBeat(beat);
       setIsPlaying(true);
-      setHasBeatPlayed(true); // Set this to true when a beat is played
+      setHasBeatPlayed(true);
     }
   };
   const handleNext = () => {
