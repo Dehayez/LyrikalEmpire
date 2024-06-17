@@ -109,7 +109,6 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
                 <h2 style={{marginTop: '0'}}>Add Beat</h2>
                 <form onSubmit={handleSubmit}>
-                    <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
                     <div className="form-group">
                         <label>Audio</label>
                         <div className="file-input">
@@ -122,6 +121,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             </div>
                         </div>
                     </div>
+                    <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
                     <FormInput 
                         label="BPM" 
                         type="text" 
