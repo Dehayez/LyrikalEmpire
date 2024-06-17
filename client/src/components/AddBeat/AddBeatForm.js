@@ -108,7 +108,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                                 <label htmlFor="file" className="file-input__label no-margin">
                                     <IoCloudUploadSharp /> Upload File
                                 </label>
-                                <input type="file" id="file" className="file-input__input" onChange={handleFileChange} required />
+                                <input type="file" id="file" className="file-input__input" onChange={handleFileChange} required accept="audio/*" />
                                 <span id="file-name" className="file-input__name">{fileName}</span>
                             </div>
                         </div>
