@@ -68,20 +68,23 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             setIsOpen(false);
             setShowToast(true);
             toast.dark(`${title} added successfully`);
-            setTimeout(() => setShowToast(false), 9000); // Hide the toast after 3 seconds
+            setTimeout(() => setShowToast(false), 3000);
         } catch (error) {
             console.error('An error occurred while uploading the beat.');
         }
     };
 
     const handleFileChange = (e) => {
-        setAudio(e.target.files[0]);
-        setFileName(e.target.files[0].name);
-    }
+        const file = e.target.files[0];
+        setAudio(file);
+        setFileName(file.name);
+    
+        const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
+        setTitle(fileNameWithoutExtension);
+    };
 
     const handleBpmChange = (event) => {
         const newValue = event.target.value;
-        // Regular expression to allow only numbers, point, and comma
         if (/^[\d.,]*$/.test(newValue) && newValue.length <= 11) {
             setBpm(newValue);
         }
