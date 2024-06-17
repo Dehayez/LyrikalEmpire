@@ -139,7 +139,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       display: 'block', 
       whiteSpace: 'nowrap',
       overflow: 'visible',
-      width: 'max-content' 
+      width: 'max-content',
     },
     thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left', zIndex: 2},
     tdata: { padding: '8px', color: '#FFFFFF'},

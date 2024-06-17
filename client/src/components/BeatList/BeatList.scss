@@ -24,7 +24,6 @@
     bottom: 0;
     width: 3px;
     background-color: transparent;
-    transition: background-color 0.2s ease-in-out;
     opacity: 0;
   }
 }
@@ -35,7 +34,6 @@
 }
 
 .beat-list__table-head {
-  transition: background-color 0.2s ease-in-out;
   &:hover {
     background-color: #202020;
   }
