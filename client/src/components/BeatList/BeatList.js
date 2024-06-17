@@ -37,34 +37,55 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     headers.slice(1, -1).forEach((header, originalIndex) => {
       // Add hover effect
       header.classList.add('resizable-header');
-  
+    
+      document.addEventListener('mousemove', e => {
+        const rect = header.getBoundingClientRect();
+        const isNearBorder = rect.right - e.clientX < 5;
+        const isOverHeader = e.clientY >= rect.top && e.clientY <= rect.bottom;
+    
+        if (isNearBorder && e.clientX <= rect.right && isOverHeader) {
+          header.classList.add('near-border');
+          header.style.cursor = 'col-resize';
+        } else {
+          // Only remove 'near-border' class if not dragging
+          if (!header.classList.contains('dragging')) {
+            header.classList.remove('near-border');
+            header.style.cursor = '';
+          }
+        }
+      });
+    
       header.addEventListener('mousedown', e => {
+        const rect = header.getBoundingClientRect();
+        const isNearBorder = rect.right - e.clientX < 5;
+        if (!isNearBorder) return;
+    
         const initialMouseX = e.clientX;
         const initialWidth = header.offsetWidth;
-      
-        // Add 'dragging' class
-        header.classList.add('dragging');
-      
-        // Change cursor to 'drag' type
+    
+        header.classList.add('dragging', 'near-border');
+    
         document.body.style.cursor = 'col-resize';
-      
+        document.body.classList.add('dragging');
+    
         const onMouseMove = e => {
           const newWidth = initialWidth + e.clientX - initialMouseX;
           header.style.width = `${newWidth}px`;
-      
+    
           // Save new width
           localStorage.setItem(`headerWidth${originalIndex + 1}`, newWidth);
         };
-      
+    
         const onMouseUp = () => {
-          // Remove 'dragging' class
-          header.classList.remove('dragging');
-      
+          // Remove 'dragging' and 'near-border' classes
+          header.classList.remove('dragging', 'near-border');
+          document.body.classList.remove('dragging');
+    
           document.body.style.cursor = '';
           document.removeEventListener('mousemove', onMouseMove);
           document.removeEventListener('mouseup', onMouseUp);
         };
-      
+    
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
       });
