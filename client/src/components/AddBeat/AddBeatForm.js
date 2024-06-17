@@ -92,12 +92,11 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             setBpm(newValue);
         }
     };
-    
 
     const modalStyle = {
         overlay: {
             backgroundColor: 'rgba(30, 30, 30, 0.75)',
-            zIndex: 1,
+            zIndex: 2,
         },
         content: {
             backgroundColor: '#181818',
