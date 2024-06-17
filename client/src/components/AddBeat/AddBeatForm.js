@@ -3,13 +3,14 @@ import Modal from 'react-modal';
 import { addBeat } from '../../services/beatService';
 import { IoCloudUploadSharp, IoChevronDownSharp } from "react-icons/io5";
 import './AddBeat.scss'
+import './AddBeatForm.scss';
 
 Modal.setAppElement('#root');
 
 const FormInput = ({ label, type, placeholder, value, onChange, required, min, pattern, maxLength }) => (
     <div className="form-group">
         <label>{label}</label>
-        <input type={type} placeholder={placeholder} value={value} onChange={onChange} required={required} min={min} pattern={pattern} maxLength={maxLength} />
+        <input className='form-group__input' type={type} placeholder={placeholder} value={value} onChange={onChange} required={required} min={min} pattern={pattern} maxLength={maxLength} />
     </div>
 );
 
@@ -157,7 +158,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                     <div className="form-group">
                         <label>Tierlist</label>
                         <div className="select-wrapper">
-                            <select value={tierlist} onChange={(e) => setTierlist(e.target.value)}>
+                            <select className="select-wrapper__select" value={tierlist} onChange={(e) => setTierlist(e.target.value)}>
                                 <option value="">Select tier</option>
                                 <option value="S">S</option>
                                 <option value="A">A</option>
