@@ -21,23 +21,17 @@ const h2Style = {
 const modalStyle = {
   overlay: {
     backgroundColor: 'rgba(30, 30, 30, 0.75)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    zIndex: 2,
   },
   content: {
-    top: 'auto',
-    left: 'auto',
-    right: 'auto',
-    bottom: 'auto',
     backgroundColor: '#181818',
     color: 'white', 
     border: 'none',
     borderRadius: '6px',
     maxWidth: '380px',
-    position: 'relative',
-    margin: 'auto',
-    boxSizing: 'border-box',
+    margin: 'auto', 
+    padding: '20px',
+    display: 'inline-table'
   }
 };
 
