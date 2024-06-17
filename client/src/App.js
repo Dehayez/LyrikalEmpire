@@ -4,7 +4,8 @@ import BeatList from './components/BeatList';
 import AddBeatForm from './components/AddBeat/AddBeatForm';
 import AddBeatButton from './components/AddBeat/AddBeatButton';
 import AudioPlayer from './components/AudioPlayer/AudioPlayer';
-import { IoAdd } from 'react-icons/io5';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
 const styles = {
@@ -66,6 +67,7 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer />
       <div id="main-content" style={styles.container}>
         <Header />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />

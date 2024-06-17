@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { addBeat } from '../../services/beatService';
 import { IoCloudUploadSharp, IoChevronDownSharp } from "react-icons/io5";
+import { toast } from 'react-toastify';
 import './AddBeat.scss'
 import './AddBeatForm.scss';
 
@@ -23,6 +24,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [mood, setMood] = useState('');
     const [keywords, setKeywords] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
+    const [showToast, setShowToast] = useState(false);
 
     const resetForm = () => {
         setTitle('');
@@ -59,10 +61,17 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         if (tierlist && tierlist !== '') {
             newBeat.tierlist = tierlist;
         }
-        await addBeat(newBeat, audio);
-        onAdd();
-        resetForm();
-        setIsOpen(false);
+        try {
+            await addBeat(newBeat, audio);
+            onAdd();
+            resetForm();
+            setIsOpen(false);
+            setShowToast(true);
+            toast.dark(`${title} added successfully`);
+            setTimeout(() => setShowToast(false), 9000); // Hide the toast after 3 seconds
+        } catch (error) {
+            console.error('An error occurred while uploading the beat.');
+        }
     };
 
     const handleFileChange = (e) => {
