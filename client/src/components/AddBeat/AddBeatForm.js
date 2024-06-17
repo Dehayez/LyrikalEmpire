@@ -81,7 +81,8 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
 
     const modalStyle = {
         overlay: {
-            backgroundColor: 'rgba(30, 30, 30, 0.75)'
+            backgroundColor: 'rgba(30, 30, 30, 0.75)',
+            zIndex: 1,
         },
         content: {
             backgroundColor: '#181818',
