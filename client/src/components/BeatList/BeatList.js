@@ -11,7 +11,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   const [playingBeat, setPlayingBeat] = useState(null);
   const [hoveredBeat, setHoveredBeat] = useState(null);
 
-  const tableRef = useRef(null); // Add this line
+  const tableRef = useRef(null);
 
   useEffect(() => {
     const fetchBeats = async () => {
@@ -30,7 +30,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   
     const headers = Array.from(tableRef.current.querySelectorAll('th'));
   
-    // Load saved widths
     headers.forEach((header, index) => {
       const savedWidth = localStorage.getItem(`headerWidth${index}`);
       if (savedWidth) {
@@ -39,19 +38,17 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     });
   
     headers.slice(1, -1).forEach((header, originalIndex) => {
-      // Add hover effect
       header.classList.add('resizable-header');
     
       document.addEventListener('mousemove', e => {
         const rect = header.getBoundingClientRect();
-        const isNearBorder = rect.right - e.clientX < 5;
+        const isNearBorder = rect.right - e.clientX < 10;
         const isOverHeader = e.clientY >= rect.top && e.clientY <= rect.bottom;
     
         if (isNearBorder && e.clientX <= rect.right && isOverHeader) {
           header.classList.add('near-border');
           header.style.cursor = 'col-resize';
         } else {
-          // Only remove 'near-border' class if not dragging
           if (!header.classList.contains('dragging')) {
             header.classList.remove('near-border');
             header.style.cursor = '';
@@ -60,8 +57,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       });
     
       header.addEventListener('mousedown', e => {
+        e.preventDefault();
+        
         const rect = header.getBoundingClientRect();
-        const isNearBorder = rect.right - e.clientX < 5;
+        const isNearBorder = rect.right - e.clientX < 10;
         if (!isNearBorder) return;
     
         const initialMouseX = e.clientX;
@@ -76,12 +75,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
           const newWidth = initialWidth + e.clientX - initialMouseX;
           header.style.width = `${newWidth}px`;
     
-          // Save new width
           localStorage.setItem(`headerWidth${originalIndex + 1}`, newWidth);
         };
     
         const onMouseUp = () => {
-          // Remove 'dragging' and 'near-border' classes
           header.classList.remove('dragging', 'near-border');
           document.body.classList.remove('dragging');
     
@@ -141,7 +138,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       overflowX: 'auto', 
       display: 'block', 
       whiteSpace: 'nowrap',
-      overflow: 'visible' 
+      overflow: 'visible',
+      width: 'max-content' // Add this line
     },
     thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left', zIndex: 2},
     tdata: { padding: '8px', color: '#FFFFFF'},
