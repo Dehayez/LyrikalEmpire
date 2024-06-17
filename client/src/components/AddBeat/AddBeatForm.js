@@ -67,7 +67,10 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             resetForm();
             setIsOpen(false);
             setShowToast(true);
-            toast.dark(`${title} added successfully`);
+            toast.dark(<div><strong>{title}</strong> added successfully!</div>, {
+                autoClose: 3000,
+                pauseOnFocusLoss: false
+            });
             setTimeout(() => setShowToast(false), 3000);
         } catch (error) {
             console.error('An error occurred while uploading the beat.');
