@@ -143,7 +143,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       whiteSpace: 'nowrap',
       overflow: 'visible' 
     },
-    thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left' },
+    thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left', zIndex: 2},
     tdata: { padding: '8px', color: '#FFFFFF'},
     theadFirstChild: { textAlign: 'center', width: '50px'},
     th: { 
@@ -151,7 +151,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       padding: '10px', 
       paddingLeft: '18px', 
       color: '#FFFFFF',
-      minWidth: '60px'
+      minWidth: '60px',
     },
   };
 
@@ -163,7 +163,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
           <table className='beat-list__table' style={styles.table} ref={tableRef}>
             <thead style={styles.thead}>
               <tr>
-                <th style={styles.theadFirstChild}>#</th>
+                <th style={{...styles.th, ...styles.theadFirstChild}}>#</th>
                 <th style={styles.th}>Title</th>
                 <th style={styles.th}>Genre</th>
                 <th style={styles.th}>BPM</th>
