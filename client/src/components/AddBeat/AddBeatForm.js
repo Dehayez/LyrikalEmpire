@@ -158,7 +158,14 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                     <div className="form-group">
                         <label>Tierlist</label>
                         <div className="select-wrapper">
-                            <select className="select-wrapper__select" value={tierlist} onChange={(e) => setTierlist(e.target.value)}>
+                        <select 
+                            className="select-wrapper__select" 
+                            value={tierlist} 
+                            onChange={(e) => setTierlist(e.target.value)}
+                            onFocus={(e) => e.target.style.color = 'white'}
+                            onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
+                            style={{color: tierlist ? 'white' : 'grey'}}
+                        >
                                 <option value="">Select tier</option>
                                 <option value="S">S</option>
                                 <option value="A">A</option>
