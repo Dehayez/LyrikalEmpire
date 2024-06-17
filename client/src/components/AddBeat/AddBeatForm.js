@@ -167,11 +167,14 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             style={{color: tierlist ? 'white' : 'grey'}}
                         >
                                 <option value="">Select tier</option>
+                                <option value="G">G</option>
                                 <option value="S">S</option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
                                 <option value="C">C</option>
                                 <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
                             </select>
                             <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
                         </div>
