@@ -34,3 +34,10 @@
 .tooltip {
   border-radius: 6px;
 }
+
+.Toastify__progress-bar {
+  background: #ffcc44 !important;
+  &--bg {
+    background: #CC9900 !important;
+  }
+}
