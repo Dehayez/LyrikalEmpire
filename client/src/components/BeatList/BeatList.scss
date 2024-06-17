@@ -13,7 +13,7 @@
   }
 
   &.near-border::after {
-    border-right: 3px solid #CCC;
+    border-right: 4px solid #505050;
   }
 
   &::before {
@@ -35,7 +35,7 @@
 }
 
 .resizable-header.dragging::after {
-  border-right: 5px solid #CCC;
+  border-right: 4px solid #CCC;
 }
 
 .beat-list__warning {
