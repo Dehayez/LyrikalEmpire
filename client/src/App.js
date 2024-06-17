@@ -4,7 +4,7 @@ import BeatList from './components/BeatList';
 import AddBeatForm from './components/AddBeat/AddBeatForm';
 import AddBeatButton from './components/AddBeat/AddBeatButton';
 import AudioPlayer from './components/AudioPlayer/AudioPlayer';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
@@ -27,6 +27,21 @@ function App() {
   const [animateAddButton, setAnimateAddButton] = useState(false);
   const [volume, setVolume] = useState(1.0); // Volume is between 0.0 and 1.0
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
+  const [emptySpaceHeight, setEmptySpaceHeight] = useState(0);
+
+  useEffect(() => {
+    const audioPlayer = document.getElementById('audio-player');
+    const mainContent = document.getElementById('main-content');
+    if (audioPlayer && mainContent && hasBeatPlayed) {
+      const audioPlayerHeight = audioPlayer.offsetHeight;
+      mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
+      setAudioPlayerHeight(audioPlayerHeight);
+      setAddBeatButtonBottom(audioPlayerHeight + 20);
+      setEmptySpaceHeight(audioPlayerHeight);
+    } else if (!hasBeatPlayed) {
+      setEmptySpaceHeight(0);
+    }
+  }, [currentBeat, hasBeatPlayed]);
 
   const handleAdd = () => setRefresh(!refresh);
   const handlePlay = (beat, play, beats) => {
@@ -72,6 +87,7 @@ function App() {
         <Header />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <BeatList key={refresh} onPlay={handlePlay} selectedBeat={selectedBeat} isPlaying={isPlaying} />
+        <div style={{ height: '90px' }} /> {/* This will add an empty space of 50px */}
         <AddBeatButton setIsOpen={setIsOpen} addBeatButtonBottom={addBeatButtonBottom} animateAddButton={animateAddButton} setAnimateAddButton={setAnimateAddButton} />
       </div>
       <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} />
