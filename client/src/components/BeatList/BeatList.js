@@ -42,10 +42,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     
       document.addEventListener('mousemove', e => {
         const rect = header.getBoundingClientRect();
-        const isNearBorder = rect.right - e.clientX < 10;
+        const isNearBorder = e.clientX >= rect.right - 8 && e.clientX <= rect.right;
         const isOverHeader = e.clientY >= rect.top && e.clientY <= rect.bottom;
-    
-        if (isNearBorder && e.clientX <= rect.right && isOverHeader) {
+      
+        if (isNearBorder && isOverHeader) {
           header.classList.add('near-border');
           header.style.cursor = 'col-resize';
         } else {
@@ -55,12 +55,12 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
           }
         }
       });
-    
+      
       header.addEventListener('mousedown', e => {
         e.preventDefault();
         
         const rect = header.getBoundingClientRect();
-        const isNearBorder = rect.right - e.clientX < 10;
+        const isNearBorder = e.clientX >= rect.right - 8 && e.clientX <= rect.right;
         if (!isNearBorder) return;
     
         const initialMouseX = e.clientX;
@@ -139,7 +139,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       display: 'block', 
       whiteSpace: 'nowrap',
       overflow: 'visible',
-      width: 'max-content' // Add this line
+      width: 'max-content' 
     },
     thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left', zIndex: 2},
     tdata: { padding: '8px', color: '#FFFFFF'},
@@ -161,13 +161,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
           <table className='beat-list__table' style={styles.table} ref={tableRef}>
             <thead style={styles.thead}>
               <tr>
-                <th style={{...styles.th, ...styles.theadFirstChild}}>#</th>
-                <th style={styles.th}>Title</th>
-                <th style={styles.th}>Genre</th>
-                <th style={styles.th}>BPM</th>
-                <th style={styles.th}>Tierlist</th>
-                <th style={styles.th}>Mood</th>
-                <th style={styles.th}>Keywords</th>
+                <th className='beat-list__table-head' style={{...styles.th, ...styles.theadFirstChild}}>#</th>
+                <th className='beat-list__table-head' style={styles.th}>Title</th>
+                <th className='beat-list__table-head' style={styles.th}>Genre</th>
+                <th className='beat-list__table-head' style={styles.th}>BPM</th>
+                <th className='beat-list__table-head' style={styles.th}>Tierlist</th>
+                <th className='beat-list__table-head' style={styles.th}>Mood</th>
+                <th className='beat-list__table-head' style={styles.th}>Keywords</th>
                 <th style={styles.th}></th>
               </tr>
             </thead>

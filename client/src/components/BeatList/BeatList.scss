@@ -24,7 +24,7 @@
     bottom: 0;
     width: 3px;
     background-color: transparent;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s ease-in-out;
     opacity: 0;
   }
 }
@@ -34,6 +34,13 @@
   border-collapse: collapse;
 }
 
+.beat-list__table-head {
+  transition: background-color 0.2s ease-in-out;
+  &:hover {
+    background-color: #202020;
+  }
+}
+
 .resizable-header.dragging::after {
   border-right: 4px solid #CCC;
 }
@@ -41,3 +48,4 @@
 .beat-list__warning {
   text-align: center;
 }
+
