@@ -25,6 +25,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   useEffect(() => {
     fetchBeats(handleUpdateAll);
   }, [handleUpdateAll]);
+  
 
   const handleConfirm = async () => {
     if (confirmModalState.beatToDelete) {
@@ -41,6 +42,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
   };
+  
 
   return (
     <div>
