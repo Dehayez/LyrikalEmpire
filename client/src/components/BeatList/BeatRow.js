@@ -4,10 +4,30 @@ import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import './BeatRow.scss';
 
-const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, openConfirmModal }) => {
+const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, openConfirmModal, beats }) => {
+  // Add these helper functions
+const isSelected = (beat, selectedBeats) => selectedBeats.map(b => b.id).includes(beat.id);
+const hasSelectedBefore = (beat, selectedBeats, beats) => {
+  const index = beats.findIndex(b => b.id === beat.id);
+  return selectedBeats.some(b => beats.findIndex(b2 => b2.id === b.id) < index);
+};
+
+const hasSelectedAfter = (beat, selectedBeats, beats) => {
+  const index = beats.findIndex(b => b.id === beat.id);
+  return selectedBeats.some(b => beats.findIndex(b2 => b2.id === b.id) > index);
+};
+
+const isMiddle = hasSelectedBefore(beat, selectedBeats, beats) && hasSelectedAfter(beat, selectedBeats, beats);
+
     return (
       <tr
-      className={`beat-row ${selectedBeats.map(b => b.id).includes(beat.id) ? 'beat-row--selected' : ''}`}
+      className={`
+        beat-row 
+        ${isSelected(beat, selectedBeats) ? 'beat-row--selected' : ''}
+        ${isSelected(beat, selectedBeats) && hasSelectedBefore(beat, selectedBeats, beats) && !isMiddle ? 'beat-row--selected-bottom' : ''}
+        ${isSelected(beat, selectedBeats) && hasSelectedAfter(beat, selectedBeats, beats) && !isMiddle ? 'beat-row--selected-top' : ''}
+        ${isMiddle ? 'beat-row--selected-middle' : ''}
+      `}
         key={beat.id}
         onMouseEnter={(e) => {
           e.currentTarget.querySelector('button').style.opacity = 1;

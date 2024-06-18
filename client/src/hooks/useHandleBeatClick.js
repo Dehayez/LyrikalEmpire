@@ -8,9 +8,15 @@ export const useHandleBeatClick = (beats, tableRef) => {
     const clickedBeatIndex = beats.findIndex(b => b.id === beat.id);
   
     if (e.shiftKey && lastSelectedBeatIndex !== null) {
-      const start = Math.min(clickedBeatIndex, lastSelectedBeatIndex);
-      const end = Math.max(clickedBeatIndex, lastSelectedBeatIndex);
-      const selectedBeats = beats.slice(start, end + 1);
+      let start = Math.min(clickedBeatIndex, lastSelectedBeatIndex);
+      let end = Math.max(clickedBeatIndex, lastSelectedBeatIndex);
+      let selectedBeats = beats.slice(start, end + 1);
+  
+      // If selecting from bottom to top, reverse the selected beats
+      if (clickedBeatIndex < lastSelectedBeatIndex) {
+        selectedBeats = selectedBeats.reverse();
+      }
+  
       setSelectedBeats(prevBeats => {
         const newSelectedBeats = [...prevBeats];
         selectedBeats.forEach(beat => {

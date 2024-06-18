@@ -65,6 +65,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
                   handleBeatClick={handleBeatClick}
                   selectedBeats={selectedBeats}
                   openConfirmModal={openConfirmModal}
+                  beats={beats}
                 />
               ))}
             </tbody>
