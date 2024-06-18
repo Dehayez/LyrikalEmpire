@@ -1,34 +1,4 @@
-.modal {
-    overlay: {
-      background-color: rgba(30, 30, 30, 0.75);
-      z-index: 2;
-    }
-    content: {
-      background-color: '#181818';
-      color: 'white'; 
-      border: 'none';
-      border-radius: '6px';
-      max-width: '380px';
-      margin: 'auto'; 
-      padding: '20px';
-      display: 'inline-table';
-    }
-  }
-  
-  .modal__close-button {
-    position: 'absolute'; 
-    right: '10px'; 
-    top: '10px';
-    color: 'white';
-    background-color: '#181818';
-    border: 'none';
-  }
-  
-  .modal__title {
-    margin-top: '0';
-  }
-  
-  .modal__button {
+.modal__button {
     background-color: #202020;
     color: white;
     border: none;
@@ -38,16 +8,16 @@
     font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
-  
+
     &:hover {
-      background-color: #1a1a1a;
+        background-color: #1a1a1a;
     }
-  
+
     &--delete {
-      background-color: #CC3344;
-  
-      &:hover {
-        background-color: #A02230;
-      }
+        background-color: #CC3344;
+
+        &:hover {
+            background-color: #A02230;
+        }
     }
-  }
+}
