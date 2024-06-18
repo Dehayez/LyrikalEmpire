@@ -6,26 +6,30 @@ import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import './BeatList.scss';
 
+const fetchBeats = async (handleUpdateAll) => {
+  const fetchedBeats = await getBeats();
+  handleUpdateAll(fetchedBeats);
+};
+
 const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
-  const [isConfirmOpen, setConfirmOpen] = useState(false);
-  const [beatToDelete, setBeatToDelete] = useState(null);
+  // State variables
+  const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatToDelete: null });
   const [hoveredBeat, setHoveredBeat] = useState(null);
+  
+  // Custom hooks
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([]);
   const tableRef = useRef(null);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef);
 
+  // Fetch beats on component mount
   useEffect(() => {
-    const fetchBeats = async () => {
-      const fetchedBeats = await getBeats();
-      handleUpdateAll(fetchedBeats);
-    };
-    fetchBeats();
+    fetchBeats(handleUpdateAll);
   }, [handleUpdateAll]);
 
   const handleConfirm = async () => {
-    if (beatToDelete) {
-      await handleDelete(beatToDelete);
-      setConfirmOpen(false);
+    if (confirmModalState.beatToDelete) {
+      await handleDelete(confirmModalState.beatToDelete);
+      setConfirmModalState({ isOpen: false, beatToDelete: null });
     }
   };
 
@@ -37,7 +41,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   return (
     <div>
       <h2>Beats</h2>
-      {beats.length > 0 ? (
+      {beats.length > 0 && (
         <div>
           <table className='beat-list__table' ref={tableRef}>
             <TableHeader />
@@ -61,14 +65,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
             </tbody>
           </table>
         </div>
-      ) : (
-        <p className='beat-list__warning'>No beats are added yet.</p>
       )}
+      {beats.length === 0 && <p className='beat-list__warning'>No beats are added yet.</p>}
       <ConfirmModal
-        isOpen={isConfirmOpen}
+        isOpen={confirmModalState.isOpen}
         message="Are you sure you want to delete this beat?"
         onConfirm={handleConfirm}
-        onCancel={() => setConfirmOpen(false)}
+        onCancel={() => setConfirmModalState({ isOpen: false, beatToDelete: null })}
       />
     </div>
   );
