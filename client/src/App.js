@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Header from './components/Header/Header';
-import BeatList from './components/BeatList';
-import AddBeatForm from './components/AddBeat/AddBeatForm';
-import AddBeatButton from './components/AddBeat/AddBeatButton';
-import AudioPlayer from './components/AudioPlayer/AudioPlayer';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer } from './components';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
