@@ -1,54 +1,37 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { getBeats, deleteBeat, updateBeat } from '../../services';
-import { useHandleBeatClick } from '../../hooks';
+import React, { useEffect, useRef, useState } from 'react';
+import { getBeats } from '../../services';
+import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import ConfirmModal from '../ConfirmModal';
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import './BeatList.scss';
 
 const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
-  const [beats, setBeats] = useState([]);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [beatToDelete, setBeatToDelete] = useState(null);
   const [hoveredBeat, setHoveredBeat] = useState(null);
+  const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([]);
   const tableRef = useRef(null);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef);
 
   useEffect(() => {
     const fetchBeats = async () => {
       const fetchedBeats = await getBeats();
-      setBeats(fetchedBeats);
+      handleUpdateAll(fetchedBeats);
     };
     fetchBeats();
-  }, []);
-
-  const handleDelete = (id) => {
-    setBeatToDelete(id);
-    setConfirmOpen(true);
-  };
+  }, [handleUpdateAll]);
 
   const handleConfirm = async () => {
     if (beatToDelete) {
-      await deleteBeat(beatToDelete);
-      setBeats((prevBeats) => prevBeats.filter(beat => beat.id !== beatToDelete));
+      await handleDelete(beatToDelete);
+      setConfirmOpen(false);
     }
-    setConfirmOpen(false);
   };
 
   const handlePlayPause = (beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
-  };
-
-  const handleUpdate = async (id, key, value) => {
-    let updatedValue = value;
-    if (key === 'created_at' || key === 'edited_at') {
-      const date = new Date(value);
-      updatedValue = date.toISOString().replace('T', ' ').replace('.000Z', '');
-    }
-    const updatedBeat = { ...beats.find(beat => beat.id === id), [key]: updatedValue };
-    await updateBeat(id, updatedBeat);
-    setBeats(beats.map(beat => beat.id === id ? updatedBeat : beat));
   };
 
   return (
@@ -68,9 +51,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
                   handleUpdate={handleUpdate}
                   handleDelete={handleDelete}
                   selectedBeat={selectedBeat}
-                  isPlaying={isPlaying}
                   hoveredBeat={hoveredBeat}
                   setHoveredBeat={setHoveredBeat}
+                  isPlaying={isPlaying}
                   handleBeatClick={handleBeatClick}
                   selectedBeats={selectedBeats}
                 />
