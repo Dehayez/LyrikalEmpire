@@ -8,7 +8,6 @@
       .volume-slider__progress {
         background: #FFCC44;
       }
-
       .volume-slider__thumb {
         visibility: visible;
       }
@@ -47,6 +46,15 @@
       right: 0;
       cursor: pointer;
       z-index: 1;
+    }
+
+    &.hover {
+      .volume-slider__progress {
+        background: #FFCC44;
+      }
+      .volume-slider__thumb {
+        visibility: visible;
+      }
     }
 
     &:hover {

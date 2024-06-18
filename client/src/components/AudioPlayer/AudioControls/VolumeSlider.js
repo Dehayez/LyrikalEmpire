@@ -55,7 +55,7 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
         <span className="tooltip">{isMuted ? 'Unmute' : 'Mute'}</span>
       </div>
       <div 
-        className={`volume-slider__track ${isHovering ? 'hover' : ''}`}
+        className={`volume-slider__track ${isHovering || isDragging ? 'hover' : ''}`}
         ref={sliderRef}
         onMouseDown={() => setIsDragging(true)}
         onMouseEnter={() => setIsHovering(true)}
