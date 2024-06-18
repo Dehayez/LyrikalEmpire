@@ -25,7 +25,7 @@ function App() {
   useEffect(() => {
     const audioPlayer = document.getElementById('audio-player');
     const mainContent = document.getElementById('main-content');
-    
+
     if (audioPlayer && mainContent && hasBeatPlayed) {
       const audioPlayerHeight = audioPlayer.offsetHeight;
       mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
@@ -73,7 +73,7 @@ function App() {
         <Header />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <BeatList key={refresh} onPlay={handlePlay} selectedBeat={selectedBeat} isPlaying={isPlaying} />
-        <div style={{ height: '90px' }} /> 
+        <div className="buffer"/> 
         <AddBeatButton setIsOpen={setIsOpen} addBeatButtonBottom={addBeatButtonBottom} animateAddButton={animateAddButton} setAnimateAddButton={setAnimateAddButton} />
       </div>
       <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} />
