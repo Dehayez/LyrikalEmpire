@@ -1,44 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoTrashBinOutline } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import './BeatRow.scss';
 
-const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, openConfirmModal, beats }) => {
-  // Add these helper functions
-const isSelected = (beat, selectedBeats) => selectedBeats.map(b => b.id).includes(beat.id);
-const hasSelectedBefore = (beat, selectedBeats, beats) => {
-  const index = beats.findIndex(b => b.id === beat.id);
-  return selectedBeats.some(b => beats.findIndex(b2 => b2.id === b.id) < index);
-};
+const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, openConfirmModal, beats }) => {
+  // Create a map of beat ids to their indices
+  const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
 
-const hasSelectedAfter = (beat, selectedBeats, beats) => {
-  const index = beats.findIndex(b => b.id === beat.id);
-  return selectedBeats.some(b => beats.findIndex(b2 => b2.id === b.id) > index);
-};
+  const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
+  const hasSelectedBefore = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1);
+  const hasSelectedAfter = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] + 1);
+  const isMiddle = hasSelectedBefore && hasSelectedAfter;
 
-const isMiddle = hasSelectedBefore(beat, selectedBeats, beats) && hasSelectedAfter(beat, selectedBeats, beats);
+  const [className, setClassName] = useState('beat-row');
 
-    return (
-      <tr
-      className={`
-        beat-row 
-        ${isSelected(beat, selectedBeats) ? 'beat-row--selected' : ''}
-        ${isSelected(beat, selectedBeats) && hasSelectedBefore(beat, selectedBeats, beats) && !isMiddle ? 'beat-row--selected-bottom' : ''}
-        ${isSelected(beat, selectedBeats) && hasSelectedAfter(beat, selectedBeats, beats) && !isMiddle ? 'beat-row--selected-top' : ''}
-        ${isMiddle ? 'beat-row--selected-middle' : ''}
-      `}
-        key={beat.id}
-        onMouseEnter={(e) => {
-          e.currentTarget.querySelector('button').style.opacity = 1;
-          setHoveredBeat(beat.id);
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.querySelector('button').style.opacity = 0;
-          setHoveredBeat(null);
-        }}
-        onClick={(e) => handleBeatClick(beat, e)}
-      >
+  useEffect(() => {
+    let newClassName = 'beat-row';
+    if (isSelected) {
+      if (isMiddle) {
+        newClassName = 'beat-row--selected-middle';
+      } else if (hasSelectedBefore) {
+        newClassName = 'beat-row--selected-bottom';
+      } else if (hasSelectedAfter) {
+        newClassName = 'beat-row--selected-top';
+      } else {
+        newClassName = 'beat-row--selected';
+      }
+    }
+    setClassName(newClassName);
+  }, [isSelected, isMiddle, hasSelectedBefore, hasSelectedAfter, selectedBeats]);
+
+  return (
+    <tr
+      className={className}
+      key={beat.id}
+      onMouseEnter={(e) => {
+        e.currentTarget.querySelector('button').style.opacity = 1;
+        setHoveredBeat(beat.id);
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.querySelector('button').style.opacity = 0;
+        setHoveredBeat(null);
+      }}
+      onClick={(e) => handleBeatClick(beat, e)}
+    >
         <td className="beat-row__number">
           <div className="beat-row__button-cell">
             <BeatAnimation 
