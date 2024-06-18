@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import classNames from 'classnames';
 import { IoTrashBinOutline } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
@@ -13,27 +14,18 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, selectedBeat, isP
   const hasSelectedAfter = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] + 1);
   const isMiddle = hasSelectedBefore && hasSelectedAfter;
 
-  const [className, setClassName] = useState('beat-row');
 
-  useEffect(() => {
-    let newClassName = 'beat-row';
-    if (isSelected) {
-      if (isMiddle) {
-        newClassName = 'beat-row--selected-middle';
-      } else if (hasSelectedBefore) {
-        newClassName = 'beat-row--selected-bottom';
-      } else if (hasSelectedAfter) {
-        newClassName = 'beat-row--selected-top';
-      } else {
-        newClassName = 'beat-row--selected';
-      }
-    }
-    setClassName(newClassName);
-  }, [isSelected, isMiddle, hasSelectedBefore, hasSelectedAfter, selectedBeats]);
+  const beatRowClasses = classNames({
+    'beat-row': true,
+    'beat-row--selected-middle': isSelected && isMiddle,
+    'beat-row--selected-bottom': isSelected && !isMiddle && hasSelectedBefore,
+    'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
+    'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter
+  });
 
   return (
     <tr
-      className={className}
+    className={beatRowClasses}
       key={beat.id}
       onMouseEnter={(e) => {
         e.currentTarget.querySelector('button').style.opacity = 1;
