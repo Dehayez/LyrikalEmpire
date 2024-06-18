@@ -33,6 +33,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     }
   };
 
+  const openConfirmModal = (id) => {
+    setConfirmModalState({ isOpen: true, beatToDelete: id });
+  };
+
   const handlePlayPause = (beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
@@ -60,6 +64,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
                   isPlaying={isPlaying}
                   handleBeatClick={handleBeatClick}
                   selectedBeats={selectedBeats}
+                  openConfirmModal={openConfirmModal}
                 />
               ))}
             </tbody>
