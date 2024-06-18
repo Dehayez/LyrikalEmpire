@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export const useHandleBeatClick = (beats) => {
+export const useHandleBeatClick = (beats, tableRef) => {
   const [selectedBeats, setSelectedBeats] = useState([]);
   const [lastSelectedBeatIndex, setLastSelectedBeatIndex] = useState(null);
 
@@ -34,6 +34,19 @@ export const useHandleBeatClick = (beats) => {
   
     setLastSelectedBeatIndex(clickedBeatIndex);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (tableRef.current && !tableRef.current.contains(event.target)) {
+        setSelectedBeats([]);
+      }
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return { selectedBeats, handleBeatClick, setSelectedBeats };
 };
