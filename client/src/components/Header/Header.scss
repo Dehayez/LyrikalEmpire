@@ -1,0 +1,21 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+    width: 100%;
+  
+    &__nav-group {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+  
+    &__nav-link {
+      text-decoration: none;
+      color: inherit;
+    }
+  
+    &__nav-logo {
+      width: 30px;
+    }
+  }

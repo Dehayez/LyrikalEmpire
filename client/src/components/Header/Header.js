@@ -1,34 +1,14 @@
 import React from 'react';
-
-const styles = {
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '20px 0',
-    width: '100%',
-  },
-  navGroup: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  navLink: {
-    textDecoration: 'none',
-    color: 'inherit',
-  },
-  navLogo: {
-    width: '30px',
-  }
-};
+import './Header.scss';
 
 const Header = () => (
-  <header style={styles.header}>
-    <div style={styles.navGroup}>
-      <a style={styles.navLink} href="/">Home</a>
-      <a style={styles.navLink} href="/beats">Beats</a>
-      <img style={styles.navLogo} src="/android-chrome-192x192.png" alt="Logo" />
-      <a style={styles.navLink} href="/info">Info</a>
-      <a style={styles.navLink} href="/contact">Contact</a>
+  <header className="header">
+    <div className="header__nav-group">
+      <a className="header__nav-link" href="/">Home</a>
+      <a className="header__nav-link" href="/beats">Beats</a>
+      <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
+      <a className="header__nav-link" href="/info">Info</a>
+      <a className="header__nav-link" href="/contact">Contact</a>
     </div>
   </header>
 );
