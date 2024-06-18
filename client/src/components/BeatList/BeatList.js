@@ -167,6 +167,19 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     setLastSelectedBeatIndex(clickedBeatIndex);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (tableRef.current && !tableRef.current.contains(event.target)) {
+        setSelectedBeats([]);
+      }
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const styles = {
     table: { 
       tableLayout: 'auto', 
