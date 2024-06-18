@@ -96,3 +96,10 @@
     transition: opacity 0.3s ease;
   }
 }
+
+.beat-row--selected {
+  background-color: #505050;
+  &:hover {
+    background-color: #505050;
+  }
+}

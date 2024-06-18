@@ -4,10 +4,10 @@ import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import './BeatRow.scss';
 
-const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat }) => {
+const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick }) => {
     return (
       <tr
-        className="beat-row"
+      className={`beat-row ${selectedBeats.map(b => b.id).includes(beat.id) ? 'beat-row--selected' : ''}`}
         key={beat.id}
         onMouseEnter={(e) => {
           e.currentTarget.querySelector('button').style.opacity = 1;
@@ -17,6 +17,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
           e.currentTarget.querySelector('button').style.opacity = 0;
           setHoveredBeat(null);
         }}
+        onClick={(e) => handleBeatClick(beat, e)}
       >
         <td className="beat-row__number">
           <div className="beat-row__button-cell">

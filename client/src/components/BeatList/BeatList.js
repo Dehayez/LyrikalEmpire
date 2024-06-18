@@ -10,6 +10,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   const [beatToDelete, setBeatToDelete] = useState(null);
   const [playingBeat, setPlayingBeat] = useState(null);
   const [hoveredBeat, setHoveredBeat] = useState(null);
+  const [selectedBeats, setSelectedBeats] = useState([]);
+  const [lastSelectedBeatIndex, setLastSelectedBeatIndex] = useState(null);
 
   const tableRef = useRef(null);
 
@@ -132,6 +134,39 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     setBeats(beats.map(beat => beat.id === id ? updatedBeat : beat));
   };
 
+  const handleBeatClick = (beat, e) => {
+    const clickedBeatIndex = beats.findIndex(b => b.id === beat.id);
+  
+    if (e.shiftKey && lastSelectedBeatIndex !== null) {
+      const start = Math.min(clickedBeatIndex, lastSelectedBeatIndex);
+      const end = Math.max(clickedBeatIndex, lastSelectedBeatIndex);
+      const selectedBeats = beats.slice(start, end + 1);
+      setSelectedBeats(prevBeats => {
+        // Create a new array with all the previously selected beats
+        const newSelectedBeats = [...prevBeats];
+        // Add the newly selected beats to the array
+        selectedBeats.forEach(beat => {
+          if (!newSelectedBeats.map(b => b.id).includes(beat.id)) {
+            newSelectedBeats.push(beat);
+          }
+        });
+        return newSelectedBeats;
+      });
+    } else if (!e.ctrlKey && !e.metaKey) {
+      setSelectedBeats([beat]);
+    } else {
+      setSelectedBeats(prevBeats => {
+        if (prevBeats.map(b => b.id).includes(beat.id)) {
+          return prevBeats.filter(b => b.id !== beat.id);
+        } else {
+          return [...prevBeats, beat];
+        }
+      });
+    }
+  
+    setLastSelectedBeatIndex(clickedBeatIndex);
+  };
+
   const styles = {
     table: { 
       tableLayout: 'auto', 
@@ -184,6 +219,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
                   isPlaying={isPlaying}
                   hoveredBeat={hoveredBeat}
                   setHoveredBeat={setHoveredBeat}
+                  handleBeatClick={handleBeatClick}
+                  selectedBeats={selectedBeats}
                 />
               ))}
             </tbody>
