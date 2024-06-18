@@ -23,10 +23,13 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, selectedBeat, isP
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter
   });
 
+  // Add a key prop that changes when the class name changes
+  const key = beatRowClasses;
+
   return (
     <tr
-    className={beatRowClasses}
-      key={beat.id}
+      className={beatRowClasses}
+      key={key}
       onMouseEnter={(e) => {
         e.currentTarget.querySelector('button').style.opacity = 1;
         setHoveredBeat(beat.id);
