@@ -4,7 +4,7 @@ import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import './BeatRow.scss';
 
-const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick }) => {
+const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, openConfirmModal }) => {
     return (
       <tr
       className={`beat-row ${selectedBeats.map(b => b.id).includes(beat.id) ? 'beat-row--selected' : ''}`}
@@ -130,7 +130,7 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, handleDelete, sel
         </td>
         <td className="beat-row__delete">
           <div className='beat-row__icon-button-container'>
-          <button className="beat-row__icon-button icon-button beat-row__delete-button" onClick={() => handleDelete(beat.id)}>
+          <button className="beat-row__icon-button icon-button beat-row__delete-button" onClick={() => openConfirmModal(beat.id)}>
             <IoTrashBinOutline />
             <span className="beat-row__tooltip tooltip">Delete</span>
           </button>
