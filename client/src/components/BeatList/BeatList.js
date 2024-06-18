@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getBeats, deleteBeat, updateBeat } from '../../services/beatService';
+import { getBeats, deleteBeat, updateBeat } from '../../services';
 import { useHandleBeatClick } from '../../hooks';
 import ConfirmModal from '../ConfirmModal';
 import BeatRow from './BeatRow';
