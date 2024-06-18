@@ -3,7 +3,6 @@ import Modal from 'react-modal';
 import { addBeat } from '../../services/beatService';
 import { IoCloudUploadSharp, IoChevronDownSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
-import './AddBeat.scss'
 import './AddBeatForm.scss';
 
 Modal.setAppElement('#root');
