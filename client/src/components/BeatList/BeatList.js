@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getBeats, deleteBeat, updateBeat } from '../../services/beatService';
 import ConfirmModal from '../ConfirmModal';
 import BeatRow from './BeatRow';
+import TableHeader from './TableHeader';
 import './BeatList.scss';
 
 const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
@@ -14,87 +15,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   const [lastSelectedBeatIndex, setLastSelectedBeatIndex] = useState(null);
 
   const tableRef = useRef(null);
-
-  useEffect(() => {
-    const fetchBeats = async () => {
-      const fetchedBeats = await getBeats();
-      setBeats(fetchedBeats);
-      makeResizable();
-    };
   
-    fetchBeats();
-  }, []);
-
-  const makeResizable = () => {
-    if (!tableRef.current) {
-      return;
-    }
-  
-    const headers = Array.from(tableRef.current.querySelectorAll('th'));
-  
-    headers.forEach((header, index) => {
-      const savedWidth = localStorage.getItem(`headerWidth${index}`);
-      if (savedWidth) {
-        header.style.width = `${savedWidth}px`;
-      }
-    });
-  
-    headers.slice(1, -1).forEach((header, originalIndex) => {
-      header.classList.add('resizable-header');
-    
-      document.addEventListener('mousemove', e => {
-        const rect = header.getBoundingClientRect();
-        const isNearBorder = e.clientX >= rect.right - 8 && e.clientX <= rect.right;
-        const isOverHeader = e.clientY >= rect.top && e.clientY <= rect.bottom;
-      
-        if (isNearBorder && isOverHeader) {
-          header.classList.add('near-border');
-          header.style.cursor = 'col-resize';
-        } else {
-          if (!header.classList.contains('dragging')) {
-            header.classList.remove('near-border');
-            header.style.cursor = '';
-          }
-        }
-      });
-      
-      header.addEventListener('mousedown', e => {
-        e.preventDefault();
-        
-        const rect = header.getBoundingClientRect();
-        const isNearBorder = e.clientX >= rect.right - 8 && e.clientX <= rect.right;
-        if (!isNearBorder) return;
-    
-        const initialMouseX = e.clientX;
-        const initialWidth = header.offsetWidth;
-    
-        header.classList.add('dragging', 'near-border');
-    
-        document.body.style.cursor = 'col-resize';
-        document.body.classList.add('dragging');
-    
-        const onMouseMove = e => {
-          const newWidth = initialWidth + e.clientX - initialMouseX;
-          header.style.width = `${newWidth}px`;
-    
-          localStorage.setItem(`headerWidth${originalIndex + 1}`, newWidth);
-        };
-    
-        const onMouseUp = () => {
-          header.classList.remove('dragging', 'near-border');
-          document.body.classList.remove('dragging');
-    
-          document.body.style.cursor = '';
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
-        };
-    
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-      });
-    });
-  };
-
   useEffect(() => {
     const fetchBeats = async () => {
       const fetchedBeats = await getBeats();
@@ -189,16 +110,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       overflow: 'visible',
       width: 'max-content',
     },
-    thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left', zIndex: 2},
-    tdata: { padding: '8px', color: '#FFFFFF'},
-    theadFirstChild: { textAlign: 'center', width: '50px'},
-    th: { 
-      boxSizing: 'border-box',
-      padding: '10px', 
-      paddingLeft: '18px', 
-      color: '#FFFFFF',
-      minWidth: '60px',
-    },
   };
 
   return (
@@ -207,18 +118,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       {beats.length > 0 ? (
         <div>
           <table className='beat-list__table' style={styles.table} ref={tableRef}>
-            <thead style={styles.thead}>
-              <tr>
-                <th className='beat-list__table-head' style={{...styles.th, ...styles.theadFirstChild}}>#</th>
-                <th className='beat-list__table-head' style={styles.th}>Title</th>
-                <th className='beat-list__table-head' style={styles.th}>Genre</th>
-                <th className='beat-list__table-head' style={styles.th}>BPM</th>
-                <th className='beat-list__table-head' style={styles.th}>Tierlist</th>
-                <th className='beat-list__table-head' style={styles.th}>Mood</th>
-                <th className='beat-list__table-head' style={styles.th}>Keywords</th>
-                <th style={styles.th}></th>
-              </tr>
-            </thead>
+            <TableHeader />
             <tbody>
               {beats.map((beat, index) => (
                 <BeatRow
