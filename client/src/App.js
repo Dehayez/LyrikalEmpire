@@ -8,13 +8,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
-const styles = {
-  container: {
-    margin: '0 auto',
-    padding: '0 20px',
-  },
-};
-
 function App() {
   const [refresh, setRefresh] = useState(false);
   const [currentBeat, setCurrentBeat] = useState(null);
@@ -25,13 +18,14 @@ function App() {
   const [audioPlayerHeight, setAudioPlayerHeight] = useState(0);
   const [addBeatButtonBottom, setAddBeatButtonBottom] = useState(20);
   const [animateAddButton, setAnimateAddButton] = useState(false);
-  const [volume, setVolume] = useState(1.0); // Volume is between 0.0 and 1.0
+  const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [emptySpaceHeight, setEmptySpaceHeight] = useState(0);
 
   useEffect(() => {
     const audioPlayer = document.getElementById('audio-player');
     const mainContent = document.getElementById('main-content');
+    
     if (audioPlayer && mainContent && hasBeatPlayed) {
       const audioPlayerHeight = audioPlayer.offsetHeight;
       mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
@@ -44,6 +38,7 @@ function App() {
   }, [currentBeat, hasBeatPlayed]);
 
   const handleAdd = () => setRefresh(!refresh);
+
   const handlePlay = (beat, play, beats) => {
     setSelectedBeat(beat);
     setBeats(beats);
@@ -58,11 +53,13 @@ function App() {
       setHasBeatPlayed(true);
     }
   };
+
   const handleNext = () => {
     const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
     const nextIndex = (currentIndex + 1) % beats.length;
     handlePlay(beats[nextIndex], true, beats);
   };
+
   const handlePrev = () => {
     const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
     const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
@@ -72,7 +69,7 @@ function App() {
   return (
     <div className="App">
       <ToastContainer />
-      <div id="main-content" style={styles.container}>
+      <div className="container" id="main-content">
         <Header />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <BeatList key={refresh} onPlay={handlePlay} selectedBeat={selectedBeat} isPlaying={isPlaying} />
