@@ -10,18 +10,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   const [beats, setBeats] = useState([]);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [beatToDelete, setBeatToDelete] = useState(null);
-  const [playingBeat, setPlayingBeat] = useState(null);
   const [hoveredBeat, setHoveredBeat] = useState(null);
-  const { selectedBeats, handleBeatClick, setSelectedBeats } = useHandleBeatClick(beats);
-
   const tableRef = useRef(null);
-  
+  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef);
+
   useEffect(() => {
     const fetchBeats = async () => {
       const fetchedBeats = await getBeats();
       setBeats(fetchedBeats);
     };
-
     fetchBeats();
   }, []);
 
@@ -41,7 +38,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   const handlePlayPause = (beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
-    setPlayingBeat(beat);
   };
 
   const handleUpdate = async (id, key, value) => {
@@ -55,36 +51,12 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     setBeats(beats.map(beat => beat.id === id ? updatedBeat : beat));
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (tableRef.current && !tableRef.current.contains(event.target)) {
-        setSelectedBeats([]);
-      }
-    };
-  
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const styles = {
-    table: { 
-      tableLayout: 'auto', 
-      overflowX: 'auto', 
-      display: 'block', 
-      whiteSpace: 'nowrap',
-      overflow: 'visible',
-      width: 'max-content',
-    },
-  };
-
   return (
     <div>
       <h2>Beats</h2>
       {beats.length > 0 ? (
         <div>
-          <table className='beat-list__table' style={styles.table} ref={tableRef}>
+          <table className='beat-list__table' ref={tableRef}>
             <TableHeader />
             <tbody>
               {beats.map((beat, index) => (

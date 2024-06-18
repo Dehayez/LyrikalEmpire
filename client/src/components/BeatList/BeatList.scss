@@ -1,21 +1,18 @@
+.beat-list__table {
+  table-layout: auto;
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
+  overflow: visible;
+  width: max-content;
+  border: none;
+  border-collapse: collapse;
+}
+
 .resizable-header {
   position: relative;
-  
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: transparent;
-    border-right: 1px solid transparent;
-  }
 
-  &.near-border::after {
-    border-right: 4px solid #505050;
-  }
-
+  &::after,
   &::before {
     content: "";
     position: absolute;
@@ -24,18 +21,18 @@
     bottom: 0;
     width: 3px;
     background-color: transparent;
-    opacity: 0;
   }
-}
 
-.beat-list__table {
-  border: none;
-  border-collapse: collapse;
-}
+  &::after {
+    border-right: 1px solid transparent;
+  }
 
-.beat-list__table-head {
-  &:hover {
-    background-color: #202020;
+  &.near-border::after {
+    border-right: 4px solid #505050;
+  }
+
+  &::before {
+    opacity: 0;
   }
 }
 
@@ -43,7 +40,10 @@
   border-right: 4px solid #CCC;
 }
 
+.beat-list__table-head:hover {
+  background-color: #202020;
+}
+
 .beat-list__warning {
   text-align: center;
 }
-
