@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
@@ -12,21 +13,16 @@ const fetchBeats = async (handleUpdateAll) => {
 };
 
 const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
-  // State variables
+  const tableRef = useRef(null);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [selectedBeatsForDeletion, setSelectedBeatsForDeletion] = useState([]);
-  
-  // Custom hooks
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([]);
-  const tableRef = useRef(null);
-  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef);
+  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, useRef(null));
 
-  // Fetch beats on component mount
   useEffect(() => {
     fetchBeats(handleUpdateAll);
   }, [handleUpdateAll]);
-  
 
   const handleConfirm = async () => {
     if (confirmModalState.beatsToDelete.length > 0) {
@@ -37,7 +33,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   };
 
   const openConfirmModal = () => {
-    // Set the beatsToDelete state to the selectedBeats array
     setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
   };
 
@@ -48,9 +43,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   
   const handleRightClick = (e, beat) => {
     e.preventDefault();
-    // Check if the right-clicked beat is already in the selection
     if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
-      // If it's not, add it to the selection
       handleBeatClick(beat, e);
     }
   };
