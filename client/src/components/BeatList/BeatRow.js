@@ -19,6 +19,8 @@ const [contextMenuY, setContextMenuY] = useState(0);
 
   const [showRowContext, setShowRowContext] = useState(false);
 
+  const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
+
   useEffect(() => {
     const hideContextMenu = () => {
       setShowRowContext(false);
@@ -79,8 +81,7 @@ const [contextMenuY, setContextMenuY] = useState(0);
       onClick={(e) => handleBeatClick(beat, e)}
       onContextMenu={(e) => {
         e.preventDefault();
-        handleRightClick(beat, e);
-        handleBeatClick(beat, e);
+        handleRightClick(e, beat);
         setShowRowContext(true);
         setContextMenuX(e.clientX);
         setContextMenuY(e.clientY);
@@ -201,22 +202,19 @@ const [contextMenuY, setContextMenuY] = useState(0);
             spellCheck="false"
           />
         </td>
-        {showRowContext && (
-  <div className="row-context" style={{position: 'fixed', top: contextMenuY, left: contextMenuX}}>
 
-    <div className="row-context__button row-context__button--add-playlist">
-      <IoAddSharp className="row-context__icon row-context__icon--add-playlist" />
-      <p className="row-context__text">Add to playlist</p>
-    </div>
-
-    <div className="row-context__button row-context__button--delete" onClick={() => openConfirmModal(beat.id)}>
-      <IoTrashBinOutline className="row-context__icon row-context__icon--delete" />
-      <p className="row-context__text">Delete this beat</p>
-    </div>
-
-
-  </div>
-)}
+      {showRowContext && (
+        <div className="row-context" style={{position: 'fixed', top: contextMenuY, left: contextMenuX}}>
+          <div className="row-context__button row-context__button--add-playlist">
+            <IoAddSharp className="row-context__icon row-context__icon--add-playlist" />
+            <p className="row-context__text">Add to playlist</p>
+          </div>
+          <div className="row-context__button row-context__button--delete" onClick={() => openConfirmModal(beat.id)}>
+            <IoTrashBinOutline className="row-context__icon row-context__icon--delete" />
+            <p className="row-context__text">{deleteText}</p>
+          </div>
+        </div>
+      )}
       </tr>
     );
   };

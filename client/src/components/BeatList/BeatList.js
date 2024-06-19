@@ -37,7 +37,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   };
 
   const openConfirmModal = () => {
-    setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeatsForDeletion });
+    // Set the beatsToDelete state to the selectedBeats array
+    setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
   };
 
   const handlePlayPause = (beat) => {
@@ -45,10 +46,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
   };
   
-  const handleRightClick = (beat, e) => {
+  const handleRightClick = (e, beat) => {
     e.preventDefault();
-    setSelectedBeatsForDeletion([...selectedBeatsForDeletion, beat.id]);
-    // Show the new component with different actions here
+    // Check if the right-clicked beat is already in the selection
+    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
+      // If it's not, add it to the selection
+      handleBeatClick(beat, e);
+    }
   };
 
   return (
@@ -84,11 +88,11 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
       )}
       {beats.length === 0 && <p className='beat-list__warning'>No beats are added yet.</p>}
       <ConfirmModal
-      isOpen={confirmModalState.isOpen}
-      message={`Are you sure you want to delete ${confirmModalState.beatsToDelete.length > 1 ? 'these beats' : 'this beat'}?`}
-      onConfirm={handleConfirm}
-      onCancel={() => setConfirmModalState({ isOpen: false, beatsToDelete: [] })}
-    />
+        isOpen={confirmModalState.isOpen}
+        message={`Are you sure you want to delete ${confirmModalState.beatsToDelete.length > 1 ? ` ${confirmModalState.beatsToDelete.length} beats` : 'this beat'}?`}
+        onConfirm={handleConfirm}
+        onCancel={() => setConfirmModalState({ isOpen: false, beatsToDelete: [] })}
+      />
     </div>
   );
 };
