@@ -61,6 +61,7 @@ const [contextMenuY, setContextMenuY] = useState(0);
       onContextMenu={(e) => {
         e.preventDefault();
         handleRightClick(beat, e);
+        handleBeatClick(beat, e);
         setShowRowContext(true);
         setContextMenuX(e.clientX);
         setContextMenuY(e.clientY);
