@@ -42,6 +42,25 @@ const [contextMenuY, setContextMenuY] = useState(0);
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter
   });
 
+  useEffect(() => {
+    const hideContextMenu = () => {
+      setShowRowContext(false);
+    };
+  
+    if (showRowContext) {
+      window.addEventListener('click', hideContextMenu);
+      document.body.classList.add('no-scroll'); // Add no-scroll class
+    } else {
+      window.removeEventListener('click', hideContextMenu);
+      document.body.classList.remove('no-scroll'); // Remove no-scroll class
+    }
+  
+    return () => {
+      window.removeEventListener('click', hideContextMenu);
+      document.body.classList.remove('no-scroll'); // Ensure no-scroll class is removed on unmount
+    };
+  }, [showRowContext]);
+
   // Add a key prop that changes when the class name changes
   const key = beatRowClasses;
 
