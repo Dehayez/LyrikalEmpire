@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { IoTrashBinOutline } from "react-icons/io5";
+import { IoTrashBinOutline, IoAddSharp } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import './BeatRow.scss';
 
-const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, openConfirmModal, beats }) => {
+const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, selectedBeat, isPlaying, hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, openConfirmModal, beats, handleRightClick }) => {
   // Create a map of beat ids to their indices
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
 
@@ -14,7 +14,26 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, selectedBeat, isP
   const hasSelectedAfter = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] + 1);
   const isMiddle = hasSelectedBefore && hasSelectedAfter;
 
+  const [contextMenuX, setContextMenuX] = useState(0);
+const [contextMenuY, setContextMenuY] = useState(0);
 
+  const [showRowContext, setShowRowContext] = useState(false);
+
+  useEffect(() => {
+    const hideContextMenu = () => {
+      setShowRowContext(false);
+    };
+  
+    if (showRowContext) {
+      window.addEventListener('click', hideContextMenu);
+    } else {
+      window.removeEventListener('click', hideContextMenu);
+    }
+  
+    return () => {
+      window.removeEventListener('click', hideContextMenu);
+    };
+  }, [showRowContext]);
   const beatRowClasses = classNames({
     'beat-row': true,
     'beat-row--selected-middle': isSelected && isMiddle,
@@ -39,6 +58,13 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, selectedBeat, isP
         setHoveredBeat(null);
       }}
       onClick={(e) => handleBeatClick(beat, e)}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        handleRightClick(beat, e);
+        setShowRowContext(true);
+        setContextMenuX(e.clientX);
+        setContextMenuY(e.clientY);
+      }}
     >
         <td className="beat-row__number">
           <div className="beat-row__button-cell">
@@ -155,14 +181,22 @@ const BeatRow = ({ beat, index, handlePlayPause, handleUpdate, selectedBeat, isP
             spellCheck="false"
           />
         </td>
-        <td className="beat-row__delete">
-          <div className='beat-row__icon-button-container'>
-          <button className="beat-row__icon-button icon-button beat-row__delete-button" onClick={() => openConfirmModal(beat.id)}>
-            <IoTrashBinOutline />
-            <span className="beat-row__tooltip tooltip">Delete</span>
-          </button>
-          </div>
-        </td>
+        {showRowContext && (
+  <div className="row-context" style={{position: 'fixed', top: contextMenuY, left: contextMenuX}}>
+
+    <div className="row-context__button row-context__button--add-playlist">
+      <IoAddSharp className="row-context__icon row-context__icon--add-playlist" />
+      <p className="row-context__text">Add to playlist</p>
+    </div>
+
+    <div className="row-context__button row-context__button--delete" onClick={() => openConfirmModal(beat.id)}>
+      <IoTrashBinOutline className="row-context__icon row-context__icon--delete" />
+      <p className="row-context__text">Delete this beat</p>
+    </div>
+
+
+  </div>
+)}
       </tr>
     );
   };

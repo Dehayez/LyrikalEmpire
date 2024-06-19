@@ -101,7 +101,6 @@ const TableHeader = () => {
         <th className='beat-list__table-head' style={styles.th}>Tierlist</th>
         <th className='beat-list__table-head' style={styles.th}>Mood</th>
         <th className='beat-list__table-head' style={styles.th}>Keywords</th>
-        <th style={styles.th}></th>
       </tr>
     </thead>
   );

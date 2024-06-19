@@ -13,10 +13,6 @@
 
   &:hover {
     background-color: #202020;
-
-    .beat-row__delete-button {
-      opacity: 1;
-    }
   }
 
   &__input {
@@ -100,11 +96,6 @@
     visibility: hidden;
     opacity: 0;
   }
-
-  &__delete-button {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
 }
 
 .beat-row--selected {
@@ -171,4 +162,27 @@
       border-radius: 0;
     }
 
+}
+
+.row-context {
+  background-color: #202020;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.row-context__button {
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #303030;
+  }
+}
+
+.row-context__icon {
+  padding-right: 12px;
 }
