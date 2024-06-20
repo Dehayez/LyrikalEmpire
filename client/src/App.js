@@ -18,6 +18,7 @@ function App() {
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [emptySpaceHeight, setEmptySpaceHeight] = useState(0);
   const [shuffle, setShuffle] = useState(false);
+  const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
   const [repeat, setRepeat] = useState(false);
 
   useEffect(() => {
@@ -55,11 +56,14 @@ function App() {
   const handleNext = () => {
     let nextIndex;
     if (shuffle) {
-      nextIndex = Math.floor(Math.random() * beats.length);
+      do {
+        nextIndex = Math.floor(Math.random() * beats.length);
+      } while (nextIndex === lastPlayedIndex && beats.length > 1);
     } else {
       const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
       nextIndex = (currentIndex + 1) % beats.length;
     }
+    setLastPlayedIndex(nextIndex);
     handlePlay(beats[nextIndex], true, beats);
   };
 
