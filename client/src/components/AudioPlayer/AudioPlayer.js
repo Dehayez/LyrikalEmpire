@@ -95,8 +95,9 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shu
         audioElement.addEventListener('loadedmetadata', () => {
           audioElement.play(); // Play the audio
         }, { once: true });
+      } else {
+        onNext();
       }
-      onNext();
     }
   }, [onNext, repeat]);
   
