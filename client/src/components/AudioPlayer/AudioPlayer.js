@@ -162,7 +162,8 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shu
           <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
           <NextButton onNext={onNext} />,
           <button className="icon-button icon-button--repeat" onClick={() => setRepeat(prev => prev === 'Disabled Repeat' ? 'Repeat' : prev === 'Repeat' ? 'Repeat One' : 'Disabled Repeat')}>
-            { repeat === 'Disabled Repeat' ? <IoRepeatSharp style={{ color: '#B3B3B3' }}/> : repeat === 'Repeat' ? <IoRepeatSharp style={{ color: '#FFFFFF' }}/> : <IoRepeatSharp style={{ color: '#FFCC44' }}/> }
+            { repeat === 'Disabled Repeat' ? <IoRepeatSharp style={{ color: '#B3B3B3' }}/> : repeat === 'Repeat' ? <IoRepeatSharp style={{ color: '#FFCC44' }}/> : <IoRepeatSharp style={{ color: '#FFCC44' }}/> }
+            { repeat === 'Repeat One' && <div className="repeat-one-indicator"></div> }
             <span className="tooltip tooltip--repeat">{ repeat === 'Disabled Repeat' ? 'Repeat' : repeat === 'Repeat' ? 'Repeat One' : 'Disable Repeat' }</span>
           </button>
         ]}
