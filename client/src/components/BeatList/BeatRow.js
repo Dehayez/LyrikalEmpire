@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { IoTrashBinOutline, IoAddSharp } from "react-icons/io5";
+import { IoTrashBinSharp, IoAddSharp } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import './BeatRow.scss';
@@ -182,7 +182,7 @@ const BeatRow = ({
             <p className="row-context__text">Add to playlist</p>
           </div>
           <div className="row-context__button row-context__button--delete" onClick={() => openConfirmModal(beat.id)}>
-            <IoTrashBinOutline className="row-context__icon row-context__icon--delete" />
+            <IoTrashBinSharp className="row-context__icon row-context__icon--delete" />
             <p className="row-context__text">{deleteText}</p>
           </div>
         </div>
