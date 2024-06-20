@@ -17,14 +17,11 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [emptySpaceHeight, setEmptySpaceHeight] = useState(0);
-  const [shuffle, setShuffle] = useState(false);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
-  const [repeat, setRepeat] = useState('Disabled Repeat');
 
   useEffect(() => {
     const audioPlayer = document.getElementById('audio-player');
     const mainContent = document.getElementById('main-content');
-
     if (audioPlayer && mainContent && hasBeatPlayed) {
       const audioPlayerHeight = audioPlayer.offsetHeight;
       mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
@@ -55,7 +52,7 @@ function App() {
 
   const handleNext = () => {
     if (repeat === 'Repeat One') {
-      setRepeat('Repeat'); // Change repeat mode to 'Repeat'
+      setRepeat('Repeat');
     }
     let nextIndex;
     if (shuffle) {
@@ -67,8 +64,6 @@ function App() {
       nextIndex = (currentIndex + 1) % beats.length;
     }
     setLastPlayedIndex(nextIndex);
-    
-    // If repeat is disabled and the next song is the first song in the list, play the first song and then pause
     if (repeat === 'Disabled Repeat' && nextIndex === 0) {
       handlePlay(beats[nextIndex], true, beats);
       setTimeout(() => setIsPlaying(false), 1);
@@ -76,7 +71,7 @@ function App() {
       handlePlay(beats[nextIndex], true, beats);
     }
   };
-  
+
   const handlePrev = () => {
     if (repeat === 'Repeat One') {
       handlePlay(currentBeat, true, beats);
@@ -86,6 +81,23 @@ function App() {
     const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
     handlePlay(beats[prevIndex], true, beats);
   };
+
+  const [shuffle, setShuffle] = useState(() => {
+    const savedShuffle = localStorage.getItem('shuffle');
+    return savedShuffle !== null ? JSON.parse(savedShuffle) : false;
+  });
+  const [repeat, setRepeat] = useState(() => {
+    const savedRepeat = localStorage.getItem('repeat');
+    return savedRepeat !== null ? savedRepeat : 'Disabled Repeat';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('shuffle', shuffle);
+  }, [shuffle]);
+
+  useEffect(() => {
+    localStorage.setItem('repeat', repeat);
+  }, [repeat]);
 
   return (
     <div className="App">
@@ -97,7 +109,7 @@ function App() {
         <div className="buffer"/> 
         <AddBeatButton setIsOpen={setIsOpen} addBeatButtonBottom={addBeatButtonBottom} animateAddButton={animateAddButton} setAnimateAddButton={setAnimateAddButton} />
       </div>
-      <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} />
+      <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} />
     </div>
   );
 }
