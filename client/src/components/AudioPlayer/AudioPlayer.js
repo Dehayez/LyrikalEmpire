@@ -7,7 +7,7 @@ import './AudioPlayer.scss';
 
 let currentPlaying;
 
-const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat }) => {
+const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat }) => {
   const playerRef = useRef();
   const [volume, setVolume] = useState(() => {
     const savedVolume = localStorage.getItem('volume');
@@ -17,7 +17,6 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shu
   const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-
     localStorage.setItem('volume', newVolume);
   };
 
@@ -27,18 +26,39 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shu
       if (play && audio.paused) {
         const playPromise = audio.play();
         if (playPromise !== undefined) {
-          playPromise.then(_ => {
-            // Automatic playback started!
-          }).catch(error => {
-            // Auto-play was prevented
-            // Show a UI element to let the user manually start playback
-          });
+          playPromise.then(_ => {}).catch(error => {});
         }
       } else if (!play && !audio.paused) {
         audio.pause();
       }
     }
   }
+
+  const handleEnded = useCallback(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      if (repeat === 'Repeat One') {
+        audioElement.currentTime = 0; // Set the audio time to 0
+        audioElement.play(); // Play the audio
+      } else {
+        onNext();
+      }
+    }
+  }, [onNext, repeat]);
+
+  useEffect(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      audioElement.volume = volume;
+      const updateTime = () => {
+        localStorage.setItem('currentTime', audioElement.currentTime);
+      };
+      audioElement.addEventListener('timeupdate', updateTime);
+      return () => {
+        audioElement.removeEventListener('timeupdate', updateTime);
+      };
+    }
+  }, [volume]);
 
   useEffect(() => {
     if (currentBeat && currentBeat.audio) {
@@ -57,72 +77,26 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shu
   useEffect(() => {
     const audioElement = playerRef.current?.audio?.current;
     if (audioElement) {
-      audioElement.addEventListener('ended', onNext);
-    }
-    return () => {
-      if (audioElement) {
-        audioElement.removeEventListener('ended', onNext);
-      }
-    };
-  }, [onNext]);
-
-  useEffect(() => {
-    const audioElement = playerRef.current?.audio?.current;
-    if (audioElement) {
-      audioElement.addEventListener('loadedmetadata', () => {
-        audioElement.currentTime = 0;
-      });
-    }
-    return () => {
-      if (audioElement) {
-        audioElement.removeEventListener('loadedmetadata', () => {});
-      }
-    };
-  }, [currentBeat]);
-
-  useEffect(() => {
-    const audioElement = playerRef.current?.audio?.current;
-    if (audioElement) {
-      audioElement.volume = volume;
-    }
-  }, [volume]);
-
-  const handleEnded = useCallback(() => {
-    const audioElement = playerRef.current?.audio?.current;
-    if (audioElement) {
-      if (repeat === 'Repeat One') {
-        audioElement.currentTime = 0; // Set the audio time to 0
-        audioElement.play(); // Play the audio
-      } else {
-        onNext();
-      }
-    }
-  }, [onNext, repeat]);
-
-  useEffect(() => {
-    const audioElement = playerRef.current?.audio?.current;
-    if (audioElement) {
-      audioElement.removeEventListener('ended', onNext); // Remove this line
+      audioElement.removeEventListener('ended', onNext);
       audioElement.addEventListener('ended', handleEnded);
-    }
-    return () => {
-      if (audioElement) {
+      return () => {
         audioElement.removeEventListener('ended', handleEnded);
-      }
-    };
-  }, [handleEnded]);
-  
+      };
+    }
+  }, [handleEnded, onNext]);
+
   useEffect(() => {
-    const audioElement = playerRef.current?.audio?.current;
-    if (audioElement) {
-      audioElement.addEventListener('ended', handleEnded);
-    }
-    return () => {
-      if (audioElement) {
-        audioElement.removeEventListener('ended', handleEnded);
+    const savedCurrentBeat = localStorage.getItem('currentBeat');
+    const savedCurrentTime = localStorage.getItem('currentTime');
+    if (savedCurrentBeat && savedCurrentTime) {
+      const currentBeat = JSON.parse(savedCurrentBeat);
+      const currentTime = parseFloat(savedCurrentTime);
+      setCurrentBeat(currentBeat);
+      if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
+        playerRef.current.audio.current.currentTime = currentTime;
       }
-    };
-  }, [handleEnded]);
+    }
+  }, []);
 
   return (
     <div className="audio-player" id="audio-player" style={{
