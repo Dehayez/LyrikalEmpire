@@ -55,8 +55,7 @@ function App() {
 
   const handleNext = () => {
     if (repeat === 'Repeat One') {
-      handlePlay(currentBeat, true, beats);
-      return;
+      setRepeat('Repeat'); // Change repeat mode to 'Repeat'
     }
     let nextIndex;
     if (shuffle) {

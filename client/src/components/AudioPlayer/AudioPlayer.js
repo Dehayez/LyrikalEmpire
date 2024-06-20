@@ -92,14 +92,25 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shu
     if (audioElement) {
       if (repeat === 'Repeat One') {
         audioElement.currentTime = 0; // Set the audio time to 0
-        audioElement.addEventListener('loadedmetadata', () => {
-          audioElement.play(); // Play the audio
-        }, { once: true });
+        audioElement.play(); // Play the audio
       } else {
         onNext();
       }
     }
   }, [onNext, repeat]);
+
+  useEffect(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      audioElement.removeEventListener('ended', onNext); // Remove this line
+      audioElement.addEventListener('ended', handleEnded);
+    }
+    return () => {
+      if (audioElement) {
+        audioElement.removeEventListener('ended', handleEnded);
+      }
+    };
+  }, [handleEnded]);
   
   useEffect(() => {
     const audioElement = playerRef.current?.audio?.current;
