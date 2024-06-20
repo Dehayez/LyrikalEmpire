@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider } from './AudioControls';
@@ -23,7 +23,20 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shu
 
   const handlePlayPause = (play) => {
     if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
-      play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
+      const audio = playerRef.current.audio.current;
+      if (play && audio.paused) {
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.then(_ => {
+            // Automatic playback started!
+          }).catch(error => {
+            // Auto-play was prevented
+            // Show a UI element to let the user manually start playback
+          });
+        }
+      } else if (!play && !audio.paused) {
+        audio.pause();
+      }
     }
   }
 
@@ -74,6 +87,31 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shu
     }
   }, [volume]);
 
+  const handleEnded = useCallback(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      if (repeat === 'Repeat One') {
+        audioElement.currentTime = 0; // Set the audio time to 0
+        audioElement.addEventListener('loadedmetadata', () => {
+          audioElement.play(); // Play the audio
+        }, { once: true });
+      }
+      onNext();
+    }
+  }, [onNext, repeat]);
+  
+  useEffect(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      audioElement.addEventListener('ended', handleEnded);
+    }
+    return () => {
+      if (audioElement) {
+        audioElement.removeEventListener('ended', handleEnded);
+      }
+    };
+  }, [handleEnded]);
+
   return (
     <div className="audio-player" id="audio-player" style={{
       display: 'flex', 
@@ -111,10 +149,10 @@ const AudioPlayer = ({ currentBeat, isPlaying, setIsPlaying, onNext, onPrev, shu
           <PrevButton onPrev={onPrev} />,
           <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
           <NextButton onNext={onNext} />,
-          <button className="icon-button icon-button--repeat" onClick={() => setRepeat(!repeat)}>
-            <IoRepeatSharp style={{ color: repeat ? '#FFCC44' : '#B3B3B3' }}/>
-            <span className="tooltip tooltip--repeat">{ repeat ? 'Disable Repeat' : 'Repeat' }</span>
-          </button>,
+          <button className="icon-button icon-button--repeat" onClick={() => setRepeat(prev => prev === 'Disabled Repeat' ? 'Repeat' : prev === 'Repeat' ? 'Repeat One' : 'Disabled Repeat')}>
+            { repeat === 'Disabled Repeat' ? <IoRepeatSharp style={{ color: '#B3B3B3' }}/> : repeat === 'Repeat' ? <IoRepeatSharp style={{ color: '#FFFFFF' }}/> : <IoRepeatSharp style={{ color: '#FFCC44' }}/> }
+            <span className="tooltip tooltip--repeat">{ repeat === 'Disabled Repeat' ? 'Repeat' : repeat === 'Repeat' ? 'Repeat One' : 'Disable Repeat' }</span>
+          </button>
         ]}
         />
       </div>
