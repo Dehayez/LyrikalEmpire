@@ -67,13 +67,8 @@ function App() {
       const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
       nextIndex = (currentIndex + 1) % beats.length;
     }
-    if (repeat !== 'none' || (repeat === 'none' && nextIndex !== 0)) {
-      setLastPlayedIndex(nextIndex);
-      handlePlay(beats[nextIndex], true, beats);
-    } else if (repeat === 'none' && nextIndex === 0) {
-      handlePlay(beats[0], false, beats);
-      setIsPlaying(false); // Add this line to pause the player
-    }
+    setLastPlayedIndex(nextIndex);
+    handlePlay(beats[nextIndex], true, beats);
   };
   
   const handlePrev = () => {
@@ -83,9 +78,7 @@ function App() {
     }
     const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
     const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
-    if (repeat !== 'none' || (repeat === 'none' && prevIndex !== beats.length - 1)) {
-      handlePlay(beats[prevIndex], true, beats);
-    }
+    handlePlay(beats[prevIndex], true, beats);
   };
 
   return (
