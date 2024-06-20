@@ -17,6 +17,8 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [emptySpaceHeight, setEmptySpaceHeight] = useState(0);
+  const [shuffle, setShuffle] = useState(false);
+  const [repeat, setRepeat] = useState(false);
 
   useEffect(() => {
     const audioPlayer = document.getElementById('audio-player');
@@ -51,8 +53,13 @@ function App() {
   };
 
   const handleNext = () => {
-    const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
-    const nextIndex = (currentIndex + 1) % beats.length;
+    let nextIndex;
+    if (shuffle) {
+      nextIndex = Math.floor(Math.random() * beats.length);
+    } else {
+      const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
+      nextIndex = (currentIndex + 1) % beats.length;
+    }
     handlePlay(beats[nextIndex], true, beats);
   };
 
@@ -72,7 +79,7 @@ function App() {
         <div className="buffer"/> 
         <AddBeatButton setIsOpen={setIsOpen} addBeatButtonBottom={addBeatButtonBottom} animateAddButton={animateAddButton} setAnimateAddButton={setAnimateAddButton} />
       </div>
-      <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} />
+      <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} />
     </div>
   );
 }
