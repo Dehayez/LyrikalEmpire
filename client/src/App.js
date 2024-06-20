@@ -67,7 +67,14 @@ function App() {
       nextIndex = (currentIndex + 1) % beats.length;
     }
     setLastPlayedIndex(nextIndex);
-    handlePlay(beats[nextIndex], true, beats);
+    
+    // If repeat is disabled and the next song is the first song in the list, play the first song and then pause
+    if (repeat === 'Disabled Repeat' && nextIndex === 0) {
+      handlePlay(beats[nextIndex], true, beats);
+      setTimeout(() => setIsPlaying(false), 1);
+    } else {
+      handlePlay(beats[nextIndex], true, beats);
+    }
   };
   
   const handlePrev = () => {
