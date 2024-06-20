@@ -81,7 +81,7 @@ $indicator-half-size: $indicator-size / 2;
 
 .icon-button--shuffle, .icon-button--repeat {
   margin: 0 10px;
-  font-size: 24px;
+  font-size: 26px;
 }
 
 .tooltip {
@@ -99,4 +99,15 @@ $indicator-half-size: $indicator-size / 2;
   transition: opacity 0.3s;
   font-size: 16px;
   white-space: nowrap;
+}
+
+.repeat-one-indicator {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: #FFCC44;
+  border-radius: 50%;
 }
