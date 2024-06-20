@@ -94,7 +94,7 @@ const BeatRow = ({
             defaultValue={beat.title} 
             onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()} 
+             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -105,7 +105,7 @@ const BeatRow = ({
             defaultValue={beat.genre} 
             onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()} 
+             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -138,7 +138,7 @@ const BeatRow = ({
                 handleUpdate(beat.id, 'bpm', bpm);
               }
             }}
-            onClick={(e) => e.stopPropagation()} 
+             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -149,7 +149,7 @@ const BeatRow = ({
             defaultValue={beat.tierlist} 
             onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()} 
+             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -160,7 +160,7 @@ const BeatRow = ({
             defaultValue={beat.mood} 
             onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()} 
+             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -171,7 +171,7 @@ const BeatRow = ({
             defaultValue={beat.keywords}
             onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()} 
+             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td> 
