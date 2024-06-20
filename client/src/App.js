@@ -19,7 +19,7 @@ function App() {
   const [emptySpaceHeight, setEmptySpaceHeight] = useState(0);
   const [shuffle, setShuffle] = useState(false);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
-  const [repeat, setRepeat] = useState(false);
+  const [repeat, setRepeat] = useState('Disabled Repeat');
 
   useEffect(() => {
     const audioPlayer = document.getElementById('audio-player');
@@ -54,6 +54,10 @@ function App() {
   };
 
   const handleNext = () => {
+    if (repeat === 'Repeat One') {
+      handlePlay(currentBeat, true, beats);
+      return;
+    }
     let nextIndex;
     if (shuffle) {
       do {
@@ -63,14 +67,25 @@ function App() {
       const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
       nextIndex = (currentIndex + 1) % beats.length;
     }
-    setLastPlayedIndex(nextIndex);
-    handlePlay(beats[nextIndex], true, beats);
+    if (repeat !== 'none' || (repeat === 'none' && nextIndex !== 0)) {
+      setLastPlayedIndex(nextIndex);
+      handlePlay(beats[nextIndex], true, beats);
+    } else if (repeat === 'none' && nextIndex === 0) {
+      handlePlay(beats[0], false, beats);
+      setIsPlaying(false); // Add this line to pause the player
+    }
   };
-
+  
   const handlePrev = () => {
+    if (repeat === 'Repeat One') {
+      handlePlay(currentBeat, true, beats);
+      return;
+    }
     const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
     const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
-    handlePlay(beats[prevIndex], true, beats);
+    if (repeat !== 'none' || (repeat === 'none' && prevIndex !== beats.length - 1)) {
+      handlePlay(beats[prevIndex], true, beats);
+    }
   };
 
   return (
@@ -83,7 +98,7 @@ function App() {
         <div className="buffer"/> 
         <AddBeatButton setIsOpen={setIsOpen} addBeatButtonBottom={addBeatButtonBottom} animateAddButton={animateAddButton} setAnimateAddButton={setAnimateAddButton} />
       </div>
-      <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} />
+      <AudioPlayer currentBeat={currentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} />
     </div>
   );
 }
