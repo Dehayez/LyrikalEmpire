@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
-import { IoShuffleSharp, IoRepeatSharp } from 'react-icons/io5';
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
