@@ -41,7 +41,7 @@ function App() {
     const audioPlayer = document.getElementById('audio-player');
     if (audioPlayer) {
       const audioPlayerRect = audioPlayer.getBoundingClientRect();
-      setAddBeatButtonBottom(audioPlayerRect.height + 20); // 20 is the original bottom value
+      setAddBeatButtonBottom(audioPlayerRect.height + 20);
     }
   };
   
@@ -51,21 +51,21 @@ function App() {
     }
   }, [audioPlayerLoaded]);
 
-useEffect(() => {
-  const audioPlayer = document.getElementById('audio-player');
-  
-  if (audioPlayer) {
-    const observer = new MutationObserver(() => {
-      adjustButtonPosition();
-    });
+  useEffect(() => {
+    const audioPlayer = document.getElementById('audio-player');
+    
+    if (audioPlayer) {
+      const observer = new MutationObserver(() => {
+        adjustButtonPosition();
+      });
 
-    observer.observe(audioPlayer, { attributes: true, childList: true, subtree: true });
+      observer.observe(audioPlayer, { attributes: true, childList: true, subtree: true });
 
-    return () => {
-      observer.disconnect();
-    };
-  }
-}, [audioPlayerLoaded]);
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, [audioPlayerLoaded]);
 
   useEffect(() => {
     if (audioPlayerLoaded) {
@@ -86,7 +86,7 @@ useEffect(() => {
     } else {
       setCurrentBeat(beat);
       setIsPlaying(true);
-      setHasBeatPlayed(true); // Ensure this is set to true when a beat is played
+      setHasBeatPlayed(true);
     }
   };
 
