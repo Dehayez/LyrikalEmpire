@@ -38,8 +38,8 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     const audioElement = playerRef.current?.audio?.current;
     if (audioElement) {
       if (repeat === 'Repeat One') {
-        audioElement.currentTime = 0; // Set the audio time to 0
-        audioElement.play(); // Play the audio
+        audioElement.currentTime = 0;
+        audioElement.play();
       } else {
         onNext();
       }
