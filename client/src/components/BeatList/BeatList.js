@@ -19,6 +19,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
   const [selectedBeatsForDeletion, setSelectedBeatsForDeletion] = useState([]);
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([]);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef);
+  const [activeContextMenu, setActiveContextMenu] = useState(null);
 
   useEffect(() => {
     fetchBeats(handleUpdateAll);
@@ -73,6 +74,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
                   openConfirmModal={openConfirmModal}
                   beats={beats}
                   handleRightClick={handleRightClick}
+                  activeContextMenu={activeContextMenu}
+                  setActiveContextMenu={setActiveContextMenu}
                 />
               ))}
             </tbody>

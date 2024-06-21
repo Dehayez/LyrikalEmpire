@@ -8,7 +8,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, selectedBeat, isPlaying, 
   hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, handleRightClick 
+  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
@@ -32,10 +32,10 @@ const BeatRow = ({
 
   useEffect(() => {
     const hideContextMenu = () => {
-      setShowRowContext(false);
+      setActiveContextMenu(null);
     };
   
-    if (showRowContext) {
+    if (activeContextMenu === beat.id) {
       window.addEventListener('click', hideContextMenu);
       document.body.classList.add('no-scroll');
     } else {
@@ -47,7 +47,7 @@ const BeatRow = ({
       window.removeEventListener('click', hideContextMenu);
       document.body.classList.remove('no-scroll');
     };
-  }, [showRowContext]);
+  }, [activeContextMenu, beat.id]);
 
   return (
     <tr
@@ -65,7 +65,7 @@ const BeatRow = ({
       onContextMenu={(e) => {
         e.preventDefault();
         handleRightClick(e, beat);
-        setShowRowContext(true);
+        setActiveContextMenu(beat.id);
         setContextMenuX(e.clientX);
         setContextMenuY(e.clientY);
       }}
@@ -175,7 +175,7 @@ const BeatRow = ({
             spellCheck="false"
           />
         </td> 
-      {showRowContext && (
+      {activeContextMenu === beat.id && (
         <td>
           <div className="row-context" style={{position: 'fixed', top: contextMenuY, left: contextMenuX}}>
             <div className="row-context__button row-context__button--add-playlist">
