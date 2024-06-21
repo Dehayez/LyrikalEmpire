@@ -10,8 +10,12 @@ export const useBpmHandlers = (handleUpdate, beat) => {
     }
   };
 
+  const resetBpm = () => {
+    setBpm('');
+  };
+
   const handleOnKeyDown = (e) => {
-    const isCmdOrCtrl = e.metaKey || e.ctrlKey; // Cmd for Mac, Ctrl for others
+    const isCmdOrCtrl = e.metaKey || e.ctrlKey;
     const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key);
     const isSelectAllShortcut = isCmdOrCtrl && e.key === 'a';
   
@@ -39,5 +43,5 @@ export const useBpmHandlers = (handleUpdate, beat) => {
     }
   };
 
-  return { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur };
+  return { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm };
 };
