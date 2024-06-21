@@ -5,11 +5,9 @@
 
 .icon-button {
   transition: transform 0.1s ease-in-out;
-
   &:active {
     transform: scale(0.95);
   }
-
   &:hover {
     .tooltip,
     .tooltip__addbeat {
@@ -49,4 +47,37 @@
 
 .buffer {
   height: 90px;
+}
+
+.icon-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  &:hover {
+    .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}
+
+.tooltip {
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 8px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  font-size: 16px;
+  white-space: nowrap;
 }

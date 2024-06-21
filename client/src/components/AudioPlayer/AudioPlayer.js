@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import { IoShuffleSharp, IoRepeatSharp } from 'react-icons/io5';
-import { NextButton, PlayPauseButton, PrevButton, VolumeSlider } from './AudioControls';
+import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
 
@@ -144,18 +144,11 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
             RHAP_UI.DURATION
         ]}
         customControlsSection={[
-          <button className="icon-button icon-button--shuffle" onClick={() => setShuffle(!shuffle)}>
-            <IoShuffleSharp style={{ color: shuffle ? '#FFCC44' : '#B3B3B3' }}/>
-            <span className="tooltip tooltip--shuffle">{ shuffle ? 'Disable Shuffle' : 'Shuffle' }</span>
-          </button>,
+          <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
           <PrevButton onPrev={onPrev} />,
           <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
           <NextButton onNext={onNext} />,
-          <button className="icon-button icon-button--repeat" onClick={() => setRepeat(prev => prev === 'Disabled Repeat' ? 'Repeat' : prev === 'Repeat' ? 'Repeat One' : 'Disabled Repeat')}>
-            { repeat === 'Disabled Repeat' ? <IoRepeatSharp style={{ color: '#B3B3B3' }}/> : repeat === 'Repeat' ? <IoRepeatSharp style={{ color: '#FFCC44' }}/> : <IoRepeatSharp style={{ color: '#FFCC44' }}/> }
-            { repeat === 'Repeat One' && <div className="repeat-one-indicator"></div> }
-            <span className="tooltip tooltip--repeat">{ repeat === 'Disabled Repeat' ? 'Repeat' : repeat === 'Repeat' ? 'Repeat One' : 'Disable Repeat' }</span>
-          </button>
+          <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
         ]}
         />
       </div>
