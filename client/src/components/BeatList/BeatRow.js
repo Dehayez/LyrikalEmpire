@@ -18,7 +18,6 @@ const BeatRow = ({
 
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
-  const [showRowContext, setShowRowContext] = useState(false);
 
   const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
 
