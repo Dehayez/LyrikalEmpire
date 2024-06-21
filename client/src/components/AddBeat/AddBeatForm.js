@@ -105,6 +105,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             maxWidth: '380px',
             margin: 'auto', 
             padding: '20px',
+            position: 'relative',
         }
     };
 
