@@ -25,12 +25,12 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [keywords, setKeywords] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
     const [showToast, setShowToast] = useState(false);
-    const { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur } = useBpmHandlers();
+    const { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
 
     const resetForm = () => {
         setTitle('');
         setAudio(null);
-        setBpm('');
+        resetBpm();
         setGenre('');
         setTierlist('');
         setMood('');
