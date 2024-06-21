@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getBeats } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer } from './components';
+import { handlePlay, handleNext, handlePrev } from './hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
@@ -70,52 +71,10 @@ function App() {
 
   const handleAdd = () => setRefresh(!refresh);
 
-  const handlePlay = (beat, play, beats) => {
-    setSelectedBeat(beat);
-    setBeats(beats);
-    if (!beat) {
-      setCurrentBeat(null);
-      setIsPlaying(false);
-    } else if (currentBeat && currentBeat.id === beat.id) {
-      setIsPlaying(play);
-    } else {
-      setCurrentBeat(beat);
-      setIsPlaying(true);
-      setHasBeatPlayed(true);
-    }
-  };
 
-  const handleNext = () => {
-    if (repeat === 'Repeat One') {
-      setRepeat('Repeat');
-    }
-    let nextIndex;
-    if (shuffle) {
-      do {
-        nextIndex = Math.floor(Math.random() * beats.length);
-      } while (nextIndex === lastPlayedIndex && beats.length > 1);
-    } else {
-      const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
-      nextIndex = (currentIndex + 1) % beats.length;
-    }
-    setLastPlayedIndex(nextIndex);
-    if (repeat === 'Disabled Repeat' && nextIndex === 0) {
-      handlePlay(beats[nextIndex], true, beats);
-      setTimeout(() => setIsPlaying(false), 1);
-    } else {
-      handlePlay(beats[nextIndex], true, beats);
-    }
-  };
-
-  const handlePrev = () => {
-    if (repeat === 'Repeat One') {
-      handlePlay(currentBeat, true, beats);
-      return;
-    }
-    const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
-    const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
-    handlePlay(beats[prevIndex], true, beats);
-  };
+  const handlePlayWrapper = (beat, play, beats) => handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
+  const handleNextWrapper = () => handleNext(repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlayWrapper, setIsPlaying);
+  const handlePrevWrapper = () => handlePrev(repeat, beats, currentBeat, handlePlayWrapper);
 
   return (
     <div className="App">
@@ -123,11 +82,11 @@ function App() {
       <div className="container" id="main-content">
         <Header />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
-        <BeatList key={refresh} onPlay={handlePlay} selectedBeat={selectedBeat} isPlaying={isPlaying} />
+        <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} />
         <div className="buffer"/>
         <AddBeatButton setIsOpen={setIsOpen} addBeatButtonBottom={addBeatButtonBottom} animateAddButton={animateAddButton} setAnimateAddButton={setAnimateAddButton} />
       </div>
-      <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNext} onPrev={handlePrev} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} />
+      <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNextWrapper} onPrev={handlePrevWrapper} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} />
     </div>
   );
 }
