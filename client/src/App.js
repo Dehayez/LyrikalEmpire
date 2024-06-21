@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getBeats } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer } from './components';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -44,6 +45,16 @@ function App() {
       setAddBeatButtonBottom(audioPlayerRect.height + 20);
     }
   };
+
+  useEffect(() => {
+    // fetch beats when component mounts
+    const fetchBeats = async () => {
+      const fetchedBeats = await getBeats();
+      setBeats(fetchedBeats);
+    };
+
+    fetchBeats();
+  }, []); // empty dependency array means this effect runs once on mount
   
   useEffect(() => {
     if (audioPlayerLoaded) {
@@ -121,6 +132,7 @@ function App() {
     const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
     handlePlay(beats[prevIndex], true, beats);
   };
+  
 
   return (
     <div className="App">
