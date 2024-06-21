@@ -1,5 +1,5 @@
-// TableHeader.js
 import React, { useEffect, useRef } from 'react';
+import './TableHeader.scss';
 
 const TableHeader = () => {
   const tableRef = useRef(null);
@@ -78,31 +78,18 @@ const TableHeader = () => {
     });
   };
 
-  const styles = {
-    thead: { position: 'sticky', top: 0, backgroundColor: '#181818', color: '#FFFFFF', textAlign: 'left', zIndex: 2},
-    tdata: { padding: '8px', color: '#FFFFFF'},
-    theadFirstChild: { textAlign: 'center', width: '50px'},
-    th: { 
-      boxSizing: 'border-box',
-      padding: '10px', 
-      paddingLeft: '18px', 
-      color: '#FFFFFF',
-      minWidth: '60px',
-    },
-  };
-
   return (
-    <thead style={styles.thead} ref={tableRef}>
+    <thead className="table-header" ref={tableRef}>
       <tr>
-        <th className='beat-list__table-head' style={{...styles.th, ...styles.theadFirstChild}}>#</th>
-        <th className='beat-list__table-head' style={styles.th}>Title</th>
-        <th className='beat-list__table-head' style={styles.th}>Genre</th>
-        <th className='beat-list__table-head' style={styles.th}>BPM</th>
-        <th className='beat-list__table-head' style={styles.th}>Tierlist</th>
-        <th className='beat-list__table-head' style={styles.th}>Mood</th>
-        <th className='beat-list__table-head' style={styles.th}>Keywords</th>
+        <th className='table-header__cell table-header__cell--first'>#</th>
+        <th className='table-header__cell'>Title</th>
+        <th className='table-header__cell'>Genre</th>
+        <th className='table-header__cell'>BPM</th>
+        <th className='table-header__cell'>Tierlist</th>
+        <th className='table-header__cell'>Mood</th>
+        <th className='table-header__cell'>Keywords</th>
       </tr>
-    </thead>
+  </thead>
   );
 };
 
