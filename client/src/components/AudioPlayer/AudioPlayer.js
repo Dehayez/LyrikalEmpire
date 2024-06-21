@@ -47,11 +47,26 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   }, [onNext, repeat]);
 
   useEffect(() => {
+    const savedTimestamp = localStorage.getItem('timestamp');
+    const savedCurrentTime = localStorage.getItem('currentTime');
+    if (savedTimestamp && savedCurrentTime) {
+      const currentTime = parseFloat(savedCurrentTime);
+      const timestamp = parseFloat(savedTimestamp);
+      const elapsedTime = (Date.now() - timestamp) / 1000; // convert ms to s
+      const newCurrentTime = currentTime + elapsedTime;
+      if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
+        playerRef.current.audio.current.currentTime = newCurrentTime;
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const audioElement = playerRef.current?.audio?.current;
     if (audioElement) {
       audioElement.volume = volume;
       const updateTime = () => {
         localStorage.setItem('currentTime', audioElement.currentTime);
+        localStorage.setItem('timestamp', Date.now()); // Save the timestamp
       };
       audioElement.addEventListener('timeupdate', updateTime);
       return () => {
@@ -72,8 +87,13 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         playerRef.current.audio.current.currentTime = 0;
       }
     }
+  
+    // Save current beat and current time to local storage when paused
+    if (!isPlaying && currentBeat && playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
+      localStorage.setItem('currentBeat', JSON.stringify(currentBeat));
+      localStorage.setItem('currentTime', playerRef.current.audio.current.currentTime.toString());
+    }
   }, [currentBeat, isPlaying]);
-
   useEffect(() => {
     const audioElement = playerRef.current?.audio?.current;
     if (audioElement) {

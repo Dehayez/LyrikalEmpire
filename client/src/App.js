@@ -7,9 +7,7 @@ import './App.scss';
 
 function App() {
   const [refresh, setRefresh] = useState(false);
-  const [currentBeat, setCurrentBeat] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedBeat, setSelectedBeat] = useState(null);
   const [beats, setBeats] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [audioPlayerHeight, setAudioPlayerHeight] = useState(0);
@@ -20,6 +18,31 @@ function App() {
   const [emptySpaceHeight, setEmptySpaceHeight] = useState(0);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
   const [audioPlayerLoaded, setAudioPlayerLoaded] = useState(false);
+
+  const [timestamp, setTimestamp] = useState(() => {
+    const savedTimestamp = localStorage.getItem('timestamp');
+    return savedTimestamp !== null ? JSON.parse(savedTimestamp) : 0;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('timestamp', JSON.stringify(timestamp));
+  }, [timestamp]);
+
+  const [currentBeat, setCurrentBeat] = useState(() => {
+    const savedCurrentBeat = localStorage.getItem('currentBeat');
+    return savedCurrentBeat !== null ? JSON.parse(savedCurrentBeat) : null;
+  });
+  
+  useEffect(() => {
+    if (currentBeat) {
+      localStorage.setItem('currentBeat', JSON.stringify(currentBeat));
+    }
+  }, [currentBeat]);
+
+  const [selectedBeat, setSelectedBeat] = useState(() => {
+    const savedBeat = localStorage.getItem('selectedBeat');
+    return savedBeat !== null ? JSON.parse(savedBeat) : null;
+  });
 
   const [shuffle, setShuffle] = useState(() => {
     const savedShuffle = localStorage.getItem('shuffle');
@@ -51,10 +74,20 @@ function App() {
     const fetchBeats = async () => {
       const fetchedBeats = await getBeats();
       setBeats(fetchedBeats);
+      if (fetchedBeats.length > 0) {
+        if (!selectedBeat) {
+          setSelectedBeat(fetchedBeats[0]); // set the first beat as the selected beat only if there isn't one already
+        }
+      }
     };
-
     fetchBeats();
   }, []); // empty dependency array means this effect runs once on mount
+
+  useEffect(() => {
+    if (selectedBeat) {
+      localStorage.setItem('selectedBeat', JSON.stringify(selectedBeat));
+    }
+  }, [selectedBeat]);
   
   useEffect(() => {
     if (audioPlayerLoaded) {
