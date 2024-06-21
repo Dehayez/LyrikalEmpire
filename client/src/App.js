@@ -18,20 +18,60 @@ function App() {
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [emptySpaceHeight, setEmptySpaceHeight] = useState(0);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
+  const [audioPlayerLoaded, setAudioPlayerLoaded] = useState(false);
+
+  const [shuffle, setShuffle] = useState(() => {
+    const savedShuffle = localStorage.getItem('shuffle');
+    return savedShuffle !== null ? JSON.parse(savedShuffle) : false;
+  });
+  const [repeat, setRepeat] = useState(() => {
+    const savedRepeat = localStorage.getItem('repeat');
+    return savedRepeat !== null ? savedRepeat : 'Disabled Repeat';
+  });
 
   useEffect(() => {
+    localStorage.setItem('shuffle', shuffle);
+  }, [shuffle]);
+
+  useEffect(() => {
+    localStorage.setItem('repeat', repeat);
+  }, [repeat]);
+
+  const adjustButtonPosition = () => {
     const audioPlayer = document.getElementById('audio-player');
-    const mainContent = document.getElementById('main-content');
-    if (audioPlayer && mainContent && hasBeatPlayed) {
-      const audioPlayerHeight = audioPlayer.offsetHeight;
-      mainContent.style.paddingBottom = `${audioPlayerHeight}px`;
-      setAudioPlayerHeight(audioPlayerHeight);
-      setAddBeatButtonBottom(audioPlayerHeight + 20);
-      setEmptySpaceHeight(audioPlayerHeight);
-    } else if (!hasBeatPlayed) {
-      setEmptySpaceHeight(0);
+    if (audioPlayer) {
+      const audioPlayerRect = audioPlayer.getBoundingClientRect();
+      setAddBeatButtonBottom(audioPlayerRect.height + 20); // 20 is the original bottom value
     }
-  }, [currentBeat, hasBeatPlayed]);
+  };
+  
+  useEffect(() => {
+    if (audioPlayerLoaded) {
+      adjustButtonPosition();
+    }
+  }, [audioPlayerLoaded]);
+
+useEffect(() => {
+  const audioPlayer = document.getElementById('audio-player');
+  
+  if (audioPlayer) {
+    const observer = new MutationObserver(() => {
+      adjustButtonPosition();
+    });
+
+    observer.observe(audioPlayer, { attributes: true, childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+    };
+  }
+}, [audioPlayerLoaded]);
+
+  useEffect(() => {
+    if (audioPlayerLoaded) {
+      adjustButtonPosition();
+    }
+  }, [audioPlayerLoaded]);
 
   const handleAdd = () => setRefresh(!refresh);
 
@@ -46,7 +86,7 @@ function App() {
     } else {
       setCurrentBeat(beat);
       setIsPlaying(true);
-      setHasBeatPlayed(true);
+      setHasBeatPlayed(true); // Ensure this is set to true when a beat is played
     }
   };
 
@@ -81,23 +121,6 @@ function App() {
     const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
     handlePlay(beats[prevIndex], true, beats);
   };
-
-  const [shuffle, setShuffle] = useState(() => {
-    const savedShuffle = localStorage.getItem('shuffle');
-    return savedShuffle !== null ? JSON.parse(savedShuffle) : false;
-  });
-  const [repeat, setRepeat] = useState(() => {
-    const savedRepeat = localStorage.getItem('repeat');
-    return savedRepeat !== null ? savedRepeat : 'Disabled Repeat';
-  });
-
-  useEffect(() => {
-    localStorage.setItem('shuffle', shuffle);
-  }, [shuffle]);
-
-  useEffect(() => {
-    localStorage.setItem('repeat', repeat);
-  }, [repeat]);
 
   return (
     <div className="App">
