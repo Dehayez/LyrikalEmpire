@@ -109,99 +109,97 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     };
 
     return (
-        <div>
-            <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
-                <h2 style={{marginTop: '0'}}>Add Beat</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>Audio</label>
-                        <div className="file-input">
-                            <div className="file-input__wrapper">
-                                <label htmlFor="file" className="file-input__label no-margin">
-                                    <IoCloudUploadSharp /> Upload File
-                                </label>
-                                <input type="file" id="file" className="file-input__input" onChange={handleFileChange} required accept="audio/*" />
-                                <span id="file-name" className="file-input__name">{fileName}</span>
-                            </div>
+        <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
+            <h2 style={{marginTop: '0'}}>Add Beat</h2>
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label>Audio</label>
+                    <div className="file-input">
+                        <div className="file-input__wrapper">
+                            <label htmlFor="file" className="file-input__label no-margin">
+                                <IoCloudUploadSharp /> Upload File
+                            </label>
+                            <input type="file" id="file" className="file-input__input" onChange={handleFileChange} required accept="audio/*" />
+                            <span id="file-name" className="file-input__name">{fileName}</span>
                         </div>
                     </div>
-                    <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
-                    <FormInput 
-                        label="BPM" 
-                        type="text" 
-                        placeholder='Enter BPM' 
-                        value={bpm} 
-                        onChange={handleBpmChange} 
-                        onKeyDown={(e) => {
-                            // Allow only numbers, decimal point, comma, Backspace, Tab, and arrow keys
-                            if (!/^[\d.,]+$/.test(e.key) && !['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                                e.preventDefault();
-                            }
-                            if (e.key === "Enter") {
-                                e.target.blur();
-                            }
-                        }} 
-                        onBlur={(e) => {
-                            // If the input is empty, allow it to be null
-                            if (e.target.value === '') {
-                                setBpm(null);
-                                return;
-                            }
-                        
-                            // Replace comma with dot and parse as float
-                            let bpmValue = parseFloat(e.target.value.replace(',', '.'));
-                        
-                            // Round to nearest integer
-                            bpmValue = Math.round(bpmValue);
-                        
-                            // Validate that the input is a positive number (integer or decimal)
-                            // and within the range of 20 to 240 BPM
-                            if (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240) {
-                                alert('Please enter a valid BPM (1-240) or leave it empty.');
-                                e.target.focus();
-                            } else {
-                                // Update the input field with the rounded BPM value
-                                e.target.value = bpmValue;
-                        
-                                setBpm(bpmValue);
-                            }
-                        }}
-                        spellCheck="false" 
-                    />
-                    <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} spellCheck="false" />
-                    <div className="form-group">
-                        <label>Tierlist</label>
-                        <div className="select-wrapper">
-                        <select 
-                            className="select-wrapper__select" 
-                            value={tierlist} 
-                            onChange={(e) => setTierlist(e.target.value)}
-                            onFocus={(e) => e.target.style.color = 'white'}
-                            onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
-                            style={{color: tierlist ? 'white' : 'grey'}}
-                        >
-                                <option value="">Select tier</option>
-                                <option value="G">G</option>
-                                <option value="S">S</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="D">D</option>
-                                <option value="E">E</option>
-                                <option value="F">F</option>
-                            </select>
-                            <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
-                        </div>
+                </div>
+                <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
+                <FormInput 
+                    label="BPM" 
+                    type="text" 
+                    placeholder='Enter BPM' 
+                    value={bpm} 
+                    onChange={handleBpmChange} 
+                    onKeyDown={(e) => {
+                        // Allow only numbers, decimal point, comma, Backspace, Tab, and arrow keys
+                        if (!/^[\d.,]+$/.test(e.key) && !['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                            e.preventDefault();
+                        }
+                        if (e.key === "Enter") {
+                            e.target.blur();
+                        }
+                    }} 
+                    onBlur={(e) => {
+                        // If the input is empty, allow it to be null
+                        if (e.target.value === '') {
+                            setBpm(null);
+                            return;
+                        }
+                    
+                        // Replace comma with dot and parse as float
+                        let bpmValue = parseFloat(e.target.value.replace(',', '.'));
+                    
+                        // Round to nearest integer
+                        bpmValue = Math.round(bpmValue);
+                    
+                        // Validate that the input is a positive number (integer or decimal)
+                        // and within the range of 20 to 240 BPM
+                        if (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240) {
+                            alert('Please enter a valid BPM (1-240) or leave it empty.');
+                            e.target.focus();
+                        } else {
+                            // Update the input field with the rounded BPM value
+                            e.target.value = bpmValue;
+                    
+                            setBpm(bpmValue);
+                        }
+                    }}
+                    spellCheck="false" 
+                />
+                <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} spellCheck="false" />
+                <div className="form-group">
+                    <label>Tierlist</label>
+                    <div className="select-wrapper">
+                    <select 
+                        className="select-wrapper__select" 
+                        value={tierlist} 
+                        onChange={(e) => setTierlist(e.target.value)}
+                        onFocus={(e) => e.target.style.color = 'white'}
+                        onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
+                        style={{color: tierlist ? 'white' : 'grey'}}
+                    >
+                            <option value="">Select tier</option>
+                            <option value="G">G</option>
+                            <option value="S">S</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                        </select>
+                        <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
                     </div>
-                    <FormInput label="Mood" type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} spellCheck="false" />
-                    <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} spellCheck="false" />
-                    <div>
-                        <button className="modal__button modal__button--add" type="submit">Add Beat</button>
-                        <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
-                    </div>
-                </form>
-            </Modal>
-        </div>
+                </div>
+                <FormInput label="Mood" type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} spellCheck="false" />
+                <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} spellCheck="false" />
+                <div>
+                    <button className="modal__button modal__button--add" type="submit">Add Beat</button>
+                    <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
+                </div>
+            </form>
+        </Modal>
     );
 };
 

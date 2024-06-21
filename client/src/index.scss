@@ -8,28 +8,24 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-h1, h2, h3, h4, h5, h6, p, td, th, a, button, div {
+h1, h2, h3, h4, h5, h6, p, td, th, a, div {
   color: #FFFFFF;
   user-select: none;
 }
 
 button {
+  color: #FFFFFF;
   cursor: pointer;
-}
-
-.selected {
-  background-color: #FFCC44;
-  color: #202020;
+  user-select: none;
 }
 
 input {
   background-color: #202020;
   color: #FFFFFF;
   padding: 10px;
-  border-radius: 5px;
   border: none;
+  border-radius: 5px;
 }
