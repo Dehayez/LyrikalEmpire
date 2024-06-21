@@ -176,16 +176,18 @@ const BeatRow = ({
           />
         </td> 
       {showRowContext && (
-        <div className="row-context" style={{position: 'fixed', top: contextMenuY, left: contextMenuX}}>
-          <div className="row-context__button row-context__button--add-playlist">
-            <IoAddSharp className="row-context__icon row-context__icon--add-playlist" />
-            <p className="row-context__text">Add to playlist</p>
+        <td>
+          <div className="row-context" style={{position: 'fixed', top: contextMenuY, left: contextMenuX}}>
+            <div className="row-context__button row-context__button--add-playlist">
+              <IoAddSharp className="row-context__icon row-context__icon--add-playlist" />
+              <p className="row-context__text">Add to playlist</p>
+            </div>
+            <div className="row-context__button row-context__button--delete" onClick={() => openConfirmModal(beat.id)}>
+              <IoTrashBinSharp className="row-context__icon row-context__icon--delete" />
+              <p className="row-context__text">{deleteText}</p>
+            </div>
           </div>
-          <div className="row-context__button row-context__button--delete" onClick={() => openConfirmModal(beat.id)}>
-            <IoTrashBinSharp className="row-context__icon row-context__icon--delete" />
-            <p className="row-context__text">{deleteText}</p>
-          </div>
-        </div>
+        </td>
       )}
       </tr>
     );
