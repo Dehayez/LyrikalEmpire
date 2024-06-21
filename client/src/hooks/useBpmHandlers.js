@@ -1,53 +1,33 @@
-import { useCallback } from 'react';
+import { useState } from 'react';
 
-export const useBpmHandlers = (handleUpdate, beatId, setBpm) => {
-const handleBpmKeyDown = useCallback((e) => {
-    switch (e.key) {
-        case 'Enter':
-        e.target.blur();
-        break;
-        case 'Backspace':
-        case 'Tab':
-        case 'ArrowLeft':
-        case 'ArrowRight':
-        break;
-        default:
-        if (!/^[\d.,]+$/.test(e.key)) {
-            e.preventDefault();
-        }
-    }
-    }, []);
+export const useBpmHandlers = (handleUpdate, beat) => {
+  const [bpm, setBpm] = useState('');
 
-  const handleBpmBlurUpdate = useCallback((e) => {
-    if (e.target.value === '') {
-      handleUpdate(beatId, 'bpm', null);
-      return;
-    }
-    let bpm = parseFloat(e.target.value.replace(',', '.'));
-    bpm = Math.round(bpm);
-    if (isNaN(bpm) || bpm <= 0 || bpm > 240) {
-      alert('Please enter a valid BPM (1-240) or leave it empty.');
-      e.target.focus();
-    } else {
-      e.target.value = bpm;
-      handleUpdate(beatId, 'bpm', bpm);
-    }
-  }, [handleUpdate, beatId]);
-
-  const handleBpmChange = useCallback((event) => {
-    const newValue = event.target.value;
+  const handleBpmChange = (e) => {
+    const newValue = e.target.value;
     if (/^[\d.,]*$/.test(newValue) && newValue.length <= 11) {
       setBpm(newValue);
     }
-  }, [setBpm]);
+  };
 
-  const handleBpmBlurSet = useCallback((e) => {
+  const handleOnKeyDown = (e) => {
+    const isCmdOrCtrl = e.metaKey || e.ctrlKey; // Cmd for Mac, Ctrl for others
+    const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key);
+    const isSelectAllShortcut = isCmdOrCtrl && e.key === 'a';
+  
+    if (!/^[\d.,]+$/.test(e.key) && !isAllowedKey && !isSelectAllShortcut) {
+      e.preventDefault();
+    }
+    if (e.key === "Enter") {
+      e.target.blur();
+    }
+  };
+
+  const handleBpmBlur = (e) => {
     if (e.target.value === '') {
-      setBpm(null);
-      handleUpdate(beatId, 'bpm', null);
+      handleUpdate(beat.id, 'bpm', null);
       return;
     }
-
     let bpm = parseFloat(e.target.value.replace(',', '.'));
     bpm = Math.round(bpm);
     if (isNaN(bpm) || bpm <= 0 || bpm > 240) {
@@ -55,10 +35,9 @@ const handleBpmKeyDown = useCallback((e) => {
       e.target.focus();
     } else {
       e.target.value = bpm;
-      setBpm(bpm);
-      handleUpdate(beatId, 'bpm', bpm);
+      handleUpdate(beat.id, 'bpm', bpm);
     }
-  }, [handleUpdate, beatId, setBpm]);
+  };
 
-  return { handleBpmBlurUpdate, handleBpmChange, handleBpmBlurSet, handleBpmKeyDown };
+  return { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur };
 };
