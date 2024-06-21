@@ -1,13 +1,10 @@
 .icon-button {
-  
     &__next {
       color: grey;
-  
       &:hover,
       &.active {
         color: lightgrey;
       }
-  
       .tooltip {
         bottom: 180%;
       }

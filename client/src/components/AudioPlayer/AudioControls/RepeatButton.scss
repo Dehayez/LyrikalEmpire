@@ -1,0 +1,17 @@
+.icon-button--repeat {
+    margin: 0 24px;
+    .tooltip {
+        bottom: 180%;
+    }
+}
+  
+.repeat-one-indicator {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: #FFCC44;
+    border-radius: 50%;
+}
