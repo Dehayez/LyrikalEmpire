@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { IoTrashBinSharp, IoAddSharp } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
+import { useBpmHandlers } from '../../hooks';
 import './BeatRow.scss';
 
 const BeatRow = ({
@@ -20,6 +21,8 @@ const BeatRow = ({
   const [contextMenuY, setContextMenuY] = useState(0);
 
   const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
+
+  const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -91,9 +94,9 @@ const BeatRow = ({
             className='beat-row__input beat-row__input--title'
             type="text"
             defaultValue={beat.title} 
-            onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)} 
+            onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -104,7 +107,7 @@ const BeatRow = ({
             defaultValue={beat.genre} 
             onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -113,31 +116,9 @@ const BeatRow = ({
             className='beat-row__input beat-row__input--bpm' 
             type="text" 
             defaultValue={beat.bpm} 
-            onKeyDown={(e) => {
-              if (!/^[\d.,]+$/.test(e.key) && !['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                e.preventDefault();
-              }
-              if (e.key === "Enter") {
-                e.target.blur();
-              }
-            }}
-            onBlur={(e) => {
-              if (e.target.value === '') {
-                handleUpdate(beat.id, 'bpm', null);
-                return;
-              }
-              let bpm = parseFloat(e.target.value.replace(',', '.'));
-              bpm = Math.round(bpm);
-              if (isNaN(bpm) || bpm <= 0 || bpm > 240) {
-                alert('Please enter a valid BPM (1-240) or leave it empty.');
-                e.target.focus();
-              } else {
-                e.target.value = bpm;
-            
-                handleUpdate(beat.id, 'bpm', bpm);
-              }
-            }}
-             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onKeyDown={handleOnKeyDown}
+            onBlur={handleBpmBlur}
+            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -148,7 +129,7 @@ const BeatRow = ({
             defaultValue={beat.tierlist} 
             onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -157,9 +138,9 @@ const BeatRow = ({
             className='beat-row__input' 
             type="text" 
             defaultValue={beat.mood} 
-            onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)} 
+            onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td>
@@ -170,7 +151,7 @@ const BeatRow = ({
             defaultValue={beat.keywords}
             onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-             onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
             spellCheck="false"
           />
         </td> 

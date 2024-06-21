@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import { addBeat } from '../../services/beatService';
 import { IoCloudUploadSharp, IoChevronDownSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
+import { useBpmHandlers } from '../../hooks';
 import './AddBeatForm.scss';
 
 Modal.setAppElement('#root');
@@ -17,13 +18,14 @@ const FormInput = ({ label, type, placeholder, value, onChange, required, min, p
 const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
-    const [bpm, setBpm] = useState('');
+    const [bpmState, setBpm] = useState('');
     const [genre, setGenre] = useState('');
     const [tierlist, setTierlist] = useState('');
     const [mood, setMood] = useState('');
     const [keywords, setKeywords] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
     const [showToast, setShowToast] = useState(false);
+    const { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur } = useBpmHandlers();
 
     const resetForm = () => {
         setTitle('');
@@ -35,24 +37,19 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         setKeywords('');
         setFileName('No file chosen');
     };
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
     
         let bpmValue = null;
     
-        // Only parse and validate the BPM if it's not empty
         if (bpm !== '') {
-            // Replace comma with dot and parse as float
             bpmValue = parseFloat(bpm.replace(',', '.'));
-    
-            // Round to nearest integer
             bpmValue = Math.round(bpmValue);
     
-            // Validate that the input is a positive number (integer or decimal)
-            // and within the range of 20 to 240 BPM
             if (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240) {
                 alert('Please enter a valid BPM (1-240) or leave it empty.');
-                return; // Don't submit the form
+                return; 
             }
         }
     
@@ -83,13 +80,6 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     
         const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
         setTitle(fileNameWithoutExtension);
-    };
-
-    const handleBpmChange = (event) => {
-        const newValue = event.target.value;
-        if (/^[\d.,]*$/.test(newValue) && newValue.length <= 11) {
-            setBpm(newValue);
-        }
     };
 
     const modalStyle = {
@@ -132,40 +122,8 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                     placeholder='Enter BPM' 
                     value={bpm} 
                     onChange={handleBpmChange} 
-                    onKeyDown={(e) => {
-                        // Allow only numbers, decimal point, comma, Backspace, Tab, and arrow keys
-                        if (!/^[\d.,]+$/.test(e.key) && !['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                            e.preventDefault();
-                        }
-                        if (e.key === "Enter") {
-                            e.target.blur();
-                        }
-                    }} 
-                    onBlur={(e) => {
-                        // If the input is empty, allow it to be null
-                        if (e.target.value === '') {
-                            setBpm(null);
-                            return;
-                        }
-                    
-                        // Replace comma with dot and parse as float
-                        let bpmValue = parseFloat(e.target.value.replace(',', '.'));
-                    
-                        // Round to nearest integer
-                        bpmValue = Math.round(bpmValue);
-                    
-                        // Validate that the input is a positive number (integer or decimal)
-                        // and within the range of 20 to 240 BPM
-                        if (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240) {
-                            alert('Please enter a valid BPM (1-240) or leave it empty.');
-                            e.target.focus();
-                        } else {
-                            // Update the input field with the rounded BPM value
-                            e.target.value = bpmValue;
-                    
-                            setBpm(bpmValue);
-                        }
-                    }}
+                    onKeyDown={handleOnKeyDown} 
+                    onBlur={handleBpmBlur}
                     spellCheck="false" 
                 />
                 <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} spellCheck="false" />
