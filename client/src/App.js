@@ -60,9 +60,6 @@ function App() {
     setIsSidePanelInContent(!isSidePanelInContent);
   };
 
-// When rendering Header component
-
-
   return (
     <div className="App">
       <ToastContainer />
