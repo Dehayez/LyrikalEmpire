@@ -20,9 +20,10 @@ export const useResizableColumns = (tableRef) => {
 
       const handleMouseMove = e => {
         const rect = header.getBoundingClientRect();
-        const isNearBorder = e.clientX >= rect.right - 8 && e.clientX <= rect.right;
+        const resizeBuffer = 8;
+        const isNearBorder = e.clientX >= rect.right - resizeBuffer && e.clientX <= rect.right + resizeBuffer;
         const isOverHeader = e.clientY >= rect.top && e.clientY <= rect.bottom;
-
+      
         if (isNearBorder && isOverHeader) {
           header.classList.add('near-border');
           header.style.cursor = 'col-resize';
