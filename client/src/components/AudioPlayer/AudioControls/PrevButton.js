@@ -7,7 +7,7 @@ const PrevButton = ({ onPrev }) => {
 
   return (
     <button 
-      className={`icon-button icon-button__prev ${isPrevActive ? 'active' : ''}`} 
+      className={`icon-button icon-button--prev ${isPrevActive ? 'active' : ''}`} 
       onMouseDown={() => setIsPrevActive(true)}
       onMouseUp={() => setIsPrevActive(false)}
       onMouseLeave={() => setIsPrevActive(false)}

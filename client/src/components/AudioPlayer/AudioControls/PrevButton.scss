@@ -1,15 +1,12 @@
-.icon-button {
-  
-    &__prev {
-      color: grey;
-  
-      &:hover,
-      &.active {
-        color: lightgrey;
-      }
-  
-      .tooltip {
-        bottom: 180%;
-      }
+.icon-button--prev {
+    color: grey;
+
+    &:hover,
+    &.active {
+      color: lightgrey;
     }
-}
+
+    .tooltip {
+      bottom: 180%;
+    }
+  }
