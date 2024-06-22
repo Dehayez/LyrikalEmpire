@@ -16,19 +16,19 @@ function App() {
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
   const [currentBeat, setCurrentBeat] = useState(() => {
     const savedCurrentBeat = localStorage.getItem('currentBeat');
-    return savedCurrentBeat !== null ? JSON.parse(savedCurrentBeat) : null;
+    return savedCurrentBeat !== null && savedCurrentBeat !== "undefined" ? JSON.parse(savedCurrentBeat) : null;
   });
   const [selectedBeat, setSelectedBeat] = useState(() => {
     const savedBeat = localStorage.getItem('selectedBeat');
-    return savedBeat !== null ? JSON.parse(savedBeat) : null;
+    return savedBeat !== null && savedBeat !== "undefined" ? JSON.parse(savedBeat) : null;
   });
   const [shuffle, setShuffle] = useState(() => {
     const savedShuffle = localStorage.getItem('shuffle');
-    return savedShuffle !== null ? JSON.parse(savedShuffle) : false;
+    return savedShuffle !== null && savedShuffle !== "undefined" ? JSON.parse(savedShuffle) : false;
   });
   const [repeat, setRepeat] = useState(() => {
     const savedRepeat = localStorage.getItem('repeat');
-    return savedRepeat !== null ? savedRepeat : 'Disabled Repeat';
+    return savedRepeat !== null && savedRepeat !== "undefined" ? savedRepeat : 'Disabled Repeat';
   });
 
   useEffect(() => {
