@@ -11,12 +11,9 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [beats, setBeats] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [addBeatButtonBottom, setAddBeatButtonBottom] = useState(20);
-  const [animateAddButton, setAnimateAddButton] = useState(false);
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
-  const [audioPlayerLoaded, setAudioPlayerLoaded] = useState(false);
   const [currentBeat, setCurrentBeat] = useState(() => {
     const savedCurrentBeat = localStorage.getItem('currentBeat');
     return savedCurrentBeat !== null ? JSON.parse(savedCurrentBeat) : null;

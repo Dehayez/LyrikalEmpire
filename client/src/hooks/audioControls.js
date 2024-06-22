@@ -1,5 +1,3 @@
-// audioControls.js
-
 export const handlePlay = (beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed) => {
     setSelectedBeat(beat);
     setBeats(beats);
@@ -15,7 +13,7 @@ export const handlePlay = (beat, play, beats, setSelectedBeat, setBeats, current
     }
   };
   
-  export const handleNext = (repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlay, setIsPlaying) => {
+  export const handleNext = (repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlay, setIsPlaying, setRepeat) => {
     if (repeat === 'Repeat One') {
       setRepeat('Repeat');
     }
