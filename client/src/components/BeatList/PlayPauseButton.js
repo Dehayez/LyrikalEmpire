@@ -12,7 +12,7 @@ const PlayPauseButton = ({ beat, handlePlayPause, selectedBeat, isPlaying }) => 
       className="icon-button icon-button--play-pause"
       onClick={() => handlePlayPause(beat)}
     >
-      {selectedBeat && selectedBeat.id === beat.id && isPlaying ? <IoPauseSharp /> : <IoPlaySharp />}
+      {selectedBeat && selectedBeat.id === beat.id && isPlaying ? <IoPauseSharp fontSize={18} /> : <IoPlaySharp fontSize={18} />}
       <span className="tooltip">
         {selectedBeat && selectedBeat.id === beat.id && isPlaying ? 'Pause' : 'Play'}
       </span>
