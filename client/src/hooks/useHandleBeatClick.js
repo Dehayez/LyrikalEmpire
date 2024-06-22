@@ -12,7 +12,6 @@ export const useHandleBeatClick = (beats, tableRef) => {
       let end = Math.max(clickedBeatIndex, lastSelectedBeatIndex);
       let selectedBeats = beats.slice(start, end + 1);
   
-      // If selecting from bottom to top, reverse the selected beats
       if (clickedBeatIndex < lastSelectedBeatIndex) {
         selectedBeats = selectedBeats.reverse();
       }

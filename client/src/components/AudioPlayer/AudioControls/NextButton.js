@@ -7,7 +7,7 @@ const NextButton = ({ onNext }) => {
 
   return (
     <button 
-      className={`icon-button icon-button__next ${isNextActive ? 'active' : ''}`} 
+      className={`icon-button icon-button--next ${isNextActive ? 'active' : ''}`} 
       onMouseDown={() => setIsNextActive(true)}
       onMouseUp={() => setIsNextActive(false)}
       onMouseLeave={() => setIsNextActive(false)}
