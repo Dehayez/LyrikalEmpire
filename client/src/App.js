@@ -15,7 +15,8 @@ function App() {
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
   const [currentBeat, setCurrentBeat] = useState(() => {
-    const savedCurrentBeat = localStorage.getItem('currentBeat');
+    
+  const savedCurrentBeat = localStorage.getItem('currentBeat');
     return savedCurrentBeat !== null && savedCurrentBeat !== "undefined" ? JSON.parse(savedCurrentBeat) : null;
   });
   const [selectedBeat, setSelectedBeat] = useState(() => {
