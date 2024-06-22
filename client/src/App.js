@@ -55,11 +55,19 @@ function App() {
   const handleNextWrapper = () => handleNext(repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlayWrapper, setIsPlaying, setRepeat);
   const handlePrevWrapper = () => handlePrev(repeat, beats, currentBeat, handlePlayWrapper);
 
+  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
+  const toggleSidePanel = () => {
+    setIsSidePanelInContent(!isSidePanelInContent);
+  };
+
+// When rendering Header component
+
+
   return (
     <div className="App">
       <ToastContainer />
       <div className="container" id="main-content">
-        <Header />
+        <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} />
         <div className="buffer"/>
