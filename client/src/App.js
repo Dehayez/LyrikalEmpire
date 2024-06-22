@@ -52,23 +52,6 @@ function App() {
     fetchBeats();
   }, []);
 
-  useEffect(() => {
-    const audioPlayer = document.getElementById('audio-player');
-    if (audioPlayer) {
-      const observer = new MutationObserver(adjustButtonPosition);
-      observer.observe(audioPlayer, { attributes: true, childList: true, subtree: true });
-      return () => observer.disconnect();
-    }
-  }, [audioPlayerLoaded]);
-
-  const adjustButtonPosition = () => {
-    const audioPlayer = document.getElementById('audio-player');
-    if (audioPlayer) {
-      const audioPlayerRect = audioPlayer.getBoundingClientRect();
-      setAddBeatButtonBottom(audioPlayerRect.height + 20);
-    }
-  };
-
   const handleAdd = () => setRefresh(!refresh);
 
 
@@ -84,7 +67,7 @@ function App() {
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} />
         <div className="buffer"/>
-        <AddBeatButton setIsOpen={setIsOpen} addBeatButtonBottom={addBeatButtonBottom} animateAddButton={animateAddButton} setAnimateAddButton={setAnimateAddButton} />
+        <AddBeatButton setIsOpen={setIsOpen} />
       </div>
       <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNextWrapper} onPrev={handlePrevWrapper} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} />
     </div>
