@@ -1,7 +1,7 @@
 .header {
   display: flex;
-  justify-content: center; // Center the content
-  position: relative; // Needed for absolute positioning of the menu icon
+  justify-content: center;
+  position: relative;
   padding: 20px 0;
   width: 100%;
 
@@ -17,8 +17,8 @@
 
   &__nav-menu {
     position: absolute;
-    left: 0; // Position the menu icon on the left
-    font-size: 24px; // Adjust icon size as needed
+    left: 0;
+    font-size: 24px;
   }
 }
 
