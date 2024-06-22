@@ -37,9 +37,9 @@
   }
   
   .side-panel--content {
-    position: relative; // Adjust based on layout needs
-    width: 100%; // Adjust based on layout needs
-    height: auto; // Adjust based on content
+    position: relative;
+    width: 100%;
+    height: auto;
     transition: transform 0.3s ease;
     animation: slideInContent 0.3s forwards;
   }
