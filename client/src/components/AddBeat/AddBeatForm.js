@@ -92,17 +92,23 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             color: 'white', 
             border: 'none',
             borderRadius: '6px',
-            maxWidth: '380px',
+            width: '100%',
+            maxWidth: '400px',
             margin: 'auto', 
             padding: '20px',
-            position: 'relative',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            transform: 'translate(-50%, -50%)' // Adjusts for precise centering
         }
     };
 
     return (
         <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
-            <h2 style={{marginTop: '0'}}>Add Beat</h2>
-            <form onSubmit={handleSubmit}>
+            <h2 className='form__title'>Add Beat</h2>
+            <form className='form' onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Audio</label>
                     <div className="file-input">
@@ -153,7 +159,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                 </div>
                 <FormInput label="Mood" type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} spellCheck="false" />
                 <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} spellCheck="false" />
-                <div>
+                <div className='modal__buttons'>
                     <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                     <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
                 </div>
