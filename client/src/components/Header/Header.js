@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp } from 'react-icons/io5';
 import SidePanel from '../SidePanel';
 import './Header.scss';
@@ -36,7 +37,9 @@ const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
       </div>
       <SidePanel isDivVisible={isDivVisible} isSidePanelInContent={isSidePanelInContent} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave}/>
       <div className="header__nav-group">
-        <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
+        <Link to="/">
+          <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
+        </Link>
       </div>
     </header>
   );
