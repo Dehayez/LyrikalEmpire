@@ -1,38 +1,47 @@
-import React, { useState } from 'react';
-import { IoMenuSharp, IoChevronForwardSharp } from 'react-icons/io5';
+import React, { useState, useRef } from 'react';
+import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp } from 'react-icons/io5';
 import './Header.scss';
 
-const Header = () => {
+const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
   const [isDivVisible, setIsDivVisible] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
+  const hoverRef = useRef(false);
 
   const handleMouseEnter = () => {
-    setIsHovering(true);
-    setIsDivVisible(true);
-  };
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-    setIsDivVisible(false);
+    if (!isSidePanelInContent) { // Only show on hover if not in content mode
+      hoverRef.current = true;
+      setIsDivVisible(true);
+    }
   };
 
-  // Determine the class for the side panel based on visibility and hovering
-  const sidePanelClass = `side-panel ${isDivVisible && isHovering ? 'side-panel--visible' : 'side-panel--hidden'}`;
+  const handleMouseLeave = () => {
+    if (!isSidePanelInContent) {
+      hoverRef.current = false;
+      setTimeout(() => {
+        if (!hoverRef.current) {
+          setIsDivVisible(false);
+        }
+      }, 300);
+    }
+  };
+
+  const handleClick = () => {
+    toggleSidePanel(); // Toggle side panel mode on click
+  };
+
+  const sidePanelClass = `side-panel ${isDivVisible || isSidePanelInContent ? 'side-panel--visible' : 'side-panel--hidden'}`;
 
   return (
     <header className="header">
       <div
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
         className="header__nav-menu"
       >
-        {isHovering ? <IoChevronForwardSharp /> : <IoMenuSharp />}
+        {isSidePanelInContent ? <IoChevronBackSharp /> : isDivVisible ? <IoChevronForwardSharp /> : <IoMenuSharp />}
       </div>
-      <div
-        className={sidePanelClass}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {/* Content of the div */}
+      <div className={sidePanelClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <h2>Playlists</h2>
       </div>
       <div className="header__nav-group">
         <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
