@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { getBeats } from './services';
+import React, { useState } from 'react';
+import { handlePlay, handleNext, handlePrev, useLocalStorageAndFetch } from './hooks';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer } from './components';
-import { handlePlay, handleNext, handlePrev } from './hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
@@ -14,40 +13,13 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
-  const [currentBeat, setCurrentBeat] = useState(() => {
-    const savedCurrentBeat = localStorage.getItem('currentBeat');
-    return savedCurrentBeat !== null && savedCurrentBeat !== "undefined" ? JSON.parse(savedCurrentBeat) : null;
-  });
-  const [selectedBeat, setSelectedBeat] = useState(() => {
-    const savedBeat = localStorage.getItem('selectedBeat');
-    return savedBeat !== null && savedBeat !== "undefined" ? JSON.parse(savedBeat) : null;
-  });
-  const [shuffle, setShuffle] = useState(() => {
-    const savedShuffle = localStorage.getItem('shuffle');
-    return savedShuffle !== null && savedShuffle !== "undefined" ? JSON.parse(savedShuffle) : false;
-  });
-  const [repeat, setRepeat] = useState(() => {
-    const savedRepeat = localStorage.getItem('repeat');
-    return savedRepeat !== null && savedRepeat !== "undefined" ? savedRepeat : 'Disabled Repeat';
-  });
 
-  useEffect(() => {
-    localStorage.setItem('shuffle', shuffle);
-    localStorage.setItem('repeat', repeat);
-    localStorage.setItem('currentBeat', JSON.stringify(currentBeat));
-    localStorage.setItem('selectedBeat', JSON.stringify(selectedBeat));
-  }, [shuffle, repeat, currentBeat, selectedBeat]);
-
-  useEffect(() => {
-    const fetchBeats = async () => {
-      const fetchedBeats = await getBeats();
-      setBeats(fetchedBeats);
-      if (fetchedBeats.length > 0 && !selectedBeat) {
-        setSelectedBeat(fetchedBeats[0]);
-      }
-    };
-    fetchBeats();
-  }, []);
+  const {
+    currentBeat, setCurrentBeat,
+    selectedBeat, setSelectedBeat,
+    shuffle, setShuffle,
+    repeat, setRepeat
+  } = useLocalStorageAndFetch();
 
   const handleAdd = () => setRefresh(!refresh);
 
