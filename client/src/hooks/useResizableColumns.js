@@ -15,7 +15,7 @@ export const useResizableColumns = (tableRef) => {
       }
     });
 
-    headers.slice(1, -1).forEach((header, originalIndex) => {
+    headers.slice(1).forEach((header, originalIndex) => {
       header.classList.add('resizable-header');
 
       const handleMouseMove = e => {

@@ -5,6 +5,7 @@
     color: #FFFFFF;
     text-align: left;
     z-index: 2;
+    transition: all 0.2s ease-in-out;
   
     &__cell {
       box-sizing: border-box;
@@ -16,6 +17,10 @@
       &--first {
         text-align: center;
         width: 50px;
+      }
+
+      &:hover {
+        background-color: #202020;
       }
     }
 }
