@@ -101,7 +101,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             left: '50%',
             right: 'auto',
             bottom: 'auto',
-            transform: 'translate(-50%, -50%)' // Adjusts for precise centering
+            transform: 'translate(-50%, -50%)'
         }
     };
 
