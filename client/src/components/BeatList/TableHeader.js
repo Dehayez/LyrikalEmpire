@@ -1,22 +1,23 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import './TableHeader.scss';
 import { useResizableColumns } from '../../hooks';
 
 const TableHeader = () => {
   const tableRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  useResizableColumns(tableRef);
+  useResizableColumns(tableRef, setIsDragging);
 
   return (
     <thead className="table-header" ref={tableRef}>
       <tr>
-        <th className='table-header__cell table-header__cell--first'>#</th>
-        <th className='table-header__cell'>Title</th>
-        <th className='table-header__cell'>Genre</th>
-        <th className='table-header__cell'>BPM</th>
-        <th className='table-header__cell'>Tierlist</th>
-        <th className='table-header__cell'>Mood</th>
-        <th className='table-header__cell'>Keywords</th>
+        <th className={`table-header__cell table-header__cell--first ${isDragging ? 'no-transition' : ''}`}>#</th>
+        <th className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>Title</th>
+        <th className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>Genre</th>
+        <th className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>BPM</th>
+        <th className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>Tierlist</th>
+        <th className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>Mood</th>
+        <th className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>Keywords</th>
       </tr>
     </thead>
   );
