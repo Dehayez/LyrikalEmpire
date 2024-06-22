@@ -1,21 +1,84 @@
 .header {
+  display: flex;
+  justify-content: center; // Center the content
+  position: relative; // Needed for absolute positioning of the menu icon
+  padding: 20px 0;
+  width: 100%;
+
+  &__nav-group {
     display: flex;
-    justify-content: space-between;
-    padding: 20px 0;
+    justify-content: center;
     width: 100%;
-  
-    &__nav-group {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-    }
-  
-    &__nav-link {
-      text-decoration: none;
-      color: inherit;
-    }
-  
-    &__nav-logo {
-      width: 30px;
-    }
   }
+
+  &__nav-logo {
+    width: 30px;
+  }
+
+  &__nav-menu {
+    position: absolute;
+    left: 0; // Position the menu icon on the left
+    font-size: 24px; // Adjust icon size as needed
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  align-items: center;
+
+  &__nav-menu {
+    position: absolute;
+    left: 0;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  &__nav-group {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  &__nav-logo {
+    width: 30px;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.side-panel {
+  position: fixed;
+  top: 10vh;
+  left: 0;
+  width: 250px;
+  height: 80vh;
+  background-color: #202020;
+  z-index: 3;
+  transition: transform 0.3s ease;
+}
+
+.side-panel--visible {
+  animation: slideIn 0.3s forwards;
+}
+
+.side-panel--hidden {
+  animation: slideOut 0.3s forwards;
+}
