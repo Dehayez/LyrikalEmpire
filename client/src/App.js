@@ -51,9 +51,8 @@ function App() {
 
   const handleAdd = () => setRefresh(!refresh);
 
-
   const handlePlayWrapper = (beat, play, beats) => handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
-  const handleNextWrapper = () => handleNext(repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlayWrapper, setIsPlaying);
+  const handleNextWrapper = () => handleNext(repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlayWrapper, setIsPlaying, setRepeat);
   const handlePrevWrapper = () => handlePrev(repeat, beats, currentBeat, handlePlayWrapper);
 
   return (
