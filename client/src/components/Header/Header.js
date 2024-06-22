@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp } from 'react-icons/io5';
+import SidePanel from '../SidePanel';
 import './Header.scss';
 
 const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
@@ -7,7 +8,7 @@ const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
   const hoverRef = useRef(false);
 
   const handleMouseEnter = () => {
-    if (!isSidePanelInContent) { // Only show on hover if not in content mode
+    if (!isSidePanelInContent) {
       hoverRef.current = true;
       setIsDivVisible(true);
     }
@@ -25,24 +26,15 @@ const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
   };
 
   const handleClick = () => {
-    toggleSidePanel(); // Toggle side panel mode on click
+    toggleSidePanel();
   };
-
-  const sidePanelClass = `side-panel ${isDivVisible || isSidePanelInContent ? 'side-panel--visible' : 'side-panel--hidden'}`;
 
   return (
     <header className="header">
-      <div
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
-        className="header__nav-menu"
-      >
+      <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={handleClick} className="header__nav-menu">
         {isSidePanelInContent ? <IoChevronBackSharp /> : isDivVisible ? <IoChevronForwardSharp /> : <IoMenuSharp />}
       </div>
-      <div className={sidePanelClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-        <h2>Playlists</h2>
-      </div>
+      <SidePanel isDivVisible={isDivVisible} isSidePanelInContent={isSidePanelInContent} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave}/>
       <div className="header__nav-group">
         <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
       </div>
