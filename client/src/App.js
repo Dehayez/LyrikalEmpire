@@ -130,7 +130,7 @@ function App() {
     <div className="App">
       <ToastContainer />
       <div className="container" id="main-content">
-        <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
+      <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
         {isSidePanelInContent && <SidePanel isDivVisible={isSidePanelInContent} className='side-panel--pinned'/>}
         <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
         <Queue queue={queue} />

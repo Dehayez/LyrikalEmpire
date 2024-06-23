@@ -24,17 +24,15 @@
     border-radius: 4px;
 
     &--hover {
-      height: 75vh;
-      left: 0;
-      top: 7vh;
       position: fixed;
+      height: 75vh;
+      top: 7vh;
+      left: 0;
       z-index: 3;
-
     }
 
     &--pinned {
       height: 100%;
-
     }
   }
   
