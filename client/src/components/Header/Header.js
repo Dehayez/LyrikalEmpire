@@ -27,8 +27,8 @@ const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
   };
 
   const handleClick = () => {
-    setIsDivVisible(false); // Hide the SidePanel in Header on click
-    toggleSidePanel(); // Toggle visibility for the SidePanel in App.js
+    setIsDivVisible(false);
+    toggleSidePanel();
   };
 
   return (
