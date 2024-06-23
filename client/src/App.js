@@ -91,13 +91,17 @@ function App() {
     setIsSidePanelInContent(!isSidePanelInContent);
   };
 
+  const handleQueueUpdateAfterDelete = (deletedBeatId) => {
+    setQueue(queue.filter(beat => beat.id !== deletedBeatId));
+  };
+
   return (
     <div className="App">
       <ToastContainer />
       <div className="container" id="main-content">
         <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
-        <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} />
+        <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
         <Queue queue={queue} />
         <div className="buffer"/>
         <AddBeatButton setIsOpen={setIsOpen} />

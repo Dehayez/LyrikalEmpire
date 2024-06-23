@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { updateBeat, deleteBeat } from '../services';
 
-export const useBeatActions = (initialBeats) => {
+export const useBeatActions = (initialBeats, handleQueueUpdateAfterDelete) => {
   const [beats, setBeats] = useState(initialBeats);
 
   const handleUpdateAll = (newBeats) => {
@@ -20,6 +20,9 @@ export const useBeatActions = (initialBeats) => {
   const handleDelete = async (id) => {
     await deleteBeat(id);
     setBeats(beats.filter(beat => beat.id !== id));
+    if (handleQueueUpdateAfterDelete) {
+      handleQueueUpdateAfterDelete(id);
+    }
   };
 
   return { beats, handleUpdate, handleDelete, handleUpdateAll };

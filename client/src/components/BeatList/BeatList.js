@@ -12,12 +12,12 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete }) => {
   const tableRef = useRef(null);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [selectedBeatsForDeletion, setSelectedBeatsForDeletion] = useState([]);
-  const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([]);
+  const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
 
