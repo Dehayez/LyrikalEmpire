@@ -129,11 +129,15 @@ function App() {
   return (
     <div className="App">
       <ToastContainer />
-      <div className="container" id="main-content">
-      <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
-        {isSidePanelInContent && <SidePanel isDivVisible={isSidePanelInContent} className='side-panel--pinned'/>}
-        <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
-        <Queue queue={queue} />
+      <div className="container">
+        <div className='container__content'>
+          <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
+
+          {isSidePanelInContent && <SidePanel isDivVisible={isSidePanelInContent} className='side-panel--pinned'/>}
+          <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
+          <Queue queue={queue} />
+        </div>
+
         <AddBeatButton setIsOpen={setIsOpen} />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
       </div>
