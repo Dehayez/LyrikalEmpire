@@ -1,10 +1,8 @@
-.form {
-}
-
 .form__title {
     margin: 0;
     margin-bottom: 1em;
 }
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -50,7 +48,6 @@
         cursor: pointer;
         border-radius: 4px;
         transition: background-color 0.3s ease;
-
         &:hover {
             background-color: #1a1a1a;
         }
@@ -74,7 +71,6 @@ input[type="number"] {
     -moz-appearance: textfield;
     -webkit-appearance: none;
     appearance: none;
-
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -98,6 +94,15 @@ input[type="number"] {
     }
 }
 
+.modal-content {
+    max-width: 400px;
+    min-width: 400px;
+    background-color: #181818;
+    border-radius: 6px;
+    padding: 20px;
+    pointer-events: auto;
+}
+
 .modal__buttons {
     margin-top: 1.5em;
 }
@@ -108,4 +113,15 @@ input[type="number"] {
     &:hover {
         background-color: #CC9900;
     }
+}
+
+.ReactModal__Content {
+    pointer-events: none;
+}
+
+.react-draggable {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
