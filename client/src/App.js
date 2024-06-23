@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getBeats } from './services';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer } from './components';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue } from './components';
 import { handlePlay, handleNext, handlePrev } from './hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,6 +14,7 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
+  const [queue, setQueue] = useState([]); // State to hold the queue
 
   const [currentBeat, setCurrentBeat] = useState(() => {
     const savedCurrentBeat = localStorage.getItem('currentBeat');
@@ -50,6 +51,31 @@ function App() {
     fetchBeats();
   }, []);
 
+  useEffect(() => {
+    // Update the queue state whenever beats, shuffle, or currentBeat changes
+    logQueue(beats, shuffle, currentBeat); // This function now updates the queue state
+  }, [beats, shuffle, currentBeat]);
+
+  function logQueue(beats, shuffle, currentBeat) {
+    let queue = [...beats];
+  
+    if (shuffle) {
+      for (let i = queue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [queue[i], queue[j]] = [queue[j], queue[i]];
+      }
+    }
+  
+    const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+  
+    if (currentBeatIndex > 0) {
+      const currentAndNext = queue.splice(currentBeatIndex);
+      queue = [...currentAndNext, ...queue];
+    }
+  
+    setQueue(queue); // Update the queue state
+  }
+
   const handleAdd = () => setRefresh(!refresh);
 
   const handlePlayWrapper = (beat, play, beats) => handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
@@ -61,35 +87,6 @@ function App() {
     setIsSidePanelInContent(!isSidePanelInContent);
   };
 
-  function logQueue(beats, shuffle, currentBeat) {
-    let queue = [...beats];
-  
-    // Shuffle if needed
-    if (shuffle) {
-      for (let i = queue.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [queue[i], queue[j]] = [queue[j], queue[i]]; // Swap
-      }
-    }
-  
-    // Find the index of the current beat in the queue
-    const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
-  
-    // Assuming the current beat is always at the start of the queue
-    // If the current beat is not at the start, adjust the queue accordingly
-    if (currentBeatIndex > 0) {
-      const currentAndNext = queue.splice(currentBeatIndex);
-      queue = [...currentAndNext, ...queue];
-    }
-  
-    console.log("Current Queue:", queue.map(beat => beat.title));
-  }
-
-  useEffect(() => {
-    // Assuming logQueue should be called every time currentBeat, beats, or shuffle changes.
-    logQueue(beats, shuffle, currentBeat);
-  }, [beats, shuffle, currentBeat]); // Dependencies array to ensure effect runs on changes
-
   return (
     <div className="App">
       <ToastContainer />
@@ -97,6 +94,7 @@ function App() {
         <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} />
+        <Queue queue={queue} /> {/* Render the Queue component */}
         <div className="buffer"/>
         <AddBeatButton setIsOpen={setIsOpen} />
       </div>
