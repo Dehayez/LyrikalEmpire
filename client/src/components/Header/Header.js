@@ -36,7 +36,7 @@ const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
       <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={handleClick} className="header__nav-menu">
         {isSidePanelInContent ? <IoChevronBackSharp /> : isDivVisible ? <IoChevronForwardSharp /> : <IoMenuSharp />}
       </div>
-      <SidePanel isDivVisible={isDivVisible && !isSidePanelInContent} isSidePanelInContent={isSidePanelInContent} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave}/>
+      <SidePanel className='side-panel--hover' isDivVisible={isDivVisible && !isSidePanelInContent} isSidePanelInContent={isSidePanelInContent} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave}/>
       <div className="header__nav-group">
         <Link to="/">
           <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
