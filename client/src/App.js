@@ -92,7 +92,17 @@ function App() {
   };
 
   const handleQueueUpdateAfterDelete = (deletedBeatId) => {
+    // Update the queue to remove the deleted beat
     setQueue(queue.filter(beat => beat.id !== deletedBeatId));
+    
+    // Also update the main beats array to remove the deleted beat
+    setBeats(beats.filter(beat => beat.id !== deletedBeatId));
+    
+    // If the deleted beat is the currently selected or playing beat, handle appropriately
+    if (currentBeat && currentBeat.id === deletedBeatId) {
+      setCurrentBeat(null); // Or set to the next available beat
+      setIsPlaying(false); // Or adjust based on your app's logic
+    }
   };
 
   return (
