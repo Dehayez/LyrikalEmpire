@@ -89,7 +89,7 @@ const BeatRow = ({
           />
         </div>
       </td>
-        <td className={selectedBeat && selectedBeat.id === beat.id ? 'beat-row__selected' : ''}>
+        <td className={selectedBeat && selectedBeat.id === beat.id ? 'beat-row__playing' : ''}>
           <input 
             className='beat-row__input beat-row__input--title'
             type="text"
