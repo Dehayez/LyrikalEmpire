@@ -26,6 +26,11 @@
     z-index: 3;
     transition: transform 0.2s ease-in-out;
     padding: 1em;
+
+    &--pinned {
+      height: 100vh;
+
+    }
   }
   
   .side-panel--visible {
