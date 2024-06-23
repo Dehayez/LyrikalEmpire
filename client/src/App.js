@@ -14,6 +14,7 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
+
   const [currentBeat, setCurrentBeat] = useState(() => {
     const savedCurrentBeat = localStorage.getItem('currentBeat');
     return savedCurrentBeat !== null && savedCurrentBeat !== "undefined" ? JSON.parse(savedCurrentBeat) : null;
@@ -59,6 +60,35 @@ function App() {
   const toggleSidePanel = () => {
     setIsSidePanelInContent(!isSidePanelInContent);
   };
+
+  function logQueue(beats, shuffle, currentBeat) {
+    let queue = [...beats];
+  
+    // Shuffle if needed
+    if (shuffle) {
+      for (let i = queue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [queue[i], queue[j]] = [queue[j], queue[i]]; // Swap
+      }
+    }
+  
+    // Find the index of the current beat in the queue
+    const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+  
+    // Assuming the current beat is always at the start of the queue
+    // If the current beat is not at the start, adjust the queue accordingly
+    if (currentBeatIndex > 0) {
+      const currentAndNext = queue.splice(currentBeatIndex);
+      queue = [...currentAndNext, ...queue];
+    }
+  
+    console.log("Current Queue:", queue.map(beat => beat.title));
+  }
+
+  useEffect(() => {
+    // Assuming logQueue should be called every time currentBeat, beats, or shuffle changes.
+    logQueue(beats, shuffle, currentBeat);
+  }, [beats, shuffle, currentBeat]); // Dependencies array to ensure effect runs on changes
 
   return (
     <div className="App">
