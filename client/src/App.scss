@@ -1,7 +1,22 @@
+.App {
+  
+}
 .container {
   margin: 0 auto;
-  padding: 0 20px;
-
+  &__content {
+    display: flex;
+    &__left {
+    }
+    &__middle {
+      padding: 1em 20px;
+      overflow-x: auto;
+      overflow-y: auto;
+      
+    }
+    &__right {
+      padding: 1em 20px;
+    }
+  }
 }
 
 .Toastify__progress-bar {
