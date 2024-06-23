@@ -13,9 +13,7 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
-  const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
   const [queue, setQueue] = useState([]);
-
   const [currentBeat, setCurrentBeat] = useState(() => {
     const savedCurrentBeat = localStorage.getItem('currentBeat');
     return savedCurrentBeat !== null && savedCurrentBeat !== "undefined" ? JSON.parse(savedCurrentBeat) : null;
@@ -65,7 +63,6 @@ function App() {
       }
     }
   
-    // Check if currentBeat is not null before finding its index
     if (currentBeat) {
       const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
   
@@ -83,7 +80,6 @@ function App() {
     const updatedBeats = [...beats, newBeat];
     setBeats(updatedBeats);
   
-    // Update queue based on shuffle state
     if (shuffle) {
       const shuffledQueue = [...queue, newBeat];
       for (let i = shuffledQueue.length - 1; i > 0; i--) {
@@ -111,30 +107,24 @@ function App() {
   };
 
   const handleQueueUpdateAfterDelete = (deletedBeatId) => {
-    // Update the queue and beats array to remove the deleted beat
     const updatedQueue = queue.filter(beat => beat.id !== deletedBeatId);
     const updatedBeats = beats.filter(beat => beat.id !== deletedBeatId);
     setQueue(updatedQueue);
     setBeats(updatedBeats);
   
-    // If the deleted beat is the currently playing beat, find and play the next beat
     if (currentBeat && currentBeat.id === deletedBeatId) {
-      const nextBeatIndex = updatedQueue.length > 0 ? 0 : -1; // Start from the beginning or indicate no next beat
+      const nextBeatIndex = updatedQueue.length > 0 ? 0 : -1;
       const nextBeat = nextBeatIndex !== -1 ? updatedQueue[nextBeatIndex] : null;
   
       if (nextBeat) {
-        // Update currentBeat to the next beat and ensure playback continues
         setCurrentBeat(nextBeat);
-        // Optionally, trigger playback here if needed
       } else {
-        // No next beat to play, clear the currentBeat and stop playing
         setCurrentBeat(null);
         setIsPlaying(false);
       }
     }
   };
   
-
   return (
     <div className="App">
       <ToastContainer />
