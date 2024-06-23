@@ -14,7 +14,7 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [lastPlayedIndex, setLastPlayedIndex] = useState(null);
-  const [queue, setQueue] = useState([]); // State to hold the queue
+  const [queue, setQueue] = useState([]);
 
   const [currentBeat, setCurrentBeat] = useState(() => {
     const savedCurrentBeat = localStorage.getItem('currentBeat');
@@ -52,8 +52,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Update the queue state whenever beats, shuffle, or currentBeat changes
-    logQueue(beats, shuffle, currentBeat); // This function now updates the queue state
+    logQueue(beats, shuffle, currentBeat);
   }, [beats, shuffle, currentBeat]);
 
   function logQueue(beats, shuffle, currentBeat) {
@@ -73,13 +72,18 @@ function App() {
       queue = [...currentAndNext, ...queue];
     }
   
-    setQueue(queue); // Update the queue state
+    setQueue(queue);
   }
 
   const handleAdd = () => setRefresh(!refresh);
 
   const handlePlayWrapper = (beat, play, beats) => handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
-  const handleNextWrapper = () => handleNext(repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlayWrapper, setIsPlaying, setRepeat);
+  const handleNextWrapper = () => {
+    const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+    const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
+    const nextBeat = queue[nextIndex];
+    handlePlayWrapper(nextBeat, true, beats);
+  };
   const handlePrevWrapper = () => handlePrev(repeat, beats, currentBeat, handlePlayWrapper);
 
   const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
@@ -94,11 +98,11 @@ function App() {
         <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
         <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} />
-        <Queue queue={queue} /> {/* Render the Queue component */}
+        <Queue queue={queue} />
         <div className="buffer"/>
         <AddBeatButton setIsOpen={setIsOpen} />
       </div>
-      <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNextWrapper} onPrev={handlePrevWrapper} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} />
+      <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNextWrapper} onPrev={handlePrevWrapper} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} queue={queue}/>
     </div>
   );
 }
