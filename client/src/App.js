@@ -131,14 +131,14 @@ function App() {
       <ToastContainer />
       <div className="container" id="main-content">
         <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
-        {isSidePanelInContent && <SidePanel isSidePanelInContent={isSidePanelInContent} />}
+        {isSidePanelInContent && <SidePanel isDivVisible={isSidePanelInContent} />}
         <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
         <Queue queue={queue} />
-        <div className="buffer"/>
         <AddBeatButton setIsOpen={setIsOpen} />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
       </div>
       <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNextWrapper} onPrev={handlePrevWrapper} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} queue={queue}/>
+      <div className="buffer"/>
     </div>
   );
 }
