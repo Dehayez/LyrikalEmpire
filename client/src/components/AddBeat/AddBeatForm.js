@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Modal from 'react-modal';
+import Draggable from 'react-draggable';
 import { addBeat } from '../../services/beatService';
 import { IoCloudUploadSharp, IoChevronDownSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
@@ -26,6 +27,8 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [fileName, setFileName] = useState('No file chosen');
     const [showToast, setShowToast] = useState(false);
     const { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
+
+    const draggableRef = useRef(null);
 
     const resetForm = () => {
         setTitle('');
@@ -88,14 +91,12 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             zIndex: 3,
         },
         content: {
-            backgroundColor: '#181818',
+            backgroundColor: 'transparent',
             color: 'white', 
             border: 'none',
-            borderRadius: '6px',
+            height: '100%',
             width: '100%',
-            maxWidth: '400px',
             margin: 'auto', 
-            padding: '20px',
             position: 'absolute',
             top: '50%',
             left: '50%',
@@ -106,7 +107,10 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     };
 
     return (
-        <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
+<Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
+    <Draggable handle=".form__title" nodeRef={draggableRef}>
+        <div ref={draggableRef}>
+        <div className="modal-content">
             <h2 className='form__title'>Add Beat</h2>
             <form className='form' onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -164,7 +168,10 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                     <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
                 </div>
             </form>
-        </Modal>
+        </div>
+        </div>
+    </Draggable>
+</Modal>
     );
 };
 
