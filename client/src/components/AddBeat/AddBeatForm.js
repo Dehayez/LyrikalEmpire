@@ -2,9 +2,9 @@ import React, { useState, useRef } from 'react';
 import Modal from 'react-modal';
 import Draggable from 'react-draggable';
 import { addBeat } from '../../services/beatService';
+import { useBpmHandlers } from '../../hooks';
 import { IoCloudUploadSharp, IoChevronDownSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
-import { useBpmHandlers } from '../../hooks';
 import './AddBeatForm.scss';
 
 Modal.setAppElement('#root');
