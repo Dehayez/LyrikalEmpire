@@ -75,7 +75,23 @@ function App() {
     setQueue(queue);
   }
 
-  const handleAdd = () => setRefresh(!refresh);
+  const handleAdd = (newBeat) => {
+    setRefresh(!refresh);
+    const updatedBeats = [...beats, newBeat];
+    setBeats(updatedBeats);
+  
+    // Update queue based on shuffle state
+    if (shuffle) {
+      const shuffledQueue = [...queue, newBeat];
+      for (let i = shuffledQueue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledQueue[i], shuffledQueue[j]] = [shuffledQueue[j], shuffledQueue[i]];
+      }
+      setQueue(shuffledQueue);
+    } else {
+      setQueue([...queue, newBeat]);
+    }
+  };
 
   const handlePlayWrapper = (beat, play, beats) => handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
   const handleNextWrapper = () => {
@@ -104,6 +120,8 @@ function App() {
       setIsPlaying(false); // Or adjust based on your app's logic
     }
   };
+
+  
 
   return (
     <div className="App">

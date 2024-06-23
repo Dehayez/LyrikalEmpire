@@ -61,8 +61,9 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             newBeat.tierlist = tierlist;
         }
         try {
-            await addBeat(newBeat, audio);
-            onAdd();
+            const response = await addBeat(newBeat, audio); // Keep this call and remove the duplicate
+            const addedBeat = { ...newBeat, id: response.id };
+            onAdd(addedBeat);
             resetForm();
             setIsOpen(false);
             setShowToast(true);
