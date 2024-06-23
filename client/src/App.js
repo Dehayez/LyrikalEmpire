@@ -65,11 +65,14 @@ function App() {
       }
     }
   
-    const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+    // Check if currentBeat is not null before finding its index
+    if (currentBeat) {
+      const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
   
-    if (currentBeatIndex > 0) {
-      const currentAndNext = queue.splice(currentBeatIndex);
-      queue = [...currentAndNext, ...queue];
+      if (currentBeatIndex > 0) {
+        const currentAndNext = queue.splice(currentBeatIndex);
+        queue = [...currentAndNext, ...queue];
+      }
     }
   
     setQueue(queue);
@@ -114,13 +117,22 @@ function App() {
     // Also update the main beats array to remove the deleted beat
     setBeats(beats.filter(beat => beat.id !== deletedBeatId));
     
-    // If the deleted beat is the currently selected or playing beat, handle appropriately
+    // If the deleted beat is the currently playing beat, automatically play the next beat
     if (currentBeat && currentBeat.id === deletedBeatId) {
-      setCurrentBeat(null); // Or set to the next available beat
-      setIsPlaying(false); // Or adjust based on your app's logic
+      // Find the next beat to play. If the queue is empty after deletion, this will be null.
+      const nextBeatIndex = queue.findIndex(beat => beat.id !== deletedBeatId);
+      const nextBeat = queue[nextBeatIndex] || queue[0]; // Fallback to the first beat if the deleted beat was the last one
+      
+      // Check if there is a next beat to play
+      if (nextBeat) {
+        handleNextWrapper(); // Automatically play the next beat
+      } else {
+        // No next beat to play, so clear the currentBeat and stop playing
+        setCurrentBeat(null);
+        setIsPlaying(false);
+      }
     }
   };
-
   
 
   return (
