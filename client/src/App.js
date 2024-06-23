@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getBeats } from './services';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue } from './components';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, SidePanel } from './components';
 import { handlePlay, handleNext, handlePrev } from './hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -101,11 +101,6 @@ function App() {
   };
   const handlePrevWrapper = () => handlePrev(repeat, beats, currentBeat, handlePlayWrapper);
 
-  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
-  const toggleSidePanel = () => {
-    setIsSidePanelInContent(!isSidePanelInContent);
-  };
-
   const handleQueueUpdateAfterDelete = (deletedBeatId) => {
     const updatedQueue = queue.filter(beat => beat.id !== deletedBeatId);
     const updatedBeats = beats.filter(beat => beat.id !== deletedBeatId);
@@ -124,17 +119,24 @@ function App() {
       }
     }
   };
+
+  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
+
+  const toggleSidePanel = () => {
+    setIsSidePanelInContent(!isSidePanelInContent);
+  };
   
   return (
     <div className="App">
       <ToastContainer />
       <div className="container" id="main-content">
         <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
-        <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
+        {isSidePanelInContent && <SidePanel isSidePanelInContent={isSidePanelInContent} />}
         <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
         <Queue queue={queue} />
         <div className="buffer"/>
         <AddBeatButton setIsOpen={setIsOpen} />
+        <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
       </div>
       <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNextWrapper} onPrev={handlePrevWrapper} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} queue={queue}/>
     </div>

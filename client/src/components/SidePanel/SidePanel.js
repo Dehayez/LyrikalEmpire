@@ -2,7 +2,7 @@ import React from 'react';
 import './SidePanel.scss';
 
 const SidePanel = ({ isDivVisible, isSidePanelInContent, handleMouseEnter, handleMouseLeave }) => {
-  const sidePanelClass = `side-panel ${isDivVisible || isSidePanelInContent ? 'side-panel--visible' : 'side-panel--hidden'}`;
+  const sidePanelClass = `side-panel ${isDivVisible || isSidePanelInContent ? 'side-panel--visible' : 'side-panel--hidden'} ${isSidePanelInContent ? 'side-panel--in-content' : ''}`;
 
   return (
     <div className={sidePanelClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
