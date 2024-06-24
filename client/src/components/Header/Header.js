@@ -4,7 +4,7 @@ import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoSettingsSharp
 import { LeftSidePanel, RightSidePanel } from '../SidePanel'
 import './Header.scss';
 
-const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
+const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, isSidePanelInContent }) => {
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
   const hoverRefLeft = useRef(false);
@@ -57,12 +57,9 @@ const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
 
   return (
     <header className="header">
+     
       <div onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft} onClick={handleClickLeft} className="header__nav-menu-left">
         {isSidePanelInContent ? <IoChevronBackSharp /> : isLeftDivVisible ? <IoChevronForwardSharp /> : <IoMenuSharp />}
-      </div>
-      <LeftSidePanel className='left-side-panel--hover' isDivVisible={isLeftDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterLeft} handleMouseLeave={handleMouseLeaveLeft}/>
-      <div onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight} onClick={handleClickRight} className="header__nav-menu-right">
-        <IoSettingsSharp />
       </div>
       <RightSidePanel className='right-side-panel--hover' isDivVisible={isRightDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterRight} handleMouseLeave={handleMouseLeaveRight}/>
       <div className="header__nav-group">
@@ -70,6 +67,11 @@ const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
           <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
         </Link>
       </div>
+
+      <div onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight} onClick={handleClickRight} className="header__nav-menu-right">
+        <IoSettingsSharp />
+      </div>
+      <LeftSidePanel className='left-side-panel--hover' isDivVisible={isLeftDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterLeft} handleMouseLeave={handleMouseLeaveLeft}/>
     </header>
   );
 };
