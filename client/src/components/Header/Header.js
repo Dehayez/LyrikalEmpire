@@ -26,10 +26,7 @@ const handleMouseLeaveLeft = () => {
   }
 };
 
-const handleClickLeft = () => {
-  setIsLeftDivVisible(false);
-  toggleSidePanel();
-};
+
 
 // Added handlers for right side panel with opposite logic for "right"
 const handleMouseEnterRight = () => {
@@ -50,11 +47,13 @@ const handleMouseLeaveRight = () => {
   }
 };
 
-const handleClickRight = () => {
-  setIsRightDivVisible(false);
-  toggleSidePanel();
+const handleClickLeft = () => {
+  toggleSidePanel('left');
 };
 
+const handleClickRight = () => {
+  toggleSidePanel('right');
+};
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
   const hoverRefLeft = useRef(false);

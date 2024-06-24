@@ -120,20 +120,30 @@ function App() {
     }
   };
 
-  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
-
-  const toggleSidePanel = () => {
-    setIsSidePanelInContent(!isSidePanelInContent);
+  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(false);
+  const [isRightPanelVisible, setIsRightPanelVisible] = useState(false);
+  
+  // Modify toggleSidePanel to accept a panel identifier
+  const toggleSidePanel = (panel) => {
+    if (panel === 'left') {
+      setIsLeftPanelVisible(!isLeftPanelVisible);
+    } else if (panel === 'right') {
+      setIsRightPanelVisible(!isRightPanelVisible);
+    }
   };
   
   return (
     <div className="App">
       <ToastContainer />
-      <Header isSidePanelInContent={isSidePanelInContent} toggleSidePanel={toggleSidePanel} />
+      <Header 
+        isLeftPanelVisible={isLeftPanelVisible} 
+        isRightPanelVisible={isRightPanelVisible} 
+        toggleSidePanel={toggleSidePanel} 
+      />
       <div className="container">
         <div className='container__content'>
           <div className='container__content__left'>
-            {isSidePanelInContent && <LeftSidePanel isDivVisible={isSidePanelInContent} className='left-side-panel--pinned'/>}
+            {isLeftPanelVisible && <LeftSidePanel isDivVisible={isLeftPanelVisible} className='left-side-panel--pinned'/>}
           </div>
 
           <div className='container__content__middle'>
@@ -141,7 +151,7 @@ function App() {
           </div>
 
           <div className='container__content__right'>
-            <RightSidePanel isDivVisible={isSidePanelInContent} className='right-side-panel--pinned'/>
+            <RightSidePanel isDivVisible={isRightPanelVisible} className='right-side-panel--pinned'/>
           </div>
 
         </div>
