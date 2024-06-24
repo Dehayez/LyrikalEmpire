@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getBeats } from './services';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, SidePanel } from './components';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, SidePanel, RightSidePanel, LeftSidePanel } from './components';
 import { handlePlay, handleNext, handlePrev } from './hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -133,7 +133,7 @@ function App() {
       <div className="container">
         <div className='container__content'>
           <div className='container__content__left'>
-            {isSidePanelInContent && <SidePanel isDivVisible={isSidePanelInContent} className='side-panel--pinned'/>}
+            {isSidePanelInContent && <LeftSidePanel isDivVisible={isSidePanelInContent} className='left-side-panel--pinned'/>}
           </div>
 
           <div className='container__content__middle'>
@@ -141,7 +141,7 @@ function App() {
           </div>
 
           <div className='container__content__right'>
-            <Queue queue={queue} />
+            <RightSidePanel isDivVisible={isSidePanelInContent} className='right-side-panel--pinned'/>
           </div>
 
         </div>
