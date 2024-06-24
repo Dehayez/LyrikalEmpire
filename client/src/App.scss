@@ -1,21 +1,28 @@
+
 .App {
-  
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
+
+
 .container {
-  margin: 0 auto;
-  &__content {
-    display: flex;
-    &__left {
-    }
-    &__middle {
-      padding: 1em 20px;
-      overflow-x: auto;
-      overflow-y: auto;
-      
-    }
-    &__right {
-      padding: 1em 20px;
-    }
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.container__content {
+  display: flex;
+  overflow: hidden;
+
+  &__left, &__right {
+    padding: 1em 20px;
+  }
+
+  &__middle {
+    padding: 1em 20px;
+    overflow-y: auto;
   }
 }
 
