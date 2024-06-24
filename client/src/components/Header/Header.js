@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoSettingsSharp } from 'react-icons/io5';
-import { SidePanel } from '../SidePanel';
 import { LeftSidePanel, RightSidePanel } from '../SidePanel'
 import './Header.scss';
 
