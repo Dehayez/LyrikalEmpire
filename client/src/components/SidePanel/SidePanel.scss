@@ -1,53 +1,81 @@
-@keyframes slideIn {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(0);
-    }
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
   }
-  
-  @keyframes slideOut {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-100%);
-    }
+  to {
+    transform: translateX(0);
   }
-  
-  .side-panel {
-    width: 300px;
-    background-color: #202020;
-    transition: transform 0.2s ease-in-out;
-    padding: 1em;
-    border-radius: 4px;
+}
 
-    &--hover {
-      position: fixed;
-      height: 80%;
-      top: 7vh;
-      left: 0;
-      z-index: 3;
-    }
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
 
-    &--pinned {
-      height: 94%;
-    }
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
   }
-  
-  .side-panel--visible {
-    animation: slideIn 0.2s forwards;
+  to {
+    transform: translateX(0);
   }
-  
-  .side-panel--hidden {
-    animation: slideOut 0.2s forwards;
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
   }
-  
-  .side-panel--content {
-    position: relative;
-    width: 100%;
-    height: auto;
-    transition: transform 0.3s ease;
-    animation: slideInContent 0.3s forwards;
+  to {
+    transform: translateX(100%);
   }
+}
+
+.left-side-panel, .right-side-panel {
+  width: 300px;
+  background-color: #202020;
+  transition: transform 0.2s ease-in-out;
+  padding: 1em;
+  border-radius: 4px;
+}
+
+.left-side-panel {
+  &--hover {
+    position: fixed;
+    height: 80%;
+    top: 7vh;
+    left: 0;
+    z-index: 3;
+  }
+  &--pinned {
+    height: 94%;
+  }
+  &--visible {
+    animation: slideInLeft 0.2s forwards;
+  }
+  &--hidden {
+    animation: slideOutLeft 0.2s forwards;
+  }
+}
+
+.right-side-panel {
+  &--hover {
+    position: fixed;
+    height: 80%;
+    top: 7vh;
+    right: 0;
+    z-index: 3;
+  }
+  &--pinned {
+    height: 94%;
+  }
+  &--visible {
+    animation: slideInRight 0.2s forwards;
+  }
+  &--hidden {
+    animation: slideOutRight 0.2s forwards;
+  }
+}

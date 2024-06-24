@@ -19,20 +19,24 @@
     width: 30px;
   }
 
-  &__nav-menu {
+  &__nav-menu-left, &__nav-menu-right {
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    left: 0;
     padding: 4px;
     margin: 20px;
     border-radius: 4px;
     font-size: 24px;
     cursor: pointer;
-
     &:hover {
       background-color: #202020;
     }
+  }
+  &__nav-menu-left {
+    left: 0;
+  }
+  &__nav-menu-right {
+    right: 0;
   }
 }
