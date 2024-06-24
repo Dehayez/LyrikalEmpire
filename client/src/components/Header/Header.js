@@ -6,58 +6,55 @@ import { LeftSidePanel, RightSidePanel } from '../SidePanel'
 import './Header.scss';
 
 const Header = ({ isSidePanelInContent, toggleSidePanel }) => {
-
-// Updated handlers for left side panel with renamed functions to reflect "left"
-const handleMouseEnterLeft = () => {
-  if (!isSidePanelInContent) {
-    hoverRefLeft.current = true;
-    setIsLeftDivVisible(true);
-  }
-};
-
-const handleMouseLeaveLeft = () => {
-  if (!isSidePanelInContent) {
-    hoverRefLeft.current = false;
-    setTimeout(() => {
-      if (!hoverRefLeft.current) {
-        setIsLeftDivVisible(false);
-      }
-    }, 300);
-  }
-};
-
-
-
-// Added handlers for right side panel with opposite logic for "right"
-const handleMouseEnterRight = () => {
-  if (!isSidePanelInContent) {
-    hoverRefRight.current = true;
-    setIsRightDivVisible(true);
-  }
-};
-
-const handleMouseLeaveRight = () => {
-  if (!isSidePanelInContent) {
-    hoverRefRight.current = false;
-    setTimeout(() => {
-      if (!hoverRefRight.current) {
-        setIsRightDivVisible(false);
-      }
-    }, 300);
-  }
-};
-
-const handleClickLeft = () => {
-  toggleSidePanel('left');
-};
-
-const handleClickRight = () => {
-  toggleSidePanel('right');
-};
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
   const hoverRefLeft = useRef(false);
   const hoverRefRight = useRef(false);
+
+  // LEFT SIDE PANEL
+  const handleClickLeft = () => {
+    toggleSidePanel('left');
+  };
+  const handleMouseEnterLeft = () => {
+    if (!isSidePanelInContent) {
+      hoverRefLeft.current = true;
+      setIsLeftDivVisible(true);
+    }
+  };
+
+  const handleMouseLeaveLeft = () => {
+    if (!isSidePanelInContent) {
+      hoverRefLeft.current = false;
+      setTimeout(() => {
+        if (!hoverRefLeft.current) {
+          setIsLeftDivVisible(false);
+        }
+      }, 300);
+    }
+  };
+
+  // RIGHT SIDE PANEL
+  const handleClickRight = () => {
+    toggleSidePanel('right');
+  };
+
+  const handleMouseEnterRight = () => {
+    if (!isSidePanelInContent) {
+      hoverRefRight.current = true;
+      setIsRightDivVisible(true);
+    }
+  };
+
+  const handleMouseLeaveRight = () => {
+    if (!isSidePanelInContent) {
+      hoverRefRight.current = false;
+      setTimeout(() => {
+        if (!hoverRefRight.current) {
+          setIsRightDivVisible(false);
+        }
+      }, 300);
+    }
+  };
 
   return (
     <header className="header">

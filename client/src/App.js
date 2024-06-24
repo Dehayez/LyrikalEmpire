@@ -151,7 +151,7 @@ function App() {
           </div>
 
           <div className='container__content__right'>
-            <RightSidePanel isDivVisible={isRightPanelVisible} className='right-side-panel--pinned'/>
+          {isRightPanelVisible && <RightSidePanel isDivVisible={isRightPanelVisible} className='right-side-panel--pinned'/>}
           </div>
 
         </div>
