@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoSettingsSharp } from 'react-icons/io5';
+import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoListSharp } from 'react-icons/io5';
 import { LeftSidePanel, RightSidePanel } from '../SidePanel'
 import './Header.scss';
 
@@ -70,7 +70,7 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, isSi
       </div>
 
       <div onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight} onClick={handleClickRight} className="header__nav-menu-right">
-        <IoSettingsSharp />
+        {isRightPanelVisible ? <IoChevronForwardSharp /> : isRightDivVisible ? <IoChevronBackSharp /> : <IoListSharp />}
       </div>
       <RightSidePanel className='right-side-panel--hover' isDivVisible={isRightDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterRight} handleMouseLeave={handleMouseLeaveRight}/>
     </header>
