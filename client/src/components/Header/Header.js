@@ -59,9 +59,10 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, isSi
     <header className="header">
      
       <div onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft} onClick={handleClickLeft} className="header__nav-menu-left">
-        {isSidePanelInContent ? <IoChevronBackSharp /> : isLeftDivVisible ? <IoChevronForwardSharp /> : <IoMenuSharp />}
+        {isLeftPanelVisible ? <IoChevronBackSharp /> : isLeftDivVisible ? <IoChevronForwardSharp /> : <IoMenuSharp />}
       </div>
-      <RightSidePanel className='right-side-panel--hover' isDivVisible={isRightDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterRight} handleMouseLeave={handleMouseLeaveRight}/>
+      <LeftSidePanel className='left-side-panel--hover' isDivVisible={isLeftDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterLeft} handleMouseLeave={handleMouseLeaveLeft}/>
+      
       <div className="header__nav-group">
         <Link to="/">
           <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
@@ -71,7 +72,7 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, isSi
       <div onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight} onClick={handleClickRight} className="header__nav-menu-right">
         <IoSettingsSharp />
       </div>
-      <LeftSidePanel className='left-side-panel--hover' isDivVisible={isLeftDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterLeft} handleMouseLeave={handleMouseLeaveLeft}/>
+      <RightSidePanel className='right-side-panel--hover' isDivVisible={isRightDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterRight} handleMouseLeave={handleMouseLeaveRight}/>
     </header>
   );
 };
