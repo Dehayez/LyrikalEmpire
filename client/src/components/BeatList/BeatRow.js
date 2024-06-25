@@ -135,6 +135,7 @@ const handleTierlistChange = (e) => {
         </td>
         <td className="beat-row__data">
           <div className="form-group">
+          <div className="select-wrapper">
               <select 
                 className="select-wrapper__select" 
                 value={tierlist}
@@ -144,7 +145,7 @@ const handleTierlistChange = (e) => {
                 onClick={(e) => e.stopPropagation()}
                 style={{color: tierlist ? 'white' : 'grey'}}
               >
-                <option value="">Select tier</option>
+                <option value=""></option>
                 <option value="G">G</option>
                 <option value="S">S</option>
                 <option value="A">A</option>
@@ -154,7 +155,7 @@ const handleTierlistChange = (e) => {
                 <option value="E">E</option>
                 <option value="F">F</option>
               </select>
-              <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
+              </div>
           </div>
         </td>
         <td className="beat-row__data">
