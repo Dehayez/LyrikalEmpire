@@ -5,72 +5,41 @@
   transition: transform 0.2s ease-in-out;
   padding: 1em;
   border-radius: 4px;
-}
-
-.left-side-panel, .right-side-panel {
   overflow-y: auto;
-  &--hover {
-    position: fixed;
-    top: 74px;
-    z-index: 3;
-  }
+  position: fixed;
+  top: 74px;
+  z-index: 3;
 
-  &--pinned {
+  &--hover {
+    &.left-side-panel { left: 0; }
+    &.right-side-panel { right: 0; }
   }
 
   &--visible {
-    animation:  0.4s forwards;
+    animation: slideIn 0.4s forwards;
   }
 
   &--hidden {
-    animation:  0.4s forwards;
+    animation: slideOut 0.4s forwards;
   }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(var(--start)); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(var(--end)); }
 }
 
 .left-side-panel {
-  &--hover {
-    left: 0;
-  }
-
-  &--visible {
-    animation-name: slideInLeft;
-  }
-
-  &--hidden {
-    animation-name: slideOutLeft;
-  }
+  --start: -100%;
+  --end: -100%;
 }
 
 .right-side-panel {
-  &--hover {
-    right: 0;
-  }
-
-  &--visible {
-    animation-name: slideInRight;
-  }
-
-  &--hidden {
-    animation-name: slideOutRight;
-  }
-}
-
-@keyframes slideInLeft {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
-}
-
-@keyframes slideOutLeft {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
-}
-
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-
-@keyframes slideOutRight {
-  from { transform: translateX(0); }
-  to { transform: translateX(100%); }
+  --start: 100%;
+  --end: 100%;
 }
