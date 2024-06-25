@@ -131,14 +131,11 @@ function App() {
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => {
     return JSON.parse(localStorage.getItem('isRightPanelVisible')) || false;
   });
-  // Other state initializations remain the same
 
-  // Persist isLeftPanelVisible state to localStorage
   useEffect(() => {
     localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
   }, [isLeftPanelVisible]);
 
-  // Persist isRightPanelVisible state to localStorage
   useEffect(() => {
     localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
   }, [isRightPanelVisible]);
@@ -197,17 +194,17 @@ function App() {
         <div className='container__content'>
           <div className='container__content__left'>
             {isLeftPanelVisible && <LeftSidePanel isDivVisible={isLeftPanelVisible} className='left-side-panel--pinned'/>}
+            {isLeftDivVisible && <LeftSidePanel className='left-side-panel--hover' isDivVisible={isLeftDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterLeft} handleMouseLeave={handleMouseLeaveLeft}/>}
           </div>
-          <LeftSidePanel className='left-side-panel--hover' isDivVisible={isLeftDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterLeft} handleMouseLeave={handleMouseLeaveLeft}/>
 
           <div className='container__content__middle'>
             <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
           </div>
 
           <div className='container__content__right'>
-          {isRightPanelVisible && <RightSidePanel isDivVisible={isRightPanelVisible} className='right-side-panel--pinned'/>}
+            {isRightPanelVisible && <RightSidePanel isDivVisible={isRightPanelVisible} className='right-side-panel--pinned'/>}
+            {isRightDivVisible && <RightSidePanel className='right-side-panel--hover' isDivVisible={isRightDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterRight} handleMouseLeave={handleMouseLeaveRight}/>}
           </div>
-          <RightSidePanel className='right-side-panel--hover' isDivVisible={isRightDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterRight} handleMouseLeave={handleMouseLeaveRight}/>
 
         </div>
 
