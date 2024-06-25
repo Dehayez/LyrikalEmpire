@@ -5,16 +5,16 @@ const styles = {
   playPauseButton: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, zIndex: 2 },
 };
 
-const PlayPauseButton = ({ beat, handlePlayPause, selectedBeat, isPlaying }) => {
+const PlayPauseButton = ({ beat, handlePlayPause, currentBeat, isPlaying }) => {
   return (
     <button
       style={styles.playPauseButton}
       className="icon-button icon-button--play-pause"
       onClick={() => handlePlayPause(beat)}
     >
-      {selectedBeat && selectedBeat.id === beat.id && isPlaying ? <IoPauseSharp fontSize={18} /> : <IoPlaySharp fontSize={18} />}
+      {currentBeat && currentBeat.id === beat.id && isPlaying ? <IoPauseSharp fontSize={18} /> : <IoPlaySharp fontSize={18} />}
       <span className="tooltip">
-        {selectedBeat && selectedBeat.id === beat.id && isPlaying ? 'Pause' : 'Play'}
+        {currentBeat && currentBeat.id === beat.id && isPlaying ? 'Pause' : 'Play'}
       </span>
     </button>
   );
