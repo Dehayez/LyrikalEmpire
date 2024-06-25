@@ -8,6 +8,7 @@
 }
 
 .left-side-panel, .right-side-panel {
+  overflow-y: auto;
   &--hover {
     position: fixed;
     top: 74px;
