@@ -1,4 +1,7 @@
 .queue {
+    &__subtitle {
+        margin-bottom: 0;
+    }
     &__list {
         display: flex;
         flex-direction: column;
@@ -7,6 +10,9 @@
         &-item {
             padding: 16px 10px;
             border-radius: 4px;
+            &--playing {
+                color: #FFCC44;
+            }
             &:hover {
                 background-color: #202020;
             }
