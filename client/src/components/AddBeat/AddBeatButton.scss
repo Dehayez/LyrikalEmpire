@@ -1,4 +1,29 @@
-.tooltip__addbeat {
-  border-radius: 5px;
-  white-space: nowrap;
+:root {
+  --right-panel-right-position: 30px;
+}
+
+.icon-button {
+  &--addbeat {
+    position: fixed; 
+    bottom: 130px; 
+    right: var(--right-panel-right-position);
+    transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s;
+    background-color: #505050;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+
+    .tooltip {
+      &.tooltip__addbeat {
+        border-radius: 5px;
+        white-space: nowrap;
+      }
+    }
+  }
 }

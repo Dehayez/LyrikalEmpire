@@ -19,8 +19,9 @@
   }
 
   &__middle {
+    position: relative;
     flex-grow: 1;
-
+    padding-bottom: 60px; 
     margin: 1em 20px;
     overflow-y: auto;
   }

@@ -184,6 +184,7 @@ function App() {
       }, 300);
     };
     const [allowHover, setAllowHover] = useState(true);
+    
   
   return (
     <div className="App">
@@ -213,6 +214,7 @@ function App() {
 
           <div className='container__content__middle'>
             <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
+            <AddBeatButton setIsOpen={setIsOpen} />
           </div>
 
           <div className='container__content__right'>
@@ -228,7 +230,6 @@ function App() {
           </div>
         </div>
 
-        <AddBeatButton setIsOpen={setIsOpen} />
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
       </div>
       <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNextWrapper} onPrev={handlePrevWrapper} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} queue={queue}/>
