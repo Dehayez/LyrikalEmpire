@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
