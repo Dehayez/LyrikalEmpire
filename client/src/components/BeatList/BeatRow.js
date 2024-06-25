@@ -77,7 +77,7 @@ const BeatRow = ({
         <div className="beat-row__button-cell">
           <BeatAnimation 
             beat={beat} 
-            selectedBeat={selectedBeat} 
+            currentBeat={currentBeat} 
             isPlaying={isPlaying} 
             hoveredBeat={hoveredBeat} 
             index={index} 
@@ -85,7 +85,7 @@ const BeatRow = ({
           <PlayPauseButton 
             beat={beat} 
             handlePlayPause={handlePlayPause}
-            selectedBeat={selectedBeat} 
+            currentBeat={currentBeat} 
             isPlaying={isPlaying} 
           />
         </div>
