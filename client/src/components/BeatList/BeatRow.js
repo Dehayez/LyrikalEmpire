@@ -9,7 +9,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, selectedBeat, isPlaying, 
   hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu
+  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
@@ -29,7 +29,8 @@ const BeatRow = ({
     'beat-row--selected-middle': isSelected && isMiddle,
     'beat-row--selected-bottom': isSelected && !isMiddle && hasSelectedBefore,
     'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
-    'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter
+    'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
+    'beat-row--playing': currentBeat && beat.id === currentBeat.id
   });
 
   useEffect(() => {
