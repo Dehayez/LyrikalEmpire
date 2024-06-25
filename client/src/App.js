@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getBeats } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, SidePanel, RightSidePanel, LeftSidePanel } from './components';
 import { handlePlay, handleNext, handlePrev } from './hooks';
@@ -122,6 +122,39 @@ function App() {
 
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(false);
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(false);
+  const [isLeftDivVisible, setIsLeftDivVisible] = useState(false); // Moved from Header.js
+  const [isRightDivVisible, setIsRightDivVisible] = useState(false); // Moved from Header.js
+  const hoverRefLeft = useRef(false); // Moved from Header.js
+  const hoverRefRight = useRef(false); // Moved from Header.js
+
+    // Hover logic moved from Header.js
+    const handleMouseEnterLeft = () => {
+      hoverRefLeft.current = true;
+      setIsLeftDivVisible(true);
+    };
+  
+    const handleMouseLeaveLeft = () => {
+      hoverRefLeft.current = false;
+      setTimeout(() => {
+        if (!hoverRefLeft.current) {
+          setIsLeftDivVisible(false);
+        }
+      }, 300);
+    };
+  
+    const handleMouseEnterRight = () => {
+      hoverRefRight.current = true;
+      setIsRightDivVisible(true);
+    };
+  
+    const handleMouseLeaveRight = () => {
+      hoverRefRight.current = false;
+      setTimeout(() => {
+        if (!hoverRefRight.current) {
+          setIsRightDivVisible(false);
+        }
+      }, 300);
+    };
   
   // Modify toggleSidePanel to accept a panel identifier
   const toggleSidePanel = (panel) => {
@@ -138,7 +171,13 @@ function App() {
       <Header 
         isLeftPanelVisible={isLeftPanelVisible} 
         isRightPanelVisible={isRightPanelVisible} 
-        toggleSidePanel={toggleSidePanel} 
+        toggleSidePanel={toggleSidePanel}
+        handleMouseEnterLeft={handleMouseEnterLeft} // New prop
+        handleMouseLeaveLeft={handleMouseLeaveLeft} // New prop
+        handleMouseEnterRight={handleMouseEnterRight} // New prop
+        handleMouseLeaveRight={handleMouseLeaveRight} // New prop
+        isLeftDivVisible={isLeftDivVisible} // New prop
+        isRightDivVisible={isRightDivVisible} // New prop
       />
       <div className="container">
         <div className='container__content'>
