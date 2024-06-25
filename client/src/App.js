@@ -184,6 +184,11 @@ function App() {
       }, 300);
     };
     const [allowHover, setAllowHover] = useState(true);
+
+    const handleBeatClick = (beat) => {
+      setCurrentBeat(beat);
+      setIsPlaying(true); // Assuming you want to play the beat immediately
+    };
     
   
   return (
@@ -224,7 +229,7 @@ function App() {
               className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
               {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
             >
-              <Queue queue={queue} currentBeat={currentBeat}/>
+              <Queue queue={queue} currentBeat={currentBeat} onBeatClick={handleBeatClick}/>
             </RightSidePanel>
           ) : null}
           </div>

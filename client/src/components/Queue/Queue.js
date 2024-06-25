@@ -1,7 +1,12 @@
 import React from 'react';
 import './Queue.scss';
 
-const Queue = ({ queue, currentBeat }) => {
+const Queue = ({ queue, currentBeat, onBeatClick }) => {
+  const handleBeatClick = (beat) => {
+    if (onBeatClick) {
+      onBeatClick(beat);
+    }
+  };
   return (
     <div className="queue">
       <h2 className="queue__title">Queue</h2>
@@ -19,8 +24,12 @@ const Queue = ({ queue, currentBeat }) => {
         <>
           <h3 className="queue__subtitle">Next</h3>
           <ul className="queue__list">
-            {queue.slice(1).map((beat, index) => (
-              <li className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`} key={beat.id}>
+            {queue.slice(1).map((beat) => (
+              <li
+                className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
+                key={beat.id}
+                onClick={() => handleBeatClick(beat)}
+              >
                 {beat.title}
               </li>
             ))}
