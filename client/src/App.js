@@ -214,7 +214,7 @@ function App() {
 
           <div className='container__content__middle'>
             <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
-            <AddBeatButton setIsOpen={setIsOpen} />
+            <AddBeatButton setIsOpen={setIsOpen} isRightPanelVisible={isRightPanelVisible} isRightDivVisible={isRightDivVisible} />
           </div>
 
           <div className='container__content__right'>
