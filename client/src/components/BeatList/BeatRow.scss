@@ -66,6 +66,9 @@
   }
   &--playing {
     color: #FFCC44;
+    .beat-row__index-number {
+      color: #FFCC44;
+    }
     .beat-row__input--title {
       color: #FFCC44;
       &:focus {
