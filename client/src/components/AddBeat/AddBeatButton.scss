@@ -1,12 +1,7 @@
-:root {
-  --right-panel-right-position: 30px;
-}
-
 .icon-button {
   &--addbeat {
     position: fixed; 
     bottom: 130px; 
-    right: var(--right-panel-right-position);
     transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s;
     background-color: #505050;
     color: #fff;
