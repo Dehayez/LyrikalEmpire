@@ -120,12 +120,28 @@ function App() {
     }
   };
   const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
-  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(false);
-  const [isRightPanelVisible, setIsRightPanelVisible] = useState(false);
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
   const hoverRefLeft = useRef(false); 
   const hoverRefRight = useRef(false);
+
+  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => {
+    return JSON.parse(localStorage.getItem('isLeftPanelVisible')) || false;
+  });
+  const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => {
+    return JSON.parse(localStorage.getItem('isRightPanelVisible')) || false;
+  });
+  // Other state initializations remain the same
+
+  // Persist isLeftPanelVisible state to localStorage
+  useEffect(() => {
+    localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
+  }, [isLeftPanelVisible]);
+
+  // Persist isRightPanelVisible state to localStorage
+  useEffect(() => {
+    localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
+  }, [isRightPanelVisible]);
 
     const handleMouseEnterLeft = () => {
       hoverRefLeft.current = true;
