@@ -24,7 +24,7 @@ const BeatRow = ({
 
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
 
-  const [tierlist, setTierlist] = useState(beat.tierlist);
+  const [tierlist, setTierlist] = useState(beat.tierlist || '');
 
 // Step 2: Handle `onChange` event
 const handleTierlistChange = (e) => {
