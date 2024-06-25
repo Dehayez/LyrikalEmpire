@@ -11,7 +11,7 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat }) => {
   const tableRef = useRef(null);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
@@ -60,6 +60,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
                 <BeatRow
                   key={beat.id}
                   beat={beat}
+                  currentBeat={currentBeat}
                   index={index}
                   handlePlayPause={handlePlayPause}
                   handleUpdate={handleUpdate}
