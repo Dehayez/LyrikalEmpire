@@ -168,13 +168,15 @@ function App() {
       }, 300);
     };
   
-  const toggleSidePanel = (panel) => {
-    if (panel === 'left') {
-      setIsLeftPanelVisible(!isLeftPanelVisible);
-    } else if (panel === 'right') {
-      setIsRightPanelVisible(!isRightPanelVisible);
-    }
-  };
+    const toggleSidePanel = (panel) => {
+      if (panel === 'left') {
+        setIsLeftPanelVisible(!isLeftPanelVisible);
+        setIsLeftDivVisible(!isLeftPanelVisible);
+      } else if (panel === 'right') {
+        setIsRightPanelVisible(!isRightPanelVisible);
+        setIsRightDivVisible(!isRightPanelVisible);
+      }
+    };
   
   return (
     <div className="App">
@@ -193,8 +195,13 @@ function App() {
       <div className="container">
         <div className='container__content'>
           <div className='container__content__left'>
-            {isLeftPanelVisible && <LeftSidePanel isDivVisible={isLeftPanelVisible} className='left-side-panel--pinned'/>}
-            {isLeftDivVisible && <LeftSidePanel className='left-side-panel--hover' isDivVisible={isLeftDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterLeft} handleMouseLeave={handleMouseLeaveLeft}/>}
+          {isLeftPanelVisible || isLeftDivVisible ? (
+            <LeftSidePanel
+              isDivVisible={isLeftPanelVisible || (isLeftDivVisible && !isSidePanelInContent)}
+              className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
+              {...(isLeftDivVisible && !isLeftPanelVisible && { handleMouseEnter: handleMouseEnterLeft, handleMouseLeave: handleMouseLeaveLeft })}
+            />
+          ) : null}
           </div>
 
           <div className='container__content__middle'>
@@ -202,8 +209,13 @@ function App() {
           </div>
 
           <div className='container__content__right'>
-            {isRightPanelVisible && <RightSidePanel isDivVisible={isRightPanelVisible} className='right-side-panel--pinned'/>}
-            {isRightDivVisible && <RightSidePanel className='right-side-panel--hover' isDivVisible={isRightDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterRight} handleMouseLeave={handleMouseLeaveRight}/>}
+          {isRightPanelVisible || isRightDivVisible ? (
+            <RightSidePanel
+              isDivVisible={isRightPanelVisible || (isRightDivVisible && !isSidePanelInContent)}
+              className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
+              {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
+            />
+          ) : null}
           </div>
 
         </div>
