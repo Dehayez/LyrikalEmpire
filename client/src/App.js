@@ -231,7 +231,7 @@ function App() {
               className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
               {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
             >
-              <Queue queue={queue} currentBeat={currentBeat} onBeatClick={handleBeatClick}/>
+              <Queue queue={queue} currentBeat={currentBeat} onBeatClick={handleBeatClick} isShuffleEnabled={shuffle}/>
             </RightSidePanel>
           ) : null}
           </div>
