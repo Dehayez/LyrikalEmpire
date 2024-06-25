@@ -124,7 +124,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       padding: '0 20px',
       boxSizing: 'border-box',
       backgroundColor: '#181818',
-      zIndex: 1
+      zIndex: 3
     }}>
       <div style={{ flex: '1' }}>
         {currentBeat && <p>{currentBeat.title}</p>}
