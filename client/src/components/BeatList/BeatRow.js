@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { IoTrashBinSharp, IoAddSharp } from "react-icons/io5";
+import { IoTrashBinSharp, IoAddSharp, IoChevronDownSharp } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { useBpmHandlers } from '../../hooks';
@@ -23,6 +23,16 @@ const BeatRow = ({
   const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
 
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
+
+  const [tierlist, setTierlist] = useState(beat.tierlist);
+
+// Step 2: Handle `onChange` event
+const handleTierlistChange = (e) => {
+  const newTierlist = e.target.value;
+  setTierlist(newTierlist);
+  // Assuming handleUpdate updates the beat in the parent component or context
+  handleUpdate(beat.id, 'tierlist', newTierlist);
+};
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -97,7 +107,7 @@ const BeatRow = ({
             defaultValue={beat.title} 
             onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => e.stopPropagation()}
             spellCheck="false"
           />
         </td>
@@ -108,7 +118,7 @@ const BeatRow = ({
             defaultValue={beat.genre} 
             onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => e.stopPropagation()}
             spellCheck="false"
           />
         </td>
@@ -119,20 +129,33 @@ const BeatRow = ({
             defaultValue={beat.bpm} 
             onKeyDown={handleOnKeyDown}
             onBlur={handleBpmBlur}
-            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => e.stopPropagation()}
             spellCheck="false"
           />
         </td>
         <td className="beat-row__data">
-          <input 
-            className='beat-row__input' 
-            type="text" 
-            defaultValue={beat.tierlist} 
-            onBlur={(e) => handleUpdate(beat.id, 'tierlist', e.target.value)} 
-            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
-            spellCheck="false"
-          />
+          <div className="form-group">
+              <select 
+                className="select-wrapper__select" 
+                value={tierlist}
+                onChange={handleTierlistChange}
+                onFocus={(e) => e.target.style.color = 'white'}
+                onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
+                onClick={(e) => e.stopPropagation()}
+                style={{color: tierlist ? 'white' : 'grey'}}
+              >
+                <option value="">Select tier</option>
+                <option value="G">G</option>
+                <option value="S">S</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+              </select>
+              <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
+          </div>
         </td>
         <td className="beat-row__data">
           <input 
@@ -141,7 +164,7 @@ const BeatRow = ({
             defaultValue={beat.mood} 
             onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => e.stopPropagation()}
             spellCheck="false"
           />
         </td>
@@ -152,7 +175,7 @@ const BeatRow = ({
             defaultValue={beat.keywords}
             onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => { if (selectedBeats.length === 0) e.stopPropagation(); }}
+            onClick={(e) => e.stopPropagation()}
             spellCheck="false"
           />
         </td> 
