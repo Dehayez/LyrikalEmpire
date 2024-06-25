@@ -119,15 +119,14 @@ function App() {
       }
     }
   };
-
+  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(false);
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(false);
-  const [isLeftDivVisible, setIsLeftDivVisible] = useState(false); // Moved from Header.js
-  const [isRightDivVisible, setIsRightDivVisible] = useState(false); // Moved from Header.js
-  const hoverRefLeft = useRef(false); // Moved from Header.js
-  const hoverRefRight = useRef(false); // Moved from Header.js
+  const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
+  const [isRightDivVisible, setIsRightDivVisible] = useState(false);
+  const hoverRefLeft = useRef(false); 
+  const hoverRefRight = useRef(false);
 
-    // Hover logic moved from Header.js
     const handleMouseEnterLeft = () => {
       hoverRefLeft.current = true;
       setIsLeftDivVisible(true);
@@ -156,7 +155,6 @@ function App() {
       }, 300);
     };
   
-  // Modify toggleSidePanel to accept a panel identifier
   const toggleSidePanel = (panel) => {
     if (panel === 'left') {
       setIsLeftPanelVisible(!isLeftPanelVisible);
@@ -172,18 +170,19 @@ function App() {
         isLeftPanelVisible={isLeftPanelVisible} 
         isRightPanelVisible={isRightPanelVisible} 
         toggleSidePanel={toggleSidePanel}
-        handleMouseEnterLeft={handleMouseEnterLeft} // New prop
-        handleMouseLeaveLeft={handleMouseLeaveLeft} // New prop
-        handleMouseEnterRight={handleMouseEnterRight} // New prop
-        handleMouseLeaveRight={handleMouseLeaveRight} // New prop
-        isLeftDivVisible={isLeftDivVisible} // New prop
-        isRightDivVisible={isRightDivVisible} // New prop
+        handleMouseEnterLeft={handleMouseEnterLeft} 
+        handleMouseLeaveLeft={handleMouseLeaveLeft} 
+        handleMouseEnterRight={handleMouseEnterRight}
+        handleMouseLeaveRight={handleMouseLeaveRight}
+        isLeftDivVisible={isLeftDivVisible}
+        isRightDivVisible={isRightDivVisible}
       />
       <div className="container">
         <div className='container__content'>
           <div className='container__content__left'>
             {isLeftPanelVisible && <LeftSidePanel isDivVisible={isLeftPanelVisible} className='left-side-panel--pinned'/>}
           </div>
+          <LeftSidePanel className='left-side-panel--hover' isDivVisible={isLeftDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterLeft} handleMouseLeave={handleMouseLeaveLeft}/>
 
           <div className='container__content__middle'>
             <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} />
@@ -192,6 +191,7 @@ function App() {
           <div className='container__content__right'>
           {isRightPanelVisible && <RightSidePanel isDivVisible={isRightPanelVisible} className='right-side-panel--pinned'/>}
           </div>
+          <RightSidePanel className='right-side-panel--hover' isDivVisible={isRightDivVisible && !isSidePanelInContent} handleMouseEnter={handleMouseEnterRight} handleMouseLeave={handleMouseLeaveRight}/>
 
         </div>
 
