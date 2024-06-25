@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getBeats } from './services';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, SidePanel, RightSidePanel, LeftSidePanel } from './components';
-import { handlePlay, handleNext, handlePrev } from './hooks';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel } from './components';
+import { handlePlay, handlePrev } from './hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
@@ -213,7 +213,9 @@ function App() {
               isDivVisible={isLeftPanelVisible || (isLeftDivVisible && !isSidePanelInContent)}
               className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
               {...(isLeftDivVisible && !isLeftPanelVisible && { handleMouseEnter: handleMouseEnterLeft, handleMouseLeave: handleMouseLeaveLeft })}
-            />
+            >
+              <Playlists />
+            </LeftSidePanel>
           ) : null}
           </div>
 

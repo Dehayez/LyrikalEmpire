@@ -1,13 +1,19 @@
-.beat-list__table {
-  table-layout: auto;
-  overflow-x: auto;
-  display: block;
-  white-space: nowrap;
-  overflow: visible;
-  width: max-content;
-  border: none;
-  border-collapse: collapse;
+.beat-list {
+  &__title {
+    margin-top: 0;
+  }
+  &__table {
+    table-layout: auto;
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+    overflow: visible;
+    width: max-content;
+    border: none;
+    border-collapse: collapse;
+  }
 }
+
 
 .resizable-header {
   position: relative;
