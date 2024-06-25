@@ -7,6 +7,7 @@ const Queue = ({ queue, currentBeat, onBeatClick }) => {
       onBeatClick(beat);
     }
   };
+
   return (
     <div className="queue">
       <h2 className="queue__title">Queue</h2>
@@ -22,7 +23,7 @@ const Queue = ({ queue, currentBeat, onBeatClick }) => {
       )}
       {queue.length > 1 && (
         <>
-          <h3 className="queue__subtitle">Next</h3>
+          <h3 className="queue__subtitle">Up Next</h3>
           <ul className="queue__list">
             {queue.slice(1).map((beat) => (
               <li
