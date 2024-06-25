@@ -14,18 +14,22 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [queue, setQueue] = useState([]);
+
   const [currentBeat, setCurrentBeat] = useState(() => {
     const savedCurrentBeat = localStorage.getItem('currentBeat');
     return savedCurrentBeat !== null && savedCurrentBeat !== "undefined" ? JSON.parse(savedCurrentBeat) : null;
   });
+
   const [selectedBeat, setSelectedBeat] = useState(() => {
     const savedBeat = localStorage.getItem('selectedBeat');
     return savedBeat !== null && savedBeat !== "undefined" ? JSON.parse(savedBeat) : null;
   });
+
   const [shuffle, setShuffle] = useState(() => {
     const savedShuffle = localStorage.getItem('shuffle');
     return savedShuffle !== null && savedShuffle !== "undefined" ? JSON.parse(savedShuffle) : false;
   });
+
   const [repeat, setRepeat] = useState(() => {
     const savedRepeat = localStorage.getItem('repeat');
     return savedRepeat !== null && savedRepeat !== "undefined" ? savedRepeat : 'Disabled Repeat';
@@ -119,6 +123,7 @@ function App() {
       }
     }
   };
+  
   const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
@@ -187,12 +192,19 @@ function App() {
 
     const handleBeatClick = (beat) => {
       setCurrentBeat(beat);
-      setIsPlaying(true); // Assuming you want to play the beat immediately
+      setIsPlaying(true);
     };
     
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        document.querySelector('.App').classList.remove('App--hidden');
+      }, 400); 
   
+      return () => clearTimeout(timer);
+    }, []);
+
   return (
-    <div className="App">
+    <div className="App App--hidden">
       <ToastContainer />
       <Header 
         isLeftPanelVisible={isLeftPanelVisible} 
