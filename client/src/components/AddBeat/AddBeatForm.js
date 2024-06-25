@@ -61,7 +61,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             newBeat.tierlist = tierlist;
         }
         try {
-            const response = await addBeat(newBeat, audio); // Keep this call and remove the duplicate
+            const response = await addBeat(newBeat, audio);
             const addedBeat = { ...newBeat, id: response.id };
             onAdd(addedBeat);
             resetForm();
@@ -141,14 +141,14 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                 <div className="form-group">
                     <label>Tierlist</label>
                     <div className="select-wrapper">
-                    <select 
-                        className="select-wrapper__select" 
-                        value={tierlist} 
-                        onChange={(e) => setTierlist(e.target.value)}
-                        onFocus={(e) => e.target.style.color = 'white'}
-                        onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
-                        style={{color: tierlist ? 'white' : 'grey'}}
-                    >
+                        <select 
+                            className="select-wrapper__select" 
+                            value={tierlist} 
+                            onChange={(e) => setTierlist(e.target.value)}
+                            onFocus={(e) => e.target.style.color = 'white'}
+                            onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
+                            style={{color: tierlist ? 'white' : 'grey'}}
+                        >
                             <option value="">Select tier</option>
                             <option value="G">G</option>
                             <option value="S">S</option>
