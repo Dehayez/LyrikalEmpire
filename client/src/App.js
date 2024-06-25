@@ -140,10 +140,11 @@ function App() {
     localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
   }, [isRightPanelVisible]);
 
-    const handleMouseEnterLeft = () => {
-      hoverRefLeft.current = true;
-      setIsLeftDivVisible(true);
-    };
+  const handleMouseEnterLeft = () => {
+    if (!allowHover) return;
+    hoverRefLeft.current = true;
+    setIsLeftDivVisible(true);
+  };
   
     const handleMouseLeaveLeft = () => {
       hoverRefLeft.current = false;
@@ -155,6 +156,7 @@ function App() {
     };
   
     const handleMouseEnterRight = () => {
+      if (!allowHover) return;
       hoverRefRight.current = true;
       setIsRightDivVisible(true);
     };
@@ -176,7 +178,12 @@ function App() {
         setIsRightPanelVisible(!isRightPanelVisible);
         setIsRightDivVisible(!isRightPanelVisible);
       }
+      setAllowHover(false);
+      setTimeout(() => {
+        setAllowHover(true);
+      }, 300);
     };
+    const [allowHover, setAllowHover] = useState(true);
   
   return (
     <div className="App">
