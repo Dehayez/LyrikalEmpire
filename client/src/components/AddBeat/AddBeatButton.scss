@@ -13,6 +13,12 @@
     justify-content: center;
     align-items: center;
     font-size: 24px;
+    &.button-slide-in {
+      animation: slideButtonIn 0.4s forwards;
+    }
+    &.button-slide-out {
+      animation: slideButtonOut 0.4s forwards;
+    }
 
     .tooltip {
       &.tooltip__addbeat {
@@ -21,4 +27,14 @@
       }
     }
   }
+}
+
+@keyframes slideButtonIn {
+  from { right: 40px; }
+  to { right: 370px; }
+}
+
+@keyframes slideButtonOut {
+  from { right: 370px; }
+  to { right: 40px; }
 }
