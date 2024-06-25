@@ -1,81 +1,75 @@
 .left-side-panel, .right-side-panel {
   width: 300px;
-  background-color: #202020;
+  height: 77vh;
+  background-color: #181818;
   transition: transform 0.2s ease-in-out;
   padding: 1em;
   border-radius: 4px;
 }
 
-.left-side-panel {
+.left-side-panel, .right-side-panel {
   &--hover {
     position: fixed;
-    height: 80%;
-    top: 7vh;
-    left: 0;
+    top: 74px;
     z-index: 3;
   }
+
   &--pinned {
-    height: 94%;
   }
+
   &--visible {
-    animation: slideInLeft 0.2s forwards;
+    animation: slideIn 0.2s forwards;
   }
+
   &--hidden {
-    animation: slideOutLeft 0.2s forwards;
+    animation: slideOut 0.2s forwards;
+  }
+}
+
+.left-side-panel {
+  &--hover {
+    left: 0;
+  }
+
+  &--visible {
+    animation-name: slideInLeft;
+  }
+
+  &--hidden {
+    animation-name: slideOutLeft;
   }
 }
 
 .right-side-panel {
   &--hover {
-    position: fixed;
-    height: 80%;
-    top: 7vh;
     right: 0;
-    z-index: 3;
   }
-  &--pinned {
-    height: 94%;
-  }
+
   &--visible {
-    animation: slideInRight 0.2s forwards;
+    animation-name: slideInRight;
   }
+
   &--hidden {
-    animation: slideOutRight 0.2s forwards;
+    animation-name: slideOutRight;
   }
 }
 
 @keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
 
 @keyframes slideOutLeft {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
 }
 
 @keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
 @keyframes slideOutRight {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(100%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
 }

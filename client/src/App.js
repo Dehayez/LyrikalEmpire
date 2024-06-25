@@ -221,10 +221,11 @@ function App() {
               isDivVisible={isRightPanelVisible || (isRightDivVisible && !isSidePanelInContent)}
               className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
               {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
-            />
+            >
+              <Queue queue={queue}/>
+            </RightSidePanel>
           ) : null}
           </div>
-
         </div>
 
         <AddBeatButton setIsOpen={setIsOpen} />

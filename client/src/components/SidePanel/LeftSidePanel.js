@@ -1,6 +1,5 @@
 import React from 'react';
 import './SidePanel.scss';
-import classNames from 'classnames'; //
 
 const LeftSidePanel = ({ isDivVisible, handleMouseEnter, handleMouseLeave, className }) => {
     const sidePanelClass = `left-side-panel ${isDivVisible ? 'left-side-panel--visible' : 'left-side-panel--hidden'} ${className}`;
