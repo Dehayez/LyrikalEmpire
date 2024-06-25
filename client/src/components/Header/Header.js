@@ -4,56 +4,20 @@ import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoListSharp } f
 import { LeftSidePanel, RightSidePanel } from '../SidePanel'
 import './Header.scss';
 
-const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, isSidePanelInContent }) => {
-  const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
-  const [isRightDivVisible, setIsRightDivVisible] = useState(false);
-  const hoverRefLeft = useRef(false);
-  const hoverRefRight = useRef(false);
+const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, handleMouseEnterLeft, handleMouseLeaveLeft, handleMouseEnterRight, handleMouseLeaveRight, isLeftDivVisible, isRightDivVisible }) => {
+  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
 
   // LEFT SIDE PANEL
   const handleClickLeft = () => {
     toggleSidePanel('left');
   };
-  const handleMouseEnterLeft = () => {
-    if (!isSidePanelInContent) {
-      hoverRefLeft.current = true;
-      setIsLeftDivVisible(true);
-    }
-  };
 
-  const handleMouseLeaveLeft = () => {
-    if (!isSidePanelInContent) {
-      hoverRefLeft.current = false;
-      setTimeout(() => {
-        if (!hoverRefLeft.current) {
-          setIsLeftDivVisible(false);
-        }
-      }, 300);
-    }
-  };
 
   // RIGHT SIDE PANEL
   const handleClickRight = () => {
     toggleSidePanel('right');
   };
 
-  const handleMouseEnterRight = () => {
-    if (!isSidePanelInContent) {
-      hoverRefRight.current = true;
-      setIsRightDivVisible(true);
-    }
-  };
-
-  const handleMouseLeaveRight = () => {
-    if (!isSidePanelInContent) {
-      hoverRefRight.current = false;
-      setTimeout(() => {
-        if (!hoverRefRight.current) {
-          setIsRightDivVisible(false);
-        }
-      }, 300);
-    }
-  };
 
   return (
     <header className="header">
