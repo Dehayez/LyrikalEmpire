@@ -49,8 +49,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   };
 
   return (
-    <div>
-      <h2>Beats</h2>
+    <div className='beat-list'>
+      <h2 className='beat-list__title'>Beats</h2>
       {beats.length > 0 && (
         <div>
           <table className='beat-list__table' ref={tableRef}>
