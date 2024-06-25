@@ -1,12 +1,13 @@
 import React from 'react';
+import './Queue.scss';
 
 const Queue = ({ queue }) => {
   return (
-    <div className="queue-container">
-      <h2>Queue</h2>
-      <ul>
+    <div className="queue">
+      <h2 className="queue__title">Queue</h2>
+      <ul className="queue__list">
         {queue.map((beat, index) => (
-          <li key={index}>{beat.title}</li>
+          <li className='queue__list-item' key={index}>{beat.title}</li>
         ))}
       </ul>
     </div>

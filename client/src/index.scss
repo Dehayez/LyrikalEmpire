@@ -7,6 +7,10 @@ body {
   color: #FFFFFF;
 }
 
+* {
+  font-family: inherit;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
@@ -28,6 +32,10 @@ input {
   padding: 10px;
   border: none;
   border-radius: 5px;
+}
+
+td {
+  padding: 0;
 }
 
 .icon-button {
