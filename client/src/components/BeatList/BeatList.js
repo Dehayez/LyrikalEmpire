@@ -51,7 +51,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Enter' && selectedBeats.length > 0) {
-        // Play the first beat in the selectedBeats array
         const beatToPlay = selectedBeats[0];
         handlePlayPause(beatToPlay);
       }
@@ -60,6 +59,18 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats, handlePlayPause]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      console.log(`Key pressed: ${event.key}, Selected beats length: ${selectedBeats.length}`); // Debugging line
+      if ((event.key === 'Delete' || event.key === 'Backspace' || event.keyCode === 46) && selectedBeats.length > 0) {
+        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
+      }
+    };
+  
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedBeats]);
 
   return (
     <div className='beat-list'>
