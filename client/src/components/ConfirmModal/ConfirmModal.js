@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import Modal from 'react-modal';
 import './ConfirmModal.scss';
@@ -28,6 +28,24 @@ const modalStyle = {
 
 const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => {
   const draggableRef = useRef(null);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        onConfirm();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    } else {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onConfirm]);
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onCancel} style={modalStyle}>
