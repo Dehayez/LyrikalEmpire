@@ -41,22 +41,37 @@ export const useHandleBeatClick = (beats, tableRef) => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (!e.shiftKey) return;
-      let newIndex = null;
-      if (e.key === 'ArrowUp' && lastSelectedBeatIndex > 0) {
-        newIndex = lastSelectedBeatIndex - 1;
-      } else if (e.key === 'ArrowDown' && lastSelectedBeatIndex < beats.length - 1) {
-        newIndex = lastSelectedBeatIndex + 1;
-      }
-      if (newIndex !== null) {
-        processSelection(newIndex, e);
-        e.preventDefault(); // Prevent scrolling
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        let newIndex;
+        if (selectedBeats.length === 0) {
+          // No beats are selected yet
+          if (e.key === 'ArrowUp') {
+            // Select the last beat
+            newIndex = beats.length - 1;
+          } else if (e.key === 'ArrowDown') {
+            // Select the first beat
+            newIndex = 0;
+          }
+        } else {
+          // A beat is already selected
+          const currentIndex = beats.findIndex(b => b.id === selectedBeats[0].id);
+          if (e.key === 'ArrowUp') {
+            newIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : beats.length - 1;
+          } else if (e.key === 'ArrowDown') {
+            newIndex = currentIndex + 1 < beats.length ? currentIndex + 1 : 0;
+          }
+        }
+        if (newIndex !== undefined) {
+          setSelectedBeats([beats[newIndex]]);
+          setLastSelectedBeatIndex(newIndex);
+          e.preventDefault(); // Prevent scrolling
+        }
       }
     };
-
+  
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [lastSelectedBeatIndex, beats]);
+  }, [selectedBeats, beats]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
