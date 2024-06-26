@@ -1,3 +1,4 @@
+@import 'variables.scss';
 body {
   margin: 0;
   font-family: 'Raleway', sans-serif;
@@ -18,6 +19,10 @@ code {
 h1, h2, h3, h4, h5, h6, p, td, th, a, div {
   color: #FFFFFF;
   user-select: none;
+}
+
+body {
+  background-color: $background-color;
 }
 
 button {
