@@ -145,7 +145,6 @@ const handleTierlistChange = (e) => {
                 onClick={(e) => e.stopPropagation()}
                 style={{color: tierlist ? 'white' : 'grey'}}
               >
-                <option value=""></option>
                 <option value="G">G</option>
                 <option value="S">S</option>
                 <option value="A">A</option>
@@ -154,6 +153,7 @@ const handleTierlistChange = (e) => {
                 <option value="D">D</option>
                 <option value="E">E</option>
                 <option value="F">F</option>
+                <option value=""></option>
               </select>
               </div>
           </div>
