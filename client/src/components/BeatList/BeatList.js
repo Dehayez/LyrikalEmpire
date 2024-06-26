@@ -48,6 +48,19 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     }
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter' && selectedBeats.length > 0) {
+        // Play the first beat in the selectedBeats array
+        const beatToPlay = selectedBeats[0];
+        handlePlayPause(beatToPlay);
+      }
+    };
+  
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedBeats, handlePlayPause]);
+
   return (
     <div className='beat-list'>
       <h2 className='beat-list__title'>Beats</h2>
