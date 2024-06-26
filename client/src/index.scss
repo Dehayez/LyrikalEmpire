@@ -64,19 +64,34 @@ td {
 .tooltip {
   visibility: hidden;
   position: absolute;
-  z-index: 2;
   left: 50%;
   bottom: 125%;
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.3s;
   padding: 8px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 16px;
   text-align: center;
   background-color: #333;
   color: #fff;
   white-space: nowrap;
+  z-index: 2;
+
+  &--right {
+    left: 100%;
+    bottom: 50%;
+    transform: translateY(50%);
+    margin-left: 12px;
+  }
+
+  &--left {
+    right: 100%;
+    left: auto;
+    bottom: 50%;
+    transform: translateY(50%);
+    margin-right: 12px;
+  }
 }
 
 .selected {
