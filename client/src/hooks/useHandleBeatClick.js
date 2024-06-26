@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const useHandleBeatClick = (beats, tableRef) => {
+export const useHandleBeatClick = (beats, tableRef, currentBeat) => {
   const [selectedBeats, setSelectedBeats] = useState([]);
   const [lastSelectedBeatIndex, setLastSelectedBeatIndex] = useState(null);
 
@@ -44,16 +44,25 @@ export const useHandleBeatClick = (beats, tableRef) => {
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         let newIndex;
         if (selectedBeats.length === 0) {
-          // No beats are selected yet
-          if (e.key === 'ArrowUp') {
-            // Select the last beat
-            newIndex = beats.length - 1;
-          } else if (e.key === 'ArrowDown') {
-            // Select the first beat
-            newIndex = 0;
+          // Check if there is a currentBeat, if so, start from there
+          const currentBeatIndex = currentBeat ? beats.findIndex(b => b.id === currentBeat.id) : -1;
+          if (currentBeatIndex !== -1) {
+            // There is a current beat playing, start from its index
+            if (e.key === 'ArrowUp') {
+              newIndex = currentBeatIndex - 1 >= 0 ? currentBeatIndex - 1 : beats.length - 1;
+            } else if (e.key === 'ArrowDown') {
+              newIndex = currentBeatIndex + 1 < beats.length ? currentBeatIndex + 1 : 0;
+            }
+          } else {
+            // No beats are selected and no current beat, select the first or last beat
+            if (e.key === 'ArrowUp') {
+              newIndex = beats.length - 1;
+            } else if (e.key === 'ArrowDown') {
+              newIndex = 0;
+            }
           }
         } else {
-          // A beat is already selected
+          // A beat is already selected, navigate from there
           const currentIndex = beats.findIndex(b => b.id === selectedBeats[0].id);
           if (e.key === 'ArrowUp') {
             newIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : beats.length - 1;
@@ -71,7 +80,7 @@ export const useHandleBeatClick = (beats, tableRef) => {
   
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBeats, beats]);
+  }, [selectedBeats, beats, currentBeat]); // Add currentBeat to the dependency array
 
   useEffect(() => {
     const handleClickOutside = (event) => {

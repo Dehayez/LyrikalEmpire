@@ -17,7 +17,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [selectedBeatsForDeletion, setSelectedBeatsForDeletion] = useState([]);
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
-  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef);
+  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
 
   useEffect(() => {
