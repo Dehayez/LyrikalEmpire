@@ -17,7 +17,6 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled }) => {
 
   return (
     <div className="queue">
-      <h2 className="queue__title">Queue</h2>
       {queue.length > 0 && (
         <>
           <h3 className="queue__subtitle">Now Playing</h3>
