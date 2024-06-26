@@ -1,3 +1,4 @@
+@import '../../globals/variables';
 $indicator-size: 14px;
 $indicator-half-size: $indicator-size / 2;
 
@@ -7,6 +8,13 @@ $indicator-half-size: $indicator-size / 2;
 }
 
 .audio-player {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  padding: 0 20px;
+  box-sizing: border-box;
+  background-color: $color-black;
 }
 
 .rhap_container {
