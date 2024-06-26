@@ -5,13 +5,10 @@
   transition: transform 0.2s ease-in-out;
   padding: 0 1em;
   border-radius: 4px;
-}
-
-.left-side-panel, .right-side-panel {
   overflow-y: auto;
   &--hover {
     position: fixed;
-    top: 74px;
+    top: 80px;
     z-index: 4;
   }
 
@@ -31,11 +28,9 @@
   &--hover {
     left: 0;
   }
-
   &--visible {
     animation-name: slideInLeft;
   }
-
   &--hidden {
     animation-name: slideOutLeft;
   }
@@ -45,11 +40,9 @@
   &--hover {
     right: 0;
   }
-
   &--visible {
     animation-name: slideInRight;
   }
-
   &--hidden {
     animation-name: slideOutRight;
   }
