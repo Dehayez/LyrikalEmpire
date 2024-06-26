@@ -1,3 +1,5 @@
+@import './globals/variables';
+
 .App {
   display: flex;
   flex-direction: column;
@@ -16,14 +18,19 @@
 
   &__left {
     flex-shrink: 1;
+    margin: 6px;
+    border-radius: 4px;
   }
 
   &__middle {
     position: relative;
     flex-grow: 1;
-    padding-bottom: 60px; 
-    margin: 0 20px;
+    padding-bottom: 60px;
+    padding: 0 20px;
+    margin: 6px 0;
+    border-radius: 4px;
     overflow-y: auto;
+    background-color: $color-black;
   }
 
   &__right {
@@ -33,10 +40,10 @@
 }
 
 .Toastify__progress-bar {
-  background: #ffcc44;
+  background: $color-yellow;
 
   &--bg {
-    background: #CC9900;
+    background: $color-yellow-dark;
   }
 }
 
@@ -67,23 +74,23 @@
   display: flex;
   &__title {
     position: relative;
-    color: #828282;
+    color: $color-gray-default;
     padding: 16px;
     border-radius: 4px;
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 
     &--active {
-      color: white;
+      color: $color-white;
       &::after {
         content: "";
         position: absolute;
         bottom: 6px;
         left: 50%;
         transform: translateX(-50%);
-        background-color: #ffcc44;
+        background-color: $color-yellow;
         width: 60%;
         height: 3px;
-        opacity: 0;
+        opacity: 1;
         transition: opacity 0.2s ease-in-out;
       }
       &:hover::after, &:focus::after {
@@ -92,12 +99,12 @@
     }
 
     &:hover, &:focus {
-      color: white;
-      background-color: #202020;
+      color: $color-white;
+      background-color: $color-gray-dark;
       cursor: pointer;
     }
     &:active {
-      background-color: #141414;
+      background-color: $color-black-dark;
     }
   }
 }

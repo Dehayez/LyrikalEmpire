@@ -1,3 +1,5 @@
+@import '../../globals/variables';
+
 .header {
   display: flex;
   justify-content: center;
@@ -7,7 +9,8 @@
   z-index: 3;
   padding: 20px 0;
   width: 100%;
-  background-color: #181818;
+  background-color: $color-black;
+  border-radius: 4px;
 
   &__nav-group {
     display: flex;
@@ -30,7 +33,7 @@
     font-size: 24px;
     cursor: pointer;
     &:hover {
-      background-color: #202020;
+      background-color: $color-gray-dark;
     }
   }
   &__nav-menu-left {
