@@ -8,7 +8,7 @@
   overflow-y: auto;
   &--hover {
     position: fixed;
-    top: 80px;
+    top: 79.5px;
     z-index: 4;
     height: calc(100vh - 202px);
   }
@@ -25,6 +25,7 @@
 .left-side-panel {
   &--hover {
     left: 0;
+    margin-left: 6px;
   }
   &--visible {
     animation-name: slideInLeft;
@@ -37,6 +38,7 @@
 .right-side-panel {
   &--hover {
     right: 0;
+    margin-right: 6px;
   }
   &--visible {
     animation-name: slideInRight;
