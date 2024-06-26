@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Modal from 'react-modal';
 import Draggable from 'react-draggable';
 import { addBeat } from '../../services/beatService';
@@ -106,6 +106,18 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             transform: 'translate(-50%, -50%)'
         }
     };
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default Enter key behavior
+                handleSubmit(event); // Assuming handleSubmit is your form submission function
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [handleSubmit]);
 
     return (
 <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
