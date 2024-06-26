@@ -73,14 +73,21 @@ export const useHandleBeatClick = (beats, tableRef, currentBeat) => {
         if (newIndex !== undefined) {
           setSelectedBeats([beats[newIndex]]);
           setLastSelectedBeatIndex(newIndex);
-          e.preventDefault(); // Prevent scrolling
+          e.preventDefault();
+  
+          setTimeout(() => { 
+            const beatElements = document.querySelectorAll('.beat-row');
+            if (beatElements[newIndex]) {
+              beatElements[newIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }, 0);
         }
       }
     };
   
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBeats, beats, currentBeat]); // Add currentBeat to the dependency array
+  }, [selectedBeats, beats, currentBeat]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
