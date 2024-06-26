@@ -1,40 +1,23 @@
-.icon-button {
-  &--addbeat {
-    position: fixed; 
-    bottom: 130px; 
-    transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s;
+.icon-button--addbeat {
+    position: absolute; 
+    bottom: 0; 
+    right: 0;
     background-color: #505050;
     color: #fff;
     border: none;
     border-radius: 50%;
+    margin: 16px 28px;
     width: 48px;
     height: 48px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 24px;
-    &.button-slide-in {
-      animation: slideButtonIn 0.4s forwards;
-    }
-    &.button-slide-out {
-      animation: slideButtonOut 0.4s forwards;
-    }
 
-    .tooltip {
-      &.tooltip__addbeat {
-        border-radius: 5px;
-        white-space: nowrap;
-      }
+  .tooltip {
+    &.tooltip__addbeat {
+      border-radius: 5px;
+      white-space: nowrap;
     }
   }
-}
-
-@keyframes slideButtonIn {
-  from { right: 40px; }
-  to { right: 370px; }
-}
-
-@keyframes slideButtonOut {
-  from { right: 370px; }
-  to { right: 40px; }
 }

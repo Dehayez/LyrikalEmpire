@@ -254,7 +254,7 @@ function App() {
 
           <div className='container__content__middle'>
             <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} currentBeat={currentBeat} />
-            <AddBeatButton setIsOpen={setIsOpen} isRightPanelVisible={isRightPanelVisible} isRightDivVisible={isRightDivVisible} />
+            <AddBeatButton setIsOpen={setIsOpen} />
           </div>
 
           <div className={`container__content__right ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>

@@ -1,6 +1,9 @@
 .beat-list {
-  &__title {
-  }
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
+
   &__table {
     table-layout: auto;
     overflow-x: auto;
@@ -12,7 +15,6 @@
     border-collapse: collapse;
   }
 }
-
 
 .resizable-header {
   position: relative;
@@ -52,3 +54,4 @@
 .beat-list__warning {
   text-align: center;
 }
+
