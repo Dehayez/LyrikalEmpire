@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getBeats } from './services';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel } from './components';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History } from './components';
 import { handlePlay, handlePrev } from './hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -203,6 +203,20 @@ function App() {
       return () => clearTimeout(timer);
     }, []);
 
+    const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
+
+    const toggleView = (view) => {
+      setViewState(view);
+      localStorage.setItem('lastView', view);
+    };
+  
+    useEffect(() => {
+      const lastView = localStorage.getItem('lastView');
+      if (lastView) {
+        setViewState(lastView);
+      }
+    }, []);
+
   return (
     <div className="App App--hidden">
       <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
@@ -245,7 +259,17 @@ function App() {
               className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
               {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
             >
-              <Queue queue={queue} currentBeat={currentBeat} onBeatClick={handleBeatClick} isShuffleEnabled={shuffle}/>
+            <div>
+              <div className='view-toggle-container'>
+                <h2 onClick={() => toggleView("queue")} className={`view-toggle-container__title ${viewState === "queue" ? 'view-toggle-container__title--active' : ''}`}>Queue</h2>
+                <h2 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h2>
+              </div>
+              {viewState === "queue" ? (
+                <Queue queue={queue} currentBeat={currentBeat} onBeatClick={handleBeatClick} isShuffleEnabled={shuffle}/>
+              ) : (
+                <History />
+              )}
+            </div>
             </RightSidePanel>
           ) : null}
           </div>

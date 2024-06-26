@@ -1,13 +1,11 @@
 .queue {
-    &__title {
-    }
     &__subtitle {
         position: sticky;
         top: 0;
         background-color: #181818;
         z-index: 2; 
         margin: 0;
-        padding: 18px 0;
+        padding: 16px;
         padding-top: 8px;
 
         &:before { // Use :before for the top gradient
