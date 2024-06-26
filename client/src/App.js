@@ -157,7 +157,7 @@ function App() {
         if (!hoverRefLeft.current) {
           setIsLeftDivVisible(false);
         }
-      }, 300);
+      }, 200);
     };
   
     const handleMouseEnterRight = () => {
@@ -172,7 +172,7 @@ function App() {
         if (!hoverRefRight.current) {
           setIsRightDivVisible(false);
         }
-      }, 300);
+      }, 200);
     };
   
     const toggleSidePanel = (panel) => {
@@ -186,7 +186,7 @@ function App() {
       setAllowHover(false);
       setTimeout(() => {
         setAllowHover(true);
-      }, 300);
+      }, 200);
     };
     const [allowHover, setAllowHover] = useState(true);
 
@@ -217,6 +217,7 @@ function App() {
       }
     }, []);
 
+    
   return (
     <div className="App App--hidden">
       <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
@@ -239,16 +240,16 @@ function App() {
 
       <div className="container">
         <div className='container__content'>
-          <div className='container__content__left'>
-          {isLeftPanelVisible || isLeftDivVisible ? (
-            <LeftSidePanel
-              isDivVisible={isLeftPanelVisible || (isLeftDivVisible && !isSidePanelInContent)}
-              className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
-              {...(isLeftDivVisible && !isLeftPanelVisible && { handleMouseEnter: handleMouseEnterLeft, handleMouseLeave: handleMouseLeaveLeft })}
-            >
-              <Playlists />
-            </LeftSidePanel>
-          ) : null}
+          <div className={`container__content__left ${isLeftPanelVisible ? 'container__content__left--pinned' : ''}`}>
+            {isLeftPanelVisible || isLeftDivVisible ? (
+              <LeftSidePanel
+                isDivVisible={isLeftPanelVisible || (isLeftDivVisible && !isSidePanelInContent)}
+                className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
+                {...(isLeftDivVisible && !isLeftPanelVisible && { handleMouseEnter: handleMouseEnterLeft, handleMouseLeave: handleMouseLeaveLeft })}
+              >
+                <Playlists />
+              </LeftSidePanel>
+            ) : null}
           </div>
 
           <div className='container__content__middle'>
@@ -256,26 +257,26 @@ function App() {
             <AddBeatButton setIsOpen={setIsOpen} isRightPanelVisible={isRightPanelVisible} isRightDivVisible={isRightDivVisible} />
           </div>
 
-          <div className='container__content__right'>
-          {isRightPanelVisible || isRightDivVisible ? (
-            <RightSidePanel
-              isDivVisible={isRightPanelVisible || (isRightDivVisible && !isSidePanelInContent)}
-              className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
-              {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
-            >
-            <div>
-              <div className='view-toggle-container'>
-                <h2 onClick={() => toggleView("queue")} className={`view-toggle-container__title ${viewState === "queue" ? 'view-toggle-container__title--active' : ''}`}>Queue</h2>
-                <h2 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h2>
+          <div className={`container__content__right ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
+            {isRightPanelVisible || isRightDivVisible ? (
+              <RightSidePanel
+                isDivVisible={isRightPanelVisible || (isRightDivVisible && !isSidePanelInContent)}
+                className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
+                {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
+              >
+              <div>
+                <div className='view-toggle-container'>
+                  <h2 onClick={() => toggleView("queue")} className={`view-toggle-container__title ${viewState === "queue" ? 'view-toggle-container__title--active' : ''}`}>Queue</h2>
+                  <h2 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h2>
+                </div>
+                {viewState === "queue" ? (
+                  <Queue queue={queue} currentBeat={currentBeat} onBeatClick={handleBeatClick} isShuffleEnabled={shuffle}/>
+                ) : (
+                  <History />
+                )}
               </div>
-              {viewState === "queue" ? (
-                <Queue queue={queue} currentBeat={currentBeat} onBeatClick={handleBeatClick} isShuffleEnabled={shuffle}/>
-              ) : (
-                <History />
-              )}
-            </div>
-            </RightSidePanel>
-          ) : null}
+              </RightSidePanel>
+            ) : null}
           </div>
         </div>
 
