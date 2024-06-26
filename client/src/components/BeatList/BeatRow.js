@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { IoTrashBinSharp, IoAddSharp, IoChevronDownSharp } from "react-icons/io5";
+import { IoTrashBinSharp, IoAddSharp } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { useBpmHandlers } from '../../hooks';
 import './BeatRow.scss';
 
 const BeatRow = ({
-  beat, index, handlePlayPause, handleUpdate, selectedBeat, isPlaying, 
+  beat, index, handlePlayPause, handleUpdate, isPlaying, 
   hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, 
   openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat
 }) => {
