@@ -1,11 +1,11 @@
-@import 'variables.scss';
+@import './globals/variables';
 body {
   margin: 0;
   font-family: 'Raleway', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #181818;
-  color: #FFFFFF;
+  background-color: $color-black;
+  color: $color-white;
 }
 
 * {
@@ -17,23 +17,23 @@ code {
 }
 
 h1, h2, h3, h4, h5, h6, p, td, th, a, div {
-  color: #FFFFFF;
+  color: $color-white;
   user-select: none;
 }
 
 body {
-  background-color: $background-color;
+  background-color: $color-black-dark;
 }
 
 button {
-  color: #FFFFFF;
+  color: $color-white;
   cursor: pointer;
   user-select: none;
 }
 
 input {
-  background-color: #202020;
-  color: #FFFFFF;
+  background-color: $color-gray-dark;
+  color: $color-white;
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -78,8 +78,8 @@ td {
   border-radius: 4px;
   font-size: 16px;
   text-align: center;
-  background-color: #333;
-  color: #fff;
+  background-color: $color-black;
+  color: $color-white;
   white-space: nowrap;
   z-index: 2;
 
@@ -100,25 +100,25 @@ td {
 }
 
 .selected {
-  background-color: #FFCC44;
-  color: #202020;
+  background-color: $color-yellow;
+  color: $color-gray-dark;
 }
 
 * {
   scrollbar-width: thin; 
-  scrollbar-color: #505050 #202020;
+  scrollbar-color: $color-gray-mid $color-gray-dark;
 }
 
 *::-webkit-scrollbar {
   width: 8px;
-  background-color: #202020;
+  background-color: $color-gray-dark;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #505050;
+  background-color: $color-gray-mid;
   border-radius: 4px;
 }
 
 *::-webkit-scrollbar-track {
-  background-color: #202020;
+  background-color: $color-gray-dark;
 }
