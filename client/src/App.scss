@@ -17,7 +17,6 @@
   overflow: hidden;
 
   &__left {
-    flex-shrink: 1;
     margin: 6px;
     border-radius: 4px;
   }
@@ -34,8 +33,8 @@
   }
 
   &__right {
-    flex-shrink: 1;
-
+    margin: 6px;
+    border-radius: 4px;
   }
 }
 
