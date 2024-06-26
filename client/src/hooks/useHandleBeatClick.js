@@ -6,19 +6,18 @@ export const useHandleBeatClick = (beats, tableRef) => {
 
   const handleBeatClick = (beat, e) => {
     const clickedBeatIndex = beats.findIndex(b => b.id === beat.id);
-  
+    processSelection(clickedBeatIndex, e);
+  };
+
+  const processSelection = (clickedBeatIndex, e) => {
     if (e.shiftKey && lastSelectedBeatIndex !== null) {
-      let start = Math.min(clickedBeatIndex, lastSelectedBeatIndex);
-      let end = Math.max(clickedBeatIndex, lastSelectedBeatIndex);
-      let selectedBeats = beats.slice(start, end + 1);
-  
-      if (clickedBeatIndex < lastSelectedBeatIndex) {
-        selectedBeats = selectedBeats.reverse();
-      }
-  
+      const start = Math.min(clickedBeatIndex, lastSelectedBeatIndex);
+      const end = Math.max(clickedBeatIndex, lastSelectedBeatIndex);
+      let selectedBeatsRange = beats.slice(start, end + 1);
+
       setSelectedBeats(prevBeats => {
         const newSelectedBeats = [...prevBeats];
-        selectedBeats.forEach(beat => {
+        selectedBeatsRange.forEach(beat => {
           if (!newSelectedBeats.map(b => b.id).includes(beat.id)) {
             newSelectedBeats.push(beat);
           }
@@ -26,19 +25,38 @@ export const useHandleBeatClick = (beats, tableRef) => {
         return newSelectedBeats;
       });
     } else if (!e.ctrlKey && !e.metaKey) {
-      setSelectedBeats([beat]);
+      setSelectedBeats([beats[clickedBeatIndex]]);
     } else {
       setSelectedBeats(prevBeats => {
-        if (prevBeats.map(b => b.id).includes(beat.id)) {
-          return prevBeats.filter(b => b.id !== beat.id);
+        if (prevBeats.map(b => b.id).includes(beats[clickedBeatIndex].id)) {
+          return prevBeats.filter(b => b.id !== beats[clickedBeatIndex].id);
         } else {
-          return [...prevBeats, beat];
+          return [...prevBeats, beats[clickedBeatIndex]];
         }
       });
     }
-  
+
     setLastSelectedBeatIndex(clickedBeatIndex);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!e.shiftKey) return;
+      let newIndex = null;
+      if (e.key === 'ArrowUp' && lastSelectedBeatIndex > 0) {
+        newIndex = lastSelectedBeatIndex - 1;
+      } else if (e.key === 'ArrowDown' && lastSelectedBeatIndex < beats.length - 1) {
+        newIndex = lastSelectedBeatIndex + 1;
+      }
+      if (newIndex !== null) {
+        processSelection(newIndex, e);
+        e.preventDefault(); // Prevent scrolling
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [lastSelectedBeatIndex, beats]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -46,12 +64,10 @@ export const useHandleBeatClick = (beats, tableRef) => {
         setSelectedBeats([]);
       }
     };
-  
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [tableRef]);
 
   return { selectedBeats, handleBeatClick, setSelectedBeats };
 };
