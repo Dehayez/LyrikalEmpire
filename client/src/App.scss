@@ -17,8 +17,10 @@
   overflow: hidden;
 
   &__left {
-    margin: 6px;
     border-radius: 4px;
+    &--pinned {
+      margin: 6px 0 6px 6px;
+    }
   }
 
   &__middle {
@@ -26,17 +28,20 @@
     flex-grow: 1;
     padding-bottom: 60px;
     padding: 0 20px;
-    margin: 6px 0;
+    margin: 6px;
     border-radius: 4px;
     overflow-y: auto;
     background-color: $color-black;
   }
 
   &__right {
-    margin: 6px;
     border-radius: 4px;
+    &--pinned {
+      margin: 6px 6px 6px 0;
+    }
   }
 }
+
 
 .Toastify__progress-bar {
   background: $color-yellow;

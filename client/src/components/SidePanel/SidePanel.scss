@@ -10,9 +10,7 @@
     position: fixed;
     top: 80px;
     z-index: 4;
-  }
-
-  &--pinned {
+    height: calc(100vh - 202px);
   }
 
   &--visible {
