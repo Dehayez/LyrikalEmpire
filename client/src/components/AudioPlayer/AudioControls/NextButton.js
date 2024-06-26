@@ -19,9 +19,14 @@ const NextButton = ({ onNext }) => {
     };
 
     const handleKeyDown = (event) => {
-      if (event.key === 'ArrowRight' || event.code === 'MediaTrackNext') {
-        setIsNextActive(true);
-        onNext();
+      // Check if the event target is an input, textarea, or select
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') {
+        return; // Ignore key press
+      }
+    
+      if (event.key === 'ArrowRight' || event.code === 'MediaTrackNext') { // Adjust the key check for PrevButton.js
+        setIsNextActive(true); // Use setIsPrevActive for PrevButton.js
+        onNext(); // Use onPrev for PrevButton.js
       }
     };
 
