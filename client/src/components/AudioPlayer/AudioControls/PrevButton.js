@@ -19,6 +19,11 @@ const PrevButton = ({ onPrev }) => {
     };
 
     const handleKeyDown = (event) => {
+      // Check if the event target is an input, textarea, or select
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') {
+        return; // Ignore key press
+      }
+
       if (event.key === 'ArrowLeft' || event.code === 'MediaTrackPrevious') {
         setIsPrevActive(true);
         onPrev();

@@ -29,6 +29,11 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying }) => {
     };
 
     const handleKeyDown = (event) => {
+      // Check if the event target is an input, textarea, or select
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') {
+        return; // Ignore key press
+      }
+    
       if (event.key === ' ' || event.code === 'MediaPlayPause') {
         event.preventDefault(); // Prevent scrolling on spacebar press
         togglePlayPause();
