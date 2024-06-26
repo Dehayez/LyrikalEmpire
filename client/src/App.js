@@ -205,6 +205,8 @@ function App() {
 
   return (
     <div className="App App--hidden">
+      <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
+      <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
       <ToastContainer />
       <Header 
         isLeftPanelVisible={isLeftPanelVisible} 
