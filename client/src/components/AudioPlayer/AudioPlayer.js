@@ -114,18 +114,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   }, []);
 
   return (
-    <div className="audio-player" id="audio-player" style={{
-      display: 'flex', 
-      alignItems: 'center', 
-      position: 'fixed', 
-      bottom: currentBeat ? 0 : '-100%',
-      width: '100%',
-      transition: 'bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)',
-      padding: '0 20px',
-      boxSizing: 'border-box',
-      backgroundColor: '#181818',
-      zIndex: 3
-    }}>
+    <div className="audio-player" id="audio-player">
       <div style={{ flex: '1' }}>
         {currentBeat && <p>{currentBeat.title}</p>}
       </div>

@@ -222,6 +222,7 @@ function App() {
       <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
       <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
       <ToastContainer />
+      
       <Header 
         isLeftPanelVisible={isLeftPanelVisible} 
         isRightPanelVisible={isRightPanelVisible} 
@@ -233,6 +234,9 @@ function App() {
         isLeftDivVisible={isLeftDivVisible}
         isRightDivVisible={isRightDivVisible}
       />
+
+
+
       <div className="container">
         <div className='container__content'>
           <div className='container__content__left'>
@@ -277,8 +281,9 @@ function App() {
 
         <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
       </div>
+
+
       <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNextWrapper} onPrev={handlePrevWrapper} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} queue={queue}/>
-      <div className="buffer"/>
     </div>
   );
 }
