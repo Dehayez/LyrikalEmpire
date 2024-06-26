@@ -84,8 +84,18 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
 
   const sortedBeats = React.useMemo(() => {
     let sortableBeats = [...beats];
+    const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
     if (sortConfig.key !== null) {
       sortableBeats.sort((a, b) => {
+        // Custom sorting for tierlist
+        if (sortConfig.key === 'tierlist') {
+          let indexA = tierOrder.indexOf(a[sortConfig.key]);
+          let indexB = tierOrder.indexOf(b[sortConfig.key]);
+          indexA = indexA === -1 ? tierOrder.length : indexA;
+          indexB = indexB === -1 ? tierOrder.length : indexB;
+          return sortConfig.direction === 'ascending' ? indexA - indexB : indexB - indexA;
+        }
+        // Default sorting for other keys
         if (a[sortConfig.key] < b[sortConfig.key]) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
