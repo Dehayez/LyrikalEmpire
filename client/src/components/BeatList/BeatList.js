@@ -72,15 +72,42 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats]);
 
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+
+  const onSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedBeats = React.useMemo(() => {
+    let sortableBeats = [...beats];
+    if (sortConfig.key !== null) {
+      sortableBeats.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableBeats;
+  }, [beats, sortConfig]);
+
+
   return (
     <div className='beat-list'>
       <h2 className='beat-list__title'>Beats</h2>
       {beats.length > 0 && (
         <div>
           <table className='beat-list__table' ref={tableRef}>
-            <TableHeader />
+            <TableHeader onSort={onSort} />
             <tbody>
-              {beats.map((beat, index) => (
+              {sortedBeats.map((beat, index) => (
                 <BeatRow
                   key={beat.id}
                   beat={beat}
