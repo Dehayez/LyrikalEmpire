@@ -266,8 +266,8 @@ function App() {
               >
               <div>
                 <div className='view-toggle-container'>
-                  <h2 onClick={() => toggleView("queue")} className={`view-toggle-container__title ${viewState === "queue" ? 'view-toggle-container__title--active' : ''}`}>Queue</h2>
-                  <h2 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h2>
+                  <h3 onClick={() => toggleView("queue")} className={`view-toggle-container__title ${viewState === "queue" ? 'view-toggle-container__title--active' : ''}`}>Queue</h3>
+                  <h3 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h3>
                 </div>
                 {viewState === "queue" ? (
                   <Queue queue={queue} currentBeat={currentBeat} onBeatClick={handleBeatClick} isShuffleEnabled={shuffle}/>
