@@ -148,6 +148,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
         onConfirm={handleConfirm}
         onCancel={() => setConfirmModalState({ isOpen: false, beatsToDelete: [] })}
       />
+      <div className='beat-list__buffer'></div>
     </div>
   );
 };
