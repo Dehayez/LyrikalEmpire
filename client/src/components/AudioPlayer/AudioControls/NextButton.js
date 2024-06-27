@@ -6,32 +6,29 @@ const NextButton = ({ onNext }) => {
   const [isNextActive, setIsNextActive] = useState(false);
 
   useEffect(() => {
-    // Media Session API integration
     const setMediaSession = () => {
       if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('nexttrack', () => {
           setIsNextActive(true);
           onNext();
-          // Simulate keyUp effect
           setTimeout(() => setIsNextActive(false), 200);
         });
       }
     };
 
     const handleKeyDown = (event) => {
-      // Check if the event target is an input, textarea, or select
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') {
-        return; // Ignore key press
+        return;
       }
     
-      if (event.key === 'ArrowRight' || event.code === 'MediaTrackNext') { // Adjust the key check for PrevButton.js
-        setIsNextActive(true); // Use setIsPrevActive for PrevButton.js
-        onNext(); // Use onPrev for PrevButton.js
+      if (event.code === 'MediaTrackNext') {
+        setIsNextActive(true);
+        onNext();
       }
     };
 
     const handleKeyUp = (event) => {
-      if (event.key === 'ArrowRight' || event.code === 'MediaTrackNext') {
+      if (event.code === 'MediaTrackNext') {
         setIsNextActive(false);
       }
     };
@@ -43,7 +40,6 @@ const NextButton = ({ onNext }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
-      // Reset Media Session action handler to null when component unmounts
       if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('nexttrack', null);
       }
