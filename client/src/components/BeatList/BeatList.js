@@ -87,17 +87,27 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
     if (sortConfig.key !== null) {
       sortableBeats.sort((a, b) => {
+        // Check for empty or null values and sort them to the end
+        const valueA = a[sortConfig.key];
+        const valueB = b[sortConfig.key];
+        const isEmptyA = valueA === '' || valueA === null;
+        const isEmptyB = valueB === '' || valueB === null;
+  
+        if (isEmptyA && isEmptyB) return 0; // Both are empty, keep order
+        if (isEmptyA) return 1; // A is empty, sort to end
+        if (isEmptyB) return -1; // B is empty, sort to end
+  
         if (sortConfig.key === 'tierlist') {
-          let indexA = tierOrder.indexOf(a[sortConfig.key]);
-          let indexB = tierOrder.indexOf(b[sortConfig.key]);
+          let indexA = tierOrder.indexOf(valueA);
+          let indexB = tierOrder.indexOf(valueB);
           indexA = indexA === -1 ? tierOrder.length : indexA;
           indexB = indexB === -1 ? tierOrder.length : indexB;
           return sortConfig.direction === 'ascending' ? indexA - indexB : indexB - indexA;
         }
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        if (valueA < valueB) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (valueA > valueB) {
           return sortConfig.direction === 'ascending' ? 1 : -1;
         }
         return 0;
@@ -105,7 +115,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     }
     return sortableBeats;
   }, [beats, sortConfig]);
-
 
   return (
     <div className='beat-list'>
