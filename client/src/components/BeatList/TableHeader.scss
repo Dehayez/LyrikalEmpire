@@ -1,14 +1,17 @@
+@import '../../globals/variables.scss';
 .table-header {
     position: sticky;
     top: 0;
-    background-color: #181818;
-    color: #FFFFFF;
+    background-color: $color-black;
+    color: $color-white;
     text-align: left;
     z-index: 3;
   
     &__cell {
+      position: relative; // Ensure the cell can contain an absolutely positioned icon
       box-sizing: border-box;
       padding: 10px;
+      padding-right: 32px;
       color: #FFFFFF;
       min-width: 60px;
       transition: background-color .3s ease-in-out;
@@ -23,7 +26,16 @@
       }
 
       &:hover {
-        background-color: #202020;
+        background-color: $color-gray-dark;
       }
+    }
+
+    &__sort-icon {
+      color: $color-yellow;
+      padding: 8px;
+      position: absolute;
+      right: 0;
+      top: 55%;
+      transform: translateY(-50%);
     }
 }

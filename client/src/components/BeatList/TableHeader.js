@@ -17,7 +17,11 @@ const TableHeader = ({ onSort, sortConfig }) => {
 
   const renderSortIcon = (columnName) => {
     if (sortConfig.key === columnName) {
-      return sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />;
+      return (
+        <span className="table-header__sort-icon">
+          {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
+        </span>
+      );
     }
     return null;
   };

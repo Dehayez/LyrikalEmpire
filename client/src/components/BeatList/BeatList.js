@@ -87,7 +87,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
     if (sortConfig.key !== null) {
       sortableBeats.sort((a, b) => {
-        // Custom sorting for tierlist
         if (sortConfig.key === 'tierlist') {
           let indexA = tierOrder.indexOf(a[sortConfig.key]);
           let indexB = tierOrder.indexOf(b[sortConfig.key]);
@@ -95,7 +94,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
           indexB = indexB === -1 ? tierOrder.length : indexB;
           return sortConfig.direction === 'ascending' ? indexA - indexB : indexB - indexA;
         }
-        // Default sorting for other keys
         if (a[sortConfig.key] < b[sortConfig.key]) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
