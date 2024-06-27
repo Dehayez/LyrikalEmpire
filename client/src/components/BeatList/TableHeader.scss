@@ -8,7 +8,7 @@
     z-index: 3;
   
     &__cell {
-      position: relative; // Ensure the cell can contain an absolutely positioned icon
+      position: relative;
       box-sizing: border-box;
       padding: 10px;
       padding-right: 32px;
@@ -16,17 +16,21 @@
       min-width: 60px;
       transition: background-color .3s ease-in-out;
 
-      &.no-transition {
-          transition: none;
+      &:hover {
+        background-color: $color-gray-dark;
       }
-  
+
       &--first {
         text-align: center;
         width: 50px;
+
+        &:hover, &.table-header__cell:hover {
+          background-color: $color-black;
+        }
       }
 
-      &:hover {
-        background-color: $color-gray-dark;
+      &.no-transition {
+          transition: none;
       }
     }
 
