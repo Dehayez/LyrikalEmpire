@@ -6,48 +6,46 @@ import { IoChevronUpSharp, IoChevronDownSharp } from 'react-icons/io5';
 const TableHeader = ({ onSort, sortConfig }) => {
   const tableRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [pressTimer, setPressTimer] = useState(null);
+  const [exceededThreshold, setExceededThreshold] = useState(false);
 
   useResizableColumns(tableRef, setIsDragging);
 
-  const handleSort = (columnName) => {
-    if (onSort) {
-      onSort(columnName);
+  const handleMouseEvents = (eventName, columnName) => {
+    if (eventName === 'down') {
+      setExceededThreshold(false);
+      const timer = setTimeout(() => {
+        setExceededThreshold(true);
+        clearTimeout(pressTimer);
+      }, 300);
+      setPressTimer(timer);
+    } else if (eventName === 'up') {
+      clearTimeout(pressTimer);
+      if (!exceededThreshold) {
+        onSort && onSort(columnName);
+      }
     }
   };
 
-  const renderSortIcon = (columnName) => {
-    if (sortConfig.key === columnName) {
-      return (
-        <span className="table-header__sort-icon">
-          {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
-        </span>
-      );
-    }
-    return null;
-  };
+  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keywords'];
 
   return (
     <thead className="table-header" ref={tableRef}>
       <tr>
         <th className={`table-header__cell table-header__cell--first ${isDragging ? 'no-transition' : ''}`}>#</th>
-        <th onClick={() => handleSort('title')} className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-          Title{renderSortIcon('title')}
-        </th>
-        <th onClick={() => handleSort('genre')} className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-          Genre{renderSortIcon('genre')}
-        </th>
-        <th onClick={() => handleSort('bpm')} className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-          BPM{renderSortIcon('bpm')}
-        </th>
-        <th onClick={() => handleSort('tierlist')} className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-          Tierlist{renderSortIcon('tierlist')}
-        </th>
-        <th onClick={() => handleSort('mood')} className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-          Mood{renderSortIcon('mood')}
-        </th>
-        <th onClick={() => handleSort('keywords')} className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-          Keywords{renderSortIcon('keywords')}
-        </th>
+        {columns.map(column => (
+          <th key={column}
+              onMouseDown={() => handleMouseEvents('down', column)}
+              onMouseUp={() => handleMouseEvents('up', column)}
+              className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
+            {column.charAt(0).toUpperCase() + column.slice(1)}
+            {sortConfig.key === column && (
+              <span className="table-header__sort-icon">
+                {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
+              </span>
+            )}
+          </th>
+        ))}
       </tr>
     </thead>
   );
