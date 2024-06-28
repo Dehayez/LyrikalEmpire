@@ -79,28 +79,28 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
           <table className='beat-list__table' ref={tableRef}>
             <TableHeader onSort={onSort} sortConfig={sortConfig} />
             <tbody>
-              {sortedBeats.map((beat, index) => (
-                <BeatRow
-                  key={beat.id}
-                  beat={beat}
-                  currentBeat={currentBeat}
-                  index={index}
-                  handlePlayPause={handlePlayPause}
-                  handleUpdate={handleUpdate}
-                  handleDelete={handleDelete}
-                  selectedBeat={selectedBeat}
-                  hoveredBeat={hoveredBeat}
-                  setHoveredBeat={setHoveredBeat}
-                  isPlaying={isPlaying}
-                  handleBeatClick={handleBeatClick}
-                  selectedBeats={selectedBeats}
-                  openConfirmModal={openConfirmModal}
-                  beats={beats}
-                  handleRightClick={handleRightClick}
-                  activeContextMenu={activeContextMenu}
-                  setActiveContextMenu={setActiveContextMenu}
-                />
-              ))}
+            {sortedBeats.map((beat, index) => (
+              <BeatRow
+                key={`${beat.id}-${index}`}
+                beat={beat}
+                currentBeat={currentBeat}
+                index={index}
+                handlePlayPause={handlePlayPause}
+                handleUpdate={handleUpdate}
+                handleDelete={handleDelete}
+                selectedBeat={selectedBeat}
+                hoveredBeat={hoveredBeat}
+                setHoveredBeat={setHoveredBeat}
+                isPlaying={isPlaying}
+                handleBeatClick={handleBeatClick}
+                selectedBeats={selectedBeats}
+                openConfirmModal={openConfirmModal}
+                beats={beats}
+                handleRightClick={handleRightClick}
+                activeContextMenu={activeContextMenu}
+                setActiveContextMenu={setActiveContextMenu}
+              />
+            ))}
             </tbody>
           </table>
         </div>

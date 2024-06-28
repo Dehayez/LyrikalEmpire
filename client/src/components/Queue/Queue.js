@@ -10,7 +10,9 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled }) => {
 
   const getNextItemForShuffle = () => {
     if (queue.length > 1) {
-      return [queue[1]];
+      // Generate a truly unique key using a combination of the id and a timestamp
+      const uniqueKey = `shuffle-${queue[1].id}-${Date.now()}`;
+      return [{ ...queue[1], uniqueKey }];
     }
     return [];
   };
@@ -31,15 +33,15 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled }) => {
         <>
           <h3 className="queue__subtitle">Up Next</h3>
           <ul className="queue__list">
-            {(isShuffleEnabled ? getNextItemForShuffle() : queue.slice(1)).map((beat) => (
-              <li
-                className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
-                key={beat.id}
-                onClick={() => handleBeatClick(beat)}
-              >
-                {beat.title}
-              </li>
-            ))}
+          {(isShuffleEnabled ? getNextItemForShuffle() : queue.slice(1)).map((beat) => (
+            <li
+              className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
+              key={beat.uniqueKey || beat.id} // Use uniqueKey for shuffled items, or id for regular items
+              onClick={() => handleBeatClick(beat)}
+            >
+              {beat.title}
+            </li>
+          ))}
           </ul>
         </>
       )}
