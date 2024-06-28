@@ -102,8 +102,8 @@ const onSort = (key) => {
   }, []);
 
   useEffect(() => {
-    logQueue(beats, shuffle, currentBeat);
-  }, [beats, shuffle, currentBeat]);
+    logQueue(sortedBeats, shuffle, currentBeat);
+  }, [sortedBeats, shuffle, currentBeat]);
 
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
@@ -359,7 +359,8 @@ const onSort = (key) => {
         onPrev={handlePrevWrapper} 
         volume={volume} 
         setVolume={setVolume} 
-        shuffle={shuffle} setShuffle={setShuffle} 
+        shuffle={shuffle} 
+        setShuffle={setShuffle} 
         repeat={repeat} 
         setRepeat={setRepeat}
       />
