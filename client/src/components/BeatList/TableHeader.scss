@@ -16,6 +16,16 @@
       min-width: 60px;
       transition: background-color .3s ease-in-out;
 
+      &--first {
+        text-align: center;
+        width: 50px;
+        padding: 0;
+
+        &:hover, &.table-header__cell:hover {
+          background-color: $color-black;
+        }
+      }
+
       &::after {
         content: '';
         position: absolute;
@@ -30,15 +40,6 @@
 
       &:hover {
         background-color: $color-gray-dark;
-      }
-
-      &--first {
-        text-align: center;
-        width: 50px;
-
-        &:hover, &.table-header__cell:hover {
-          background-color: $color-black;
-        }
       }
 
       &.no-transition {
