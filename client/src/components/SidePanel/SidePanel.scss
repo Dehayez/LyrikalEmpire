@@ -1,16 +1,19 @@
+@import '../../globals/variables';
+
 .left-side-panel, .right-side-panel {
   width: 300px;
   height: 100%;
-  background-color: #181818;
+  background-color: $color-black;
   transition: transform 0.2s ease-in-out;
   padding: 0 1em;
   border-radius: 4px;
   overflow-y: auto;
   &--hover {
     position: fixed;
-    top: 79.5px;
+    top: 73.5px;
     z-index: 4;
     height: calc(100vh - 202px);
+    border: 6px solid $color-black-dark;
   }
 
   &--visible {
@@ -25,7 +28,6 @@
 .left-side-panel {
   &--hover {
     left: 0;
-    margin-left: 6px;
   }
   &--visible {
     animation-name: slideInLeft;
@@ -38,7 +40,6 @@
 .right-side-panel {
   &--hover {
     right: 0;
-    margin-right: 6px;
   }
   &--visible {
     animation-name: slideInRight;
