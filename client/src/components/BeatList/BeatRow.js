@@ -182,7 +182,7 @@ const handleTierlistChange = (e) => {
         </td> 
       {activeContextMenu === beat.id && (
         <td>
-          <div className="row-context" style={{position: 'fixed', top: contextMenuY, left: contextMenuX}}>
+          <div className="row-context" style={{top: contextMenuY, left: contextMenuX}}>
             <div className="row-context__button row-context__button--add-playlist">
               <IoAddSharp className="row-context__icon row-context__icon--add-playlist" />
               <p className="row-context__text">Add to playlist</p>
