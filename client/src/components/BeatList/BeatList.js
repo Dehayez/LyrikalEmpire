@@ -20,9 +20,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
 
-  useEffect(() => {
-    fetchBeats(handleUpdateAll);
-  }, [handleUpdateAll]);
+useEffect(() => {
+  fetchBeats(handleUpdateAll);
+}, []);
 
   const handleConfirm = async () => {
     if (confirmModalState.beatsToDelete.length > 0) {
