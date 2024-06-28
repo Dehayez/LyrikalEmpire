@@ -10,11 +10,13 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .container__content {
   display: flex;
   overflow: hidden;
+  height: 100%;
 
   &__left {
     border-radius: 4px;
