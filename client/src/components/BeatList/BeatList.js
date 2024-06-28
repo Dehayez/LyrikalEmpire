@@ -62,7 +62,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      console.log(`Key pressed: ${event.key}, Selected beats length: ${selectedBeats.length}`); // Debugging line
       if ((event.key === 'Delete' || event.key === 'Backspace' || event.keyCode === 46) && selectedBeats.length > 0) {
         setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
       }
@@ -87,15 +86,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
     if (sortConfig.key !== null) {
       sortableBeats.sort((a, b) => {
-        // Check for empty or null values and sort them to the end
+
         const valueA = a[sortConfig.key];
         const valueB = b[sortConfig.key];
         const isEmptyA = valueA === '' || valueA === null;
         const isEmptyB = valueB === '' || valueB === null;
   
-        if (isEmptyA && isEmptyB) return 0; // Both are empty, keep order
-        if (isEmptyA) return 1; // A is empty, sort to end
-        if (isEmptyB) return -1; // B is empty, sort to end
+        if (isEmptyA && isEmptyB) return 0;
+        if (isEmptyA) return 1; 
+        if (isEmptyB) return -1;
   
         if (sortConfig.key === 'tierlist') {
           let indexA = tierOrder.indexOf(valueA);
