@@ -109,15 +109,19 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default Enter key behavior
-                handleSubmit(event); // Assuming handleSubmit is your form submission function
-            }
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            handleSubmit(event);
+          }
         };
-
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [handleSubmit]);
+      
+        if (isOpen) {
+          document.addEventListener('keydown', handleKeyDown);
+        }
+        return () => {
+          document.removeEventListener('keydown', handleKeyDown);
+        };
+      }, [isOpen, handleSubmit]);
 
     return (
 <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
