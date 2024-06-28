@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { getBeats } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History } from './components';
 import { handlePlay, handlePrev } from './hooks';
@@ -14,6 +14,54 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [queue, setQueue] = useState([]);
+
+
+const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+
+const sortedBeats = useMemo(() => {
+  let sortableBeats = [...beats];
+  const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
+  if (sortConfig.key !== null) {
+    sortableBeats.sort((a, b) => {
+      const valueA = a[sortConfig.key];
+      const valueB = b[sortConfig.key];
+      const isEmptyA = valueA === '' || valueA === null;
+      const isEmptyB = valueB === '' || valueB === null;
+
+      if (isEmptyA && isEmptyB) return 0;
+      if (isEmptyA) return 1;
+      if (isEmptyB) return -1;
+
+      if (sortConfig.key === 'tierlist') {
+        let indexA = tierOrder.indexOf(valueA);
+        let indexB = tierOrder.indexOf(valueB);
+        indexA = indexA === -1 ? tierOrder.length : indexA;
+        indexB = indexB === -1 ? tierOrder.length : indexB;
+        return sortConfig.direction === 'ascending' ? indexA - indexB : indexB - indexA;
+      }
+      if (valueA < valueB) {
+        return sortConfig.direction === 'ascending' ? -1 : 1;
+      }
+      if (valueA > valueB) {
+        return sortConfig.direction === 'ascending' ? 1 : -1;
+      }
+      return 0;
+    });
+  }
+  return sortableBeats;
+}, [beats, sortConfig]);
+
+useEffect(() => {
+  console.log(sortedBeats);
+}, [sortedBeats]);
+
+const onSort = (key) => {
+  let direction = 'ascending';
+  if (sortConfig.key === key) {
+    direction = sortConfig.direction === 'ascending' ? 'descending' : sortConfig.direction === 'descending' ? null : 'ascending';
+  }
+  setSortConfig({ key: direction ? key : null, direction });
+};
 
   const [currentBeat, setCurrentBeat] = useState(() => {
     const savedCurrentBeat = localStorage.getItem('currentBeat');
@@ -253,7 +301,16 @@ function App() {
           </div>
 
           <div className='container__content__middle'>
-            <BeatList key={refresh} onPlay={handlePlayWrapper} selectedBeat={selectedBeat} isPlaying={isPlaying} handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} currentBeat={currentBeat} />
+            <BeatList 
+              key={refresh} 
+              onPlay={handlePlayWrapper} 
+              selectedBeat={selectedBeat} 
+              isPlaying={isPlaying} 
+              handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
+              currentBeat={currentBeat} 
+              sortedBeats={sortedBeats} onSort={onSort} 
+              sortConfig={sortConfig}
+            />
             <AddBeatButton setIsOpen={setIsOpen} />
           </div>
 
@@ -270,7 +327,12 @@ function App() {
                   <h3 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h3>
                 </div>
                 {viewState === "queue" ? (
-                  <Queue queue={queue} currentBeat={currentBeat} onBeatClick={handleBeatClick} isShuffleEnabled={shuffle}/>
+                  <Queue 
+                    queue={queue} 
+                    currentBeat={currentBeat} 
+                    onBeatClick={handleBeatClick} 
+                    isShuffleEnabled={shuffle}
+                  />
                 ) : (
                   <History />
                 )}
@@ -280,11 +342,27 @@ function App() {
           </div>
         </div>
 
-        <AddBeatForm onAdd={handleAdd} isOpen={isOpen} setIsOpen={setIsOpen} />
+        <AddBeatForm 
+          onAdd={handleAdd} 
+          isOpen={isOpen} 
+          setIsOpen={setIsOpen} 
+        />
       </div>
 
 
-      <AudioPlayer currentBeat={currentBeat} setCurrentBeat={setCurrentBeat} isPlaying={isPlaying} setIsPlaying={setIsPlaying} onNext={handleNextWrapper} onPrev={handlePrevWrapper} volume={volume} setVolume={setVolume} shuffle={shuffle} setShuffle={setShuffle} repeat={repeat} setRepeat={setRepeat} queue={queue}/>
+      <AudioPlayer 
+        currentBeat={currentBeat} 
+        setCurrentBeat={setCurrentBeat} 
+        isPlaying={isPlaying} 
+        setIsPlaying={setIsPlaying} 
+        onNext={handleNextWrapper} 
+        onPrev={handlePrevWrapper} 
+        volume={volume} 
+        setVolume={setVolume} 
+        shuffle={shuffle} setShuffle={setShuffle} 
+        repeat={repeat} 
+        setRepeat={setRepeat}
+      />
     </div>
   );
 }

@@ -11,7 +11,7 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig }) => {
   const tableRef = useRef(null);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
@@ -70,50 +70,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats]);
-
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
-
-  const onSort = (key) => {
-    let direction = 'ascending';
-    if (sortConfig.key === key) {
-      direction = sortConfig.direction === 'ascending' ? 'descending' : sortConfig.direction === 'descending' ? null : 'ascending';
-    }
-    setSortConfig({ key: direction ? key : null, direction });
-  };
-
-  const sortedBeats = React.useMemo(() => {
-    let sortableBeats = [...beats];
-    const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
-    if (sortConfig.key !== null) {
-      sortableBeats.sort((a, b) => {
-
-        const valueA = a[sortConfig.key];
-        const valueB = b[sortConfig.key];
-        const isEmptyA = valueA === '' || valueA === null;
-        const isEmptyB = valueB === '' || valueB === null;
-  
-        if (isEmptyA && isEmptyB) return 0;
-        if (isEmptyA) return 1; 
-        if (isEmptyB) return -1;
-  
-        if (sortConfig.key === 'tierlist') {
-          let indexA = tierOrder.indexOf(valueA);
-          let indexB = tierOrder.indexOf(valueB);
-          indexA = indexA === -1 ? tierOrder.length : indexA;
-          indexB = indexB === -1 ? tierOrder.length : indexB;
-          return sortConfig.direction === 'ascending' ? indexA - indexB : indexB - indexA;
-        }
-        if (valueA < valueB) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
-        }
-        if (valueA > valueB) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
-        }
-        return 0;
-      });
-    }
-    return sortableBeats;
-  }, [beats, sortConfig]);
 
   return (
     <div className='beat-list'>
