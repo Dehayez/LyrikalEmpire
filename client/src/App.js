@@ -51,10 +51,6 @@ const sortedBeats = useMemo(() => {
   return sortableBeats;
 }, [beats, sortConfig]);
 
-useEffect(() => {
-  console.log(sortedBeats);
-}, [sortedBeats]);
-
 const onSort = (key) => {
   let direction = 'ascending';
   if (sortConfig.key === key) {
@@ -99,7 +95,7 @@ const onSort = (key) => {
       }
     };
     fetchBeats();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     logQueue(sortedBeats, shuffle, currentBeat);
