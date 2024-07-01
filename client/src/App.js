@@ -16,42 +16,29 @@ function App() {
   const [queue, setQueue] = useState([]);
   const [allowHover, setAllowHover] = useState(true);
   const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
-
-  const [currentBeat, setCurrentBeat] = useState(() => {
-    const savedCurrentBeat = localStorage.getItem('currentBeat');
-    return savedCurrentBeat !== null && savedCurrentBeat !== "undefined" ? JSON.parse(savedCurrentBeat) : null;
-  });
-
-  const [selectedBeat, setSelectedBeat] = useState(() => {
-    const savedBeat = localStorage.getItem('selectedBeat');
-    return savedBeat !== null && savedBeat !== "undefined" ? JSON.parse(savedBeat) : null;
-  });
-
-  const [shuffle, setShuffle] = useState(() => {
-    const savedShuffle = localStorage.getItem('shuffle');
-    return savedShuffle !== null && savedShuffle !== "undefined" ? JSON.parse(savedShuffle) : false;
-  });
-
-  const [repeat, setRepeat] = useState(() => {
-    const savedRepeat = localStorage.getItem('repeat');
-    return savedRepeat !== null && savedRepeat !== "undefined" ? savedRepeat : 'Disabled Repeat';
-  });
-  
+  const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
+  const [selectedBeat, setSelectedBeat] = useState(() => JSON.parse(localStorage.getItem('selectedBeat') || 'null'));
+  const [shuffle, setShuffle] = useState(() => JSON.parse(localStorage.getItem('shuffle') || 'false'));
+  const [repeat, setRepeat] = useState(() => localStorage.getItem('repeat') || 'Disabled Repeat');
   const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
   const hoverRefLeft = useRef(false); 
   const hoverRefRight = useRef(false);
+  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isLeftPanelVisible') || 'false'));
+  const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isRightPanelVisible') || 'false'));
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
-  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => {
-    return JSON.parse(localStorage.getItem('isLeftPanelVisible')) || false;
-  });
-  const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => {
-    return JSON.parse(localStorage.getItem('isRightPanelVisible')) || false;
-  });
+  useEffect(() => {
+    localStorage.setItem('shuffle', shuffle);
+    localStorage.setItem('repeat', repeat);
+    localStorage.setItem('currentBeat', JSON.stringify(currentBeat));
+    localStorage.setItem('selectedBeat', JSON.stringify(selectedBeat));
+    localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
+    localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
+    localStorage.setItem('lastView', viewState);
+  }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState]);
 
-
-const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
 const sortedBeats = useMemo(() => {
   let sortableBeats = [...beats];
@@ -103,13 +90,6 @@ useEffect(() => {
 }, []);
 
   useEffect(() => {
-    localStorage.setItem('shuffle', shuffle);
-    localStorage.setItem('repeat', repeat);
-    localStorage.setItem('currentBeat', JSON.stringify(currentBeat));
-    localStorage.setItem('selectedBeat', JSON.stringify(selectedBeat));
-  }, [shuffle, repeat, currentBeat, selectedBeat]);
-
-  useEffect(() => {
     const fetchBeats = async () => {
       const fetchedBeats = await getBeats();
       setBeats(fetchedBeats);
@@ -145,22 +125,6 @@ useEffect(() => {
   
     setQueue(queue);
   }
-
-  useEffect(() => {
-    localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
-  }, [isLeftPanelVisible]);
-
-  useEffect(() => {
-    localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
-  }, [isRightPanelVisible]);
-
-
-  useEffect(() => {
-    const lastView = localStorage.getItem('lastView');
-    if (lastView) {
-      setViewState(lastView);
-    }
-  }, []);
 
   const handleAdd = (newBeat) => {
     setRefresh(!refresh);
