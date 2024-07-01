@@ -14,6 +14,7 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [queue, setQueue] = useState([]);
+  const [customQueue, setCustomQueue] = useState([]);
   const [allowHover, setAllowHover] = useState(true);
   const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
   const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
@@ -220,6 +221,13 @@ function App() {
     localStorage.setItem('lastView', view);
   };
 
+  const addToCustomQueue = (beatOrBeats) => {
+    setCustomQueue((prevQueue) => [
+      ...prevQueue,
+      ...(Array.isArray(beatOrBeats) ? beatOrBeats : [beatOrBeats]),
+    ]);
+  };
+
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
   
@@ -241,7 +249,7 @@ function App() {
   
     setQueue(queue);
   }
-    
+
   return (
     <div className="App App--hidden">
       <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
@@ -279,8 +287,10 @@ function App() {
               isPlaying={isPlaying} 
               handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
               currentBeat={currentBeat} 
-              sortedBeats={sortedBeats} onSort={onSort} 
+              sortedBeats={sortedBeats} 
+              onSort={onSort} 
               sortConfig={sortConfig}
+              addToCustomQueue={addToCustomQueue}
             />
             <AddBeatButton setIsOpen={setIsOpen} />
           </div>
@@ -302,6 +312,7 @@ function App() {
                     currentBeat={currentBeat} 
                     onBeatClick={handleBeatClick} 
                     isShuffleEnabled={shuffle}
+                    customQueue={customQueue}
                   />
                 ) : (
                   <History

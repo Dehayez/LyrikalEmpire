@@ -11,7 +11,7 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue  }) => {
   const tableRef = useRef(null);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
@@ -99,6 +99,7 @@ useEffect(() => {
                 handleRightClick={handleRightClick}
                 activeContextMenu={activeContextMenu}
                 setActiveContextMenu={setActiveContextMenu}
+                addToCustomQueue={addToCustomQueue}
               />
             ))}
             </tbody>
