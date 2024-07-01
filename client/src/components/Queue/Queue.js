@@ -21,31 +21,33 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue 
   return (
     <div className="queue">
       {queue.length > 0 && (
-        <>
+        <div className='queue__section'> 
           <h3 className="queue__subtitle">Now Playing</h3>
           <ul className="queue__list">
             <li className={`queue__list-item queue__list-item--playing`} key={queue[0].id}>
               {queue[0].title}
             </li>
           </ul>
-        </>
+        </div>
       )}
 
-      <h3 className="queue__subtitle">Next in Queue</h3>
-      <ul className='queue__list'>
-        {customQueue.map((beat, index) => (
-          <li
-            className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
-            key={beat.id ? `custom-${beat.id}` : `custom-index-${index}`}
-            onClick={() => handleBeatClick(beat)}
-          >
-            {beat.title}
-          </li>
-        ))}
-      </ul>
+      <div className='queue__section'>
+        <h3 className="queue__subtitle">Next in Queue</h3>
+        <ul className='queue__list'>
+          {customQueue.map((beat, index) => (
+            <li
+              className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
+              key={beat.id ? `custom-${beat.id}` : `custom-index-${index}`}
+              onClick={() => handleBeatClick(beat)}
+            >
+              {beat.title}
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {queue.length > 1 && (
-        <>
+        <div className='queue__section'>
           <h3 className="queue__subtitle">Up Next</h3>
           <ul className="queue__list">
           {(isShuffleEnabled ? getNextItemForShuffle() : queue.slice(1).map((item, index) => ({
@@ -61,7 +63,7 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue 
             </li>
           ))}
           </ul>
-        </>
+        </div>
       )}
     </div>
   );
