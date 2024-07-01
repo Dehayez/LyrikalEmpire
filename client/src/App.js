@@ -143,11 +143,18 @@ function App() {
   };
 
   const handleNextWrapper = () => {
-    const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
-    const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
-    const nextBeat = queue[nextIndex];
-    handlePlayWrapper(nextBeat, true, beats);
+    if (customQueue.length > 0) {
+      const nextCustomBeat = customQueue[0];
+      handlePlayWrapper(nextCustomBeat, true, beats);
+      setCustomQueue(customQueue.slice(1));
+    } else {
+      const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+      const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
+      const nextBeat = queue[nextIndex];
+      handlePlayWrapper(nextBeat, true, beats);
+    }
   };
+
   const handlePrevWrapper = () => handlePrev(repeat, beats, currentBeat, handlePlayWrapper);
 
   const handleQueueUpdateAfterDelete = (deletedBeatId) => {
