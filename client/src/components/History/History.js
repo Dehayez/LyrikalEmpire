@@ -6,9 +6,9 @@ const History = () => {
 
   return (
     <div className="history">
-       <ul>
+       <ul className='history__list'>
           {history.map((beat, index) => (
-            <li key={index}>{beat.title}</li> // Assuming each beat has a 'name' property
+            <li className='history__list-item' key={index}>{beat.title}</li>
           ))}
         </ul>
     </div>
