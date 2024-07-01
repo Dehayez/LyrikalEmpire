@@ -1,7 +1,7 @@
 import React from 'react';
 import './Queue.scss';
 
-const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled }) => {
+const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue }) => {
   const handleBeatClick = (beat) => {
     if (onBeatClick) {
       onBeatClick(beat);
@@ -30,6 +30,20 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled }) => {
           </ul>
         </>
       )}
+
+      <h3 className="queue__subtitle">Next in Queue</h3>
+      <ul className='queue__list'>
+        {customQueue.map((beat, index) => (
+          <li
+            className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
+            key={beat.id ? `custom-${beat.id}` : `custom-index-${index}`}
+            onClick={() => handleBeatClick(beat)}
+          >
+            {beat.title}
+          </li>
+        ))}
+      </ul>
+
       {queue.length > 1 && (
         <>
           <h3 className="queue__subtitle">Up Next</h3>

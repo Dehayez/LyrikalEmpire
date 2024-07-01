@@ -9,7 +9,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, 
   hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat
+  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
@@ -30,6 +30,10 @@ const BeatRow = ({
     const newTierlist = e.target.value;
     setTierlist(newTierlist);
     handleUpdate(beat.id, 'tierlist', newTierlist);
+  };
+
+  const handleAddToCustomQueueClick = () => {
+    addToCustomQueue(selectedBeats);
   };
 
   const beatRowClasses = classNames({
@@ -189,7 +193,7 @@ const BeatRow = ({
               <IoTrashBinSharp className="row-context__icon row-context__icon--delete" />
               <p className="row-context__text">{deleteText}</p>
             </div>
-            <div className="row-context__button row-context__button--add-queue">
+            <div className="row-context__button row-context__button--add-queue" onClick={handleAddToCustomQueueClick}>
               <IoListSharp className="row-context__icon row-context__icon--add-queue" />
               <p className="row-context__text">Add to queue</p>
             </div>
