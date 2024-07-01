@@ -14,7 +14,10 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [queue, setQueue] = useState([]);
-  const [customQueue, setCustomQueue] = useState([]);
+  const [customQueue, setCustomQueue] = useState(() => {
+    const savedQueue = localStorage.getItem('customQueue');
+    return savedQueue ? JSON.parse(savedQueue) : [];
+  });
   const [allowHover, setAllowHover] = useState(true);
   const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
   const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
@@ -29,6 +32,8 @@ function App() {
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isLeftPanelVisible') || 'false'));
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isRightPanelVisible') || 'false'));
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+
+
 
   const sortedBeats = useMemo(() => {
     let sortableBeats = [...beats];
@@ -65,9 +70,8 @@ function App() {
 
   const updateHistory = (playedBeat) => {
     const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');
-    const updatedHistory = [playedBeat, ...history].slice(0, 100); // Keep only the latest 100 beats
+    const updatedHistory = [playedBeat, ...history].slice(0, 100);
     localStorage.setItem('playedBeatsHistory', JSON.stringify(updatedHistory));
-
   };
 
   useEffect(() => {
@@ -78,7 +82,8 @@ function App() {
     localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
     localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
     localStorage.setItem('lastView', viewState);
-  }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState]);
+    localStorage.setItem('customQueue', JSON.stringify(customQueue));
+  }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue]);
   
   // Fetch and update beats
   useEffect(() => {
@@ -105,8 +110,6 @@ function App() {
 
     return () => clearTimeout(timer);
   }, []);
-
-
 
   const onSort = (key) => {
     let direction = 'ascending';
@@ -221,13 +224,6 @@ function App() {
     localStorage.setItem('lastView', view);
   };
 
-  const addToCustomQueue = (beatOrBeats) => {
-    setCustomQueue((prevQueue) => [
-      ...prevQueue,
-      ...(Array.isArray(beatOrBeats) ? beatOrBeats : [beatOrBeats]),
-    ]);
-  };
-
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
   
@@ -249,6 +245,14 @@ function App() {
   
     setQueue(queue);
   }
+
+  const addToCustomQueue = (beatOrBeats) => {
+    setCustomQueue((prevQueue) => [
+      ...prevQueue,
+      ...(Array.isArray(beatOrBeats) ? beatOrBeats : [beatOrBeats]),
+    ]);
+  };
+
 
   return (
     <div className="App App--hidden">
