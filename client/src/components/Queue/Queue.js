@@ -31,20 +31,22 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue 
         </div>
       )}
 
-      <div className='queue__section'>
-        <h3 className="queue__subtitle">Next in Queue</h3>
-        <ul className='queue__list'>
-          {customQueue.map((beat, index) => (
-            <li
-              className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
-              key={beat.id ? `custom-${beat.id}` : `custom-index-${index}`}
-              onClick={() => handleBeatClick(beat)}
-            >
-              {beat.title}
-            </li>
-          ))}
-        </ul>
-      </div>
+      {customQueue.length > 0 && (
+        <div className='queue__section'>
+          <h3 className="queue__subtitle">Next in Queue</h3>
+          <ul className='queue__list'>
+            {customQueue.map((beat, index) => (
+              <li
+                className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
+                key={beat.id ? `custom-${beat.id}` : `custom-index-${index}`}
+                onClick={() => handleBeatClick(beat)}
+              >
+                {beat.title}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {queue.length > 1 && (
         <div className='queue__section'>
