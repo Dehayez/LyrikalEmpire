@@ -154,6 +154,7 @@ const onSort = (key) => {
     const updatedBeats = beats.filter(beat => beat.id !== deletedBeatId);
     setQueue(updatedQueue);
     setBeats(updatedBeats);
+    setRefresh(!refresh);
   
     if (currentBeat && currentBeat.id === deletedBeatId) {
       const nextBeatIndex = updatedQueue.length > 0 ? 0 : -1;
