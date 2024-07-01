@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { IoTrashBinSharp, IoAddSharp } from "react-icons/io5";
+import { IoTrashBinSharp, IoAddSharp, IoListSharp } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { useBpmHandlers } from '../../hooks';
@@ -26,13 +26,11 @@ const BeatRow = ({
 
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
 
-// Step 2: Handle `onChange` event
-const handleTierlistChange = (e) => {
-  const newTierlist = e.target.value;
-  setTierlist(newTierlist);
-  // Assuming handleUpdate updates the beat in the parent component or context
-  handleUpdate(beat.id, 'tierlist', newTierlist);
-};
+  const handleTierlistChange = (e) => {
+    const newTierlist = e.target.value;
+    setTierlist(newTierlist);
+    handleUpdate(beat.id, 'tierlist', newTierlist);
+  };
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -190,6 +188,10 @@ const handleTierlistChange = (e) => {
             <div className="row-context__button row-context__button--delete" onClick={() => openConfirmModal(beat.id)}>
               <IoTrashBinSharp className="row-context__icon row-context__icon--delete" />
               <p className="row-context__text">{deleteText}</p>
+            </div>
+            <div className="row-context__button row-context__button--add-queue">
+              <IoListSharp className="row-context__icon row-context__icon--add-queue" />
+              <p className="row-context__text">Add to queue</p>
             </div>
           </div>
         </td>
