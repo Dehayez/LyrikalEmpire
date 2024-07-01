@@ -28,6 +28,39 @@ function App() {
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isLeftPanelVisible') || 'false'));
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isRightPanelVisible') || 'false'));
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+    // Sorted beats based on sortConfig
+  const sortedBeats = useMemo(() => {
+    let sortableBeats = [...beats];
+    const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
+    if (sortConfig.key !== null) {
+      sortableBeats.sort((a, b) => {
+        const valueA = a[sortConfig.key];
+        const valueB = b[sortConfig.key];
+        const isEmptyA = valueA === '' || valueA === null;
+        const isEmptyB = valueB === '' || valueB === null;
+
+        if (isEmptyA && isEmptyB) return 0;
+        if (isEmptyA) return 1;
+        if (isEmptyB) return -1;
+
+        if (sortConfig.key === 'tierlist') {
+          let indexA = tierOrder.indexOf(valueA);
+          let indexB = tierOrder.indexOf(valueB);
+          indexA = indexA === -1 ? tierOrder.length : indexA;
+          indexB = indexB === -1 ? tierOrder.length : indexB;
+          return sortConfig.direction === 'ascending' ? indexA - indexB : indexB - indexA;
+        }
+        if (valueA < valueB) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (valueA > valueB) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableBeats;
+  }, [beats, sortConfig]);
 
   useEffect(() => {
     localStorage.setItem('shuffle', shuffle);
@@ -39,56 +72,7 @@ function App() {
     localStorage.setItem('lastView', viewState);
   }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState]);
 
-
-const sortedBeats = useMemo(() => {
-  let sortableBeats = [...beats];
-  const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
-  if (sortConfig.key !== null) {
-    sortableBeats.sort((a, b) => {
-      const valueA = a[sortConfig.key];
-      const valueB = b[sortConfig.key];
-      const isEmptyA = valueA === '' || valueA === null;
-      const isEmptyB = valueB === '' || valueB === null;
-
-      if (isEmptyA && isEmptyB) return 0;
-      if (isEmptyA) return 1;
-      if (isEmptyB) return -1;
-
-      if (sortConfig.key === 'tierlist') {
-        let indexA = tierOrder.indexOf(valueA);
-        let indexB = tierOrder.indexOf(valueB);
-        indexA = indexA === -1 ? tierOrder.length : indexA;
-        indexB = indexB === -1 ? tierOrder.length : indexB;
-        return sortConfig.direction === 'ascending' ? indexA - indexB : indexB - indexA;
-      }
-      if (valueA < valueB) {
-        return sortConfig.direction === 'ascending' ? -1 : 1;
-      }
-      if (valueA > valueB) {
-        return sortConfig.direction === 'ascending' ? 1 : -1;
-      }
-      return 0;
-    });
-  }
-  return sortableBeats;
-}, [beats, sortConfig]);
-
-const onSort = (key) => {
-  let direction = 'ascending';
-  if (sortConfig.key === key) {
-    direction = sortConfig.direction === 'ascending' ? 'descending' : sortConfig.direction === 'descending' ? null : 'ascending';
-  }
-  setSortConfig({ key: direction ? key : null, direction });
-};
-    
-useEffect(() => {
-  const timer = setTimeout(() => {
-    document.querySelector('.App').classList.remove('App--hidden');
-  }, 400); 
-
-  return () => clearTimeout(timer);
-}, []);
-
+  // Fetch and update beats
   useEffect(() => {
     const fetchBeats = async () => {
       const fetchedBeats = await getBeats();
@@ -100,31 +84,29 @@ useEffect(() => {
     fetchBeats();
   }, [refresh]);
 
+  // Queue management
   useEffect(() => {
     logQueue(sortedBeats, shuffle, currentBeat);
   }, [sortedBeats, shuffle, currentBeat]);
 
-  function logQueue(beats, shuffle, currentBeat) {
-    let queue = [...beats];
-  
-    if (shuffle) {
-      for (let i = queue.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [queue[i], queue[j]] = [queue[j], queue[i]];
-      }
+  // UI Effects
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      document.querySelector('.App').classList.remove('App--hidden');
+    }, 400); 
+
+    return () => clearTimeout(timer);
+  }, []);
+
+
+
+  const onSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key) {
+      direction = sortConfig.direction === 'ascending' ? 'descending' : sortConfig.direction === 'descending' ? null : 'ascending';
     }
-  
-    if (currentBeat) {
-      const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
-  
-      if (currentBeatIndex > 0) {
-        const currentAndNext = queue.splice(currentBeatIndex);
-        queue = [...currentAndNext, ...queue];
-      }
-    }
-  
-    setQueue(queue);
-  }
+    setSortConfig({ key: direction ? key : null, direction });
+  };
 
   const handleAdd = (newBeat) => {
     setRefresh(!refresh);
@@ -144,6 +126,7 @@ useEffect(() => {
   };
 
   const handlePlayWrapper = (beat, play, beats) => handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
+
   const handleNextWrapper = () => {
     const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
     const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
@@ -178,63 +161,81 @@ useEffect(() => {
     setIsLeftDivVisible(true);
   };
   
-    const handleMouseLeaveLeft = () => {
-      hoverRefLeft.current = false;
-      setTimeout(() => {
-        if (!hoverRefLeft.current) {
-          setIsLeftDivVisible(false);
-        }
-      }, 200);
-    };
-  
-    const handleMouseEnterRight = () => {
-      if (!allowHover) return;
-      hoverRefRight.current = true;
-      setIsRightDivVisible(true);
-    };
-  
-    const handleMouseLeaveRight = () => {
-      hoverRefRight.current = false;
-      setTimeout(() => {
-        if (!hoverRefRight.current) {
-          setIsRightDivVisible(false);
-        }
-      }, 200);
-    };
-  
-    const toggleSidePanel = (panel) => {
-      if (panel === 'left') {
-        setIsLeftPanelVisible(!isLeftPanelVisible);
-        setIsLeftDivVisible(!isLeftPanelVisible);
-      } else if (panel === 'right') {
-        setIsRightPanelVisible(!isRightPanelVisible);
-        setIsRightDivVisible(!isRightPanelVisible);
+  const handleMouseLeaveLeft = () => {
+    hoverRefLeft.current = false;
+    setTimeout(() => {
+      if (!hoverRefLeft.current) {
+        setIsLeftDivVisible(false);
       }
-      setAllowHover(false);
-      setTimeout(() => {
-        setAllowHover(true);
-      }, 200);
-    };
-
-    const handleBeatClick = (beat) => {
-      setCurrentBeat(beat);
-      setIsPlaying(true);
-    };
-
-
-    const toggleView = (view) => {
-      setViewState(view);
-      localStorage.setItem('lastView', view);
-    };
+    }, 200);
+  };
   
+  const handleMouseEnterRight = () => {
+    if (!allowHover) return;
+    hoverRefRight.current = true;
+    setIsRightDivVisible(true);
+  };
+  
+  const handleMouseLeaveRight = () => {
+    hoverRefRight.current = false;
+    setTimeout(() => {
+      if (!hoverRefRight.current) {
+        setIsRightDivVisible(false);
+      }
+    }, 200);
+  };
+  
+  const toggleSidePanel = (panel) => {
+    if (panel === 'left') {
+      setIsLeftPanelVisible(!isLeftPanelVisible);
+      setIsLeftDivVisible(!isLeftPanelVisible);
+    } else if (panel === 'right') {
+      setIsRightPanelVisible(!isRightPanelVisible);
+      setIsRightDivVisible(!isRightPanelVisible);
+    }
+    setAllowHover(false);
+    setTimeout(() => {
+      setAllowHover(true);
+    }, 200);
+  };
 
+  const handleBeatClick = (beat) => {
+    setCurrentBeat(beat);
+    setIsPlaying(true);
+  };
+
+  const toggleView = (view) => {
+    setViewState(view);
+    localStorage.setItem('lastView', view);
+  };
+
+  function logQueue(beats, shuffle, currentBeat) {
+    let queue = [...beats];
+  
+    if (shuffle) {
+      for (let i = queue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [queue[i], queue[j]] = [queue[j], queue[i]];
+      }
+    }
+  
+    if (currentBeat) {
+      const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+  
+      if (currentBeatIndex > 0) {
+        const currentAndNext = queue.splice(currentBeatIndex);
+        queue = [...currentAndNext, ...queue];
+      }
+    }
+  
+    setQueue(queue);
+  }
     
   return (
     <div className="App App--hidden">
       <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
       <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
       <ToastContainer />
-      
       <Header 
         isLeftPanelVisible={isLeftPanelVisible} 
         isRightPanelVisible={isRightPanelVisible} 
@@ -246,9 +247,6 @@ useEffect(() => {
         isLeftDivVisible={isLeftDivVisible}
         isRightDivVisible={isRightDivVisible}
       />
-
-
-
       <div className="container">
         <div className='container__content'>
           <div className={`container__content__left ${isLeftPanelVisible ? 'container__content__left--pinned' : ''}`}>
@@ -262,7 +260,6 @@ useEffect(() => {
               </LeftSidePanel>
             ) : null}
           </div>
-
           <div className='container__content__middle'>
             <BeatList 
               key={refresh} 
@@ -276,7 +273,6 @@ useEffect(() => {
             />
             <AddBeatButton setIsOpen={setIsOpen} />
           </div>
-
           <div className={`container__content__right ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
             {isRightPanelVisible || isRightDivVisible ? (
               <RightSidePanel
@@ -304,15 +300,12 @@ useEffect(() => {
             ) : null}
           </div>
         </div>
-
         <AddBeatForm 
           onAdd={handleAdd} 
           isOpen={isOpen} 
           setIsOpen={setIsOpen} 
         />
       </div>
-
-
       <AudioPlayer 
         currentBeat={currentBeat} 
         setCurrentBeat={setCurrentBeat} 
