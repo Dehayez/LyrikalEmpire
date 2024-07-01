@@ -14,6 +14,41 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [queue, setQueue] = useState([]);
+  const [allowHover, setAllowHover] = useState(true);
+  const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
+
+  const [currentBeat, setCurrentBeat] = useState(() => {
+    const savedCurrentBeat = localStorage.getItem('currentBeat');
+    return savedCurrentBeat !== null && savedCurrentBeat !== "undefined" ? JSON.parse(savedCurrentBeat) : null;
+  });
+
+  const [selectedBeat, setSelectedBeat] = useState(() => {
+    const savedBeat = localStorage.getItem('selectedBeat');
+    return savedBeat !== null && savedBeat !== "undefined" ? JSON.parse(savedBeat) : null;
+  });
+
+  const [shuffle, setShuffle] = useState(() => {
+    const savedShuffle = localStorage.getItem('shuffle');
+    return savedShuffle !== null && savedShuffle !== "undefined" ? JSON.parse(savedShuffle) : false;
+  });
+
+  const [repeat, setRepeat] = useState(() => {
+    const savedRepeat = localStorage.getItem('repeat');
+    return savedRepeat !== null && savedRepeat !== "undefined" ? savedRepeat : 'Disabled Repeat';
+  });
+  
+  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
+  const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
+  const [isRightDivVisible, setIsRightDivVisible] = useState(false);
+  const hoverRefLeft = useRef(false); 
+  const hoverRefRight = useRef(false);
+
+  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => {
+    return JSON.parse(localStorage.getItem('isLeftPanelVisible')) || false;
+  });
+  const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => {
+    return JSON.parse(localStorage.getItem('isRightPanelVisible')) || false;
+  });
 
 
 const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -58,26 +93,14 @@ const onSort = (key) => {
   }
   setSortConfig({ key: direction ? key : null, direction });
 };
+    
+useEffect(() => {
+  const timer = setTimeout(() => {
+    document.querySelector('.App').classList.remove('App--hidden');
+  }, 400); 
 
-  const [currentBeat, setCurrentBeat] = useState(() => {
-    const savedCurrentBeat = localStorage.getItem('currentBeat');
-    return savedCurrentBeat !== null && savedCurrentBeat !== "undefined" ? JSON.parse(savedCurrentBeat) : null;
-  });
-
-  const [selectedBeat, setSelectedBeat] = useState(() => {
-    const savedBeat = localStorage.getItem('selectedBeat');
-    return savedBeat !== null && savedBeat !== "undefined" ? JSON.parse(savedBeat) : null;
-  });
-
-  const [shuffle, setShuffle] = useState(() => {
-    const savedShuffle = localStorage.getItem('shuffle');
-    return savedShuffle !== null && savedShuffle !== "undefined" ? JSON.parse(savedShuffle) : false;
-  });
-
-  const [repeat, setRepeat] = useState(() => {
-    const savedRepeat = localStorage.getItem('repeat');
-    return savedRepeat !== null && savedRepeat !== "undefined" ? savedRepeat : 'Disabled Repeat';
-  });
+  return () => clearTimeout(timer);
+}, []);
 
   useEffect(() => {
     localStorage.setItem('shuffle', shuffle);
@@ -122,6 +145,22 @@ const onSort = (key) => {
   
     setQueue(queue);
   }
+
+  useEffect(() => {
+    localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
+  }, [isLeftPanelVisible]);
+
+  useEffect(() => {
+    localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
+  }, [isRightPanelVisible]);
+
+
+  useEffect(() => {
+    const lastView = localStorage.getItem('lastView');
+    if (lastView) {
+      setViewState(lastView);
+    }
+  }, []);
 
   const handleAdd = (newBeat) => {
     setRefresh(!refresh);
@@ -168,27 +207,6 @@ const onSort = (key) => {
       }
     }
   };
-  
-  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
-  const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
-  const [isRightDivVisible, setIsRightDivVisible] = useState(false);
-  const hoverRefLeft = useRef(false); 
-  const hoverRefRight = useRef(false);
-
-  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => {
-    return JSON.parse(localStorage.getItem('isLeftPanelVisible')) || false;
-  });
-  const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => {
-    return JSON.parse(localStorage.getItem('isRightPanelVisible')) || false;
-  });
-
-  useEffect(() => {
-    localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
-  }, [isLeftPanelVisible]);
-
-  useEffect(() => {
-    localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
-  }, [isRightPanelVisible]);
 
   const handleMouseEnterLeft = () => {
     if (!allowHover) return;
@@ -233,34 +251,18 @@ const onSort = (key) => {
         setAllowHover(true);
       }, 200);
     };
-    const [allowHover, setAllowHover] = useState(true);
 
     const handleBeatClick = (beat) => {
       setCurrentBeat(beat);
       setIsPlaying(true);
     };
-    
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        document.querySelector('.App').classList.remove('App--hidden');
-      }, 400); 
-  
-      return () => clearTimeout(timer);
-    }, []);
 
-    const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
 
     const toggleView = (view) => {
       setViewState(view);
       localStorage.setItem('lastView', view);
     };
   
-    useEffect(() => {
-      const lastView = localStorage.getItem('lastView');
-      if (lastView) {
-        setViewState(lastView);
-      }
-    }, []);
 
     
   return (
