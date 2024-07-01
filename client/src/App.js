@@ -304,7 +304,10 @@ function App() {
                     isShuffleEnabled={shuffle}
                   />
                 ) : (
-                  <History />
+                  <History
+                    currentBeat={currentBeat} 
+                    onBeatClick={handleBeatClick}  
+                  />
                 )}
               </div>
               </RightSidePanel>
