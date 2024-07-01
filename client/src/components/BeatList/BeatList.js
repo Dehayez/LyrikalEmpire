@@ -24,21 +24,14 @@ useEffect(() => {
   fetchBeats(handleUpdateAll);
 }, []);
 
-const [refreshKey, setRefreshKey] = useState(0);
+  const handleConfirm = async () => {
+    if (confirmModalState.beatsToDelete.length > 0) {
+      await Promise.all(confirmModalState.beatsToDelete.map(beatId => handleDelete(beatId)));
+      setConfirmModalState({ isOpen: false, beatsToDelete: [] });
+      setSelectedBeatsForDeletion([]);
+    }
+  };
 
-useEffect(() => {
-  fetchBeats(handleUpdateAll);
-}, [refreshKey]); // Depend on refreshKey to re-fetch beats
-
-const handleConfirm = async () => {
-  if (confirmModalState.beatsToDelete.length > 0) {
-    await Promise.all(confirmModalState.beatsToDelete.map(beatId => handleDelete(beatId)));
-    setConfirmModalState({ isOpen: false, beatsToDelete: [] });
-    setSelectedBeatsForDeletion([]);
-    // Increment refreshKey to trigger a re-fetch
-    setRefreshKey(prevKey => prevKey + 1);
-  }
-};
   const openConfirmModal = () => {
     setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
   };
