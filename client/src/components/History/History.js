@@ -2,10 +2,15 @@ import React from 'react';
 import './History.scss';
 
 const History = () => {
+  const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');
 
   return (
     <div className="history">
-        <h2>History</h2>
+       <ul>
+          {history.map((beat, index) => (
+            <li key={index}>{beat.title}</li> // Assuming each beat has a 'name' property
+          ))}
+        </ul>
     </div>
   );
 };
