@@ -15,10 +15,7 @@ function App() {
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [queue, setQueue] = useState([]);
-  const [customQueue, setCustomQueue] = useState(() => {
-    const savedQueue = localStorage.getItem('customQueue');
-    return savedQueue ? JSON.parse(savedQueue) : [];
-  });
+  const [customQueue, setCustomQueue] = useState(() => {const savedQueue = localStorage.getItem('customQueue'); return savedQueue ? JSON.parse(savedQueue) : [];});
   const [allowHover, setAllowHover] = useState(true);
   const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
   const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
@@ -68,32 +65,29 @@ function App() {
     setIsDraggingOver(false);
   };
 
-// Clear files after submission
-const clearDroppedFiles = () => {
-  setDroppedFiles([]);
-};
+  // Clear files after submission
+  const clearDroppedFiles = () => {
+    setDroppedFiles([]);
+  };
 
-// Function to automatically submit files
-const autoSubmitFiles = async (files) => {
-
-  Array.from(files).forEach(async (file) => {
-    const beat = {
-      title: file.name.replace(/\.[^/.]+$/, ""),
-    };
-
-    try {
-      const data = await addBeat(beat, file);
-      setRefresh(!refresh);
-      setShowToast(true);
-      toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
-          autoClose: 3000,
-          pauseOnFocusLoss: false
-      });
-      setTimeout(() => setShowToast(false), 3000);
-    } catch (error) {
-    }
-  });
-};
+  const autoSubmitFiles = async (files) => {
+    Array.from(files).forEach(async (file) => {
+      const beat = {
+        title: file.name.replace(/\.[^/.]+$/, ""),
+      };
+      try {
+        const data = await addBeat(beat, file);
+        setRefresh(!refresh);
+        setShowToast(true);
+        toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
+            autoClose: 3000,
+            pauseOnFocusLoss: false
+        });
+        setTimeout(() => setShowToast(false), 3000);
+      } catch (error) {
+      }
+    });
+  };
 
   const sortedBeats = useMemo(() => {
     let sortableBeats = [...beats];
@@ -145,7 +139,6 @@ const autoSubmitFiles = async (files) => {
     localStorage.setItem('customQueue', JSON.stringify(customQueue));
   }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue]);
   
-  // Fetch and update beats
   useEffect(() => {
     const fetchBeats = async () => {
       const fetchedBeats = await getBeats();
@@ -157,12 +150,10 @@ const autoSubmitFiles = async (files) => {
     fetchBeats();
   }, [refresh]);
 
-  // Queue management
   useEffect(() => {
     logQueue(sortedBeats, shuffle, currentBeat);
   }, [sortedBeats, shuffle, currentBeat]);
 
-  // UI Effects
   useEffect(() => {
     const timer = setTimeout(() => {
       document.querySelector('.app').classList.remove('app--hidden');
@@ -183,7 +174,6 @@ const autoSubmitFiles = async (files) => {
     setRefresh(!refresh);
     const updatedBeats = [...beats, newBeat];
     setBeats(updatedBeats);
-  
     if (shuffle) {
       const shuffledQueue = [...queue, newBeat];
       for (let i = shuffledQueue.length - 1; i > 0; i--) {
@@ -198,7 +188,6 @@ const autoSubmitFiles = async (files) => {
 
   const handlePlayWrapper = (beat, play, beats) => {
     handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
-  
     updateHistory(beat);
   };
 
@@ -293,14 +282,12 @@ const autoSubmitFiles = async (files) => {
 
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
-  
     if (shuffle) {
       for (let i = queue.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [queue[i], queue[j]] = [queue[j], queue[i]];
       }
     }
-  
     if (currentBeat) {
       const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
   
@@ -309,7 +296,6 @@ const autoSubmitFiles = async (files) => {
         queue = [...currentAndNext, ...queue];
       }
     }
-  
     setQueue(queue);
   }
 
@@ -319,7 +305,6 @@ const autoSubmitFiles = async (files) => {
       ...(Array.isArray(beatOrBeats) ? beatOrBeats : [beatOrBeats]),
     ]);
   };
-
 
   return (
     <div className="app app--hidden">
