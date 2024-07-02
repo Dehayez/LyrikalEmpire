@@ -3,6 +3,7 @@ import { getBeats, addBeat } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History } from './components';
 import { handlePlay, handlePrev } from './hooks';
 import { ToastContainer, toast } from 'react-toastify';
+import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
@@ -133,13 +134,14 @@ function App() {
     if (nonAudioFiles.length > 0) {
       setShowToast(true);
       const message = nonAudioFiles.length === 1
-        ? `<strong>${nonAudioFiles[0].name} not uploaded</strong> Only audio files are accepted`
-        : `<strong>${nonAudioFiles.length} files not uploaded</strong> Only audio files are accepted`;
+        ? `<strong>${nonAudioFiles[0].name} not uploaded</strong> only audio files are accepted`
+        : `<strong>${nonAudioFiles.length} files not uploaded</strong> only audio files are accepted`;
     
       toast.dark(
         <div dangerouslySetInnerHTML={{ __html: message }} />, {
           autoClose: 5000,
-          pauseOnFocusLoss: false
+          pauseOnFocusLoss: false,
+          icon: <IoCloseSharp size={24} />
         }
       );
     }
@@ -166,7 +168,8 @@ const autoSubmitFiles = async (files) => {
       setShowToast(true); 
       toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
           autoClose: 3000,
-          pauseOnFocusLoss: false
+          pauseOnFocusLoss: false,
+          icon: <IoCheckmarkSharp size={24} />
       });
     } catch (error) {
     } finally {

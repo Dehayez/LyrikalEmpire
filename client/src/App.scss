@@ -124,3 +124,7 @@
     }
   }
 }
+
+.red-progress-bar::before {
+  background-color: red !important;
+}
