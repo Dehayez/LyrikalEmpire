@@ -20,32 +20,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
 
-  useEffect(() => {
-    fetchBeats(handleUpdateAll);
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'Enter' && selectedBeats.length > 0) {
-        const beatToPlay = selectedBeats[0];
-        handlePlayPause(beatToPlay);
-      }
-    };
-  
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBeats, handlePlayPause]);
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if ((event.key === 'Delete' || event.key === 'Backspace' || event.keyCode === 46) && selectedBeats.length > 0) {
-        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
-      }
-    };
-  
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBeats]);
+useEffect(() => {
+  fetchBeats(handleUpdateAll);
+}, []);
 
   const handleConfirm = async () => {
     if (confirmModalState.beatsToDelete.length > 0) {
@@ -71,9 +48,32 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     }
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter' && selectedBeats.length > 0) {
+        const beatToPlay = selectedBeats[0];
+        handlePlayPause(beatToPlay);
+      }
+    };
+  
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedBeats, handlePlayPause]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if ((event.key === 'Delete' || event.key === 'Backspace' || event.keyCode === 46) && selectedBeats.length > 0) {
+        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
+      }
+    };
+  
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedBeats]);
+
   return (
     <div className='beat-list'>
-      <h2 className='beat-list__title'>Tracks</h2>
+      <h2 className='beat-list__title'>Beats</h2>
       {beats.length > 0 && (
         <div>
           <table className='beat-list__table' ref={tableRef}>
