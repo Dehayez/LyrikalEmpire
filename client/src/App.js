@@ -165,7 +165,7 @@ const autoSubmitFiles = async (files) => {
   // UI Effects
   useEffect(() => {
     const timer = setTimeout(() => {
-      document.querySelector('.App').classList.remove('App--hidden');
+      document.querySelector('.app').classList.remove('app--hidden');
     }, 400); 
 
     return () => clearTimeout(timer);
@@ -322,25 +322,12 @@ const autoSubmitFiles = async (files) => {
 
 
   return (
-    <div className="App App--hidden">
-          {isDraggingOver && (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        zIndex: 1000,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        color: '#fff',
-        fontSize: '24px',
-      }}>
-        Drop files to upload
-      </div>
-    )}
+    <div className="app app--hidden">
+      {isDraggingOver && (
+        <div className='app__overlay'>
+          Drop files to upload
+        </div>
+      )}
       <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
       <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
       <ToastContainer />

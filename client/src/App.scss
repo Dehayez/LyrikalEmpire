@@ -1,9 +1,27 @@
 @import './globals/variables';
 
-.App {
+.app {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  &--hidden {
+    visibility: hidden;
+  }
+
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    background-color: rgba(30, 30, 30, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $color-white;
+    font-size: 24px;
+  }
 }
 
 .container {
@@ -51,14 +69,6 @@
   &--bg {
     background: $color-yellow-dark;
   }
-}
-
-.buffer {
-  height: 180px;
-}
-
-.App--hidden {
-  visibility: hidden;
 }
 
 .invisible-hover-panel{
