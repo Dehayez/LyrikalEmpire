@@ -32,7 +32,53 @@ function App() {
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isLeftPanelVisible') || 'false'));
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isRightPanelVisible') || 'false'));
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [droppedFiles, setDroppedFiles] = useState([]);
+  const addBeatFormRef = useRef();
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
 
+  // Drag and drop handlers
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDraggingOver(true);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDraggingOver(false);
+    const files = Array.from(e.dataTransfer.files);
+    // Automatically submit files here instead of setting them to state
+    // For example, call a function to handle the file upload
+    autoSubmitFiles(files);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDraggingOver(false);
+  };
+
+// Clear files after submission
+const clearDroppedFiles = () => {
+  setDroppedFiles([]);
+};
+
+useEffect(() => {
+  window.addEventListener('dragover', handleDragOver);
+  window.addEventListener('drop', handleDrop);
+  window.addEventListener('dragleave', handleDragLeave);
+
+  return () => {
+    window.removeEventListener('dragover', handleDragOver);
+    window.removeEventListener('drop', handleDrop);
+    window.removeEventListener('dragleave', handleDragLeave);
+  };
+}, []);
+
+// Function to automatically submit files
+const autoSubmitFiles = (files) => {
+  // Implement file submission logic here
+  console.log('Automatically submitting files:', files);
+};
 
 
   const sortedBeats = useMemo(() => {
@@ -263,6 +309,24 @@ function App() {
 
   return (
     <div className="App App--hidden">
+          {isDraggingOver && (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        zIndex: 1000,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: '#fff',
+        fontSize: '24px',
+      }}>
+        Drop files to upload
+      </div>
+    )}
       <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
       <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
       <ToastContainer />
@@ -336,11 +400,7 @@ function App() {
             ) : null}
           </div>
         </div>
-        <AddBeatForm 
-          onAdd={handleAdd} 
-          isOpen={isOpen} 
-          setIsOpen={setIsOpen} 
-        />
+        <AddBeatForm isOpen={isFormOpen} setIsOpen={setIsFormOpen} droppedFiles={droppedFiles} clearDroppedFiles={clearDroppedFiles} />
       </div>
       <AudioPlayer 
         currentBeat={currentBeat} 
