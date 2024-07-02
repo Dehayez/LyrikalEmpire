@@ -16,26 +16,11 @@ const BeatRow = ({
   const hasSelectedBefore = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1);
   const hasSelectedAfter = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] + 1);
   const isMiddle = hasSelectedBefore && hasSelectedAfter;
-
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
-
   const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
-
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
-
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
-
-  const handleTierlistChange = (e) => {
-    const newTierlist = e.target.value;
-    setTierlist(newTierlist);
-    handleUpdate(beat.id, 'tierlist', newTierlist);
-  };
-
-  const handleAddToCustomQueueClick = () => {
-    addToCustomQueue(selectedBeats);
-  };
-
   const beatRowClasses = classNames({
     'beat-row': true,
     'beat-row--selected-middle': isSelected && isMiddle,
@@ -63,6 +48,16 @@ const BeatRow = ({
       document.body.classList.remove('no-scroll');
     };
   }, [activeContextMenu, beat.id]);
+
+  const handleTierlistChange = (e) => {
+    const newTierlist = e.target.value;
+    setTierlist(newTierlist);
+    handleUpdate(beat.id, 'tierlist', newTierlist);
+  };
+
+  const handleAddToCustomQueueClick = () => {
+    addToCustomQueue(selectedBeats);
+  };
 
   return (
     <tr
