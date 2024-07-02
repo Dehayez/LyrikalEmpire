@@ -134,14 +134,15 @@ function App() {
     if (nonAudioFiles.length > 0) {
       setShowToast(true);
       const message = nonAudioFiles.length === 1
-        ? `<strong>${nonAudioFiles[0].name} not uploaded</strong> only audio files are accepted`
-        : `<strong>${nonAudioFiles.length} files not uploaded</strong> only audio files are accepted`;
+      ? `<strong>${nonAudioFiles[0].name} is not uploaded</strong><br /> Only audio files are accepted`
+      : `<strong>${nonAudioFiles.length} files are not uploaded</strong><br /> Only audio files are accepted`;
     
       toast.dark(
         <div dangerouslySetInnerHTML={{ __html: message }} />, {
-          autoClose: 5000,
+          autoClose: 3000,
           pauseOnFocusLoss: false,
-          icon: <IoCloseSharp size={24} />
+          icon: <IoCloseSharp size={24} />,
+          className: "Toastify__toast--warning",
         }
       );
     }
@@ -169,7 +170,8 @@ const autoSubmitFiles = async (files) => {
       toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
           autoClose: 3000,
           pauseOnFocusLoss: false,
-          icon: <IoCheckmarkSharp size={24} />
+          icon: <IoCheckmarkSharp size={24} />,
+          className: "Toastify__toast--success",
       });
     } catch (error) {
     } finally {
