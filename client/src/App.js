@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { getBeats } from './services';
+import { getBeats, addBeat } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History } from './components';
 import { handlePlay, handlePrev } from './hooks';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
@@ -13,6 +13,7 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [queue, setQueue] = useState([]);
   const [customQueue, setCustomQueue] = useState(() => {
     const savedQueue = localStorage.getItem('customQueue');
@@ -37,6 +38,18 @@ function App() {
   const addBeatFormRef = useRef();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
+  useEffect(() => {
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('drop', handleDrop);
+    window.addEventListener('dragleave', handleDragLeave);
+  
+    return () => {
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('drop', handleDrop);
+      window.removeEventListener('dragleave', handleDragLeave);
+    };
+  }, []);
+
   // Drag and drop handlers
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -47,8 +60,6 @@ function App() {
     e.preventDefault();
     setIsDraggingOver(false);
     const files = Array.from(e.dataTransfer.files);
-    // Automatically submit files here instead of setting them to state
-    // For example, call a function to handle the file upload
     autoSubmitFiles(files);
   };
 
@@ -62,24 +73,27 @@ const clearDroppedFiles = () => {
   setDroppedFiles([]);
 };
 
-useEffect(() => {
-  window.addEventListener('dragover', handleDragOver);
-  window.addEventListener('drop', handleDrop);
-  window.addEventListener('dragleave', handleDragLeave);
-
-  return () => {
-    window.removeEventListener('dragover', handleDragOver);
-    window.removeEventListener('drop', handleDrop);
-    window.removeEventListener('dragleave', handleDragLeave);
-  };
-}, []);
-
 // Function to automatically submit files
-const autoSubmitFiles = (files) => {
-  // Implement file submission logic here
-  console.log('Automatically submitting files:', files);
-};
+const autoSubmitFiles = async (files) => {
 
+  Array.from(files).forEach(async (file) => {
+    const beat = {
+      title: file.name.replace(/\.[^/.]+$/, ""),
+    };
+
+    try {
+      const data = await addBeat(beat, file);
+      setRefresh(!refresh);
+      setShowToast(true);
+      toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
+          autoClose: 3000,
+          pauseOnFocusLoss: false
+      });
+      setTimeout(() => setShowToast(false), 3000);
+    } catch (error) {
+    }
+  });
+};
 
   const sortedBeats = useMemo(() => {
     let sortableBeats = [...beats];
@@ -400,7 +414,13 @@ const autoSubmitFiles = (files) => {
             ) : null}
           </div>
         </div>
-        <AddBeatForm isOpen={isFormOpen} setIsOpen={setIsFormOpen} droppedFiles={droppedFiles} clearDroppedFiles={clearDroppedFiles} />
+        <AddBeatForm 
+          onAdd={handleAdd} 
+          isOpen={isOpen} 
+          setIsOpen={setIsOpen} 
+          droppedFiles={droppedFiles} 
+          clearDroppedFiles={clearDroppedFiles} 
+        />
       </div>
       <AudioPlayer 
         currentBeat={currentBeat} 
