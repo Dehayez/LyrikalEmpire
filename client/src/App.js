@@ -35,60 +35,7 @@ function App() {
   const addBeatFormRef = useRef();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [activeUploads, setActiveUploads] = useState(0);
-
-  useEffect(() => {
-    window.addEventListener('dragover', handleDragOver);
-    window.addEventListener('drop', handleDrop);
-    window.addEventListener('dragleave', handleDragLeave);
   
-    return () => {
-      window.removeEventListener('dragover', handleDragOver);
-      window.removeEventListener('drop', handleDrop);
-      window.removeEventListener('dragleave', handleDragLeave);
-    };
-  }, []);
-
-  // Drag and drop handlers
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDraggingOver(true);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDraggingOver(false);
-    const files = Array.from(e.dataTransfer.files);
-    autoSubmitFiles(files);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDraggingOver(false);
-  };
-
-  // Clear files after submission
-  const clearDroppedFiles = () => {
-    setDroppedFiles([]);
-  };
-
-  const autoSubmitFiles = async (files) => {
-    Array.from(files).forEach(async (file) => {
-      const beat = {
-        title: file.name.replace(/\.[^/.]+$/, ""),
-      };
-      try {
-        const data = await addBeat(beat, file);
-        setShowToast(true);
-        setRefresh(!refresh);
-        toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
-            autoClose: 3000,
-            pauseOnFocusLoss: false
-        });
-        setTimeout(() => setShowToast(false), 3000);
-      } catch (error) {
-      }
-    });
-  };
   const sortedBeats = useMemo(() => {
     let sortableBeats = [...beats];
     const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
@@ -122,12 +69,6 @@ function App() {
     return sortableBeats;
   }, [beats, sortConfig]);
 
-  const updateHistory = (playedBeat) => {
-    const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');
-    const updatedHistory = [playedBeat, ...history].slice(0, 100);
-    localStorage.setItem('playedBeatsHistory', JSON.stringify(updatedHistory));
-  };
-
   useEffect(() => {
     localStorage.setItem('shuffle', shuffle);
     localStorage.setItem('repeat', repeat);
@@ -138,6 +79,18 @@ function App() {
     localStorage.setItem('lastView', viewState);
     localStorage.setItem('customQueue', JSON.stringify(customQueue));
   }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue]);
+
+  useEffect(() => {
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('drop', handleDrop);
+    window.addEventListener('dragleave', handleDragLeave);
+  
+    return () => {
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('drop', handleDrop);
+      window.removeEventListener('dragleave', handleDragLeave);
+    };
+  }, []);
   
   useEffect(() => {
     const fetchBeats = async () => {
@@ -161,6 +114,61 @@ function App() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Drag and drop handlers
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDraggingOver(true);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDraggingOver(false);
+    const files = Array.from(e.dataTransfer.files);
+    autoSubmitFiles(files);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDraggingOver(false);
+  };
+
+  // Clear files after submission
+  const clearDroppedFiles = () => {
+    setDroppedFiles([]);
+  };
+
+const autoSubmitFiles = async (files) => {
+  setActiveUploads(activeUploads => activeUploads + files.length); 
+  Array.from(files).forEach(async (file) => {
+    const beat = {
+      title: file.name.replace(/\.[^/.]+$/, ""),
+    };
+    try {
+      const data = await addBeat(beat, file);
+      setShowToast(true); 
+      toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
+          autoClose: 3000,
+          pauseOnFocusLoss: false
+      });
+    } catch (error) {
+    } finally {
+      setActiveUploads(activeUploads => activeUploads - 1); 
+    }
+  });
+};
+
+useEffect(() => {
+  if (activeUploads === 0 && showToast) {
+    setRefresh(!refresh); 
+  }
+}, [activeUploads, showToast]); 
+
+  const updateHistory = (playedBeat) => {
+    const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');
+    const updatedHistory = [playedBeat, ...history].slice(0, 100);
+    localStorage.setItem('playedBeatsHistory', JSON.stringify(updatedHistory));
+  };
 
   const onSort = (key) => {
     let direction = 'ascending';
