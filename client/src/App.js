@@ -125,7 +125,8 @@ function App() {
     e.preventDefault();
     setIsDraggingOver(false);
     const files = Array.from(e.dataTransfer.files);
-    autoSubmitFiles(files);
+    const audioFiles = files.filter(file => file.type.startsWith('audio/'));
+    autoSubmitFiles(audioFiles);
   };
 
   const handleDragLeave = (e) => {
