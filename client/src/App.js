@@ -34,6 +34,7 @@ function App() {
   const [droppedFiles, setDroppedFiles] = useState([]);
   const addBeatFormRef = useRef();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [activeUploads, setActiveUploads] = useState(0);
 
   useEffect(() => {
     window.addEventListener('dragover', handleDragOver);
@@ -77,8 +78,8 @@ function App() {
       };
       try {
         const data = await addBeat(beat, file);
-        setRefresh(!refresh);
         setShowToast(true);
+        setRefresh(!refresh);
         toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
             autoClose: 3000,
             pauseOnFocusLoss: false
@@ -88,7 +89,6 @@ function App() {
       }
     });
   };
-
   const sortedBeats = useMemo(() => {
     let sortableBeats = [...beats];
     const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
