@@ -152,7 +152,38 @@ app.delete('/api/beats/:id', (req, res) => {
   });
 });
 
-// Connect to the database and start the server
+app.get('/api/genres', (req, res) => {
+  db.query('SELECT * FROM genres', (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching genres' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.get('/api/keywords', (req, res) => {
+  db.query('SELECT * FROM keywords', (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching keywords' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+app.get('/api/moods', (req, res) => {
+  db.query('SELECT * FROM moods', (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching moods' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 db.connect(err => {
   if (err) {
     console.error('An error occurred while connecting to the database:', err);
