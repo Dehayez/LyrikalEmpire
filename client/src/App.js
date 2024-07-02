@@ -126,7 +126,23 @@ function App() {
     setIsDraggingOver(false);
     const files = Array.from(e.dataTransfer.files);
     const audioFiles = files.filter(file => file.type.startsWith('audio/'));
+    const nonAudioFiles = files.filter(file => !file.type.startsWith('audio/'));
+  
     autoSubmitFiles(audioFiles);
+  
+    if (nonAudioFiles.length > 0) {
+      setShowToast(true);
+      const message = nonAudioFiles.length === 1
+        ? `<strong>${nonAudioFiles[0].name} not uploaded</strong> Only audio files are accepted`
+        : `<strong>${nonAudioFiles.length} files not uploaded</strong> Only audio files are accepted`;
+    
+      toast.dark(
+        <div dangerouslySetInnerHTML={{ __html: message }} />, {
+          autoClose: 5000,
+          pauseOnFocusLoss: false
+        }
+      );
+    }
   };
 
   const handleDragLeave = (e) => {
