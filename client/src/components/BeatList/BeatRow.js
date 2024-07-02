@@ -21,6 +21,7 @@ const BeatRow = ({
   const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
+
   const beatRowClasses = classNames({
     'beat-row': true,
     'beat-row--selected-middle': isSelected && isMiddle,
