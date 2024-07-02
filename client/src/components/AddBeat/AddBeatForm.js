@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import Draggable from 'react-draggable';
 import { addBeat } from '../../services/beatService';
 import { useBpmHandlers } from '../../hooks';
-import { IoCloudUploadSharp, IoChevronDownSharp } from "react-icons/io5";
+import { IoCloudUploadSharp, IoChevronDownSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
 import './AddBeatForm.scss';
 
@@ -69,7 +69,9 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             setShowToast(true);
             toast.dark(<div><strong>{title}</strong> added successfully!</div>, {
                 autoClose: 3000,
-                pauseOnFocusLoss: false
+                pauseOnFocusLoss: false,
+                icon: <IoCheckmarkSharp size={24} />,
+                className: "Toastify__toast--success",
             });
             setTimeout(() => setShowToast(false), 3000);
         } catch (error) {
