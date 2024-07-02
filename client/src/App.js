@@ -16,7 +16,10 @@ function App() {
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [queue, setQueue] = useState([]);
-  const [customQueue, setCustomQueue] = useState(() => {const savedQueue = localStorage.getItem('customQueue'); return savedQueue ? JSON.parse(savedQueue) : [];});
+  const [customQueue, setCustomQueue] = useState(() => {
+    const savedQueue = localStorage.getItem('customQueue');
+    return savedQueue ? JSON.parse(savedQueue) : [];
+  });
   const [allowHover, setAllowHover] = useState(true);
   const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
   const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
@@ -26,7 +29,7 @@ function App() {
   const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
-  const hoverRefLeft = useRef(false); 
+  const hoverRefLeft = useRef(false);
   const hoverRefRight = useRef(false);
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isLeftPanelVisible') || 'false'));
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isRightPanelVisible') || 'false'));
@@ -36,7 +39,26 @@ function App() {
   const addBeatFormRef = useRef();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [activeUploads, setActiveUploads] = useState(0);
+
+  function logQueue(beats, shuffle, currentBeat) {
+    let queue = [...beats];
+    if (shuffle) {
+      for (let i = queue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [queue[i], queue[j]] = [queue[j], queue[i]];
+      }
+    }
+    if (currentBeat) {
+      const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
   
+      if (currentBeatIndex > 0) {
+        const currentAndNext = queue.splice(currentBeatIndex);
+        queue = [...currentAndNext, ...queue];
+      }
+    }
+    setQueue(queue);
+  }
+
   const sortedBeats = useMemo(() => {
     let sortableBeats = [...beats];
     const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
@@ -82,18 +104,6 @@ function App() {
   }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue]);
 
   useEffect(() => {
-    window.addEventListener('dragover', handleDragOver);
-    window.addEventListener('drop', handleDrop);
-    window.addEventListener('dragleave', handleDragLeave);
-  
-    return () => {
-      window.removeEventListener('dragover', handleDragOver);
-      window.removeEventListener('drop', handleDrop);
-      window.removeEventListener('dragleave', handleDragLeave);
-    };
-  }, []);
-  
-  useEffect(() => {
     const fetchBeats = async () => {
       const fetchedBeats = await getBeats();
       setBeats(fetchedBeats);
@@ -108,6 +118,19 @@ function App() {
     logQueue(sortedBeats, shuffle, currentBeat);
   }, [sortedBeats, shuffle, currentBeat]);
 
+
+  useEffect(() => {
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('drop', handleDrop);
+    window.addEventListener('dragleave', handleDragLeave);
+  
+    return () => {
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('drop', handleDrop);
+      window.removeEventListener('dragleave', handleDragLeave);
+    };
+  }, []);
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       document.querySelector('.app').classList.remove('app--hidden');
@@ -309,25 +332,6 @@ useEffect(() => {
     setViewState(view);
     localStorage.setItem('lastView', view);
   };
-
-  function logQueue(beats, shuffle, currentBeat) {
-    let queue = [...beats];
-    if (shuffle) {
-      for (let i = queue.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [queue[i], queue[j]] = [queue[j], queue[i]];
-      }
-    }
-    if (currentBeat) {
-      const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
-  
-      if (currentBeatIndex > 0) {
-        const currentAndNext = queue.splice(currentBeatIndex);
-        queue = [...currentAndNext, ...queue];
-      }
-    }
-    setQueue(queue);
-  }
 
   const addToCustomQueue = (beatOrBeats) => {
     setCustomQueue((prevQueue) => [
