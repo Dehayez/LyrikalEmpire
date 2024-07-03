@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Modal from 'react-modal';
 import Draggable from 'react-draggable';
-import { addBeat } from '../../services/beatService';
+import { addBeat, getGenres, getMoods, getKeywords } from '../../services';
 import { useBpmHandlers } from '../../hooks';
 import { IoCloudUploadSharp, IoChevronDownSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
@@ -20,10 +20,9 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
     const [bpmState, setBpm] = useState('');
-    const [genre, setGenre] = useState('');
     const [tierlist, setTierlist] = useState('');
     const [mood, setMood] = useState('');
-    const [keywords, setKeywords] = useState('');
+    //const [keywords, setKeywords] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
     const [showToast, setShowToast] = useState(false);
     const { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
@@ -40,6 +39,93 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         setKeywords('');
         setFileName('No file chosen');
     };
+
+  const [moods, setMoods] = useState('');
+  const [keywords, setKeywords] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Fetch genres
+      const fetchedGenres = await getGenres();
+      setGenres(fetchedGenres);
+      console.log('Genres:', fetchedGenres);
+  
+      // Fetch keywords
+      const fetchedKeywords = await getKeywords(); // Assuming getKeywords function exists
+      setKeywords(fetchedKeywords); // Assuming setKeywords function exists
+      console.log('Keywords:', fetchedKeywords);
+  
+      // Fetch moods
+      const fetchedMoods = await getMoods(); // Assuming getMoods function exists
+      setMoods(fetchedMoods); // Assuming setMoods function exists
+      console.log('Moods:', fetchedMoods);
+    };
+  
+    fetchData();
+  }, []); // Dependency array remains empty to run only once on component mount
+
+  const [genres, setGenres] = useState([]);
+  const [genre, setGenre] = useState('');
+  const [filteredGenres, setFilteredGenres] = useState([]);
+  const [showGenres, setShowGenres] = useState(false);
+  const [selectedGenres, setSelectedGenres] = useState([]);
+
+  useEffect(() => {
+      const fetchData = async () => {
+          const fetchedGenres = await getGenres();
+          setGenres(fetchedGenres);
+      };
+      fetchData();
+  }, []);
+
+    const handleGenreChange = (e) => {
+        const input = e.target.value;
+        const lastInput = genre; // Previous value of the genre input
+
+        // Split the current input by commas to handle genre deletion correctly
+        let genresArray = input.split(',').map(item => item.trim()).filter(Boolean);
+
+        if (input.length < lastInput.length) { // If text is being deleted
+            // If the last character removed was not a comma, remove the last genre
+            if (!lastInput.endsWith(',')) {
+                genresArray.pop(); // Remove the last genre
+            }
+        }
+
+        const newInput = genresArray.join(', '); // Join back into a string with commas
+        setGenre(newInput);
+        setSelectedGenres(genresArray);
+
+        // Update filtered genres based on the new input
+        setFilteredGenres(genres.filter(genre => genre.name.toLowerCase().includes(newInput.toLowerCase())));
+    };
+
+const handleGenreToggle = (genreName) => {
+    let updatedSelectedGenres;
+    if (selectedGenres.includes(genreName)) {
+        updatedSelectedGenres = selectedGenres.filter(g => g !== genreName); // Deselect
+    } else {
+        updatedSelectedGenres = [...selectedGenres, genreName]; // Select
+    }
+    setSelectedGenres(updatedSelectedGenres);
+    // Update the genre input field to show a comma-separated list of selected genres
+    setGenre(updatedSelectedGenres.join(', '));
+};
+
+const handleGenreSelect = (genre) => {
+    setGenre(genre.name);
+    setShowGenres(false);
+};
+
+  const handleGenreFocus = () => {
+      setShowGenres(true);
+      setFilteredGenres(genres);
+  };
+
+  const handleGenreBlur = () => {
+      // Delay hiding to allow option selection
+      setTimeout(() => setShowGenres(false), 200);
+  };
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -155,7 +241,30 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                     onBlur={handleBpmBlur}
                     spellCheck="false" 
                 />
-                <FormInput label="Genre" type="text" placeholder='Enter genre' value={genre} onChange={(e) => setGenre(e.target.value)} spellCheck="false" />
+                <div className="form-group genre-group">
+                    <label>Genre</label>
+                    <input
+                        type="text"
+                        value={genre}
+                        onChange={handleGenreChange}
+                        onFocus={handleGenreFocus}
+                        onBlur={handleGenreBlur}
+                        placeholder='Enter genre'
+                    />
+                    {showGenres && (
+                        <div className="options-list">
+                        {filteredGenres.map((genre, index) => (
+                            <div 
+                                key={index} 
+                                className='options-list__item'
+                                onClick={() => handleGenreToggle(genre.name)}
+                            >
+                            {genre.name}
+                            </div>
+                        ))}
+                        </div>
+                    )}
+                </div>
                 <div className="form-group">
                     <label>Tierlist</label>
                     <div className="select-wrapper">
