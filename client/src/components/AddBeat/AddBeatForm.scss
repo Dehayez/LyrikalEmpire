@@ -1,3 +1,5 @@
+@import '../../globals/variables';
+
 .form__title {
     margin: 0;
     margin-bottom: 1em;
@@ -127,3 +129,26 @@ input[type="number"] {
     align-items: center;
     height: 100%;
 }
+
+.genre-group {
+    position: relative;
+  }
+  
+  .options-list {
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    width: 100%;
+    z-index: 10; 
+    margin-top: 2px;
+    background-color: $color-gray-dark; 
+    color: $color-white; 
+    &__item {
+        padding: 10px;
+    &:hover {
+            background-color: $color-gray-mid;
+            cursor: pointer;
+        }
+    }
+  }
+  
