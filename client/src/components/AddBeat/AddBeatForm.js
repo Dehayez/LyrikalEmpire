@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Modal from 'react-modal';
 import Draggable from 'react-draggable';
 import { addBeat, getGenres, getMoods, getKeywords } from '../../services';
-import { useBpmHandlers } from '../../hooks';
+import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { IoCloudUploadSharp, IoChevronDownSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
 import './AddBeatForm.scss';
@@ -31,216 +31,18 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         setTitle('');
         setAudio(null);
         resetBpm();
-        setGenre('');
+        handleGenreChange({ target: { value: '' } });
+        handleMoodChange({ target: { value: '' } });
+        handleKeywordChange({ target: { value: '' } });
         setTierlist('');
-        setMood('');
-        setKeywords('');
         setFileName('No file chosen');
     };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Fetch genres
-      const fetchedGenres = await getGenres();
-      setGenres(fetchedGenres);
-      console.log('Genres:', fetchedGenres);
-  
-      // Fetch keywords
-      const fetchedKeywords = await getKeywords(); 
-      setKeywords(fetchedKeywords); 
-      console.log('Keywords:', fetchedKeywords);
-  
-      // Fetch moods
-      const fetchedMoods = await getMoods(); 
-      setMoods(fetchedMoods); 
-      console.log('Moods:', fetchedMoods);
-    };
-  
-    fetchData();
-  }, []); 
+  // useSelectableList hook
+  const { items: genres, selectedItem: genre, filteredItems: filteredGenres, showItems: showGenres, selectedItems: selectedGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(getGenres);
+  const { items: keywords, selectedItem: keyword, filteredItems: filteredKeywords, showItems: showKeywords, selectedItems: selectedKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(getKeywords);
+  const { items: moods, selectedItem: mood, filteredItems: filteredMoods, showItems: showMoods, selectedItems: selectedMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableList(getMoods);
 
-  // GENRES
-  const [genres, setGenres] = useState([]);
-  const [genre, setGenre] = useState('');
-  const [filteredGenres, setFilteredGenres] = useState([]);
-  const [showGenres, setShowGenres] = useState(false);
-  const [selectedGenres, setSelectedGenres] = useState([]);
-
-  useEffect(() => {
-      const fetchData = async () => {
-          const fetchedGenres = await getGenres();
-          setGenres(fetchedGenres);
-      };
-      fetchData();
-  }, []);
-
-  const handleGenreChange = (e) => {
-    const input = e.target.value;
-    const cursorPosition = e.target.selectionStart;
-    const genresArray = input.split(',').map(item => item.trim()).filter(Boolean);
-
-    if (input.endsWith(', ') || input.endsWith(',')) {
-        setGenre(input); 
-        setSelectedGenres(genresArray);
-        setFilteredGenres(genres); 
-    } else {
-        let newGenresArray = genresArray;
-        const newInput = newGenresArray.join(', ');
-        setGenre(newInput);
-        setSelectedGenres(newGenresArray);
-        const lastTypedWord = newGenresArray[newGenresArray.length - 1] || '';
-        setFilteredGenres(genres.filter(genre => genre.name.toLowerCase().includes(lastTypedWord.toLowerCase())));
-    }
-};
-
-const handleGenreToggle = (genreName) => {
-    let updatedSelectedGenres;
-    if (selectedGenres.includes(genreName)) {
-        updatedSelectedGenres = selectedGenres.filter(g => g !== genreName); 
-    } else {
-        const genreParts = genre.split(',').map(part => part.trim());
-        const lastPart = genreParts[genreParts.length - 1];
-        if (genreName.toLowerCase().includes(lastPart.toLowerCase())) {
-            genreParts[genreParts.length - 1] = genreName;
-        } else {
-            genreParts.push(genreName);
-        }
-        updatedSelectedGenres = genreParts;
-    }
-    setSelectedGenres(updatedSelectedGenres);
-    setGenre(updatedSelectedGenres.join(', '));
-};
-
-  const handleGenreFocus = () => {
-      setShowGenres(true);
-      setFilteredGenres(genres);
-  };
-
-  const handleGenreBlur = () => {
-      setTimeout(() => setShowGenres(false), 200);
-  };
-
-  
-  // KEYWORDS
-const [keywords, setKeywords] = useState([]);
-const [keyword, setKeyword] = useState('');
-const [filteredKeywords, setFilteredKeywords] = useState([]);
-const [showKeywords, setShowKeywords] = useState(false);
-const [selectedKeywords, setSelectedKeywords] = useState([]);
-
-useEffect(() => {
-    const fetchData = async () => {
-        const fetchedKeywords = await getKeywords();
-        setKeywords(fetchedKeywords);
-    };
-    fetchData();
-}, []);
-
-const handleKeywordChange = (e) => {
-    const input = e.target.value;
-    const keywordsArray = input.split(',').map(item => item.trim()).filter(Boolean);
-
-    if (input.endsWith(', ') || input.endsWith(',')) {
-        setKeyword(input); 
-        setSelectedKeywords(keywordsArray);
-        setFilteredKeywords(keywords); 
-    } else {
-        let newKeywordsArray = keywordsArray;
-        const newInput = newKeywordsArray.join(', ');
-        setKeyword(newInput);
-        setSelectedKeywords(newKeywordsArray);
-        const lastTypedWord = newKeywordsArray[newKeywordsArray.length - 1] || '';
-        setFilteredKeywords(keywords.filter(keyword => keyword.name.toLowerCase().includes(lastTypedWord.toLowerCase())));
-    }
-};
-
-const handleKeywordToggle = (keywordName) => {
-    let updatedSelectedKeywords;
-    if (selectedKeywords.includes(keywordName)) {
-        updatedSelectedKeywords = selectedKeywords.filter(k => k !== keywordName); 
-    } else {
-        const keywordParts = keyword.split(',').map(part => part.trim());
-        const lastPart = keywordParts[keywordParts.length - 1];
-        if (keywordName.toLowerCase().includes(lastPart.toLowerCase())) {
-            keywordParts[keywordParts.length - 1] = keywordName;
-        } else {
-            keywordParts.push(keywordName);
-        }
-        updatedSelectedKeywords = keywordParts;
-    }
-    setSelectedKeywords(updatedSelectedKeywords);
-    setKeyword(updatedSelectedKeywords.join(', '));
-};
-
-const handleKeywordFocus = () => {
-    setShowKeywords(true);
-    setFilteredKeywords(keywords);
-};
-
-const handleKeywordBlur = () => {
-    setTimeout(() => setShowKeywords(false), 200);
-};
-
-// MOODS
-const [moods, setMoods] = useState([]);
-const [mood, setMood] = useState('');
-const [filteredMoods, setFilteredMoods] = useState([]);
-const [showMoods, setShowMoods] = useState(false);
-const [selectedMoods, setSelectedMoods] = useState([]);
-
-useEffect(() => {
-    const fetchData = async () => {
-        const fetchedMoods = await getMoods();
-        setMoods(fetchedMoods);
-    };
-    fetchData();
-}, []);
-
-const handleMoodChange = (e) => {
-    const input = e.target.value;
-    const moodsArray = input.split(',').map(item => item.trim()).filter(Boolean);
-
-    if (input.endsWith(', ') || input.endsWith(',')) {
-        setMood(input); 
-        setSelectedMoods(moodsArray);
-        setFilteredMoods(moods); 
-    } else {
-        let newMoodsArray = moodsArray;
-        const newInput = newMoodsArray.join(', ');
-        setMood(newInput);
-        setSelectedMoods(newMoodsArray);
-        const lastTypedWord = newMoodsArray[newMoodsArray.length - 1] || '';
-        setFilteredMoods(moods.filter(mood => mood.name.toLowerCase().includes(lastTypedWord.toLowerCase())));
-    }
-};
-
-const handleMoodToggle = (moodName) => {
-    let updatedSelectedMoods;
-    if (selectedMoods.includes(moodName)) {
-        updatedSelectedMoods = selectedMoods.filter(m => m !== moodName); 
-    } else {
-        const moodParts = mood.split(',').map(part => part.trim());
-        const lastPart = moodParts[moodParts.length - 1];
-        if (moodName.toLowerCase().includes(lastPart.toLowerCase())) {
-            moodParts[moodParts.length - 1] = moodName;
-        } else {
-            moodParts.push(moodName);
-        }
-        updatedSelectedMoods = moodParts;
-    }
-    setSelectedMoods(updatedSelectedMoods);
-    setMood(updatedSelectedMoods.join(', '));
-};
-
-const handleMoodFocus = () => {
-    setShowMoods(true);
-    setFilteredMoods(moods);
-};
-
-const handleMoodBlur = () => {
-    setTimeout(() => setShowMoods(false), 200);
-};
-    
     const handleSubmit = async (e) => {
         e.preventDefault();
     
@@ -345,17 +147,8 @@ const handleMoodBlur = () => {
                     </div>
                 </div>
                 <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
-                <FormInput 
-                    label="BPM" 
-                    type="text" 
-                    placeholder='Enter BPM' 
-                    value={bpm} 
-                    onChange={handleBpmChange} 
-                    onKeyDown={handleOnKeyDown} 
-                    onBlur={handleBpmBlur}
-                    spellCheck="false" 
-                />
-                <div className="form-group genre-group">
+                <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur}spellCheck="false"/>
+                <div className="form-group">
                     <label>Genre</label>
                     <input
                         type="text"
@@ -403,7 +196,7 @@ const handleMoodBlur = () => {
                         <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
                     </div>
                 </div>
-                <div className="form-group mood-group">
+                <div className="form-group">
                     <label>Moods</label>
                     <input
                         type="text"
@@ -427,7 +220,7 @@ const handleMoodBlur = () => {
                         </div>
                     )}
                 </div>
-                <div className="form-group keyword-group">
+                <div className="form-group">
                     <label>Keywords</label>
                     <input
                         type="text"
