@@ -149,6 +149,8 @@ input[type="number"] {
             background-color: $color-gray-mid;
             cursor: pointer;
         }
+        &--selected {
+            background-color: $color-gray-dark-hover;
+        }
     }
   }
-  
