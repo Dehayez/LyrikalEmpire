@@ -21,8 +21,6 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [audio, setAudio] = useState(null);
     const [bpmState, setBpm] = useState('');
     const [tierlist, setTierlist] = useState('');
-    const [mood, setMood] = useState('');
-    //const [keywords, setKeywords] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
     const [showToast, setShowToast] = useState(false);
     const { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
@@ -39,9 +37,6 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         setKeywords('');
         setFileName('No file chosen');
     };
-
-  const [moods, setMoods] = useState('');
-  const [keywords, setKeywords] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +59,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     fetchData();
   }, []); 
 
+  // GENRES
   const [genres, setGenres] = useState([]);
   const [genre, setGenre] = useState('');
   const [filteredGenres, setFilteredGenres] = useState([]);
@@ -123,6 +119,127 @@ const handleGenreToggle = (genreName) => {
   const handleGenreBlur = () => {
       setTimeout(() => setShowGenres(false), 200);
   };
+
+  
+  // KEYWORDS
+const [keywords, setKeywords] = useState([]);
+const [keyword, setKeyword] = useState('');
+const [filteredKeywords, setFilteredKeywords] = useState([]);
+const [showKeywords, setShowKeywords] = useState(false);
+const [selectedKeywords, setSelectedKeywords] = useState([]);
+
+useEffect(() => {
+    const fetchData = async () => {
+        const fetchedKeywords = await getKeywords();
+        setKeywords(fetchedKeywords);
+    };
+    fetchData();
+}, []);
+
+const handleKeywordChange = (e) => {
+    const input = e.target.value;
+    const keywordsArray = input.split(',').map(item => item.trim()).filter(Boolean);
+
+    if (input.endsWith(', ') || input.endsWith(',')) {
+        setKeyword(input); 
+        setSelectedKeywords(keywordsArray);
+        setFilteredKeywords(keywords); 
+    } else {
+        let newKeywordsArray = keywordsArray;
+        const newInput = newKeywordsArray.join(', ');
+        setKeyword(newInput);
+        setSelectedKeywords(newKeywordsArray);
+        const lastTypedWord = newKeywordsArray[newKeywordsArray.length - 1] || '';
+        setFilteredKeywords(keywords.filter(keyword => keyword.name.toLowerCase().includes(lastTypedWord.toLowerCase())));
+    }
+};
+
+const handleKeywordToggle = (keywordName) => {
+    let updatedSelectedKeywords;
+    if (selectedKeywords.includes(keywordName)) {
+        updatedSelectedKeywords = selectedKeywords.filter(k => k !== keywordName); 
+    } else {
+        const keywordParts = keyword.split(',').map(part => part.trim());
+        const lastPart = keywordParts[keywordParts.length - 1];
+        if (keywordName.toLowerCase().includes(lastPart.toLowerCase())) {
+            keywordParts[keywordParts.length - 1] = keywordName;
+        } else {
+            keywordParts.push(keywordName);
+        }
+        updatedSelectedKeywords = keywordParts;
+    }
+    setSelectedKeywords(updatedSelectedKeywords);
+    setKeyword(updatedSelectedKeywords.join(', '));
+};
+
+const handleKeywordFocus = () => {
+    setShowKeywords(true);
+    setFilteredKeywords(keywords);
+};
+
+const handleKeywordBlur = () => {
+    setTimeout(() => setShowKeywords(false), 200);
+};
+
+// MOODS
+const [moods, setMoods] = useState([]);
+const [mood, setMood] = useState('');
+const [filteredMoods, setFilteredMoods] = useState([]);
+const [showMoods, setShowMoods] = useState(false);
+const [selectedMoods, setSelectedMoods] = useState([]);
+
+useEffect(() => {
+    const fetchData = async () => {
+        const fetchedMoods = await getMoods();
+        setMoods(fetchedMoods);
+    };
+    fetchData();
+}, []);
+
+const handleMoodChange = (e) => {
+    const input = e.target.value;
+    const moodsArray = input.split(',').map(item => item.trim()).filter(Boolean);
+
+    if (input.endsWith(', ') || input.endsWith(',')) {
+        setMood(input); 
+        setSelectedMoods(moodsArray);
+        setFilteredMoods(moods); 
+    } else {
+        let newMoodsArray = moodsArray;
+        const newInput = newMoodsArray.join(', ');
+        setMood(newInput);
+        setSelectedMoods(newMoodsArray);
+        const lastTypedWord = newMoodsArray[newMoodsArray.length - 1] || '';
+        setFilteredMoods(moods.filter(mood => mood.name.toLowerCase().includes(lastTypedWord.toLowerCase())));
+    }
+};
+
+const handleMoodToggle = (moodName) => {
+    let updatedSelectedMoods;
+    if (selectedMoods.includes(moodName)) {
+        updatedSelectedMoods = selectedMoods.filter(m => m !== moodName); 
+    } else {
+        const moodParts = mood.split(',').map(part => part.trim());
+        const lastPart = moodParts[moodParts.length - 1];
+        if (moodName.toLowerCase().includes(lastPart.toLowerCase())) {
+            moodParts[moodParts.length - 1] = moodName;
+        } else {
+            moodParts.push(moodName);
+        }
+        updatedSelectedMoods = moodParts;
+    }
+    setSelectedMoods(updatedSelectedMoods);
+    setMood(updatedSelectedMoods.join(', '));
+};
+
+const handleMoodFocus = () => {
+    setShowMoods(true);
+    setFilteredMoods(moods);
+};
+
+const handleMoodBlur = () => {
+    setTimeout(() => setShowMoods(false), 200);
+};
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -286,8 +403,54 @@ const handleGenreToggle = (genreName) => {
                         <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
                     </div>
                 </div>
-                <FormInput label="Mood" type="text" placeholder='Enter mood' value={mood} onChange={(e) => setMood(e.target.value)} spellCheck="false" />
-                <FormInput label="Keywords" type="text" placeholder='Enter keywords' value={keywords} onChange={(e) => setKeywords(e.target.value)} spellCheck="false" />
+                <div className="form-group mood-group">
+                    <label>Moods</label>
+                    <input
+                        type="text"
+                        value={mood}
+                        onChange={handleMoodChange}
+                        onFocus={handleMoodFocus}
+                        onBlur={handleMoodBlur}
+                        placeholder='Enter moods'
+                    />
+                    {showMoods && (
+                        <div className="options-list">
+                            {filteredMoods.map((mood, index) => (
+                                <div 
+                                    key={index} 
+                                    className={`options-list__item ${selectedMoods.includes(mood.name) ? 'options-list__item--selected' : ''}`}
+                                    onClick={() => handleMoodToggle(mood.name)}
+                                >
+                                    {mood.name}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+                <div className="form-group keyword-group">
+                    <label>Keywords</label>
+                    <input
+                        type="text"
+                        value={keyword}
+                        onChange={handleKeywordChange}
+                        onFocus={handleKeywordFocus}
+                        onBlur={handleKeywordBlur}
+                        placeholder='Enter keywords'
+                    />
+                    {showKeywords && (
+                        <div className="options-list">
+                            {filteredKeywords.map((keyword, index) => (
+                                <div 
+                                    key={index} 
+                                    className={`options-list__item ${selectedKeywords.includes(keyword.name) ? 'options-list__item--selected' : ''}`}
+                                    onClick={() => handleKeywordToggle(keyword.name)}
+                                >
+                                    {keyword.name}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
                 <div className='modal__buttons'>
                     <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                     <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
