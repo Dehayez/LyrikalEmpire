@@ -78,43 +78,59 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
       fetchData();
   }, []);
 
-    const handleGenreChange = (e) => {
-        const input = e.target.value;
-        const lastInput = genre; // Previous value of the genre input
+  const handleGenreChange = (e) => {
+    const input = e.target.value;
+    const cursorPosition = e.target.selectionStart;
+    const genresArray = genre.split(',').map(item => item.trim()).filter(Boolean);
+    let newGenresArray = [];
 
-        // Split the current input by commas to handle genre deletion correctly
-        let genresArray = input.split(',').map(item => item.trim()).filter(Boolean);
+    if (input.length < genre.length) { // Deletion occurred
+        // Find the index of the genre that was likely deleted or edited
+        let charCount = 0;
+        let deletedGenreIndex = genresArray.findIndex(genre => {
+            charCount += genre.length + 2; // +2 for the comma and space
+            return cursorPosition <= charCount;
+        });
 
-        if (input.length < lastInput.length) { // If text is being deleted
-            // If the last character removed was not a comma, remove the last genre
-            if (!lastInput.endsWith(',')) {
-                genresArray.pop(); // Remove the last genre
-            }
+        // Handle deletion at the start or in-between genres
+        if (deletedGenreIndex !== -1) {
+            newGenresArray = [...genresArray];
+            newGenresArray.splice(deletedGenreIndex, 1); // Remove the genre at the deleted index
+        } else {
+            // Handle deletion at the end
+            newGenresArray = genresArray.slice(0, -1);
         }
+    } else {
+        // Addition or no change in length, just use the input directly
+        newGenresArray = input.split(',').map(item => item.trim()).filter(Boolean);
+    }
 
-        const newInput = genresArray.join(', '); // Join back into a string with commas
-        setGenre(newInput);
-        setSelectedGenres(genresArray);
-
-        // Update filtered genres based on the new input
-        setFilteredGenres(genres.filter(genre => genre.name.toLowerCase().includes(newInput.toLowerCase())));
-    };
+    const newInput = newGenresArray.join(', ');
+    setGenre(newInput);
+    setSelectedGenres(newGenresArray);
+    setFilteredGenres(genres.filter(genre => genre.name.toLowerCase().includes(newInput.toLowerCase())));
+};
 
 const handleGenreToggle = (genreName) => {
     let updatedSelectedGenres;
     if (selectedGenres.includes(genreName)) {
         updatedSelectedGenres = selectedGenres.filter(g => g !== genreName); // Deselect
     } else {
-        updatedSelectedGenres = [...selectedGenres, genreName]; // Select
+        // Check if the last part of the genre input matches any part of the selected genre name
+        const genreParts = genre.split(',').map(part => part.trim());
+        const lastPart = genreParts[genreParts.length - 1];
+        if (genreName.toLowerCase().includes(lastPart.toLowerCase())) {
+            // Replace the last part with the selected full genre name
+            genreParts[genreParts.length - 1] = genreName;
+        } else {
+            // If no match, just add the selected genre name
+            genreParts.push(genreName);
+        }
+        updatedSelectedGenres = genreParts;
     }
     setSelectedGenres(updatedSelectedGenres);
     // Update the genre input field to show a comma-separated list of selected genres
     setGenre(updatedSelectedGenres.join(', '));
-};
-
-const handleGenreSelect = (genre) => {
-    setGenre(genre.name);
-    setShowGenres(false);
 };
 
   const handleGenreFocus = () => {
