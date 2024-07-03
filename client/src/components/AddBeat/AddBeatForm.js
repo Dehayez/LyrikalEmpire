@@ -16,6 +16,72 @@ const FormInput = ({ label, type, placeholder, value, onChange, required, min, p
     </div>
 );
 
+const SelectableInput = ({ label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle }) => {
+    return (
+        <div className="form-group">
+            <label>{label}</label>
+            <input
+                type="text"
+                value={value}
+                onChange={onChange}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                placeholder={placeholder}
+            />
+            {showItems && (
+                <div className="options-list">
+                    {filteredItems.map((item, index) => (
+                        <div 
+                            key={index} 
+                            className={`options-list__item ${item.selected ? 'options-list__item--selected' : ''}`}
+                            onClick={() => handleItemToggle(item.name)}
+                        >
+                            {item.name}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
+const FileInput = ({ fileName, onChange }) => (
+    <div className="form-group">
+        <label>Audio</label>
+        <div className="file-input">
+            <div className="file-input__wrapper">
+                <label htmlFor="file" className="file-input__label no-margin">
+                    <IoCloudUploadSharp /> Upload File
+                </label>
+                <input type="file" id="file" className="file-input__input" onChange={onChange} required accept="audio/*" />
+                <span id="file-name" className="file-input__name">{fileName}</span>
+            </div>
+        </div>
+    </div>
+);
+
+const SelectInput = ({ label, selectedValue, onChange, options }) => (
+    <div className="form-group">
+        <label>{label}</label>
+        <div className="select-wrapper">
+            <select 
+                className="select-wrapper__select" 
+                value={selectedValue} 
+                onChange={onChange}
+                onFocus={(e) => e.target.style.color = 'white'}
+                onBlur={(e) => e.target.style.color = selectedValue ? 'white' : 'grey'}
+                style={{color: selectedValue ? 'white' : 'grey'}}
+            >
+                <option value="">{`Select ${label.toLowerCase()}`}</option>
+                {options.map(option => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+            </select>
+            <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
+        </div>
+    </div>
+);
+
 const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
@@ -134,116 +200,27 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         <div className="modal-content">
             <h2 className='form__title'>Add Beat</h2>
             <form className='form' onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Audio</label>
-                    <div className="file-input">
-                        <div className="file-input__wrapper">
-                            <label htmlFor="file" className="file-input__label no-margin">
-                                <IoCloudUploadSharp /> Upload File
-                            </label>
-                            <input type="file" id="file" className="file-input__input" onChange={handleFileChange} required accept="audio/*" />
-                            <span id="file-name" className="file-input__name">{fileName}</span>
-                        </div>
-                    </div>
-                </div>
+                <FileInput fileName={fileName} onChange={handleFileChange} />
                 <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
                 <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur}spellCheck="false"/>
-                <div className="form-group">
-                    <label>Genre</label>
-                    <input
-                        type="text"
-                        value={genre}
-                        onChange={handleGenreChange}
-                        onFocus={handleGenreFocus}
-                        onBlur={handleGenreBlur}
-                        placeholder='Enter genre'
-                    />
-                    {showGenres && (
-                        <div className="options-list">
-                            {filteredGenres.map((genre, index) => (
-                            <div 
-                                key={index} 
-                                className={`options-list__item ${selectedGenres.includes(genre.name) ? 'options-list__item--selected' : ''}`}
-                                onClick={() => handleGenreToggle(genre.name)}
-                            >
-                                {genre.name}
-                            </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-                <div className="form-group">
-                    <label>Tierlist</label>
-                    <div className="select-wrapper">
-                        <select 
-                            className="select-wrapper__select" 
-                            value={tierlist} 
-                            onChange={(e) => setTierlist(e.target.value)}
-                            onFocus={(e) => e.target.style.color = 'white'}
-                            onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
-                            style={{color: tierlist ? 'white' : 'grey'}}
-                        >
-                            <option value="">Select tier</option>
-                            <option value="G">G</option>
-                            <option value="S">S</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                            <option value="F">F</option>
-                        </select>
-                        <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label>Moods</label>
-                    <input
-                        type="text"
-                        value={mood}
-                        onChange={handleMoodChange}
-                        onFocus={handleMoodFocus}
-                        onBlur={handleMoodBlur}
-                        placeholder='Enter moods'
-                    />
-                    {showMoods && (
-                        <div className="options-list">
-                            {filteredMoods.map((mood, index) => (
-                                <div 
-                                    key={index} 
-                                    className={`options-list__item ${selectedMoods.includes(mood.name) ? 'options-list__item--selected' : ''}`}
-                                    onClick={() => handleMoodToggle(mood.name)}
-                                >
-                                    {mood.name}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-                <div className="form-group">
-                    <label>Keywords</label>
-                    <input
-                        type="text"
-                        value={keyword}
-                        onChange={handleKeywordChange}
-                        onFocus={handleKeywordFocus}
-                        onBlur={handleKeywordBlur}
-                        placeholder='Enter keywords'
-                    />
-                    {showKeywords && (
-                        <div className="options-list">
-                            {filteredKeywords.map((keyword, index) => (
-                                <div 
-                                    key={index} 
-                                    className={`options-list__item ${selectedKeywords.includes(keyword.name) ? 'options-list__item--selected' : ''}`}
-                                    onClick={() => handleKeywordToggle(keyword.name)}
-                                >
-                                    {keyword.name}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                <SelectableInput label="Genre" placeholder="Enter genre" value={genre} onChange={handleGenreChange} onFocus={handleGenreFocus} onBlur={handleGenreBlur} showItems={showGenres} filteredItems={filteredGenres.map(genre => ({ name: genre.name, selected: selectedGenres.includes(genre.name) }))} handleItemToggle={handleGenreToggle}/>
+                <SelectInput 
+                    label="Tierlist"
+                    selectedValue={tierlist} 
+                    onChange={(e) => setTierlist(e.target.value)} 
+                    options={[
+                        { value: 'G', label: 'G' },
+                        { value: 'S', label: 'S' },
+                        { value: 'A', label: 'A' },
+                        { value: 'B', label: 'B' },
+                        { value: 'C', label: 'C' },
+                        { value: 'D', label: 'D' },
+                        { value: 'E', label: 'E' },
+                        { value: 'F', label: 'F' },
+                    ]}
+                />
+                <SelectableInput label="Moods" placeholder="Enter moods" value={mood} onChange={handleMoodChange} onFocus={handleMoodFocus} onBlur={handleMoodBlur} showItems={showMoods} filteredItems={filteredMoods.map(mood => ({ name: mood.name, selected: selectedMoods.includes(mood.name) }))} handleItemToggle={handleMoodToggle}/>
+                <SelectableInput label="Keywords" placeholder="Enter keywords" value={keyword} onChange={handleKeywordChange} onFocus={handleKeywordFocus} onBlur={handleKeywordBlur} showItems={showKeywords} filteredItems={filteredKeywords.map(keyword => ({ name: keyword.name, selected: selectedKeywords.includes(keyword.name) }))} handleItemToggle={handleKeywordToggle}/>
                 <div className='modal__buttons'>
                     <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                     <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
