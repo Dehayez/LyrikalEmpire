@@ -1,5 +1,7 @@
+@import '../../globals/variables';
+
 .modal__button {
-    background-color: #202020;
+    background-color: $color-gray-dark;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -10,7 +12,7 @@
     transition: all 0.2s ease;
 
     &:hover {
-        background-color: #1a1a1a;
+        background-color: $color-black;
     }
 
     &--delete {
@@ -26,7 +28,7 @@
         right: 10px;
         top: 10px;
         color: white;
-        background-color: #181818;
+        background-color: $color-black;
         border: none;
     }
 }
@@ -34,7 +36,7 @@
 .modal-content {
     max-width: 400px;
     min-width: 400px;
-    background-color: #181818;
+    background-color: $color-black;
     border-radius: 6px;
     padding: 20px;
     pointer-events: auto;
