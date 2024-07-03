@@ -5,42 +5,6 @@
     margin-bottom: 1em;
 }
 
-.file-input {
-    position: relative;
-    display: inline-block;
-    &__input {
-        display: none;
-    }
-    &__label {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        padding: 10px;
-        background-color: $color-gray-dark;
-        color: $color-yellow;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: background-color 0.3s ease;
-        white-space: nowrap;
-        &:hover {
-            background-color: $color-black;
-        }
-    }
-    &__wrapper {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    &__name {
-        margin-left: 10px;
-        color: white;
-    }
-}
-
-.form-group .file-input__label.no-margin {
-    margin-bottom: 0;
-}
-
 input[type="number"] {
     -moz-appearance: textfield;
     -webkit-appearance: none;
@@ -52,59 +16,13 @@ input[type="number"] {
     }
 }
 
-
 .modal-content {
     max-width: 400px;
     min-width: 400px;
-    background-color: $color-black;
+    background-color: #181818;
     border-radius: 6px;
     padding: 20px;
     pointer-events: auto;
-
-    .select-wrapper {
-        position: relative;
-        display: inline-block;
-        background: $color-gray-dark;
-        select {
-            appearance: none;
-            outline: none;
-            box-shadow: none;
-            border: none;
-            width: 100%;
-            padding-right: 30px;
-            background-color: $color-gray-dark;
-            color: $color-white;
-        }
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 15px;
-        label {
-            margin-bottom: 8px;
-        }
-        input,
-        select {
-            padding: 10px;
-            border-radius: 4px;
-            outline: none;
-            box-shadow: none;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            font-size: 16px;
-            &:hover {
-                background-color: $color-gray-dark-hover;
-                box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-            }
-            &:focus {
-                box-shadow: 0 0 0 1px $color-gray;
-            }
-        }
-        select {
-            background-color: $color-gray-dark;
-            color: $color-white;
-        }
-    }
 }
 
 .modal__buttons {
@@ -112,10 +30,10 @@ input[type="number"] {
 }
 
 .modal__button.modal__button--add {
-    background-color: $color-yellow;
-    color: $color-black-dark;
+    background-color: #FFCC44;
+    color: black;
     &:hover {
-        background-color: $color-yellow-dark;
+        background-color: #CC9900;
     }
 }
 
@@ -129,28 +47,3 @@ input[type="number"] {
     align-items: center;
     height: 100%;
 }
-
-.form-group {
-    position: relative;
-}
-  
-  .options-list {
-    position: absolute;
-    top: 100%; 
-    left: 0;
-    width: 100%;
-    z-index: 10; 
-    margin-top: 1px;
-    background-color: $color-gray-dark; 
-    color: $color-white; 
-    &__item {
-        padding: 10px;
-    &:hover {
-            background-color: $color-gray-mid;
-            cursor: pointer;
-        }
-        &--selected {
-            background-color: $color-gray-dark-hover;
-        }
-    }
-  }

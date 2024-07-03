@@ -1,10 +1,5 @@
 @import '../../globals/variables';
 
-.form__title {
-    margin: 0;
-    margin-bottom: 1em;
-}
-
 .file-input {
     position: relative;
     display: inline-block;
@@ -52,15 +47,7 @@ input[type="number"] {
     }
 }
 
-
 .modal-content {
-    max-width: 400px;
-    min-width: 400px;
-    background-color: $color-black;
-    border-radius: 6px;
-    padding: 20px;
-    pointer-events: auto;
-
     .select-wrapper {
         position: relative;
         display: inline-block;
@@ -78,6 +65,7 @@ input[type="number"] {
     }
 
     .form-group {
+        position: relative;
         display: flex;
         flex-direction: column;
         margin-bottom: 15px;
@@ -107,34 +95,7 @@ input[type="number"] {
     }
 }
 
-.modal__buttons {
-    margin-top: 1.5em;
-}
-
-.modal__button.modal__button--add {
-    background-color: $color-yellow;
-    color: $color-black-dark;
-    &:hover {
-        background-color: $color-yellow-dark;
-    }
-}
-
-.ReactModal__Content {
-    pointer-events: none;
-}
-
-.react-draggable {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-
-.form-group {
-    position: relative;
-}
-  
-  .options-list {
+.options-list {
     position: absolute;
     top: 100%; 
     left: 0;
@@ -153,4 +114,4 @@ input[type="number"] {
             background-color: $color-gray-dark-hover;
         }
     }
-  }
+}
