@@ -51,18 +51,18 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
       console.log('Genres:', fetchedGenres);
   
       // Fetch keywords
-      const fetchedKeywords = await getKeywords(); // Assuming getKeywords function exists
-      setKeywords(fetchedKeywords); // Assuming setKeywords function exists
+      const fetchedKeywords = await getKeywords(); 
+      setKeywords(fetchedKeywords); 
       console.log('Keywords:', fetchedKeywords);
   
       // Fetch moods
-      const fetchedMoods = await getMoods(); // Assuming getMoods function exists
-      setMoods(fetchedMoods); // Assuming setMoods function exists
+      const fetchedMoods = await getMoods(); 
+      setMoods(fetchedMoods); 
       console.log('Moods:', fetchedMoods);
     };
   
     fetchData();
-  }, []); // Dependency array remains empty to run only once on component mount
+  }, []); 
 
   const [genres, setGenres] = useState([]);
   const [genre, setGenre] = useState('');
@@ -81,55 +81,37 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
   const handleGenreChange = (e) => {
     const input = e.target.value;
     const cursorPosition = e.target.selectionStart;
-    const genresArray = genre.split(',').map(item => item.trim()).filter(Boolean);
-    let newGenresArray = [];
+    const genresArray = input.split(',').map(item => item.trim()).filter(Boolean);
 
-    if (input.length < genre.length) { // Deletion occurred
-        // Find the index of the genre that was likely deleted or edited
-        let charCount = 0;
-        let deletedGenreIndex = genresArray.findIndex(genre => {
-            charCount += genre.length + 2; // +2 for the comma and space
-            return cursorPosition <= charCount;
-        });
-
-        // Handle deletion at the start or in-between genres
-        if (deletedGenreIndex !== -1) {
-            newGenresArray = [...genresArray];
-            newGenresArray.splice(deletedGenreIndex, 1); // Remove the genre at the deleted index
-        } else {
-            // Handle deletion at the end
-            newGenresArray = genresArray.slice(0, -1);
-        }
+    if (input.endsWith(', ') || input.endsWith(',')) {
+        setGenre(input); 
+        setSelectedGenres(genresArray);
+        setFilteredGenres(genres); 
     } else {
-        // Addition or no change in length, just use the input directly
-        newGenresArray = input.split(',').map(item => item.trim()).filter(Boolean);
+        let newGenresArray = genresArray;
+        const newInput = newGenresArray.join(', ');
+        setGenre(newInput);
+        setSelectedGenres(newGenresArray);
+        const lastTypedWord = newGenresArray[newGenresArray.length - 1] || '';
+        setFilteredGenres(genres.filter(genre => genre.name.toLowerCase().includes(lastTypedWord.toLowerCase())));
     }
-
-    const newInput = newGenresArray.join(', ');
-    setGenre(newInput);
-    setSelectedGenres(newGenresArray);
-    setFilteredGenres(genres.filter(genre => genre.name.toLowerCase().includes(newInput.toLowerCase())));
 };
 
 const handleGenreToggle = (genreName) => {
     let updatedSelectedGenres;
     if (selectedGenres.includes(genreName)) {
-        updatedSelectedGenres = selectedGenres.filter(g => g !== genreName); // Deselect
+        updatedSelectedGenres = selectedGenres.filter(g => g !== genreName); 
     } else {
-        // Check if the last part of the genre input matches any part of the selected genre name
         const genreParts = genre.split(',').map(part => part.trim());
         const lastPart = genreParts[genreParts.length - 1];
         if (genreName.toLowerCase().includes(lastPart.toLowerCase())) {
-            // Replace the last part with the selected full genre name
             genreParts[genreParts.length - 1] = genreName;
         } else {
-            // If no match, just add the selected genre name
             genreParts.push(genreName);
         }
         updatedSelectedGenres = genreParts;
     }
     setSelectedGenres(updatedSelectedGenres);
-    // Update the genre input field to show a comma-separated list of selected genres
     setGenre(updatedSelectedGenres.join(', '));
 };
 
@@ -139,7 +121,6 @@ const handleGenreToggle = (genreName) => {
   };
 
   const handleGenreBlur = () => {
-      // Delay hiding to allow option selection
       setTimeout(() => setShowGenres(false), 200);
   };
     
