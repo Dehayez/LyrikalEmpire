@@ -250,15 +250,15 @@ const handleGenreToggle = (genreName) => {
                     />
                     {showGenres && (
                         <div className="options-list">
-                        {filteredGenres.map((genre, index) => (
+                            {filteredGenres.map((genre, index) => (
                             <div 
                                 key={index} 
-                                className='options-list__item'
+                                className={`options-list__item ${selectedGenres.includes(genre.name) ? 'options-list__item--selected' : ''}`}
                                 onClick={() => handleGenreToggle(genre.name)}
                             >
-                            {genre.name}
+                                {genre.name}
                             </div>
-                        ))}
+                            ))}
                         </div>
                     )}
                 </div>
