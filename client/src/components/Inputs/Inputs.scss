@@ -108,11 +108,11 @@ input[type="number"] {
         padding: 10px;
         text-align: left;
     &:hover {
-            background-color: $color-gray-mid;
-            cursor: pointer;
+        background-color: $color-gray-dark-hover;
+        cursor: pointer;
         }
-        &--selected {
-            background-color: $color-gray-dark-hover;
-        }
+    &--selected {
+        background-color: $color-gray-mid;
+    }
     }
 }
