@@ -107,7 +107,7 @@ input[type="number"] {
     &__item {
         padding: 10px;
         text-align: left;
-    &:hover {
+    &:hover,  &--focused {
         background-color: $color-gray-dark-hover;
         cursor: pointer;
         }
