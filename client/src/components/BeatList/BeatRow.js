@@ -72,6 +72,12 @@ const BeatRow = ({
     handleItemBlur: handleGenreBlur
   } = useSelectableList(getGenres, beat.genre);
 
+  useEffect(() => {
+    if (selectedGenre) {
+      handleUpdate(beat.id, 'genre', selectedGenre);
+    }
+  }, [selectedGenre]);
+
   return (
     <tr
       className={beatRowClasses}
@@ -122,16 +128,6 @@ const BeatRow = ({
           />
         </td>
         <td className="beat-row__data">
-          {/* <input 
-            className='beat-row__input' 
-            type="text" 
-            defaultValue={beat.genre} 
-            onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} 
-            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()}
-            spellCheck="false"
-          /> */}
-
         <SelectableInput
             value={selectedGenre}
             onChange={handleGenreChange}
