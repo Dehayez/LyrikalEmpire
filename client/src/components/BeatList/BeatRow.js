@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { IoTrashBinSharp, IoAddSharp, IoListSharp } from "react-icons/io5";
+import { useBpmHandlers, useSelectableList } from '../../hooks';
+import { getGenres, getKeywords, getMoods } from '../../services';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
-import { useBpmHandlers, useSelectableList } from '../../hooks';
-import { getGenres, getKeywords, getMoods } from '../../services';
 import { SelectableInput } from '../Inputs';
 import './BeatRow.scss';
 

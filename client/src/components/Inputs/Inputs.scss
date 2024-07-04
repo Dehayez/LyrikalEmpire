@@ -90,7 +90,6 @@ input[type="number"] {
         }
         select {
             background-color: $color-gray-dark;
-            color: $color-white;
         }
     }
 }
@@ -104,15 +103,22 @@ input[type="number"] {
     margin-top: 1px;
     background-color: $color-gray-dark; 
     color: $color-white; 
+
     &__item {
         padding: 10px;
         text-align: left;
-    &:hover,  &--focused {
-        background-color: $color-gray-dark-hover;
-        cursor: pointer;
+
+        &:hover {
+            background-color: $color-gray-dark-hover;
+            cursor: pointer;
         }
-    &--selected {
-        background-color: $color-gray-mid;
-    }
+
+        &--selected {
+            background-color: $color-gray-mid;
+        }
+
+        &--focused {
+            background-color: $color-gray-dark-hover;
+        }
     }
 }
