@@ -137,7 +137,6 @@ const BeatRow = ({
             filteredItems={filteredGenres}
             handleItemToggle={handleGenreToggle}
             className='beat-row__input' 
-            //onBlur={(e) => handleUpdate(beat.id, 'genre', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
             onClick={(e) => e.stopPropagation()}
             spellCheck="false"
