@@ -243,7 +243,6 @@ const BeatRow = ({
           />
         </td> 
       {activeContextMenu === beat.id && (
-        <td>
          <ContextMenu
             position={{ top: contextMenuY, left: contextMenuX }}
             items={[
@@ -270,7 +269,6 @@ const BeatRow = ({
               },
             ]}
           />
-        </td>
       )}
       </tr>
     );
