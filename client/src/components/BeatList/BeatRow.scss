@@ -15,10 +15,6 @@
     background-color: #202020;
   }
 
-  &__data {
-    position: relative;
-  }
-
   &__input {
     box-sizing: border-box;
     background-color: transparent;
@@ -89,6 +85,7 @@
 }
 
 .form-group {
+  position: relative;
   display: flex;
   flex-direction: column;
 
