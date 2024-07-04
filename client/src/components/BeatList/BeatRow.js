@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { IoTrashBinSharp, IoAddSharp, IoListSharp } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
+import { ContextMenu } from '../ContextMenu';
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
 import { SelectableInput } from '../Inputs';
@@ -20,9 +21,9 @@ const BeatRow = ({
   const isMiddle = hasSelectedBefore && hasSelectedAfter;
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
-  const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
+  const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -243,20 +244,32 @@ const BeatRow = ({
         </td> 
       {activeContextMenu === beat.id && (
         <td>
-          <div className="row-context" style={{top: contextMenuY, left: contextMenuX}}>
-            <div className="row-context__button row-context__button--add-playlist">
-              <IoAddSharp className="row-context__icon row-context__icon--add-playlist" />
-              <p className="row-context__text">Add to playlist</p>
-            </div>
-            <div className="row-context__button row-context__button--delete" onClick={() => openConfirmModal(beat.id)}>
-              <IoTrashBinSharp className="row-context__icon row-context__icon--delete" />
-              <p className="row-context__text">{deleteText}</p>
-            </div>
-            <div className="row-context__button row-context__button--add-queue" onClick={handleAddToCustomQueueClick}>
-              <IoListSharp className="row-context__icon row-context__icon--add-queue" />
-              <p className="row-context__text">Add to queue</p>
-            </div>
-          </div>
+         <ContextMenu
+            position={{ top: contextMenuY, left: contextMenuX }}
+            items={[
+              {
+                icon: IoAddSharp,
+                iconClass: 'add-playlist',
+                text: 'Add to playlist',
+                buttonClass: 'add-playlist',
+                onClick: () => console.log('Add to playlist clicked'),
+              },
+              {
+                icon: IoListSharp,
+                iconClass: 'add-queue',
+                text: 'Add to queue',
+                buttonClass: 'add-queue',
+                onClick: handleAddToCustomQueueClick,
+              },
+              {
+                icon: IoTrashBinSharp,
+                iconClass: 'delete',
+                text: deleteText,
+                buttonClass: 'delete',
+                onClick: () => openConfirmModal(beat.id),
+              },
+            ]}
+          />
         </td>
       )}
       </tr>
