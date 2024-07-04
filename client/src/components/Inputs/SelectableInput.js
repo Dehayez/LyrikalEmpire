@@ -1,21 +1,7 @@
 import React from 'react';
 import './Inputs.scss';
 
-export const SelectableInput = ({
-  label,
-  placeholder,
-  value,
-  onChange,
-  onFocus,
-  onBlur,
-  showItems,
-  filteredItems,
-  handleItemToggle,
-  className,
-  onKeyDown,
-  onClick,
-  spellCheck
-}) => {
+export const SelectableInput = ({ label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onKeyDown, onClick, spellCheck }) => {
   const selectedValues = value.split(',').map(item => item.trim());
 
   return (
