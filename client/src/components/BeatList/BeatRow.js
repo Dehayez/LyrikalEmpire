@@ -4,7 +4,7 @@ import { IoTrashBinSharp, IoAddSharp, IoListSharp } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { useBpmHandlers, useSelectableList } from '../../hooks';
-import { getGenres } from '../../services';
+import { getGenres, getKeywords, getMoods } from '../../services';
 import { SelectableInput } from '../Inputs';
 import './BeatRow.scss';
 
@@ -78,6 +78,39 @@ const BeatRow = ({
     }
   }, [selectedGenre]);
 
+  const {
+    selectedItem: selectedMood,
+    filteredItems: filteredMoods,
+    showItems: showMoods,
+    handleItemChange: handleMoodChange,
+    handleItemToggle: handleMoodToggle,
+    handleItemFocus: handleMoodFocus,
+    handleItemBlur: handleMoodBlur
+  } = useSelectableList(getMoods, beat.mood);
+  
+  useEffect(() => {
+    if (selectedMood) {
+      handleUpdate(beat.id, 'mood', selectedMood);
+    }
+  }, [selectedMood]);
+
+  const {
+    selectedItem: selectedKeyword,
+    filteredItems: filteredKeywords,
+    showItems: showKeywords,
+    handleItemChange: handleKeywordChange,
+    handleItemToggle: handleKeywordToggle,
+    handleItemFocus: handleKeywordFocus,
+    handleItemBlur: handleKeywordBlur
+  } = useSelectableList(getKeywords, beat.keywords);
+  
+  useEffect(() => {
+    if (selectedKeyword) {
+      handleUpdate(beat.id, 'keywords', selectedKeyword);
+    }
+  }, [selectedKeyword]);
+  
+
   return (
     <tr
       className={beatRowClasses}
@@ -128,19 +161,19 @@ const BeatRow = ({
           />
         </td>
         <td className="beat-row__data">
-        <SelectableInput
-            value={selectedGenre}
-            onChange={handleGenreChange}
-            onFocus={handleGenreFocus}
-            onBlur={handleGenreBlur}
-            showItems={showGenres}
-            filteredItems={filteredGenres}
-            handleItemToggle={handleGenreToggle}
-            className='beat-row__input' 
-            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()}
-            spellCheck="false"
-          />
+          <SelectableInput
+              value={selectedGenre}
+              onChange={handleGenreChange}
+              onFocus={handleGenreFocus}
+              onBlur={handleGenreBlur}
+              showItems={showGenres}
+              filteredItems={filteredGenres}
+              handleItemToggle={handleGenreToggle}
+              className='beat-row__input' 
+              onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+              onClick={(e) => e.stopPropagation()}
+              spellCheck="false"
+            />
         </td>
         <td className="beat-row__data">
           <input 
@@ -179,22 +212,30 @@ const BeatRow = ({
           </div>
         </td>
         <td className="beat-row__data">
-          <input 
+          <SelectableInput
+            value={selectedMood}
+            onChange={handleMoodChange}
+            onFocus={handleMoodFocus}
+            onBlur={handleMoodBlur}
+            showItems={showMoods}
+            filteredItems={filteredMoods}
+            handleItemToggle={handleMoodToggle}
             className='beat-row__input' 
-            type="text" 
-            defaultValue={beat.mood} 
-            onBlur={(e) => handleUpdate(beat.id, 'mood', e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
             onClick={(e) => e.stopPropagation()}
             spellCheck="false"
           />
         </td>
         <td className="beat-row__data">
-          <input 
+          <SelectableInput
+            value={selectedKeyword}
+            onChange={handleKeywordChange}
+            onFocus={handleKeywordFocus}
+            onBlur={handleKeywordBlur}
+            showItems={showKeywords}
+            filteredItems={filteredKeywords}
+            handleItemToggle={handleKeywordToggle}
             className='beat-row__input' 
-            type="text" 
-            defaultValue={beat.keywords}
-            onBlur={(e) => handleUpdate(beat.id, 'keywords', e.target.value)} 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
             onClick={(e) => e.stopPropagation()}
             spellCheck="false"
