@@ -3,7 +3,9 @@ import classNames from 'classnames';
 import { IoTrashBinSharp, IoAddSharp, IoListSharp } from "react-icons/io5";
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
-import { useBpmHandlers } from '../../hooks';
+import { useBpmHandlers, useSelectableList } from '../../hooks';
+import { getGenres } from '../../services';
+import { SelectableInput } from '../Inputs';
 import './BeatRow.scss';
 
 const BeatRow = ({
@@ -60,6 +62,16 @@ const BeatRow = ({
     addToCustomQueue(selectedBeats);
   };
 
+  const {
+    selectedItem: selectedGenre,
+    filteredItems: filteredGenres,
+    showItems: showGenres,
+    handleItemChange: handleGenreChange,
+    handleItemToggle: handleGenreToggle,
+    handleItemFocus: handleGenreFocus,
+    handleItemBlur: handleGenreBlur
+  } = useSelectableList(getGenres, beat.genre);
+
   return (
     <tr
       className={beatRowClasses}
@@ -110,7 +122,7 @@ const BeatRow = ({
           />
         </td>
         <td className="beat-row__data">
-          <input 
+          {/* <input 
             className='beat-row__input' 
             type="text" 
             defaultValue={beat.genre} 
@@ -118,6 +130,16 @@ const BeatRow = ({
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
             onClick={(e) => e.stopPropagation()}
             spellCheck="false"
+          /> */}
+
+        <SelectableInput
+            value={selectedGenre}
+            onChange={handleGenreChange}
+            onFocus={handleGenreFocus}
+            onBlur={handleGenreBlur}
+            showItems={showGenres}
+            filteredItems={filteredGenres}
+            handleItemToggle={handleGenreToggle}
           />
         </td>
         <td className="beat-row__data">
