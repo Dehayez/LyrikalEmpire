@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
 export const useSelectableList = (fetchDataFunction, initialValue = '') => {
-  // Ensure initialValue is a string
   initialValue = initialValue || '';
 
   const [items, setItems] = useState([]);
@@ -25,14 +24,13 @@ export const useSelectableList = (fetchDataFunction, initialValue = '') => {
   }, [fetchDataFunction, initialValue]);
 
   useEffect(() => {
-    // Ensure selectedItem is a string before splitting
     const itemsArray = (selectedItem || '').split(',').map(item => item.trim()).filter(Boolean);
     setSelectedItems(itemsArray);
     setFilteredItems(items.filter(item => item.name.toLowerCase().includes(itemsArray[itemsArray.length - 1]?.toLowerCase() || '')));
   }, [selectedItem, items]);
 
   const handleItemChange = (e) => {
-    const input = e.target.value || ''; // Ensure input is a string
+    const input = e.target.value || ''; 
     const itemsArray = input.split(',').map(item => item.trim()).filter(Boolean);
 
     if (input.endsWith(', ') || input.endsWith(',')) {
