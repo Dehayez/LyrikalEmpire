@@ -111,7 +111,10 @@ function App() {
         setSelectedBeat(fetchedBeats[0]);
       }
     };
-    fetchBeats();
+  
+    setTimeout(() => {
+      fetchBeats();
+    }, 200);
   }, [refresh]);
 
   useEffect(() => {
