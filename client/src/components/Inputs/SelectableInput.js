@@ -1,7 +1,7 @@
 import React from 'react';
 import './Inputs.scss';
 
-export const SelectableInput = ({ label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle }) => {
+export const SelectableInput = ({ label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onKeyDown, onClick, spellCheck }) => {
     return (
         <div className="form-group">
             <label>{label}</label>
@@ -12,6 +12,10 @@ export const SelectableInput = ({ label, placeholder, value, onChange, onFocus, 
                 onFocus={onFocus}
                 onBlur={onBlur}
                 placeholder={placeholder}
+                className={className}
+                onKeyDown={onKeyDown}
+                onClick={onClick}
+                spellCheck={spellCheck}
             />
             {showItems && (
                 <div className="options-list">
