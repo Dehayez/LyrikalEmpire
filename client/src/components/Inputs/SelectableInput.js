@@ -10,7 +10,7 @@ export const SelectableInput = ({
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
       e.preventDefault();
-      e.stopPropagation(); // Stop the event from propagating further
+      e.stopPropagation();
   
       if (e.key === 'ArrowDown') {
         setFocusedItemIndex(prevIndex => (prevIndex + 1) % filteredItems.length);
@@ -19,16 +19,21 @@ export const SelectableInput = ({
       } else if (e.key === 'Enter' && focusedItemIndex !== -1) {
         const newItem = filteredItems[focusedItemIndex].name;
         const newSelectedValues = selectedValues.includes(newItem) ? selectedValues : [...selectedValues, newItem];
-        onChange({ target: { value: newSelectedValues.join(', ') } }); // Update the input value
-        setFocusedItemIndex(-1); // Reset focus
+        onChange({ target: { value: newSelectedValues.join(', ') } });
+        setFocusedItemIndex(-1); 
       }
     }
   };
 
-  // Update selectedValues state when value prop changes
   useEffect(() => {
     setSelectedValues(value.split(',').map(item => item.trim()));
   }, [value]);
+
+  useEffect(() => {
+    if (!showItems) {
+      setFocusedItemIndex(-1);
+    }
+  }, [showItems]);
 
   return (
     <div className="form-group">
