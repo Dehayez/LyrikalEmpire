@@ -73,7 +73,7 @@ export const useSelectableList = (fetchDataFunction, initialValue = '') => {
   };
 
   const handleItemBlur = () => {
-    setShowItems(false)
+    setTimeout(() => setShowItems(false), 100);
   };
 
   return {
