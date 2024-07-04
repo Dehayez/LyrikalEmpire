@@ -18,9 +18,15 @@ export const SelectableInput = ({
         setFocusedItemIndex(prevIndex => (prevIndex - 1 + filteredItems.length) % filteredItems.length);
       } else if (e.key === 'Enter' && focusedItemIndex !== -1) {
         const newItem = filteredItems[focusedItemIndex].name;
-        const newSelectedValues = selectedValues.includes(newItem) ? selectedValues : [...selectedValues, newItem];
+        const isAlreadySelected = selectedValues.includes(newItem);
+        let newSelectedValues;
+        if (isAlreadySelected) {
+          newSelectedValues = selectedValues.filter(item => item !== newItem);
+        } else {
+          newSelectedValues = [...selectedValues, newItem];
+        }
         onChange({ target: { value: newSelectedValues.join(', ') } });
-        setFocusedItemIndex(-1); 
+        setFocusedItemIndex(-1);
       }
     }
   };
