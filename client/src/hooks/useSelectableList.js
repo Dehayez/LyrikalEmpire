@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 
 export const useSelectableList = (fetchDataFunction, initialValue = '') => {
+  // Ensure initialValue is a string
+  initialValue = initialValue || '';
+
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(initialValue);
   const [filteredItems, setFilteredItems] = useState([]);
   const [showItems, setShowItems] = useState(false);
-  const [selectedItems, setSelectedItems] = useState(initialValue ? initialValue.split(',').map(item => item.trim()).filter(Boolean) : []);
+  // Ensure selectedItems is derived from a string
+  const [selectedItems, setSelectedItems] = useState(initialValue.split(',').map(item => item.trim()).filter(Boolean));
 
   useEffect(() => {
     const fetchData = async () => {
       const fetchedItems = await fetchDataFunction();
       setItems(fetchedItems);
-      // If there's an initialValue, filter items based on it
       if (initialValue) {
         setFilteredItems(fetchedItems.filter(item => initialValue.split(',').map(i => i.trim()).includes(item.name)));
       } else {
@@ -22,14 +25,14 @@ export const useSelectableList = (fetchDataFunction, initialValue = '') => {
   }, [fetchDataFunction, initialValue]);
 
   useEffect(() => {
-    // Update selectedItems and filteredItems based on selectedItem
-    const itemsArray = selectedItem.split(',').map(item => item.trim()).filter(Boolean);
+    // Ensure selectedItem is a string before splitting
+    const itemsArray = (selectedItem || '').split(',').map(item => item.trim()).filter(Boolean);
     setSelectedItems(itemsArray);
     setFilteredItems(items.filter(item => item.name.toLowerCase().includes(itemsArray[itemsArray.length - 1]?.toLowerCase() || '')));
   }, [selectedItem, items]);
 
   const handleItemChange = (e) => {
-    const input = e.target.value;
+    const input = e.target.value || ''; // Ensure input is a string
     const itemsArray = input.split(',').map(item => item.trim()).filter(Boolean);
 
     if (input.endsWith(', ') || input.endsWith(',')) {
