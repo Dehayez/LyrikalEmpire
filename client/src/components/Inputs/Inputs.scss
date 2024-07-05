@@ -111,6 +111,7 @@ input[type="number"] {
     &__item {
         padding: 10px;
         text-align: left;
+        margin: 1px;
 
         &:hover {
             background-color: $color-gray-dark-hover;
@@ -123,6 +124,7 @@ input[type="number"] {
 
         &--focused {
             background-color: $color-gray-dark-hover;
+            box-shadow: 0 0 0 1px $color-gray;
         }
     }
 }

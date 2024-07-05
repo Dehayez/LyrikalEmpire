@@ -31,6 +31,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         setTierlist('');
         setFileName('No file chosen');
     };
+    
 
   const { items: genres, selectedItem: genre, filteredItems: filteredGenres, showItems: showGenres, selectedItems: selectedGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(getGenres);
   const { items: keywords, selectedItem: keyword, filteredItems: filteredKeywords, showItems: showKeywords, selectedItems: selectedKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(getKeywords);
