@@ -113,6 +113,18 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, []);
 
+  useEffect(() => {
+    const rhapContainer = document.querySelector('.rhap_container');
+    const rhapProgressContainer = document.querySelector('.rhap_progress-container');
+  
+    if (rhapContainer) {
+      rhapContainer.tabIndex = -1;
+    }
+    if (rhapProgressContainer) {
+      rhapProgressContainer.tabIndex = -1;
+    }
+  }, [])
+
   return (
     <div className="audio-player" id="audio-player">
       <div style={{ flex: '1' }}>
