@@ -78,7 +78,7 @@ export const useHandleBeatClick = (beats, tableRef, currentBeat) => {
           setTimeout(() => { 
             const beatElements = document.querySelectorAll('.beat-row');
             if (beatElements[newIndex]) {
-              beatElements[newIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              beatElements[newIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
           }, 0);
         }
