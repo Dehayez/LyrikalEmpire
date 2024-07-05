@@ -123,6 +123,7 @@ input[type="number"] {
         &--focused {
             background-color: $color-gray-dark-hover;
             box-shadow: 0 0 0 1px $color-gray;
+            transform: scale(1.02);
         }
     }
 }
