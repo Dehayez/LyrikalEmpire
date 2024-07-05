@@ -53,7 +53,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             }
         }
     
-        let newBeat = { title, bpm: bpmValue, genre, mood, keywords };
+        let newBeat = { title, bpm: bpmValue, genre, mood, keyword };
         if (tierlist && tierlist !== '') {
             newBeat.tierlist = tierlist;
         }
