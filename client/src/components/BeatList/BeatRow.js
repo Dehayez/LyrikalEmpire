@@ -242,7 +242,9 @@ const BeatRow = ({
             spellCheck="false"
           />
         </td> 
+        
       {activeContextMenu === beat.id && (
+        <td className="beat-row__data">
          <ContextMenu
             position={{ top: contextMenuY, left: contextMenuX }}
             items={[
@@ -269,6 +271,7 @@ const BeatRow = ({
               },
             ]}
           />
+        </td>
       )}
       </tr>
     );
