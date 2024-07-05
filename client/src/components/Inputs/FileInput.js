@@ -7,7 +7,7 @@ export const FileInput = ({ fileName, onChange }) => (
         <label>Audio</label>
         <div className="file-input">
             <div className="file-input__wrapper">
-                <label htmlFor="file" className="file-input__label no-margin">
+                <label htmlFor="file" className="file-input__label no-margin" tabIndex="0">
                     <IoCloudUploadSharp /> Upload File
                 </label>
                 <input type="file" id="file" className="file-input__input" onChange={onChange} required accept="audio/*" />
