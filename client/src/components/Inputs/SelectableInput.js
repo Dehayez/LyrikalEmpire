@@ -6,6 +6,8 @@ export const SelectableInput = ({
 }) => {
   const [selectedValues, setSelectedValues] = useState(value.split(',').map(item => item.trim()));
   const [focusedItemIndex, setFocusedItemIndex] = useState(-1);
+  // New state to manage visibility based on hover and click
+  const [isListVisible, setIsListVisible] = useState(false);
 
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
@@ -27,6 +29,7 @@ export const SelectableInput = ({
         }
         onChange({ target: { value: newSelectedValues.join(', ') } });
         setFocusedItemIndex(-1);
+        setIsListVisible(false); // Hide list after selection
       }
     }
   };
@@ -41,6 +44,12 @@ export const SelectableInput = ({
     }
   }, [showItems]);
 
+  // Modified onClick to show the list
+  const handleInputClick = (e) => {
+    onClick && onClick(e);
+    setIsListVisible(true);
+  };
+
   return (
     <div className="form-group">
       <label>{label}</label>
@@ -53,11 +62,15 @@ export const SelectableInput = ({
         placeholder={placeholder}
         className={className}
         onKeyDown={handleKeyDown}
-        onClick={onClick}
+        onClick={handleInputClick}
+        onMouseEnter={() => setIsListVisible(true)}
+        onMouseLeave={() => setIsListVisible(false)}
         spellCheck={spellCheck}
       />
-      {showItems && (
-        <div className="options-list">
+      {showItems && isListVisible && (
+        <div className="options-list"
+             onMouseEnter={() => setIsListVisible(true)}
+             onMouseLeave={() => setIsListVisible(false)}>
           {filteredItems.map((item, index) => {
             const isSelected = selectedValues.includes(item.name);
             const isFocused = index === focusedItemIndex;
