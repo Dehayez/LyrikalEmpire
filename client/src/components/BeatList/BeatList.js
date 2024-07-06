@@ -73,7 +73,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   return (
     <div className='beat-list'>
     <div className='beat-list__header'>
-      <h2 className='beat-list__title'>Beats</h2>
+      <h2 className='beat-list__title'>All Tracks</h2>
       <div className='beat-list__actions'>
         <div className='beat-list__action-button icon-button'>
           <IoSearchSharp/>
