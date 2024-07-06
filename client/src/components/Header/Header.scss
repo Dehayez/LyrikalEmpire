@@ -9,6 +9,18 @@
   background-color: $color-black;
   border-radius: 4px;
 
+  & .icon-button {
+    border-radius: 4px;
+    padding: 6px;
+    color: $color-white;
+    &:active {
+      transform: scale(1);
+    }
+    &:hover {
+      background-color: $color-gray-dark;
+    }
+  }
+
   &__nav-group {
     display: flex;
     justify-content: center;
@@ -24,27 +36,13 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    padding: 6px;
     margin: 20px;
-    border-radius: 4px;
     font-size: 24px;
-    cursor: pointer;
-    &:hover {
-      background-color: $color-gray-dark;
-    }
   }
   &__nav-menu-left {
     left: 0;
   }
   &__nav-menu-right {
     right: 0;
-  }
-}
-.header__nav-menu-left, .header__nav-menu-right {
-  &:hover {
-    .tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
   }
 }
