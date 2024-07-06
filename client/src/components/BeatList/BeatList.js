@@ -68,11 +68,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     }
   };
 
-  const filteredBeats = searchText.length > 0 ? beats.filter(beat => {
-    const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords]; 
-    return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
-  }) : beats;
-
   const filteredAndSortedBeats = sortedBeats.filter(beat => {
     const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords]; 
     return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
