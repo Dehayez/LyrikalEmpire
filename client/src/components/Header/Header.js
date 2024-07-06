@@ -20,7 +20,7 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
         {
           isLeftPanelVisible ? <div className='icon-button'><IoChevronBackSharp /><span className="tooltip tooltip--right">Unlock Panel</span></div> 
           : isLeftDivVisible ? <div className='icon-button'><IoChevronForwardSharp /><span className="tooltip tooltip--right">Lock Panel</span></div> 
-          : <IoMenuSharp />
+          : <div className='icon-button'><IoMenuSharp /></div>
         }
       </div>
       
@@ -34,7 +34,7 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
         {
           isRightPanelVisible ?  <div className='icon-button'><IoChevronForwardSharp /><span className="tooltip tooltip--left">Unlock Panel</span></div> 
           : isRightDivVisible ? <div className='icon-button'><IoChevronBackSharp /><span className="tooltip tooltip--left">Lock Panel</span></div> 
-          : <IoListSharp />
+          : <div className='icon-button'><IoListSharp /></div>
         }
       </div>
     </header>
