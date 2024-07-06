@@ -44,6 +44,17 @@ export const SelectableInput = ({
     }
   }, [showItems]);
 
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isListVisible) {
+        setIsListVisible(false);
+      }
+    };
+  
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isListVisible]);
+
   // Modified onClick to show the list
   const handleInputClick = (e) => {
     onClick && onClick(e);
