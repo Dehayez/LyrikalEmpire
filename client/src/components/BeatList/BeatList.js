@@ -24,6 +24,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const [searchText, setSearchText] = useState('');
   const [isInputOpen, setIsInputOpen] = useState(false); 
   const searchInputRef = useRef(null);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     fetchBeats(handleUpdateAll);
@@ -38,18 +39,33 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
     setIsSearchVisible(willBeVisible);
-    setIsInputOpen(willBeVisible); // Assuming toggling search visibility equates to opening/closing the input
-  
+    setIsInputOpen(willBeVisible);
     if (willBeVisible) {
-      // Ensure the component updates with the search visible before trying to focus
       setTimeout(() => {
         searchInputRef.current?.focus();
       }, 100);
+    } else if (!isHovering) {
+      setIsSearchVisible(false);
+      setIsInputOpen(false);
     }
   };
 
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+  
+  // Step 3: Handle Mouse Leave
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    // Close the input if it's not focused and the mouse leaves the container
+    if (document.activeElement !== searchInputRef.current) {
+      setIsSearchVisible(false);
+      setIsInputOpen(false);
+    }
   };
 
   const filteredBeats = searchText.length > 0 ? beats.filter(beat => {
@@ -107,7 +123,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     <div className='beat-list__header'>
       <h2 className='beat-list__title'>All Tracks</h2>
       <div className='beat-list__actions'>
-        <div className='beat-list__search-container'>
+      <div className='beat-list__search-container' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isInputOpen ? 'beat-list__action-button--active' : ''}`} onClick={toggleSearchVisibility}>
             <IoSearchSharp/>
           </div>
