@@ -20,10 +20,23 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     fetchBeats(handleUpdateAll);
   }, []);
+
+  const toggleSearchVisibility = () => setIsSearchVisible(!isSearchVisible);
+
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  const filteredBeats = searchText.length > 0 ? beats.filter(beat => {
+    const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords]; 
+    return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+  }) : beats;
 
   const handlePlayPause = (beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
@@ -75,25 +88,34 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     <div className='beat-list__header'>
       <h2 className='beat-list__title'>All Tracks</h2>
       <div className='beat-list__actions'>
-        <div className='beat-list__action-button icon-button'>
+      {isSearchVisible && (
+          <input
+            type="text"
+            placeholder="Search beats..."
+            value={searchText}
+            onChange={handleSearchChange}
+            className="beat-list__search-input"
+          />
+        )}
+        <div className='beat-list__action-button icon-button' onClick={toggleSearchVisibility}>
           <IoSearchSharp/>
           <span className="tooltip tooltip--left">Search</span>
-          </div>
-        <div className='beat-list__action-button icon-button' onClick={() => fetchBeats(handleUpdateAll)}>
+        </div>
+        {/* <div className='beat-list__action-button icon-button' onClick={() => fetchBeats(handleUpdateAll)}>
           <IoRefreshSharp/>
           <span className="tooltip tooltip--left">Refresh</span>
-        </div>
+        </div> */}
       </div>
       </div>
       {beats.length > 0 && (
         <div>
-          <table className='beat-list__table' ref={tableRef}>
-            <TableHeader onSort={onSort} sortConfig={sortConfig} />
-            <tbody>
-            {sortedBeats.map((beat, index) => (
-              <BeatRow
-                key={`${beat.id}-${index}`}
-                beat={beat}
+        <table className='beat-list__table' ref={tableRef}>
+          <TableHeader onSort={onSort} sortConfig={sortConfig} />
+          <tbody>
+          {filteredBeats.map((beat, index) => ( // Use filteredBeats here
+            <BeatRow
+              key={`${beat.id}-${index}`}
+              beat={beat}
                 currentBeat={currentBeat}
                 index={index}
                 handlePlayPause={handlePlayPause}
