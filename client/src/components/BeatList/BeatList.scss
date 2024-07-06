@@ -1,3 +1,5 @@
+@import '../../globals/variables';
+
 .beat-list {
   height: 100%;
   width: 100%;
@@ -7,7 +9,6 @@
   &__header {
     display: flex;
     justify-content: space-between;
-    padding-right: 16px;
   }
 
   &__actions {
@@ -15,7 +16,7 @@
   }
 
   &__action-button {
-    margin-left: 20px;
+
     &:active {
       transform: scale(1);
     }
@@ -71,5 +72,77 @@
 
 .beat-list__warning {
   text-align: center;
+}
+
+.beat-list__search-container {
+  position: relative;
+  width: max-content;
+}
+
+.beat-list__search-input {
+  width: 0;
+  padding-left: 40px;
+  visibility: hidden;
+  opacity: 0;
+  transition: width 0.3s ease, opacity 0.2s, visibility 0.2s;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px $color-gray;
+  }
+}
+
+.beat-list__search-input.visible {
+  width: 200px;
+  visibility: visible;
+  opacity: 1;
+  margin-right: 16px;
+}
+
+.beat-list__actions {
+  display: flex;
+  align-items: center;
+}
+
+.beat-list__action-button {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.tooltip {
+  visibility: hidden;
+}
+
+.beat-list__search-input.visible + .tooltip {
+  visibility: visible;
+}
+
+.beat-list__action-button {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 1;
+
+  &--active {
+    color: $color-yellow;
+    &:hover {
+      color: $color-yellow-light;
+    }
+  }
+
+  &:hover {
+    transform: scale(1.04) translateY(-50%);
+  }
 }
 
