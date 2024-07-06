@@ -73,6 +73,11 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
   }) : beats;
 
+  const filteredAndSortedBeats = sortedBeats.filter(beat => {
+    const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords]; 
+    return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+  });
+
   const handlePlayPause = (beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
@@ -144,7 +149,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
         <table className='beat-list__table' ref={tableRef}>
           <TableHeader onSort={onSort} sortConfig={sortConfig} />
           <tbody>
-          {filteredBeats.map((beat, index) => (
+          {filteredAndSortedBeats.map((beat, index) => (
             <BeatRow
               key={`${beat.id}-${index}`}
               beat={beat}
