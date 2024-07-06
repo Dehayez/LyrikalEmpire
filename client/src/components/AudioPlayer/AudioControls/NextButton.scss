@@ -1,9 +1,10 @@
+@import '../../../globals/variables';
+
 .icon-button--next {
-  color: grey;
-  &:hover,
-  &.active {
-    color: lightgrey;
+  &:active {
+    transform: scale(1);
   }
+
   .tooltip {
     bottom: 180%;
   }

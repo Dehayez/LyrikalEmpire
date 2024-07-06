@@ -4,6 +4,23 @@
   overflow-y: auto;
   overflow-x: auto;
 
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__actions {
+    display: flex;
+  }
+
+  &__action-button {
+    margin-left: 20px;
+    &:active {
+      transform: scale(1);
+    }
+  
+  }
+
   &__table {
     table-layout: auto;
     overflow-x: auto;

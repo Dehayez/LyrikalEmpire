@@ -4,11 +4,11 @@ import './RepeatButton.scss';
 
 const RepeatButton = ({ repeat, setRepeat }) => {
   return (
-    <button className="icon-button icon-button--repeat" onClick={() => setRepeat(prev => prev === 'Disabled Repeat' ? 'Repeat' : prev === 'Repeat' ? 'Repeat One' : 'Disabled Repeat')}>
-      { repeat === 'Disabled Repeat' ? <IoRepeatSharp style={{ color: '#B3B3B3' }}/> : repeat === 'Repeat' ? <IoRepeatSharp style={{ color: '#FFCC44' }}/> : <IoRepeatSharp style={{ color: '#FFCC44' }}/> }
-      { repeat === 'Repeat One' && <div className="repeat-one-indicator"></div> }
-      <span className="tooltip tooltip--repeat">{ repeat === 'Disabled Repeat' ? 'Repeat' : repeat === 'Repeat' ? 'Repeat One' : 'Disable Repeat' }</span>
-    </button>
+  <button className={`icon-button icon-button--repeat ${repeat !== 'Disabled Repeat' ? 'active' : ''}`} onClick={() => setRepeat(prev => prev === 'Disabled Repeat' ? 'Repeat' : prev === 'Repeat' ? 'Repeat One' : 'Disabled Repeat')}>
+    {repeat === 'Disabled Repeat' ? <IoRepeatSharp/> : repeat === 'Repeat' ? <IoRepeatSharp/> : <IoRepeatSharp/>}
+    {repeat === 'Repeat One' && <div className="repeat-one-indicator"></div>}
+    <span className="tooltip tooltip--repeat">{repeat === 'Disabled Repeat' ? 'Repeat' : repeat === 'Repeat' ? 'Repeat One' : 'Disable Repeat'}</span>
+  </button>
   );
 };
 

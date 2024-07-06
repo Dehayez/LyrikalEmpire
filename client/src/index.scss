@@ -44,6 +44,7 @@ td {
 }
 
 .icon-button {
+  color: $color-gray-light;
   position: relative;
   display: flex;
   align-items: center;
@@ -52,12 +53,11 @@ td {
   border: none;
   font-size: 24px;
   transition: transform 0.1s ease-in-out;
-
-  &:active {
-    transform: scale(0.95);
-  }
-
   &:hover {
+    color: $color-white;
+    cursor: pointer;
+    transform: scale(1.04);
+    
     .tooltip,
     .tooltip__addbeat {
       visibility: visible;
@@ -81,7 +81,7 @@ td {
   background-color: $color-black;
   color: $color-white;
   white-space: nowrap;
-  z-index: 2;
+  z-index: 10;
 
   &--right {
     left: 100%;

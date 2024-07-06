@@ -1,5 +1,17 @@
+@import '../../../globals/variables';
+
 .icon-button--shuffle {
     margin: 0 24px;
+    &:active {
+      transform: scale(1);
+    }
+  
+    &.active {
+        color: $color-yellow;
+        &:hover {
+            color: $color-yellow-light;
+        }
+    }
     .tooltip {
         bottom: 180%;
     }

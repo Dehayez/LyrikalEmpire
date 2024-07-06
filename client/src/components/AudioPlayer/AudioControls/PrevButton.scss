@@ -1,10 +1,9 @@
-.icon-button--prev {
-    color: grey;
+@import '../../../globals/variables';
 
-    &:hover,
-    &.active {
-      color: lightgrey;
-    }
+.icon-button--prev {
+  &:active {
+    transform: scale(1);
+  }
 
     .tooltip {
       bottom: 180%;
