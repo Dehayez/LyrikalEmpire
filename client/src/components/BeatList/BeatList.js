@@ -23,14 +23,29 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [isInputOpen, setIsInputOpen] = useState(false); 
-  
+  const searchInputRef = useRef(null);
+
   useEffect(() => {
     fetchBeats(handleUpdateAll);
   }, []);
 
+  useEffect(() => {
+    if (isSearchVisible) {
+      searchInputRef.current?.focus(); // Step 3: Focus the input when it becomes visible
+    }
+  }, [isSearchVisible]);
+
   const toggleSearchVisibility = () => {
-    setIsSearchVisible(!isSearchVisible);
-    setIsInputOpen(!isInputOpen); // Assuming toggling search visibility equates to opening/closing the input
+    const willBeVisible = !isSearchVisible;
+    setIsSearchVisible(willBeVisible);
+    setIsInputOpen(willBeVisible); // Assuming toggling search visibility equates to opening/closing the input
+  
+    if (willBeVisible) {
+      // Ensure the component updates with the search visible before trying to focus
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 100);
+    }
   };
 
   const handleSearchChange = (e) => {
@@ -97,6 +112,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
             <IoSearchSharp/>
           </div>
           <input
+          ref={searchInputRef}
             type="text"
             placeholder={isSearchVisible ? "Search beats..." : ""}
             value={searchText}
