@@ -47,8 +47,8 @@
   &__middle {
     position: relative;
     flex-grow: 1;
-    padding-left: 16px;
-    margin: 6px;
+    padding: 0 26px;
+    margin: 6px 0;
     border-radius: 4px;
     background-color: $color-black;
     overflow-x: auto;
@@ -135,8 +135,4 @@
       background-color: $color-black-dark;
     }
   }
-}
-
-.red-progress-bar::before {
-  background-color: red !important;
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import { IoRefreshSharp, IoSearchSharp } from "react-icons/io5";
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import './BeatList.scss';
@@ -71,7 +72,19 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
 
   return (
     <div className='beat-list'>
+    <div className='beat-list__header'>
       <h2 className='beat-list__title'>Beats</h2>
+      <div className='beat-list__actions'>
+        <div className='beat-list__action-button icon-button'>
+          <IoSearchSharp/>
+          <span className="tooltip tooltip--left">Search</span>
+          </div>
+        <div className='beat-list__action-button icon-button' onClick={() => fetchBeats(handleUpdateAll)}>
+          <IoRefreshSharp/>
+          <span className="tooltip tooltip--left">Refresh</span>
+        </div>
+      </div>
+      </div>
       {beats.length > 0 && (
         <div>
           <table className='beat-list__table' ref={tableRef}>
