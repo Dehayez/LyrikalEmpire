@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
-import { IoRefreshSharp, IoSearchSharp } from "react-icons/io5";
+import { IoSearchSharp } from "react-icons/io5";
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import './BeatList.scss';
@@ -12,20 +12,16 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue  }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue }) => {
   const tableRef = useRef(null);
+  const searchInputRef = useRef(null);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
-  const [selectedBeatsForDeletion, setSelectedBeatsForDeletion] = useState([]);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
+  const [isHovering, setIsHovering] = useState(false);
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
-  const [activeContextMenu, setActiveContextMenu] = useState(null);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
-  // Initialize searchText state from localStorage
-  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
-  const [isInputOpen, setIsInputOpen] = useState(false); 
-  const searchInputRef = useRef(null);
-  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     fetchBeats(handleUpdateAll);
@@ -40,38 +36,31 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
     setIsSearchVisible(willBeVisible);
-    setIsInputOpen(willBeVisible);
     if (willBeVisible) {
       setTimeout(() => {
         searchInputRef.current?.focus();
       }, 100);
     } else if (!isHovering) {
       setIsSearchVisible(false);
-      setIsInputOpen(false);
     }
   };
 
   const handleSearchChange = (e) => {
     const newValue = e.target.value;
     setSearchText(newValue);
-    // Save the search text to localStorage
     localStorage.setItem('searchText', newValue);
   };
 
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-  };
-  
+  const handleMouseEnter = () => setIsHovering(true);
   const handleMouseLeave = () => {
     setIsHovering(false);
     if (document.activeElement !== searchInputRef.current) {
       setIsSearchVisible(false);
-      setIsInputOpen(false);
     }
   };
 
   const filteredAndSortedBeats = sortedBeats.filter(beat => {
-    const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords]; 
+    const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
     return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
   });
 
@@ -83,36 +72,25 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Enter' && selectedBeats.length > 0) {
-        const beatToPlay = selectedBeats[0];
-        handlePlayPause(beatToPlay);
+        handlePlayPause(selectedBeats[0]);
+      }
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
+        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats, handlePlayPause]);
 
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if ((event.key === 'Delete' || event.key === 'Backspace' || event.keyCode === 46) && selectedBeats.length > 0) {
-        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBeats]);
-
   const handleConfirm = async () => {
     if (confirmModalState.beatsToDelete.length > 0) {
       await Promise.all(confirmModalState.beatsToDelete.map(beatId => handleDelete(beatId)));
       setConfirmModalState({ isOpen: false, beatsToDelete: [] });
-      setSelectedBeatsForDeletion([]);
     }
   };
 
-  const openConfirmModal = () => {
-    setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
-  };
-  
+  const openConfirmModal = () => setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
+
   const handleRightClick = (e, beat) => {
     e.preventDefault();
     if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
@@ -122,54 +100,51 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
 
   return (
     <div className='beat-list'>
-    <div className='beat-list__header'>
-      <h2 className='beat-list__title'>All Tracks</h2>
-      <div className='beat-list__actions'>
-      <div className='beat-list__search-container' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-        <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isInputOpen ? 'beat-list__action-button--active' : ''}`} onClick={toggleSearchVisibility}>
-            <IoSearchSharp/>
-        </div>
-        <input
-        ref={searchInputRef}
-          type="text"
-          placeholder={isSearchVisible ? "Search beats..." : ""}
-          value={searchText}
-          onChange={handleSearchChange}
-          className={`beat-list__search-input ${isSearchVisible ? 'visible' : ''}`}
-        />
-          {isSearchVisible && <span className="tooltip tooltip--left">Search</span>}
+      <div className='beat-list__header'>
+        <h2 className='beat-list__title'>All Tracks</h2>
+        <div className='beat-list__actions'>
+          <div className='beat-list__search-container' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--active' : ''}`} onClick={toggleSearchVisibility}>
+              <IoSearchSharp />
+            </div>
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder={isSearchVisible ? "Search beats..." : ""}
+              value={searchText}
+              onChange={handleSearchChange}
+              className={`beat-list__search-input ${isSearchVisible ? 'visible' : ''}`}
+            />
+          </div>
         </div>
       </div>
-    </div>
       {beats.length > 0 && (
         <div>
-        <table className='beat-list__table' ref={tableRef}>
-          <TableHeader onSort={onSort} sortConfig={sortConfig} />
-          <tbody>
-          {filteredAndSortedBeats.map((beat, index) => (
-            <BeatRow
-              key={`${beat.id}-${index}`}
-              beat={beat}
-                currentBeat={currentBeat}
-                index={index}
-                handlePlayPause={handlePlayPause}
-                handleUpdate={handleUpdate}
-                handleDelete={handleDelete}
-                selectedBeat={selectedBeat}
-                hoveredBeat={hoveredBeat}
-                setHoveredBeat={setHoveredBeat}
-                isPlaying={isPlaying}
-                handleBeatClick={handleBeatClick}
-                selectedBeats={selectedBeats}
-                openConfirmModal={openConfirmModal}
-                beats={beats}
-                handleRightClick={handleRightClick}
-                activeContextMenu={activeContextMenu}
-                setActiveContextMenu={setActiveContextMenu}
-                addToCustomQueue={addToCustomQueue}
-                searchText={searchText}
-              />
-            ))}
+          <table className='beat-list__table' ref={tableRef}>
+            <TableHeader onSort={onSort} sortConfig={sortConfig} />
+            <tbody>
+              {filteredAndSortedBeats.map((beat, index) => (
+                <BeatRow
+                  key={`${beat.id}-${index}`}
+                  beat={beat}
+                  currentBeat={currentBeat}
+                  index={index}
+                  handlePlayPause={handlePlayPause}
+                  handleUpdate={handleUpdate}
+                  handleDelete={handleDelete}
+                  selectedBeat={selectedBeat}
+                  hoveredBeat={hoveredBeat}
+                  setHoveredBeat={setHoveredBeat}
+                  isPlaying={isPlaying}
+                  handleBeatClick={handleBeatClick}
+                  selectedBeats={selectedBeats}
+                  openConfirmModal={openConfirmModal}
+                  beats={beats}
+                  handleRightClick={handleRightClick}
+                  addToCustomQueue={addToCustomQueue}
+                  searchText={searchText}
+                />
+              ))}
             </tbody>
           </table>
         </div>
