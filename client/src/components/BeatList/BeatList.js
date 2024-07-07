@@ -21,7 +21,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  // Initialize searchText state from localStorage
+  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
   const [isInputOpen, setIsInputOpen] = useState(false); 
   const searchInputRef = useRef(null);
   const [isHovering, setIsHovering] = useState(false);
@@ -51,7 +52,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   };
 
   const handleSearchChange = (e) => {
-    setSearchText(e.target.value);
+    const newValue = e.target.value;
+    setSearchText(newValue);
+    // Save the search text to localStorage
+    localStorage.setItem('searchText', newValue);
   };
 
   const handleMouseEnter = () => {
@@ -124,15 +128,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       <div className='beat-list__search-container' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isInputOpen ? 'beat-list__action-button--active' : ''}`} onClick={toggleSearchVisibility}>
             <IoSearchSharp/>
-          </div>
-          <input
-          ref={searchInputRef}
-            type="text"
-            placeholder={isSearchVisible ? "Search beats..." : ""}
-            value={searchText}
-            onChange={handleSearchChange}
-            className={`beat-list__search-input ${isSearchVisible ? 'visible' : ''}`}
-          />
+        </div>
+        <input
+        ref={searchInputRef}
+          type="text"
+          placeholder={isSearchVisible ? "Search beats..." : ""}
+          value={searchText}
+          onChange={handleSearchChange}
+          className={`beat-list__search-input ${isSearchVisible ? 'visible' : ''}`}
+        />
           {isSearchVisible && <span className="tooltip tooltip--left">Search</span>}
         </div>
       </div>
