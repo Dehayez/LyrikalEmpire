@@ -12,7 +12,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, 
   hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue
+  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
@@ -110,7 +110,37 @@ const BeatRow = ({
       handleUpdate(beat.id, 'keywords', selectedKeyword);
     }
   }, [selectedKeyword]);
+
+  const Highlight = ({ text = '', highlight = '', children }) => {
+    if (!highlight.trim()) {
+      return children;
+    }
   
+    const regex = new RegExp(`(${highlight})`, 'gi');
+    const parts = text.split(regex);
+  
+    const highlightStyle = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      color: 'transparent',
+      pointerEvents: 'none',
+      width: '100%',
+      whiteSpace: 'pre-wrap', 
+      margin: '10px',
+    };
+  
+    return (
+      <div style={{ position: 'relative' }}>
+        <span style={highlightStyle}>
+          {parts.filter(String).map((part, i) => 
+            regex.test(part) ? <mark key={i} style={{ color: '#141414', backgroundColor: '#FFCC44' }}>{part}</mark> : part
+          )}
+        </span>
+        {children}
+      </div>
+    );
+  };
 
   return (
     <tr
@@ -151,15 +181,17 @@ const BeatRow = ({
         </div>
       </td>
         <td>
+        <Highlight text={beat.title} highlight={searchText} >
           <input 
             className='beat-row__input beat-row__input--title'
             type="text"
             defaultValue={beat.title} 
-            onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+            onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)}
             onClick={(e) => e.stopPropagation()}
             spellCheck="false"
           />
+          </Highlight>
         </td>
         <td className="beat-row__data">
           <SelectableInput
