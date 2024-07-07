@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
-import { IoSearchSharp } from "react-icons/io5";
+import { IoSearchSharp, IoCloseSharp } from "react-icons/io5";
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import './BeatList.scss';
@@ -17,7 +17,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const searchInputRef = useRef(null);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
   const [isHovering, setIsHovering] = useState(false);
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
@@ -49,14 +49,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     const newValue = e.target.value;
     setSearchText(newValue);
     localStorage.setItem('searchText', newValue);
-  };
-
-  const handleMouseEnter = () => setIsHovering(true);
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-    if (document.activeElement !== searchInputRef.current) {
-      setIsSearchVisible(false);
-    }
   };
 
   const filteredAndSortedBeats = sortedBeats.filter(beat => {
@@ -103,18 +95,26 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       <div className='beat-list__header'>
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
-          <div className='beat-list__search-container' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+          <div className='beat-list__search-container'>
             <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--active' : ''}`} onClick={toggleSearchVisibility}>
               <IoSearchSharp />
             </div>
             <input
               ref={searchInputRef}
               type="text"
-              placeholder={isSearchVisible ? "Search beats..." : ""}
+              placeholder={isSearchVisible ? "Search tracks" : ""}
               value={searchText}
               onChange={handleSearchChange}
               className={`beat-list__search-input ${isSearchVisible ? 'visible' : ''}`}
             />
+            {searchText && (
+              <div className="beat-list__action-button beat-list__action-button--clear" onClick={() => {
+                setSearchText('');
+                localStorage.setItem('searchText', '');
+              }}>
+                <IoCloseSharp />
+              </div>
+            )}
           </div>
         </div>
       </div>
