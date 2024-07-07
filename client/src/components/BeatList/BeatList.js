@@ -32,7 +32,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
 
   useEffect(() => {
     if (isSearchVisible) {
-      searchInputRef.current?.focus(); // Step 3: Focus the input when it becomes visible
+      searchInputRef.current?.focus();
     }
   }, [isSearchVisible]);
 
@@ -58,10 +58,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     setIsHovering(true);
   };
   
-  // Step 3: Handle Mouse Leave
   const handleMouseLeave = () => {
     setIsHovering(false);
-    // Close the input if it's not focused and the mouse leaves the container
     if (document.activeElement !== searchInputRef.current) {
       setIsSearchVisible(false);
       setIsInputOpen(false);
