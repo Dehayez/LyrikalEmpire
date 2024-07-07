@@ -163,6 +163,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
                 activeContextMenu={activeContextMenu}
                 setActiveContextMenu={setActiveContextMenu}
                 addToCustomQueue={addToCustomQueue}
+                searchText={searchText}
               />
             ))}
             </tbody>
