@@ -107,7 +107,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
               onChange={handleSearchChange}
               className={`beat-list__search-input ${isSearchVisible ? 'visible' : ''}`}
             />
-            {searchText && (
+           {isSearchVisible && searchText && (
               <div className="beat-list__action-button beat-list__action-button--clear" onClick={() => {
                 setSearchText('');
                 localStorage.setItem('searchText', '');

@@ -25,11 +25,7 @@
     z-index: 1;
     
     &:hover {
-      transform: scale(1.04) translateY(-50%);
-    }
-
-    &:active {
-      transform: scale(1);
+      transform: scale(1) translateY(-50%);
     }
     
     &--search {
@@ -42,6 +38,10 @@
       margin-right: 22px;
       margin-top: 2px;
       cursor: pointer;
+      color: $color-gray-light;
+      &:hover {
+        color: $color-white;
+      }
     }
   }
   
