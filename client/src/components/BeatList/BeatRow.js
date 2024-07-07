@@ -24,6 +24,7 @@ const BeatRow = ({
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
   const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
+  const [isInputFocused, setInputFocused] = useState(false);
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -181,18 +182,22 @@ const BeatRow = ({
         </div>
       </td>
         <td>
-        <Highlight text={beat.title} highlight={searchText} >
+          {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
+          
           <input 
             className='beat-row__input beat-row__input--title'
             type="text"
             defaultValue={beat.title} 
+            onFocus={() => setInputFocused(true)}
+            onBlur={(e) => {
+              setInputFocused(false);
+              handleUpdate(beat.id, 'title', e.target.value);
+            }}
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onBlur={(e) => handleUpdate(beat.id, 'title', e.target.value)}
             onClick={(e) => e.stopPropagation()}
             spellCheck="false"
           />
-          </Highlight>
-        </td>
+      </td>
         <td className="beat-row__data">
           <SelectableInput
               value={selectedGenre}
