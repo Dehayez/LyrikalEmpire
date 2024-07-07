@@ -113,6 +113,48 @@ const BeatRow = ({
     }
   }, [selectedKeyword]);
 
+    // Handler to set input focus state to true
+    const handleFocus = () => setInputFocused(true);
+
+    // Handler to set input focus state to false
+    const handleBlur = (id, field, value) => {
+      setInputFocused(false);
+      handleUpdate(id, field, value);
+    };
+
+    // For Genre input
+  const handleGenreInputFocus = (e) => {
+    handleFocus(); // Call the generic focus handler
+    handleGenreFocus(e); // Call the specific focus handler for genre
+  };
+
+  const handleGenreInputBlur = (e) => {
+    setInputFocused(false); // Call the generic blur handler
+    handleGenreBlur(e); // Call the specific blur handler for genre
+  };
+
+  // For Mood input
+  const handleMoodInputFocus = (e) => {
+    handleFocus(); // Call the generic focus handler
+    handleMoodFocus(e); // Call the specific focus handler for mood
+  };
+
+  const handleMoodInputBlur = (e) => {
+    setInputFocused(false); // Call the generic blur handler
+    handleMoodBlur(e); // Call the specific blur handler for mood
+  };
+
+  // For Keywords input
+  const handleKeywordInputFocus = (e) => {
+    handleFocus(); // Call the generic focus handler
+    handleKeywordFocus(e); // Call the specific focus handler for keywords
+  };
+
+  const handleKeywordInputBlur = (e) => {
+    setInputFocused(false); // Call the generic blur handler
+    handleKeywordBlur(e); // Call the specific blur handler for keywords
+  };
+
   return (
     <tr
       className={beatRowClasses}
@@ -157,32 +199,29 @@ const BeatRow = ({
           className='beat-row__input beat-row__input--title'
           type="text"
           defaultValue={beat.title} 
-          onFocus={() => setInputFocused(true)}
-          onBlur={(e) => {
-            setInputFocused(false);
-            handleUpdate(beat.id, 'title', e.target.value);
-          }}
+          onFocus={handleFocus}
+          onBlur={(e) => handleBlur(beat.id, 'title', e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
           onClick={(e) => e.stopPropagation()}
           spellCheck="false"
         />
       </td>
-        <td className="beat-row__data">
-          <Highlight text={beat.genre || ''} highlight={searchText || ''} />
-          <SelectableInput
-              value={selectedGenre}
-              onChange={handleGenreChange}
-              onFocus={handleGenreFocus}
-              onBlur={handleGenreBlur}
-              showItems={showGenres}
-              filteredItems={filteredGenres}
-              handleItemToggle={handleGenreToggle}
-              className='beat-row__input' 
-              onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-              onClick={(e) => e.stopPropagation()}
-              spellCheck="false"
-            />
-        </td>
+      <td className="beat-row__data">
+        {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
+        <SelectableInput
+            value={selectedGenre}
+            onChange={handleGenreChange}
+            onFocus={handleGenreInputFocus}
+            onBlur={handleGenreInputBlur}
+            showItems={showGenres}
+            filteredItems={filteredGenres}
+            handleItemToggle={handleGenreToggle}
+            className='beat-row__input' 
+            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+            onClick={(e) => e.stopPropagation()}
+            spellCheck="false"
+          />
+      </td>
         <td className="beat-row__data">
           <input 
             className='beat-row__input beat-row__input--bpm' 
@@ -220,11 +259,12 @@ const BeatRow = ({
           </div>
         </td>
         <td className="beat-row__data">
+          {!isInputFocused && <Highlight text={beat.mood || ''} highlight={searchText || ''} />}
           <SelectableInput
             value={selectedMood}
             onChange={handleMoodChange}
-            onFocus={handleMoodFocus}
-            onBlur={handleMoodBlur}
+            onFocus={handleMoodInputFocus}
+            onBlur={handleMoodInputBlur}
             showItems={showMoods}
             filteredItems={filteredMoods}
             handleItemToggle={handleMoodToggle}
@@ -235,11 +275,12 @@ const BeatRow = ({
           />
         </td>
         <td className="beat-row__data">
+          {!isInputFocused && <Highlight text={beat.keywords || ''} highlight={searchText || ''} />}
           <SelectableInput
             value={selectedKeyword}
             onChange={handleKeywordChange}
-            onFocus={handleKeywordFocus}
-            onBlur={handleKeywordBlur}
+            onFocus={handleKeywordInputFocus}
+            onBlur={handleKeywordInputBlur}
             showItems={showKeywords}
             filteredItems={filteredKeywords}
             handleItemToggle={handleKeywordToggle}
