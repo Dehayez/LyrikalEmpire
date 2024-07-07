@@ -22,9 +22,27 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const [isHovering, setIsHovering] = useState(false);
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
+  const containerRef = useRef(null);
+  const [headerOpacity, setHeaderOpacity] = useState(1);
+
 
   useEffect(() => {
     fetchBeats(handleUpdateAll);
+  }, []);
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const maxScroll = 50; 
+      const scrollPosition = containerRef.current.scrollTop;
+      const opacity = Math.max(1 - scrollPosition / maxScroll, 0);
+      setHeaderOpacity(opacity);
+    };
+
+    const container = containerRef.current;
+    container.addEventListener('scroll', handleScroll);
+
+    return () => container.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -101,9 +119,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   };
 
   return (
-    <div className='beat-list'>
+    <div ref={containerRef} className="beat-list" style={{ overflowY: 'scroll', height: '100%' }}>
       <div className='beat-list__buffer'/>
-      <div className='beat-list__header'>
+      <div className="beat-list__header" style={{ opacity: headerOpacity }}>
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
