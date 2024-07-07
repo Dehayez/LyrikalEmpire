@@ -13,14 +13,60 @@
 
   &__actions {
     display: flex;
+    align-items: center;
   }
 
   &__action-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 1;
+    
+    &:hover {
+      transform: scale(1.04) translateY(-50%);
+    }
 
     &:active {
       transform: scale(1);
     }
+    
+    &--search {
+      left: 0;
+      margin-left: 6px;
+    }
+    
+    &--clear {
+      right: 0;
+      margin-right: 22px;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+  }
   
+  &__search-container {
+    position: relative;
+    width: max-content;
+  }
+  
+  &__search-input {
+    width: 0;
+    padding-left: 40px;
+    visibility: hidden;
+    opacity: 0;
+    transition: width 0.3s ease, opacity 0.2s, visibility 0.2s;
+  
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 1px $color-gray;
+    }
+    &.visible {
+      width: 200px;
+      visibility: visible;
+      opacity: 1;
+      margin-right: 16px;
+    }
   }
 
   &__table {
@@ -32,6 +78,14 @@
     width: max-content;
     border: none;
     border-collapse: collapse;
+
+  &__table-head:hover {
+    background-color: #202020;
+  }
+  }
+  
+  &__empty {
+    text-align: center;
   }
 }
 
@@ -64,75 +118,4 @@
 
 .resizable-header.dragging::after {
   border-right: 4px solid #CCC;
-}
-
-.beat-list__table-head:hover {
-  background-color: #202020;
-}
-
-.beat-list__warning {
-  text-align: center;
-}
-
-.beat-list__search-container {
-  position: relative;
-  width: max-content;
-}
-
-.beat-list__search-input {
-  width: 0;
-  padding-left: 40px;
-  visibility: hidden;
-  opacity: 0;
-  transition: width 0.3s ease, opacity 0.2s, visibility 0.2s;
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 1px $color-gray;
-  }
-}
-
-.beat-list__search-input.visible {
-  width: 200px;
-  visibility: visible;
-  opacity: 1;
-  margin-right: 16px;
-}
-
-.beat-list__actions {
-  display: flex;
-  align-items: center;
-}
-
-.tooltip {
-  visibility: hidden;
-}
-
-.beat-list__search-input.visible + .tooltip {
-  visibility: visible;
-}
-
-.beat-list__action-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  z-index: 1;
-
-  &--search {
-    left: 0;
-    margin-left: 6px;
-  }
-
-  &--clear {
-    right: 0;
-    margin-right: 22px;
-    margin-top: 2px;
-    cursor: pointer;
-  }
-
-  &:hover {
-    transform: scale(1.04) translateY(-50%);
-  }
 }
