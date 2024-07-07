@@ -1,0 +1,13 @@
+.highlight {
+    position: relative;
+    &-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: transparent;
+        pointer-events: none;
+        width: 100%;
+        white-space: pre-wrap;
+        margin: 10px;
+    }
+}

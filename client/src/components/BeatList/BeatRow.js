@@ -6,6 +6,7 @@ import { getGenres, getKeywords, getMoods } from '../../services';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
+import { Highlight } from '../Highlight';
 import { SelectableInput } from '../Inputs';
 import './BeatRow.scss';
 
@@ -112,37 +113,6 @@ const BeatRow = ({
     }
   }, [selectedKeyword]);
 
-  const Highlight = ({ text = '', highlight = '', children }) => {
-    if (!highlight.trim()) {
-      return children;
-    }
-  
-    const regex = new RegExp(`(${highlight})`, 'gi');
-    const parts = text.split(regex);
-  
-    const highlightStyle = {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      color: 'transparent',
-      pointerEvents: 'none',
-      width: '100%',
-      whiteSpace: 'pre-wrap', 
-      margin: '10px',
-    };
-  
-    return (
-      <div style={{ position: 'relative' }}>
-        <span style={highlightStyle}>
-          {parts.filter(String).map((part, i) => 
-            regex.test(part) ? <mark key={i} style={{ color: '#141414', backgroundColor: '#FFCC44' }}>{part}</mark> : part
-          )}
-        </span>
-        {children}
-      </div>
-    );
-  };
-
   return (
     <tr
       className={beatRowClasses}
@@ -183,7 +153,6 @@ const BeatRow = ({
       </td>
         <td>
           {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
-          
           <input 
             className='beat-row__input beat-row__input--title'
             type="text"
