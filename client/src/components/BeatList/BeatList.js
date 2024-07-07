@@ -27,6 +27,22 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     fetchBeats(handleUpdateAll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchInputRef.current && !searchInputRef.current.contains(event.target) && isSearchVisible && !searchText) {
+        setIsSearchVisible(false);
+      }
+    };
+  
+    // Add click event listener
+    document.addEventListener('mousedown', handleClickOutside);
+  
+    // Cleanup the event listener
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchVisible, searchText]);
+
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
     setIsSearchVisible(willBeVisible);
@@ -89,7 +105,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       <div className='beat-list__header'>
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
-          <div className='beat-list__search-container'>
+          <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
             <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--active' : ''}`} onClick={toggleSearchVisibility}>
               <IoSearchSharp />
             </div>
