@@ -104,16 +104,6 @@
   align-items: center;
 }
 
-.beat-list__action-button {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
 .tooltip {
   visibility: hidden;
 }
@@ -124,25 +114,25 @@
 
 .beat-list__action-button {
   position: absolute;
-  left: 0;
   top: 50%;
   transform: translateY(-50%);
-  margin-left: 6px;
-  background: transparent;
-  border: none;
   cursor: pointer;
   transition: transform 0.2s ease;
   z-index: 1;
 
-  &--active {
-    color: $color-yellow;
-    &:hover {
-      color: $color-yellow-light;
-    }
+  &--search {
+    left: 0;
+    margin-left: 6px;
+  }
+
+  &--clear {
+    right: 0;
+    margin-right: 22px;
+    margin-top: 2px;
+    cursor: pointer;
   }
 
   &:hover {
     transform: scale(1.04) translateY(-50%);
   }
 }
-
