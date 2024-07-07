@@ -27,12 +27,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     fetchBeats(handleUpdateAll);
   }, []);
 
-  useEffect(() => {
-    if (isSearchVisible) {
-      searchInputRef.current?.focus();
-    }
-  }, [isSearchVisible]);
-
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
     setIsSearchVisible(willBeVisible);
