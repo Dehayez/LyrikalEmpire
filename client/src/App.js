@@ -33,12 +33,20 @@ function App() {
   const hoverRefRight = useRef(false);
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isLeftPanelVisible') || 'false'));
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isRightPanelVisible') || 'false'));
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [droppedFiles, setDroppedFiles] = useState([]);
   const addBeatFormRef = useRef();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [activeUploads, setActiveUploads] = useState(0);
+  const [sortConfig, setSortConfig] = useState(() => {
+    const savedSortConfig = localStorage.getItem('sortConfig');
+    return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };
+  });
+
+  // Save sortConfig to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('sortConfig', JSON.stringify(sortConfig));
+  }, [sortConfig]);
 
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
