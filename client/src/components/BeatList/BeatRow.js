@@ -151,23 +151,24 @@ const BeatRow = ({
           />
         </div>
       </td>
-        <td>
-          {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
-          <input 
-            className='beat-row__input beat-row__input--title'
-            type="text"
-            defaultValue={beat.title} 
-            onFocus={() => setInputFocused(true)}
-            onBlur={(e) => {
-              setInputFocused(false);
-              handleUpdate(beat.id, 'title', e.target.value);
-            }}
-            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()}
-            spellCheck="false"
-          />
+      <td>
+        {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
+        <input 
+          className='beat-row__input beat-row__input--title'
+          type="text"
+          defaultValue={beat.title} 
+          onFocus={() => setInputFocused(true)}
+          onBlur={(e) => {
+            setInputFocused(false);
+            handleUpdate(beat.id, 'title', e.target.value);
+          }}
+          onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+          onClick={(e) => e.stopPropagation()}
+          spellCheck="false"
+        />
       </td>
         <td className="beat-row__data">
+          <Highlight text={beat.genre || ''} highlight={searchText || ''} />
           <SelectableInput
               value={selectedGenre}
               onChange={handleGenreChange}
