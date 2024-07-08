@@ -27,6 +27,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const containerRef = useRef(null);
   const [headerOpacity, setHeaderOpacity] = useState(1);
 
+  const filteredAndSortedBeats = sortedBeats.filter(beat => {
+    const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
+    return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+  });
+
+  const handlePlayPause = (beat) => {
+    const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
+    onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
+  };
 
   useEffect(() => {
     fetchBeats(handleUpdateAll);
@@ -73,6 +82,19 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter' && selectedBeats.length > 0) {
+        handlePlayPause(selectedBeats[0]);
+      }
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
+        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedBeats, handlePlayPause]);
+
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
     setIsSearchVisible(willBeVisible);
@@ -90,29 +112,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     setSearchText(newValue);
     localStorage.setItem('searchText', newValue);
   };
-
-  const filteredAndSortedBeats = sortedBeats.filter(beat => {
-    const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
-    return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
-  });
-
-  const handlePlayPause = (beat) => {
-    const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
-    onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'Enter' && selectedBeats.length > 0) {
-        handlePlayPause(selectedBeats[0]);
-      }
-      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
-        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBeats, handlePlayPause]);
 
   const handleConfirm = async () => {
     if (confirmModalState.beatsToDelete.length > 0) {
