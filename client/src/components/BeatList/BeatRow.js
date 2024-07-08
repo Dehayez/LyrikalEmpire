@@ -150,6 +150,10 @@ const BeatRow = ({
     handleKeywordBlur(e);
   };
 
+  useEffect(() => {
+    console.log(isEditToggled);
+  }, [isEditToggled]);
+
   return (
     <tr
       className={beatRowClasses}
@@ -197,7 +201,8 @@ const BeatRow = ({
           onFocus={handleFocus}
           onBlur={(e) => handleBlur(beat.id, 'title', e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-          onClick={(e) => e.stopPropagation()}
+          onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
+          onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
           spellCheck="false"
         />
       </td>
