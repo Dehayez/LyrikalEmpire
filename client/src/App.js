@@ -43,7 +43,6 @@ function App() {
     return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };
   });
 
-  // Save sortConfig to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('sortConfig', JSON.stringify(sortConfig));
   }, [sortConfig]);
@@ -150,7 +149,6 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Drag and drop handlers
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDraggingOver(true);
@@ -187,7 +185,6 @@ function App() {
     setIsDraggingOver(false);
   };
 
-  // Clear files after submission
   const clearDroppedFiles = () => {
     setDroppedFiles([]);
   };
