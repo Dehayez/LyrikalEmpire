@@ -40,10 +40,27 @@
     &:hover {
       transform: scale(1) translateY(-50%);
     }
+
+    &--edit {
+      margin-right: 12px;
+    }
     
     &--search {
       left: 0;
-      margin-left: 6px;
+      height: 100%;
+      border-radius: 4px;
+      padding: 0 6px;
+
+      &--closed {
+        &:hover {
+          background-color: $color-gray-dark;
+        }
+      }
+
+      &--active {
+        color: $color-yellow;
+      }
+
     }
     
     &--clear {
