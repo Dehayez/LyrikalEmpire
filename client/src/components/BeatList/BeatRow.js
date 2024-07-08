@@ -113,46 +113,41 @@ const BeatRow = ({
     }
   }, [selectedKeyword]);
 
-    // Handler to set input focus state to true
     const handleFocus = () => setInputFocused(true);
 
-    // Handler to set input focus state to false
     const handleBlur = (id, field, value) => {
       setInputFocused(false);
       handleUpdate(id, field, value);
     };
 
-    // For Genre input
   const handleGenreInputFocus = (e) => {
-    handleFocus(); // Call the generic focus handler
-    handleGenreFocus(e); // Call the specific focus handler for genre
+    handleFocus();
+    handleGenreFocus(e);
   };
 
   const handleGenreInputBlur = (e) => {
-    setInputFocused(false); // Call the generic blur handler
-    handleGenreBlur(e); // Call the specific blur handler for genre
+    setInputFocused(false);
+    handleGenreBlur(e);
   };
 
-  // For Mood input
   const handleMoodInputFocus = (e) => {
-    handleFocus(); // Call the generic focus handler
-    handleMoodFocus(e); // Call the specific focus handler for mood
+    handleFocus();
+    handleMoodFocus(e);
   };
 
   const handleMoodInputBlur = (e) => {
-    setInputFocused(false); // Call the generic blur handler
-    handleMoodBlur(e); // Call the specific blur handler for mood
+    setInputFocused(false);
+    handleMoodBlur(e);
   };
 
-  // For Keywords input
   const handleKeywordInputFocus = (e) => {
-    handleFocus(); // Call the generic focus handler
-    handleKeywordFocus(e); // Call the specific focus handler for keywords
+    handleFocus();
+    handleKeywordFocus(e);
   };
 
   const handleKeywordInputBlur = (e) => {
-    setInputFocused(false); // Call the generic blur handler
-    handleKeywordBlur(e); // Call the specific blur handler for keywords
+    setInputFocused(false);
+    handleKeywordBlur(e);
   };
 
   return (
