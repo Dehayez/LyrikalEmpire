@@ -132,10 +132,21 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
           <div className='icon-button beat-list__action-button--edit' onClick={toggleEdit}>
-            {isEditToggled ? <IoPencil/> : <IoHeadsetSharp/>}
+            {isEditToggled ? 
+            <>
+              <span className="tooltip tooltip--left tooltip--edit">Listen mode</span>
+              <IoPencil/> 
+            </>
+            : 
+            <>
+              <span className="tooltip tooltip--left tooltip--listen">Edit mode</span>
+              <IoHeadsetSharp/>
+            </>
+            }
           </div>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
             <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
+              <span className="tooltip tooltip--left tooltip--search">Search in tracks</span>
               <IoSearchSharp />
             </div>
             <input
