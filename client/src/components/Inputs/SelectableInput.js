@@ -6,7 +6,6 @@ export const SelectableInput = ({
 }) => {
   const [selectedValues, setSelectedValues] = useState(value.split(',').map(item => item.trim()));
   const [focusedItemIndex, setFocusedItemIndex] = useState(-1);
-  // New state to manage visibility based on hover and click
   const [isListVisible, setIsListVisible] = useState(false);
 
   const handleKeyDown = (e) => {
@@ -29,7 +28,7 @@ export const SelectableInput = ({
         }
         onChange({ target: { value: newSelectedValues.join(', ') } });
         setFocusedItemIndex(-1);
-        setIsListVisible(false); // Hide list after selection
+        setIsListVisible(false);
       }
     }
   };
