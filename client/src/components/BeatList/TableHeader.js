@@ -37,7 +37,7 @@ const TableHeader = ({ onSort, sortConfig, isEditToggled }) => {
           <th key={column}
               onMouseDown={() => handleMouseEvents('down', column)}
               onMouseUp={() => handleMouseEvents('up', column)}
-              className={`table-header__cell ${isDragging ? 'no-transition' : ''} ${column === 'title' ? 'special-class' : ''} ${!isEditToggled && column !== 'title' ? 'hide-column' : ''}`}>
+              className={`table-header__cell ${isDragging ? 'no-transition' : ''} ${isEditToggled || column === 'title' ? 'special-class' : ''}`}>
             {column.charAt(0).toUpperCase() + column.slice(1)}
             {sortConfig.key === column && (
               <span className="table-header__sort-icon">
