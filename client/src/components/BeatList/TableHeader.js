@@ -34,19 +34,17 @@ const TableHeader = ({ onSort, sortConfig, isEditToggled }) => {
       <tr>
         <th className={`table-header__cell table-header__cell--first ${isDragging ? 'no-transition' : ''}`}>#</th>
         {columns.map(column => (
-          (isEditToggled || column === 'title') && (
-            <th key={column}
-                onMouseDown={() => handleMouseEvents('down', column)}
-                onMouseUp={() => handleMouseEvents('up', column)}
-                className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-              {column.charAt(0).toUpperCase() + column.slice(1)}
-              {sortConfig.key === column && (
-                <span className="table-header__sort-icon">
-                  {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
-                </span>
-              )}
-            </th>
-          )
+          <th key={column}
+              onMouseDown={() => handleMouseEvents('down', column)}
+              onMouseUp={() => handleMouseEvents('up', column)}
+              className={`table-header__cell ${isDragging ? 'no-transition' : ''} ${column === 'title' ? 'special-class' : ''} ${!isEditToggled && column !== 'title' ? 'hide-column' : ''}`}>
+            {column.charAt(0).toUpperCase() + column.slice(1)}
+            {sortConfig.key === column && (
+              <span className="table-header__sort-icon">
+                {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
+              </span>
+            )}
+          </th>
         ))}
       </tr>
     </thead>

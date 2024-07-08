@@ -15,12 +15,12 @@ const fetchBeats = async (handleUpdateAll) => {
 const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
-  const [isEditToggled, setIsEditToggled] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
+  const [isEditToggled, setIsEditToggled] = useState(() => {const saved = localStorage.getItem('isEditToggled'); return saved === null ? true : saved === 'true';});
   const [isHovering, setIsHovering] = useState(false);
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
@@ -40,7 +40,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   useEffect(() => {
     fetchBeats(handleUpdateAll);
   }, []);
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,6 +81,12 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats, handlePlayPause]);
+
+  useEffect(() => {
+    localStorage.setItem('isEditToggled', isEditToggled);
+  }, [isEditToggled]);
+
+ 
 
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
