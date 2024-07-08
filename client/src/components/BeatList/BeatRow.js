@@ -202,8 +202,6 @@ const BeatRow = ({
           spellCheck="false"
         />
       </td>
-      {isEditToggled && (
-        <>
       <td className="beat-row__data">
         {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
         <SelectableInput
@@ -216,7 +214,8 @@ const BeatRow = ({
             handleItemToggle={handleGenreToggle}
             className='beat-row__input' 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
+            onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
             spellCheck="false"
           />
       </td>
@@ -227,7 +226,8 @@ const BeatRow = ({
             defaultValue={beat.bpm} 
             onKeyDown={handleOnKeyDown}
             onBlur={handleBpmBlur}
-            onClick={(e) => e.stopPropagation()}
+            onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
+            onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
             spellCheck="false"
           />
         </td>
@@ -240,7 +240,8 @@ const BeatRow = ({
                 onChange={handleTierlistChange}
                 onFocus={(e) => e.target.style.color = 'white'}
                 onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
-                onClick={(e) => e.stopPropagation()}
+                onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
+                onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
                 style={{color: tierlist ? 'white' : 'grey'}}
               >
                 <option value="G">G</option>
@@ -268,7 +269,8 @@ const BeatRow = ({
             handleItemToggle={handleMoodToggle}
             className='beat-row__input' 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
+            onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
             spellCheck="false"
           />
         </td>
@@ -284,13 +286,11 @@ const BeatRow = ({
             handleItemToggle={handleKeywordToggle}
             className='beat-row__input' 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
+            onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
             spellCheck="false"
           />
         </td> 
-      </>
-      )}
-        
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">
          <ContextMenu

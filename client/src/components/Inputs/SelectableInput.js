@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Inputs.scss';
 
 export const SelectableInput = ({
-  label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onClick, spellCheck
+  label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onClick, spellCheck, onMouseDown
 }) => {
   const [selectedValues, setSelectedValues] = useState(value.split(',').map(item => item.trim()));
   const [focusedItemIndex, setFocusedItemIndex] = useState(-1);
@@ -54,7 +54,6 @@ export const SelectableInput = ({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isListVisible]);
 
-  // Modified onClick to show the list
   const handleInputClick = (e) => {
     onClick && onClick(e);
     setIsListVisible(true);
@@ -76,6 +75,7 @@ export const SelectableInput = ({
         onMouseEnter={() => setIsListVisible(true)}
         onMouseLeave={() => setIsListVisible(false)}
         spellCheck={spellCheck}
+        onMouseDown={onMouseDown}
       />
       {showItems && isListVisible && (
         <div className="options-list"
