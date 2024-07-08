@@ -1,5 +1,5 @@
 import React from 'react';
-import { IoAdd } from 'react-icons/io5';
+import { IoAddSharp } from 'react-icons/io5';
 import './AddBeatButton.scss';
 
 function AddBeatButton({ setIsOpen, isRightPanelVisible, isRightDivVisible }) {
@@ -8,7 +8,7 @@ function AddBeatButton({ setIsOpen, isRightPanelVisible, isRightDivVisible }) {
   return (
     <button className={`icon-button icon-button--addbeat ${buttonClass}`} onClick={() => setIsOpen(true)}>
       <span className="tooltip tooltip--left tooltip__addbeat">Add Beat</span>
-      <IoAdd/>
+      <div className='icon-button'><IoAddSharp /></div>
     </button>
   );
 }
