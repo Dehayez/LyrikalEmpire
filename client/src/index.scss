@@ -49,7 +49,8 @@ td {
 }
 
 *::-webkit-scrollbar {
-  width: 8px;
+  width: 6px; // Ensure this is set to a non-zero value
+  height: 6px; // Add a height for horizontal scrollbar
   background-color: $color-gray-dark;
 }
 
@@ -61,7 +62,6 @@ td {
 *::-webkit-scrollbar-track {
   background-color: $color-gray-dark;
 }
-
 
 .icon-button {
   color: $color-gray-light;
