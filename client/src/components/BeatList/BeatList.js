@@ -18,6 +18,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const [isEditToggled, setIsEditToggled] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
+  const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
   const [isHovering, setIsHovering] = useState(false);
@@ -182,6 +183,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
                   addToCustomQueue={addToCustomQueue}
                   searchText={searchText}
                   isEditToggled={isEditToggled}
+                  setActiveContextMenu={setActiveContextMenu}
+                  activeContextMenu={activeContextMenu}
                 />
               ))}
             </tbody>
