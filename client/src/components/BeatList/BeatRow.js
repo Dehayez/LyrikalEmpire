@@ -150,10 +150,6 @@ const BeatRow = ({
     handleKeywordBlur(e);
   };
 
-  useEffect(() => {
-    console.log(isEditToggled);
-  }, [isEditToggled]);
-
   return (
     <tr
       className={beatRowClasses}

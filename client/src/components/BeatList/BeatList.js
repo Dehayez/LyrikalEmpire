@@ -126,10 +126,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     setIsEditToggled(!isEditToggled);
   };
 
-  useEffect(() => {
-    console.log('isEditToggled', isEditToggled)
-  }, [isEditToggled]);
-
   return (
     <div ref={containerRef} className="beat-list" style={{ overflowY: 'scroll', height: '100%' }}>
       <div className='beat-list__buffer'/>
