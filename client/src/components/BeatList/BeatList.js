@@ -15,6 +15,8 @@ const fetchBeats = async (handleUpdateAll) => {
 const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(window.innerWidth <= 768);
+  const [isEditToggled, setIsEditToggled] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
@@ -58,6 +60,18 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isSearchVisible, searchText]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileOrTablet(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
@@ -116,10 +130,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     }
   };
 
-  const [isEditToggled, setIsEditToggled] = useState(false);
   const toggleEdit = () => {
     setIsEditToggled(!isEditToggled);
   };
+
+  useEffect(() => {
+    console.log('isEditToggled', isEditToggled)
+  }, [isEditToggled]);
 
   return (
     <div ref={containerRef} className="beat-list" style={{ overflowY: 'scroll', height: '100%' }}>
@@ -127,9 +144,11 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       <div className="beat-list__header" style={{ opacity: headerOpacity }}>
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
-        <div className='icon-button beat-list__action-button--edit' onClick={toggleEdit}>
-          {isEditToggled ? <IoHeadsetSharp/> : <IoPencil/>}
-        </div>
+          {isMobileOrTablet && (
+            <div className='icon-button beat-list__action-button--edit' onClick={toggleEdit}>
+              {isEditToggled ? <IoPencil/> : <IoHeadsetSharp/>}
+            </div>
+          )}
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
             <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
               <IoSearchSharp />
