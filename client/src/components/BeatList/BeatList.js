@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
-import { IoSearchSharp, IoCloseSharp } from "react-icons/io5";
+import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp } from "react-icons/io5";
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import './BeatList.scss';
@@ -52,10 +52,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       }
     };
   
-    // Add click event listener
     document.addEventListener('mousedown', handleClickOutside);
   
-    // Cleanup the event listener
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -118,14 +116,22 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     }
   };
 
+  const [isEditToggled, setIsEditToggled] = useState(false);
+  const toggleEdit = () => {
+    setIsEditToggled(!isEditToggled);
+  };
+
   return (
     <div ref={containerRef} className="beat-list" style={{ overflowY: 'scroll', height: '100%' }}>
       <div className='beat-list__buffer'/>
       <div className="beat-list__header" style={{ opacity: headerOpacity }}>
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
+        <div className='icon-button beat-list__action-button--edit' onClick={toggleEdit}>
+          {isEditToggled ? <IoHeadsetSharp/> : <IoPencil/>}
+        </div>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
-            <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--active' : ''}`} onClick={toggleSearchVisibility}>
+            <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
               <IoSearchSharp />
             </div>
             <input
