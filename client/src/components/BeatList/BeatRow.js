@@ -13,7 +13,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, 
   hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText
+  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, isEditToggled
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
@@ -201,6 +201,8 @@ const BeatRow = ({
           spellCheck="false"
         />
       </td>
+      {isEditToggled && (
+        <>
       <td className="beat-row__data">
         {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
         <SelectableInput
@@ -285,6 +287,8 @@ const BeatRow = ({
             spellCheck="false"
           />
         </td> 
+      </>
+      )}
         
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">

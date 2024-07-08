@@ -3,7 +3,7 @@ import './TableHeader.scss';
 import { useResizableColumns } from '../../hooks';
 import { IoChevronUpSharp, IoChevronDownSharp } from 'react-icons/io5';
 
-const TableHeader = ({ onSort, sortConfig }) => {
+const TableHeader = ({ onSort, sortConfig, isEditToggled }) => {
   const tableRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [pressTimer, setPressTimer] = useState(null);
@@ -34,17 +34,19 @@ const TableHeader = ({ onSort, sortConfig }) => {
       <tr>
         <th className={`table-header__cell table-header__cell--first ${isDragging ? 'no-transition' : ''}`}>#</th>
         {columns.map(column => (
-          <th key={column}
-              onMouseDown={() => handleMouseEvents('down', column)}
-              onMouseUp={() => handleMouseEvents('up', column)}
-              className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-            {column.charAt(0).toUpperCase() + column.slice(1)}
-            {sortConfig.key === column && (
-              <span className="table-header__sort-icon">
-                {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
-              </span>
-            )}
-          </th>
+          (isEditToggled || column === 'title') && (
+            <th key={column}
+                onMouseDown={() => handleMouseEvents('down', column)}
+                onMouseUp={() => handleMouseEvents('up', column)}
+                className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
+              {column.charAt(0).toUpperCase() + column.slice(1)}
+              {sortConfig.key === column && (
+                <span className="table-header__sort-icon">
+                  {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
+                </span>
+              )}
+            </th>
+          )
         ))}
       </tr>
     </thead>

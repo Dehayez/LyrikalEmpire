@@ -15,7 +15,6 @@ const fetchBeats = async (handleUpdateAll) => {
 const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
-  const [isMobileOrTablet, setIsMobileOrTablet] = useState(window.innerWidth <= 768);
   const [isEditToggled, setIsEditToggled] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [hoveredBeat, setHoveredBeat] = useState(null);
@@ -69,18 +68,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isSearchVisible, searchText]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobileOrTablet(window.innerWidth <= 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    handleResize();
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -143,11 +130,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       <div className="beat-list__header" style={{ opacity: headerOpacity }}>
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
-          {isMobileOrTablet && (
-            <div className='icon-button beat-list__action-button--edit' onClick={toggleEdit}>
-              {isEditToggled ? <IoPencil/> : <IoHeadsetSharp/>}
-            </div>
-          )}
+          <div className='icon-button beat-list__action-button--edit' onClick={toggleEdit}>
+            {isEditToggled ? <IoPencil/> : <IoHeadsetSharp/>}
+          </div>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
             <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
               <IoSearchSharp />
@@ -174,7 +159,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       {beats.length > 0 && (
         <div>
           <table className='beat-list__table' ref={tableRef}>
-            <TableHeader onSort={onSort} sortConfig={sortConfig} />
+            <TableHeader onSort={onSort} sortConfig={sortConfig} isEditToggled={isEditToggled} />
             <tbody>
               {filteredAndSortedBeats.map((beat, index) => (
                 <BeatRow
@@ -196,6 +181,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
                   handleRightClick={handleRightClick}
                   addToCustomQueue={addToCustomQueue}
                   searchText={searchText}
+                  isEditToggled={isEditToggled}
                 />
               ))}
             </tbody>
