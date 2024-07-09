@@ -131,29 +131,26 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState(0);
   
-  // Modify handleTouchStart
   const handleTouchStart = (e) => {
     const touch = e.touches[0];
     setStartX(touch.clientX);
-    setIsDragging(true); // Start dragging
+    setIsDragging(true); 
   };
   
-  // Step 3: Create handleTouchMove
   const handleTouchMove = (e) => {
     if (!isDragging) return;
     const touch = e.touches[0];
     const currentPosition = touch.clientX;
     const movementX = currentPosition - startX;
     setDragPosition(movementX);
-    e.preventDefault(); // Prevent scrolling
+    e.preventDefault(); 
   };
   
-  // Modify handleTouchEnd
   const handleTouchEnd = (e) => {
     const touch = e.changedTouches[0];
     const endX = touch.clientX;
-    setIsDragging(false); // Stop dragging
-    setDragPosition(0); // Reset position
+    setIsDragging(false); 
+    setDragPosition(0); 
   
     if (startX - endX > 50) {
       onNext();
