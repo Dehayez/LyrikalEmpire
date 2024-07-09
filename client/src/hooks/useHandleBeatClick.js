@@ -44,17 +44,14 @@ export const useHandleBeatClick = (beats, tableRef, currentBeat) => {
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         let newIndex;
         if (selectedBeats.length === 0) {
-          // Check if there is a currentBeat, if so, start from there
           const currentBeatIndex = currentBeat ? beats.findIndex(b => b.id === currentBeat.id) : -1;
           if (currentBeatIndex !== -1) {
-            // There is a current beat playing, start from its index
             if (e.key === 'ArrowUp') {
               newIndex = currentBeatIndex - 1 >= 0 ? currentBeatIndex - 1 : beats.length - 1;
             } else if (e.key === 'ArrowDown') {
               newIndex = currentBeatIndex + 1 < beats.length ? currentBeatIndex + 1 : 0;
             }
           } else {
-            // No beats are selected and no current beat, select the first or last beat
             if (e.key === 'ArrowUp') {
               newIndex = beats.length - 1;
             } else if (e.key === 'ArrowDown') {
@@ -62,7 +59,6 @@ export const useHandleBeatClick = (beats, tableRef, currentBeat) => {
             }
           }
         } else {
-          // A beat is already selected, navigate from there
           const currentIndex = beats.findIndex(b => b.id === selectedBeats[0].id);
           if (e.key === 'ArrowUp') {
             newIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : beats.length - 1;
