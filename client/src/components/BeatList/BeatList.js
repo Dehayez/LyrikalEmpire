@@ -5,7 +5,7 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp } from "react-icons/io5";
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
-import { toast } from 'react-toastify';
+import { toast, Zoom } from 'react-toastify';
 import './BeatList.scss';
 
 const fetchBeats = async (handleUpdateAll) => {
@@ -132,12 +132,13 @@ const toggleEdit = () => {
   setTimeout(() => {
     toast(<>{newState ? 'Edit Mode Enabled' : 'Listen Mode Enabled'}</>, {
       position: "bottom-center",
-      autoClose: 50000, 
+      autoClose: 500, 
       hideProgressBar: true,
       closeButton: false,
       pauseOnFocusLoss: false,
       className: "toaster--edit-mode",
       icon: newState ? <IoPencil fontSize={30} /> : <IoHeadsetSharp fontSize={30} />,
+      transition: Zoom,
     });
   }, 250);
 };
