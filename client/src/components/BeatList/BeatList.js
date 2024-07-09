@@ -5,6 +5,7 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp } from "react-icons/io5";
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
+import { toast } from 'react-toastify';
 import './BeatList.scss';
 
 const fetchBeats = async (handleUpdateAll) => {
@@ -122,9 +123,24 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     }
   };
 
-  const toggleEdit = () => {
-    setIsEditToggled(!isEditToggled);
-  };
+const toggleEdit = () => {
+  const newState = !isEditToggled;
+  setIsEditToggled(newState);
+
+  toast.dismiss();
+
+  setTimeout(() => {
+    toast(<>{newState ? 'Edit Mode Enabled' : 'Listen Mode Enabled'}</>, {
+      position: "bottom-center",
+      autoClose: 50000, 
+      hideProgressBar: true,
+      closeButton: false,
+      pauseOnFocusLoss: false,
+      className: "toaster--edit-mode",
+      icon: newState ? <IoPencil fontSize={30} /> : <IoHeadsetSharp fontSize={30} />,
+    });
+  }, 250);
+};
 
   return (
     <div ref={containerRef} className="beat-list" style={{ overflowY: 'scroll', height: '100%' }}>
@@ -135,12 +151,12 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
           <div className='icon-button beat-list__action-button--edit' onClick={toggleEdit}>
             {isEditToggled ? 
             <>
-              <span className="tooltip tooltip--left tooltip--edit">Listen mode</span>
+              <span className="tooltip tooltip--left tooltip--edit">Listen Mode</span>
               <IoPencil/> 
             </>
             : 
             <>
-              <span className="tooltip tooltip--left tooltip--listen">Edit mode</span>
+              <span className="tooltip tooltip--left tooltip--listen">Edit Mode</span>
               <IoHeadsetSharp/>
             </>
             }
