@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { IoTrashBinSharp, IoAddSharp, IoListSharp } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
+import { isMobileOrTablet } from '../../utils';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
@@ -11,7 +12,7 @@ import { SelectableInput } from '../Inputs';
 import './BeatRow.scss';
 
 const BeatRow = ({
-  beat, index, handlePlayPause, handleUpdate, isPlaying, 
+  beat, index, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, 
   openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, isEditToggled
 }) => {
@@ -150,19 +151,31 @@ const BeatRow = ({
     handleKeywordBlur(e);
   };
 
+  const handleClick = () => {
+    if (onBeatClick) {
+      onBeatClick(beat);
+    }
+  };
+
   return (
     <tr
       className={beatRowClasses}
       key={beatRowClasses}
-      onMouseEnter={(e) => {
-        e.currentTarget.querySelector('button').style.opacity = 1;
-        setHoveredBeat(beat.id);
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.querySelector('button').style.opacity = 0;
-        setHoveredBeat(null);
-      }}
-      onClick={(e) => handleBeatClick(beat, e)}
+      {...(isMobileOrTablet() ? {
+        // Code for mobile or tablet
+        onClick: handleClick,
+      } : {
+        // Code for non-mobile or tablet
+        onMouseEnter: (e) => {
+          e.currentTarget.querySelector('button').style.opacity = 1;
+          setHoveredBeat(beat.id);
+        },
+        onMouseLeave: (e) => {
+          e.currentTarget.querySelector('button').style.opacity = 0;
+          setHoveredBeat(null);
+        },
+        onClick: (e) => handleBeatClick(beat, e),
+      })}
       onContextMenu={(e) => {
         e.preventDefault();
         handleRightClick(e, beat);

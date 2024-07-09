@@ -13,7 +13,7 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
@@ -214,6 +214,7 @@ const toggleEdit = () => {
                   isEditToggled={isEditToggled}
                   setActiveContextMenu={setActiveContextMenu}
                   activeContextMenu={activeContextMenu}
+                  onBeatClick={onBeatClick}
                 />
               ))}
             </tbody>
