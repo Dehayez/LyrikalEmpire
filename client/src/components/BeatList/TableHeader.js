@@ -27,7 +27,7 @@ const TableHeader = ({ onSort, sortConfig, isEditToggled }) => {
     }
   };
 
-  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keywords'];
+  const columns = ['title', 'genre', 'BPM', 'tierlist', 'mood', 'keywords'];
 
   return (
     <thead className="table-header" ref={tableRef}>
