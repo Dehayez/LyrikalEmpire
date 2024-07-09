@@ -1,6 +1,8 @@
+@use 'sass:math';
 @import '../../globals/variables';
+
 $indicator-size: 14px;
-$indicator-half-size: $indicator-size / 2;
+$indicator-half-size: math.div($indicator-size, 2);
 
 :root {
   --indicator-size: #{$indicator-size};

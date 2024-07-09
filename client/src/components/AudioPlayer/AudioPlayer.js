@@ -130,31 +130,35 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     console.log('isMobileOrTablet', isMobileOrTablet());
   }, []);
 
-  return (
+  return isMobileOrTablet() ? (
+    <div className="audio-player audio-player--mobile" id="audio-player">
+      {currentBeat && <p>{currentBeat.title}</p>}
+    </div>
+  ) : (
     <div className="audio-player" id="audio-player">
       <div style={{ flex: '1' }}>
         {currentBeat && <p>{currentBeat.title}</p>}
       </div>
       <div style={{ flex: '2' }}>
         <H5AudioPlayer
-        className="smooth-progress-bar"
-        autoPlayAfterSrcChange={true}
-        src={currentBeat ? currentBeat.audio : ''}
-        ref={playerRef}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        customProgressBarSection={[
-            RHAP_UI.CURRENT_TIME,
-            RHAP_UI.PROGRESS_BAR,
-            RHAP_UI.DURATION
-        ]}
-        customControlsSection={[
-          <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
-          <PrevButton onPrev={onPrev} />,
-          <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
-          <NextButton onNext={onNext} />,
-          <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
-        ]}
+          className="smooth-progress-bar"
+          autoPlayAfterSrcChange={true}
+          src={currentBeat ? currentBeat.audio : ''}
+          ref={playerRef}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          customProgressBarSection={[
+              RHAP_UI.CURRENT_TIME,
+              RHAP_UI.PROGRESS_BAR,
+              RHAP_UI.DURATION
+          ]}
+          customControlsSection={[
+            <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
+            <PrevButton onPrev={onPrev} />,
+            <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
+            <NextButton onNext={onNext} />,
+            <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
+          ]}
         />
       </div>
       <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
