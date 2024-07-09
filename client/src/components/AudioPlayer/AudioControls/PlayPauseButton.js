@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IoPlaySharp, IoPauseSharp } from "react-icons/io5";
 import './PlayPauseButton.scss';
 
-const PlayPauseButton = ({ isPlaying, setIsPlaying }) => {
+const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
   const [animatePlayPause, setAnimatePlayPause] = useState(false);
 
   const handlePlayPauseClick = () => {
@@ -55,7 +55,7 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying }) => {
 
   return (
     <button 
-      className={`icon-button play-pause ${animatePlayPause ? 'animate-scale' : ''}`} 
+      className={`icon-button play-pause ${animatePlayPause ? 'animate-scale' : ''} ${className}`}
       onMouseDown={() => setAnimatePlayPause(true)}
       onMouseUp={() => setAnimatePlayPause(false)}
       onMouseLeave={() => setAnimatePlayPause(false)}

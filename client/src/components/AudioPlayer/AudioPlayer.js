@@ -133,6 +133,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       {currentBeat && <p>{currentBeat.title}</p>}
+      <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} className="small" />
     </div>
   ) : (
     <div className="audio-player" id="audio-player">
