@@ -46,21 +46,18 @@ td {
 * {
   scrollbar-width: thin; 
   scrollbar-color: $color-gray-mid $color-gray-dark;
-}
-
-*::-webkit-scrollbar {
-  width: 6px; 
-  height: 6px;
-  background-color: $color-gray-dark;
+  z-index: 100;
 }
 
 *::-webkit-scrollbar-thumb {
   background-color: $color-gray-mid;
   border-radius: 4px;
+  z-index: 100;
 }
 
 *::-webkit-scrollbar-track {
   background-color: $color-gray-dark;
+  z-index: 100;
 }
 
 .icon-button {
