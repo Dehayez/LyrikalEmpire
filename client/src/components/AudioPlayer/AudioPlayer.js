@@ -9,6 +9,8 @@ let currentPlaying;
 
 const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat }) => {
   const playerRef = useRef();
+  const [startX, setStartX] = useState(0);
+
   const [volume, setVolume] = useState(() => {
     const savedVolume = localStorage.getItem('volume');
     return savedVolume !== null ? parseFloat(savedVolume) : 1.0;
@@ -126,16 +128,28 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, [])
 
-  useEffect(() => {
-    console.log('isMobileOrTablet', isMobileOrTablet());
-  }, []);
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    setStartX(touch.clientX);
+  };
+
+  const handleTouchEnd = (e) => {
+    const touch = e.changedTouches[0];
+    const endX = touch.clientX;
+
+    if (startX - endX > 50) {
+      onNext();
+    } else if (startX - endX < -50) {
+      onPrev();
+    }
+  };
 
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       {currentBeat && (
-        <div className="scrolling-title">
-          <p>{currentBeat.title}</p>
-        </div>
+        <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+          {currentBeat.title}
+        </p>
       )}
       <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} className="small" />
     </div>

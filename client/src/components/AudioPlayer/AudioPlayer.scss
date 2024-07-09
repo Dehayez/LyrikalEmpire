@@ -23,6 +23,10 @@ $indicator-half-size: math.div($indicator-size, 2);
     justify-content: space-between;
     padding-bottom: 36px;
   }
+
+  &__title {
+    width: 100%;
+  }
 }
 
 
