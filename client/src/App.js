@@ -394,6 +394,7 @@ useEffect(() => {
               onSort={onSort} 
               sortConfig={sortConfig}
               addToCustomQueue={addToCustomQueue}
+              onBeatClick={handleBeatClick} 
             />
             <AddBeatButton setIsOpen={setIsOpen} />
           </div>
