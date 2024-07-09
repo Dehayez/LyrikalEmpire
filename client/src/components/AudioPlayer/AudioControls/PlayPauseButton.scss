@@ -2,8 +2,8 @@
 
 .icon-button {
   &.play-pause {
-    background-color: #f0f0f0; 
-    color: #181818;
+    background-color: $color-white;
+    color: $color-black;
     border-radius: 50%; 
     padding: 12px;
     margin: 0 24px;
@@ -16,8 +16,11 @@
     &.small {
       background-color: transparent;
       color: $color-white;
-      padding: 0;
+      background-color: $color-black;
+      padding: 0 14px;
+      border-radius: 0;
       margin: 0;
+
 
       .tooltip {
         display: none;

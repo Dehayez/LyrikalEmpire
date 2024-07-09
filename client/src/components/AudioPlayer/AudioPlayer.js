@@ -128,15 +128,33 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, [])
 
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragPosition, setDragPosition] = useState(0);
+  
+  // Modify handleTouchStart
   const handleTouchStart = (e) => {
     const touch = e.touches[0];
     setStartX(touch.clientX);
+    setIsDragging(true); // Start dragging
   };
-
+  
+  // Step 3: Create handleTouchMove
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const currentPosition = touch.clientX;
+    const movementX = currentPosition - startX;
+    setDragPosition(movementX);
+    e.preventDefault(); // Prevent scrolling
+  };
+  
+  // Modify handleTouchEnd
   const handleTouchEnd = (e) => {
     const touch = e.changedTouches[0];
     const endX = touch.clientX;
-
+    setIsDragging(false); // Stop dragging
+    setDragPosition(0); // Reset position
+  
     if (startX - endX > 50) {
       onNext();
     } else if (startX - endX < -50) {
@@ -147,7 +165,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       {currentBeat && (
-        <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+       <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
           {currentBeat.title}
         </p>
       )}
