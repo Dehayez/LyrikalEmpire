@@ -17,6 +17,12 @@ $indicator-half-size: math.div($indicator-size, 2);
   padding: 0 20px;
   box-sizing: border-box;
   background-color: $color-black;
+
+  &--mobile {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 36px;
+  }
 }
 
 .rhap_container {
