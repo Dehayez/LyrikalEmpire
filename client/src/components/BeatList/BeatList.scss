@@ -149,3 +149,24 @@
 .resizable-header.dragging::after {
   border-right: 4px solid #CCC;
 }
+
+.toaster--edit-mode {
+  background-color: $color-white !important;
+  color: $color-black !important;
+  margin-bottom: 110px !important;
+  min-height: 48px !important;
+  justify-content: center !important;
+
+  .Toastify__toast-body {
+    flex: none;
+  }
+
+  .Toastify__toast-body {
+    margin: 0;
+    padding: 0 8px;
+  }
+}
+
+.Toastify__toast-container--bottom-center {
+  width: auto !important;
+}
