@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { isMobileOrTablet } from '../../utils';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
 import 'react-h5-audio-player/lib/styles.css';
@@ -124,6 +125,10 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       rhapProgressContainer.tabIndex = -1;
     }
   }, [])
+
+  useEffect(() => {
+    console.log('isMobileOrTablet', isMobileOrTablet());
+  }, []);
 
   return (
     <div className="audio-player" id="audio-player">
