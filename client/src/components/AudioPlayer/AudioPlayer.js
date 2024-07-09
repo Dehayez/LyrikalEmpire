@@ -132,7 +132,11 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
 
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
-      {currentBeat && <p>{currentBeat.title}</p>}
+      {currentBeat && (
+        <div className="scrolling-title">
+          <p>{currentBeat.title}</p>
+        </div>
+      )}
       <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} className="small" />
     </div>
   ) : (
