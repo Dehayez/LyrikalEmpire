@@ -6,17 +6,6 @@
     color: $color-white;
     text-align: left;
     z-index: 3;
-
-    &:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: -20px;
-        height: 20px;
-        background: linear-gradient(to bottom, rgba(24, 24, 24, 0), $color-black); 
-        z-index: 1;
-    }
   
     &__cell {
       position: relative;
