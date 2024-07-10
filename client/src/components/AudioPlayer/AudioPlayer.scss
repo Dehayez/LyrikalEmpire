@@ -10,6 +10,7 @@ $indicator-half-size: math.div($indicator-size, 2);
 }
 
 .audio-player {
+  position: relative;
   display: flex;
   align-items: center;
   width: 100%;
@@ -22,10 +23,36 @@ $indicator-half-size: math.div($indicator-size, 2);
     display: flex;
     justify-content: space-between;
     padding-bottom: 36px;
+
+    .rhap_container {
+      background-color: transparent;
+    }
+
+    .rhap_progress-bar {
+      border-radius: 0;
+    }
+
+    .rhap_controls-section,
+    .rhap_current-time,
+    .rhap_time {
+      display: none;
+    }
   }
 
   &__title {
     width: 100%;
+  }
+}
+
+.smooth-progress-bar--mobile {
+  position: absolute;
+  top: -12px;
+  left: 0;
+  width: 100vw;
+  padding: 0;
+
+  .rhap_progress-container {
+    margin: 0;
   }
 }
 
