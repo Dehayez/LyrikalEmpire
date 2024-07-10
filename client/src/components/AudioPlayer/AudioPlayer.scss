@@ -26,10 +26,13 @@ $indicator-half-size: math.div($indicator-size, 2);
 
     .rhap_container {
       background-color: transparent;
+    pointer-events: none;
+
     }
 
     .rhap_progress-bar {
       border-radius: 0;
+      height: 2px;
     }
 
     .rhap_controls-section,
@@ -46,7 +49,7 @@ $indicator-half-size: math.div($indicator-size, 2);
 
 .smooth-progress-bar--mobile {
   position: absolute;
-  top: -12px;
+  top: -16px;
   left: 0;
   width: 100vw;
   padding: 0;
