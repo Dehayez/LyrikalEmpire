@@ -132,7 +132,7 @@ const toggleEdit = () => {
   setTimeout(() => {
     toast(<>{newState ? 'Edit Mode Enabled' : 'Listen Mode Enabled'}</>, {
       position: "bottom-center",
-      autoClose: 500, 
+      autoClose: 1000, 
       hideProgressBar: true,
       closeButton: false,
       pauseOnFocusLoss: false,
