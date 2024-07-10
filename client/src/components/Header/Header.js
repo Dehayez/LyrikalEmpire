@@ -23,9 +23,9 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
     <header className="header">
       <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterLeft, onMouseLeave: handleMouseLeaveLeft } : {})} onClick={handleClickLeft} className="header__nav-menu-left">
         {
-          isLeftPanelVisible ? <div className='icon-button'><IoChevronBackSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--right">Unlock Panel</span>}</div> 
+          isLeftPanelVisible ? <div className={`icon-button ${isMobileOrTablet() ? 'icon-button--mobile' : ''}`}><IoChevronBackSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--right">Unlock Panel</span>}</div> 
           : isLeftDivVisible ? <div className='icon-button'><IoChevronForwardSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--right">Lock Panel</span>}</div> 
-          : <div className='icon-button'><IoMenuSharp /></div>
+          : <div className={`icon-button ${isMobileOrTablet() ? 'icon-button--mobile' : ''}`}><IoMenuSharp /></div>
         }
       </div>
       
@@ -37,9 +37,9 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
 
       <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterRight, onMouseLeave: handleMouseLeaveRight } : {})} onClick={handleClickRight} className="header__nav-menu-right">
         {
-          isRightPanelVisible ?  <div className='icon-button'><IoChevronForwardSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--left">Unlock Panel</span>}</div> 
+          isRightPanelVisible ?  <div className={`icon-button ${isMobileOrTablet() ? 'icon-button--mobile' : ''}`}><IoChevronForwardSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--left">Unlock Panel</span>}</div> 
           : isRightDivVisible ? <div className='icon-button'><IoChevronBackSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--left">Lock Panel</span>}</div>
-          : <div className='icon-button'><IoListSharp /></div>
+          : <div className={`icon-button ${isMobileOrTablet() ? 'icon-button--mobile' : ''}`}><IoListSharp /></div>
         }
       </div>
   </header>
