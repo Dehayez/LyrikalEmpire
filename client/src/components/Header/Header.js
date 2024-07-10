@@ -16,7 +16,7 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
 
   return (
     <header className="header">
-      <div onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft} onClick={handleClickLeft} className="header__nav-menu-left">
+      <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterLeft, onMouseLeave: handleMouseLeaveLeft } : {})} onClick={handleClickLeft} className="header__nav-menu-left">
         {
           isLeftPanelVisible ? <div className='icon-button'><IoChevronBackSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--right">Unlock Panel</span>}</div> 
           : isLeftDivVisible ? <div className='icon-button'><IoChevronForwardSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--right">Lock Panel</span>}</div> 
@@ -30,7 +30,7 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
         </Link>
       </div>
 
-      <div onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight} onClick={handleClickRight} className="header__nav-menu-right">
+      <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterRight, onMouseLeave: handleMouseLeaveRight } : {})} onClick={handleClickRight} className="header__nav-menu-right">
         {
           isRightPanelVisible ?  <div className='icon-button'><IoChevronForwardSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--left">Unlock Panel</span>}</div> 
           : isRightDivVisible ? <div className='icon-button'><IoChevronBackSharp />{!isMobileOrTablet() && <span className="tooltip tooltip--left">Lock Panel</span>}</div>
