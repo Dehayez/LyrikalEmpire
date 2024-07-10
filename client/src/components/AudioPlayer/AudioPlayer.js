@@ -5,36 +5,29 @@ import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, R
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
 
-let currentPlaying;
-
 const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat }) => {
   const playerRef = useRef();
+  const [volume, setVolume] = useState(() => parseFloat(localStorage.getItem('volume')) || 1.0);
+  const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
+  const [dragPosition, setDragPosition] = useState(0);
 
-  const [volume, setVolume] = useState(() => {
-    const savedVolume = localStorage.getItem('volume');
-    return savedVolume !== null ? parseFloat(savedVolume) : 1.0;
-  });
-
-  const handleVolumeChange = (e) => {
+  const handleVolumeChange = e => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    localStorage.setItem('volume', newVolume);
+    localStorage.setItem('volume', newVolume.toString());
   };
 
-  const handlePlayPause = (play) => {
-    if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
-      const audio = playerRef.current.audio.current;
+  const handlePlayPause = useCallback(play => {
+    const audio = playerRef.current?.audio?.current;
+    if (audio) {
       if (play && audio.paused) {
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise.then(_ => {}).catch(error => {});
-        }
+        audio.play().catch(() => {});
       } else if (!play && !audio.paused) {
         audio.pause();
       }
     }
-  }
+  }, []);
 
   const handleEnded = useCallback(() => {
     const audioElement = playerRef.current?.audio?.current;
@@ -48,110 +41,27 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, [onNext, repeat]);
 
-  useEffect(() => {
-    const savedCurrentTime = localStorage.getItem('currentTime');
-    if (savedCurrentTime) {
-      const currentTime = parseFloat(savedCurrentTime);
-      if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
-        playerRef.current.audio.current.currentTime = currentTime;
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    const audioElement = playerRef.current?.audio?.current;
-    if (audioElement) {
-      audioElement.volume = volume;
-      const updateTime = () => {
-        localStorage.setItem('currentTime', audioElement.currentTime);
-        localStorage.setItem('timestamp', Date.now());
-      };
-      audioElement.addEventListener('timeupdate', updateTime);
-      return () => {
-        audioElement.removeEventListener('timeupdate', updateTime);
-      };
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    if (currentBeat && currentBeat.audio) {
-      if (currentPlaying && currentPlaying !== playerRef.current) {
-        handlePlayPause(false);
-      }
-      currentPlaying = playerRef.current;
-      handlePlayPause(isPlaying);
-    } else {
-      if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
-        playerRef.current.audio.current.currentTime = 0;
-      }
-    }
-  
-    if (!isPlaying && currentBeat && playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
-      localStorage.setItem('currentBeat', JSON.stringify(currentBeat));
-      localStorage.setItem('currentTime', playerRef.current.audio.current.currentTime.toString());
-    }
-  }, [currentBeat, isPlaying]);
-
-  useEffect(() => {
-    const audioElement = playerRef.current?.audio?.current;
-    if (audioElement) {
-      audioElement.removeEventListener('ended', onNext);
-      audioElement.addEventListener('ended', handleEnded);
-      return () => {
-        audioElement.removeEventListener('ended', handleEnded);
-      };
-    }
-  }, [handleEnded, onNext]);
-
-  useEffect(() => {
-    const savedCurrentBeat = localStorage.getItem('currentBeat');
-    const savedCurrentTime = localStorage.getItem('currentTime');
-    if (savedCurrentBeat && savedCurrentTime) {
-      const currentBeat = JSON.parse(savedCurrentBeat);
-      const currentTime = parseFloat(savedCurrentTime);
-      setCurrentBeat(currentBeat);
-      if (playerRef.current && playerRef.current.audio && playerRef.current.audio.current) {
-        playerRef.current.audio.current.currentTime = currentTime;
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    const rhapContainer = document.querySelector('.rhap_container');
-    const rhapProgressContainer = document.querySelector('.rhap_progress-container');
-  
-    if (rhapContainer) {
-      rhapContainer.tabIndex = -1;
-    }
-    if (rhapProgressContainer) {
-      rhapProgressContainer.tabIndex = -1;
-    }
-  }, [])
-
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragPosition, setDragPosition] = useState(0);
-  
-  const handleTouchStart = (e) => {
+  const handleTouchStart = e => {
     const touch = e.touches[0];
     setStartX(touch.clientX);
-    setIsDragging(true); 
+    setIsDragging(true);
   };
-  
-  const handleTouchMove = (e) => {
+
+  const handleTouchMove = e => {
     if (!isDragging) return;
     const touch = e.touches[0];
     const currentPosition = touch.clientX;
     const movementX = currentPosition - startX;
     setDragPosition(movementX);
-    e.preventDefault(); 
+    e.preventDefault();
   };
-  
-  const handleTouchEnd = (e) => {
+
+  const handleTouchEnd = e => {
     const touch = e.changedTouches[0];
     const endX = touch.clientX;
-    setIsDragging(false); 
-    setDragPosition(0); 
-  
+    setIsDragging(false);
+    setDragPosition(0);
+
     if (startX - endX > 50) {
       onNext();
     } else if (startX - endX < -50) {
@@ -159,8 +69,65 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   };
 
+  useEffect(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      audioElement.volume = volume;
+      const updateTime = () => {
+        localStorage.setItem('currentTime', audioElement.currentTime.toString());
+        localStorage.setItem('timestamp', Date.now().toString());
+      };
+      audioElement.addEventListener('timeupdate', updateTime);
+      audioElement.addEventListener('ended', handleEnded);
+
+      return () => {
+        audioElement.removeEventListener('timeupdate', updateTime);
+        audioElement.removeEventListener('ended', handleEnded);
+      };
+    }
+  }, [volume, handleEnded]);
+
+  useEffect(() => {
+    if (currentBeat && currentBeat.audio) {
+      handlePlayPause(isPlaying);
+    }
+  }, [currentBeat, isPlaying, handlePlayPause]);
+
+  useEffect(() => {
+    const savedCurrentBeat = localStorage.getItem('currentBeat');
+    const savedCurrentTime = localStorage.getItem('currentTime');
+    if (savedCurrentBeat && savedCurrentTime) {
+      setCurrentBeat(JSON.parse(savedCurrentBeat));
+      const currentTime = parseFloat(savedCurrentTime);
+      const audioElement = playerRef.current?.audio?.current;
+      if (audioElement) {
+        audioElement.currentTime = currentTime;
+      }
+    }
+  }, [setCurrentBeat]);
+
+  useEffect(() => {
+    const rhapContainer = document.querySelector('.rhap_container');
+    const rhapProgressContainer = document.querySelector('.rhap_progress-container');
+    if (rhapContainer) rhapContainer.tabIndex = -1;
+    if (rhapProgressContainer) rhapProgressContainer.tabIndex = -1;
+  }, []);
+
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
+      <H5AudioPlayer
+          className="smooth-progress-bar smooth-progress-bar--mobile"
+          autoPlayAfterSrcChange={true}
+          src={currentBeat ? currentBeat.audio : ''}
+          ref={playerRef}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          customProgressBarSection={[
+              RHAP_UI.CURRENT_TIME,
+              RHAP_UI.PROGRESS_BAR,
+              RHAP_UI.DURATION
+          ]}
+        />
       {currentBeat && (
        <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
           {currentBeat.title}
