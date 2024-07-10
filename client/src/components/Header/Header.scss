@@ -19,6 +19,12 @@
     &:hover {
       background-color: $color-gray-dark;
     }
+
+    &--mobile {
+      &:hover {
+        background-color: transparent;
+      }
+    }
   }
 
   &__nav-group {
