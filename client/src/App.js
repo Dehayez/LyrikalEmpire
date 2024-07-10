@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { isMobileOrTablet } from './utils';
 import { getBeats, addBeat, getMoods } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History } from './components';
 import { handlePlay, handlePrev } from './hooks';
@@ -355,8 +356,12 @@ useEffect(() => {
           Drop files to upload
         </div>
       )}
-      <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
-      <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
+      {!isMobileOrTablet() && (
+        <>
+          <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
+          <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
+        </>
+      )}
       <ToastContainer />
       <Header 
         isLeftPanelVisible={isLeftPanelVisible} 
