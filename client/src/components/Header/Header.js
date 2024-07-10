@@ -6,13 +6,18 @@ import './Header.scss';
 
 const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, handleMouseEnterLeft, handleMouseLeaveLeft, handleMouseEnterRight, handleMouseLeaveRight, isLeftDivVisible, isRightDivVisible }) => {
   const handleClickLeft = () => {
+    if (isMobileOrTablet() && isRightPanelVisible) {
+      toggleSidePanel('right');
+    }
     toggleSidePanel('left');
   };
 
   const handleClickRight = () => {
+    if (isMobileOrTablet() && isLeftPanelVisible) {
+      toggleSidePanel('left');
+    }
     toggleSidePanel('right');
   };
-
 
   return (
     <header className="header">
