@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { isMobileOrTablet } from '../../utils';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
-import { isMobileOrTablet } from '../../utils';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
@@ -153,14 +153,14 @@ const toggleEdit = () => {
           <div className='icon-button beat-list__action-button--edit' onClick={toggleEdit}>
             {isEditToggled ? 
             <>
-              {!isMobileOrTablet && (
+              {!isMobileOrTablet() && (
                 <span className="tooltip tooltip--left tooltip--edit">Listen Mode</span>
               )}
               <IoPencil/> 
             </>
             : 
             <>
-            {!isMobileOrTablet && (
+              {!isMobileOrTablet() && (
               <span className="tooltip tooltip--left tooltip--listen">Edit Mode</span>
             )}
               <IoHeadsetSharp/>
@@ -169,7 +169,7 @@ const toggleEdit = () => {
           </div>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
             <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
-            {!isMobileOrTablet && (
+            {!isMobileOrTablet() && (
               <span className="tooltip tooltip--left tooltip--search">Search in tracks</span>
             )}
               <IoSearchSharp />
