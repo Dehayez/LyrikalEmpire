@@ -44,6 +44,15 @@
     &--pinned {
       margin: 6px 0 6px 6px;
     }
+
+    &--mobile {
+      width: 100%;
+      flex-shrink: 1;
+
+      .left-side-panel {
+        width: 100%;
+      }
+    }
   }
 
   &__middle {
@@ -54,6 +63,14 @@
     border-radius: 4px;
     background-color: $color-black;
     overflow-x: auto;
+
+    &--hide {
+      display: none;
+    }
+    &--mobile {
+      border-radius: 0;
+      margin: 6px 0;
+    }
   }
 
   &__right {
@@ -61,6 +78,15 @@
     flex-shrink: 0;
     &--pinned {
       margin: 6px 6px 6px 0;
+    }
+
+    &--mobile {
+      width: 100%;
+      flex-shrink: 1;
+
+      .right-side-panel {
+        width: 100%;
+      }
     }
   }
 }
