@@ -120,8 +120,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           autoPlayAfterSrcChange={true}
           src={currentBeat ? currentBeat.audio : ''}
           ref={playerRef}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
           customProgressBarSection={[
               RHAP_UI.CURRENT_TIME,
               RHAP_UI.PROGRESS_BAR,
