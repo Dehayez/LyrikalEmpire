@@ -6,7 +6,7 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp } from "react-icons/io5";
-import { toast, Zoom } from 'react-toastify';
+import { toast, Slide } from 'react-toastify';
 import './BeatList.scss';
 
 const fetchBeats = async (handleUpdateAll) => {
@@ -133,13 +133,13 @@ const toggleEdit = () => {
   setTimeout(() => {
     toast(<>{newState ? 'Edit Mode Enabled' : 'Listen Mode Enabled'}</>, {
       position: "bottom-center",
-      autoClose: 1000, 
+      autoClose: 400, 
       hideProgressBar: true,
       closeButton: false,
       pauseOnFocusLoss: false,
-      className: "toaster--edit-mode",
+      className: `toaster--edit-mode ${!isMobileOrTablet() ? 'toaster--edit-mode--desktop' : ''}`,
       icon: newState ? <IoPencil fontSize={30} /> : <IoHeadsetSharp fontSize={30} />,
-      transition: Zoom,
+      transition: Slide,
     });
   }, 250);
 };
@@ -228,7 +228,7 @@ const toggleEdit = () => {
           </table>
         </div>
       )}
-      {beats.length === 0 && <p className='beat-list__empty'>No beats are added yet.</p>}
+      {beats.length === 0 && <p className='beat-list__empty'>No tracks are added yet.</p>}
       <ConfirmModal
         isOpen={confirmModalState.isOpen}
         message={`Are you sure you want to delete ${confirmModalState.beatsToDelete.length > 1 ? ` ${confirmModalState.beatsToDelete.length} beats` : 'this beat'}?`}

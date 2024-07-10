@@ -153,9 +153,12 @@
 .toaster--edit-mode {
   background-color: $color-white !important;
   color: $color-black !important;
-  margin-bottom: 110px !important;
+  margin-bottom: 112px !important;
   min-height: 48px !important;
   justify-content: center !important;
+  border-radius: 4px !important;
+  margin-left: 2em;
+  margin-right: 2em;
 
   .Toastify__toast-body {
     flex: none;
@@ -167,6 +170,13 @@
   }
 }
 
-.Toastify__toast-container--bottom-center {
-  width: auto !important;
+@media (max-width: 480px) {
+  .toaster--edit-mode {
+    margin-left: 5em;
+    margin-right: 5em;
+
+    &--desktop {
+      margin-bottom: 138px !important;
+    }
+  }
 }
