@@ -376,7 +376,7 @@ useEffect(() => {
       />
       <div className="container">
         <div className='container__content'>
-          <div className={`container__content__left ${isLeftPanelVisible ? 'container__content__left--pinned' : ''}`}>
+          <div className={`container__content__left ${isMobileOrTablet() && isLeftPanelVisible ? 'container__content__left--mobile' : ''} ${isLeftPanelVisible ? 'container__content__left--pinned' : ''}`}>
             {isLeftPanelVisible || isLeftDivVisible ? (
               <LeftSidePanel
                 isDivVisible={isLeftPanelVisible || (isLeftDivVisible && !isSidePanelInContent)}
@@ -387,7 +387,7 @@ useEffect(() => {
               </LeftSidePanel>
             ) : null}
           </div>
-          <div className='container__content__middle'>
+          <div className={`container__content__middle ${isMobileOrTablet() ? 'container__content__middle--mobile' : ''} ${isMobileOrTablet() && (isRightPanelVisible || isLeftPanelVisible) ? 'container__content__middle--hide' : ''}`}>
             <BeatList 
               key={refresh} 
               onPlay={handlePlayWrapper} 
@@ -403,7 +403,7 @@ useEffect(() => {
             />
             <AddBeatButton setIsOpen={setIsOpen} />
           </div>
-          <div className={`container__content__right ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
+          <div className={`container__content__right ${isMobileOrTablet() && isRightPanelVisible ? 'container__content__right--mobile' : ''} ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
             {isRightPanelVisible || isRightDivVisible ? (
               <RightSidePanel
                 isDivVisible={isRightPanelVisible || (isRightDivVisible && !isSidePanelInContent)}
