@@ -121,7 +121,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
 
   const [mode, setMode] = useState(() => {
     const saved = localStorage.getItem('mode');
-    return saved || 'edit'; // Default to 'edit' if nothing is saved
+    return saved || 'edit';
   });
   
   useEffect(() => {
