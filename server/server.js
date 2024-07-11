@@ -5,23 +5,26 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs'); // Add this at the top of your file if it's not already there
+const fs = require('fs');
 
-// Create an Express app
 const app = express();
 const port = 4000;
 
-// Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Middleware for handling CORS
 app.use(cors());
 
-// Middleware for serving static files
 app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
 
-// Configure multer for file uploads
+const db = mysql.createConnection({
+  host: process.env.DB_HOST, 
+  user: process.env.DB_USER, 
+  password: process.env.DB_PASSWORD, 
+  database: process.env.DB_NAME, 
+  port: process.env.DB_PORT 
+});
+
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, path.join(__dirname, '../client/public/uploads/'));
@@ -33,18 +36,9 @@ const storage = multer.diskStorage({
     req.body.filePath = path.join('uploads', newFileName);
   }
 });
+
 const upload = multer({ storage: storage });
 
-// Create a connection to the database
-const db = mysql.createConnection({
-  host: process.env.DB_HOST, 
-  user: process.env.DB_USER, 
-  password: process.env.DB_PASSWORD, 
-  database: process.env.DB_NAME, 
-  port: process.env.DB_PORT 
-});
-
-// Define the /api/beats endpoint handlers
 app.get('/api/beats', (req, res) => {
   db.query('SELECT * FROM beats', (err, results) => {
     if (err) {
