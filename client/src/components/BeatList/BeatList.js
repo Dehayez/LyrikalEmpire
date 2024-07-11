@@ -5,6 +5,7 @@ import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
+import { IconButton } from '../Buttons';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 import './BeatList.scss';
@@ -150,7 +151,7 @@ const toggleEdit = () => {
       <div className="beat-list__header" style={{ opacity: headerOpacity }}>
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
-          <div className='icon-button beat-list__action-button--edit' onClick={toggleEdit}>
+          <IconButton className={'beat-list__action-button--edit'} onClick={toggleEdit}>
             {isEditToggled ? 
             <>
               {!isMobileOrTablet() && (
@@ -166,9 +167,9 @@ const toggleEdit = () => {
               <IoHeadsetSharp/>
             </>
             }
-          </div>
+          </IconButton>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
-            <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
+          <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
             {!isMobileOrTablet() && (
               <span className="tooltip tooltip--left tooltip--search">Search in tracks</span>
             )}
