@@ -162,18 +162,16 @@ const BeatRow = ({
       className={beatRowClasses}
       key={beatRowClasses}
       {...(isMobileOrTablet() ? {
-        // Code for mobile or tablet
         onClick: handleClick,
       } : {
-        // Code for non-mobile or tablet
-        onMouseEnter: mode !== 'lock' ? (e) => {
+        onMouseEnter: (e) => {
           e.currentTarget.querySelector('button').style.opacity = 1;
           setHoveredBeat(beat.id);
-        } : undefined,
-        onMouseLeave: mode !== 'lock' ? (e) => {
+        },
+        onMouseLeave: (e) => {
           e.currentTarget.querySelector('button').style.opacity = 0;
           setHoveredBeat(null);
-        } : undefined,
+        },
         onClick: (e) => handleBeatClick(beat, e),
       })}
       onContextMenu={(e) => {
