@@ -54,7 +54,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
             </th>
           );
         })}
-         {!isMobileOrTablet() && (
+         {!(isMobileOrTablet() && mode === 'lock') && (
          <th className={`table-header__cell table-header__cell--center ${isDragging ? 'no-transition' : ''} non-draggable`}><IoTimeOutline/></th>
          )}
       </tr>
