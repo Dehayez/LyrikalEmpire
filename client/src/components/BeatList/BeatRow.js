@@ -203,7 +203,7 @@ const BeatRow = ({
           </div>
         </td>
       )}
-      <td>
+      <td className="beat-row__data">
         {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
         <input 
           className='beat-row__input beat-row__input--title'
