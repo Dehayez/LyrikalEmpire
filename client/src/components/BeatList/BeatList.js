@@ -129,7 +129,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   }, [mode]);
   
   const toggleEdit = () => {
-    const newState = mode === 'edit' ? 'listen' : mode === 'listen' ? 'locked' : 'edit';
+    const newState = mode === 'edit' ? 'listen' : mode === 'listen' ? 'lock' : 'edit';
     setMode(newState);
   
     toast.dismiss();
@@ -139,15 +139,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       switch (newState) {
         case 'edit':
           message = 'Edit Mode Enabled';
-          icon = <IoPencil fontSize={30} />;
+          icon = <IoPencil/>;
           break;
         case 'listen':
           message = 'Listen Mode Enabled';
-          icon = <IoHeadsetSharp fontSize={30} />;
+          icon = <IoHeadsetSharp/>;
           break;
-        case 'locked':
-          message = 'Locked Mode Enabled';
-          icon = <IoLockClosedSharp fontSize={30} />;
+        case 'lock':
+          message = 'Lock Mode Enabled';
+          icon = <IoLockClosedSharp/>;
           break;
       }
   
@@ -181,7 +181,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
             : mode === 'listen' ?
             <>
               {!isMobileOrTablet() && (
-              <span className="tooltip tooltip--left tooltip--listen">Switch to Locked Mode</span>
+              <span className="tooltip tooltip--left tooltip--listen">Switch to Lock Mode</span>
             )}
               <IoHeadsetSharp/>
             </>
@@ -190,7 +190,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
               {!isMobileOrTablet() && (
               <span className="tooltip tooltip--left tooltip--mixed">Switch to Edit Mode</span>
             )}
-              <IoHeadsetSharp/>
               <IoLockClosedSharp/>
             </>
             }
@@ -224,7 +223,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       {beats.length > 0 && (
         <div>
           <table className='beat-list__table' ref={tableRef}>
-            <TableHeader onSort={onSort} sortConfig={sortConfig} />
+            <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
             <tbody>
               {filteredAndSortedBeats.map((beat, index) => (
                 <BeatRow
