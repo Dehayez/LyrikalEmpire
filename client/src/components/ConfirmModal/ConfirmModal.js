@@ -35,7 +35,6 @@ const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => {
         onConfirm();
       }
     };
-  
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
     }

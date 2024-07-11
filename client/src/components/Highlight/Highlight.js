@@ -19,4 +19,4 @@ export const Highlight = ({ text = '', highlight = '', children }) => {
         {children}
       </div>
     );
-  };
+};
