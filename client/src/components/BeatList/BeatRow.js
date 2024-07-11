@@ -166,14 +166,14 @@ const BeatRow = ({
         onClick: handleClick,
       } : {
         // Code for non-mobile or tablet
-        onMouseEnter: (e) => {
+        onMouseEnter: mode !== 'lock' ? (e) => {
           e.currentTarget.querySelector('button').style.opacity = 1;
           setHoveredBeat(beat.id);
-        },
-        onMouseLeave: (e) => {
+        } : undefined,
+        onMouseLeave: mode !== 'lock' ? (e) => {
           e.currentTarget.querySelector('button').style.opacity = 0;
           setHoveredBeat(null);
-        },
+        } : undefined,
         onClick: (e) => handleBeatClick(beat, e),
       })}
       onContextMenu={(e) => {
@@ -184,23 +184,25 @@ const BeatRow = ({
         setContextMenuY(e.clientY);
       }}
     >
-      <td className="beat-row__number">
-        <div className="beat-row__button-cell">
-          <BeatAnimation 
-            beat={beat} 
-            currentBeat={currentBeat} 
-            isPlaying={isPlaying} 
-            hoveredBeat={hoveredBeat} 
-            index={index} 
-          />
-          <PlayPauseButton 
-            beat={beat} 
-            handlePlayPause={handlePlayPause}
-            currentBeat={currentBeat} 
-            isPlaying={isPlaying} 
-          />
-        </div>
-      </td>
+      {mode !== 'lock' && (
+        <td className="beat-row__number">
+          <div className="beat-row__button-cell">
+            <BeatAnimation 
+              beat={beat} 
+              currentBeat={currentBeat} 
+              isPlaying={isPlaying} 
+              hoveredBeat={hoveredBeat} 
+              index={index} 
+            />
+            <PlayPauseButton 
+              beat={beat} 
+              handlePlayPause={handlePlayPause}
+              currentBeat={currentBeat} 
+              isPlaying={isPlaying} 
+            />
+          </div>
+        </td>
+      )}
       <td>
         {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
         <input 
@@ -215,6 +217,8 @@ const BeatRow = ({
           spellCheck="false"
         />
       </td>
+      {mode !== 'lock' && (
+      <>
       <td className="beat-row__data">
         {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
         <SelectableInput
@@ -333,6 +337,8 @@ const BeatRow = ({
             ]}
           />
         </td>
+      )}
+        </>
       )}
       </tr>
     );
