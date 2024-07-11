@@ -18,7 +18,14 @@
       padding-right: 36px;
       cursor: default;
 
-      &--first {
+      &.non-draggable {
+
+        &::after {
+          display: none;
+        }
+      }
+
+      &--center {
         text-align: center;
         width: 50px;
         padding: 0;

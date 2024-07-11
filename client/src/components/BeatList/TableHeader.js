@@ -34,14 +34,12 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
     <thead className="table-header" ref={tableRef}>
       <tr>
       {!(mode === 'lock' && isMobileOrTablet()) && (
-        <th className={`table-header__cell table-header__cell--first ${isDragging ? 'no-transition' : ''}`}>#</th>
+        <th className={`table-header__cell table-header__cell--center ${isDragging ? 'no-transition' : ''} non-draggable`}>#</th>
       )}
         {columns.map(column => {
-          // Conditionally render only the "title" column when mode is "lock"
           if (mode === 'lock' && column !== 'title') {
-            return null; // Skip rendering this column
+            return null; 
           }
-
           return (
             <th key={column}
                 onMouseDown={() => handleMouseEvents('down', column)}
@@ -57,7 +55,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
           );
         })}
          {!isMobileOrTablet() && (
-         <th className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}><IoTimeOutline/></th>
+         <th className={`table-header__cell table-header__cell--center ${isDragging ? 'no-transition' : ''} non-draggable`}><IoTimeOutline/></th>
          )}
       </tr>
     </thead>
