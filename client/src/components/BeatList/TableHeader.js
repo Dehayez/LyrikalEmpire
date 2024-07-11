@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { isMobileOrTablet } from '../../utils';
 import { useResizableColumns } from '../../hooks';
-import { IoChevronUpSharp, IoChevronDownSharp } from 'react-icons/io5';
+import { IoChevronUpSharp, IoChevronDownSharp, IoTimeOutline } from 'react-icons/io5';
 import './TableHeader.scss';
 
 const TableHeader = ({ onSort, sortConfig, mode }) => {
@@ -56,6 +56,9 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
             </th>
           );
         })}
+         {!isMobileOrTablet() && (
+         <th className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}><IoTimeOutline/></th>
+         )}
       </tr>
     </thead>
   );

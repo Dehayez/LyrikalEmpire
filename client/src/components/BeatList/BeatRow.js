@@ -306,6 +306,11 @@ const BeatRow = ({
             spellCheck="false"
           />
         </td> 
+        </>
+      )}
+        {!isMobileOrTablet() && (
+         <td className='beat-row__data'>time</td>
+         )}
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">
          <ContextMenu
@@ -335,8 +340,6 @@ const BeatRow = ({
             ]}
           />
         </td>
-      )}
-        </>
       )}
       </tr>
     );
