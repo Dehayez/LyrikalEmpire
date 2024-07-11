@@ -1,6 +1,7 @@
 import axios from 'axios';
+import API_BASE_URL from '../utils/apiConfig';
 
-const API_URL = 'http://localhost:4000/api/beats';
+const API_URL = `${API_BASE_URL}/api/beats`;
 
 export const getBeats = async () => {
   const { data } = await axios.get(API_URL);

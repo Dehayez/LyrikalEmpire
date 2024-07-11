@@ -1,6 +1,7 @@
 import axios from 'axios';
+import API_BASE_URL from '../utils/apiConfig';
 
-const API_URL = 'http://localhost:4000/api/keywords';
+const API_URL = `${API_BASE_URL}/api/keywords`;
 
 export const getKeywords = async () => {
   const { data } = await axios.get(API_URL);
