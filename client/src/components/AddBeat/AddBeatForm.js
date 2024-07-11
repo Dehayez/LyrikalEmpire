@@ -13,6 +13,7 @@ Modal.setAppElement('#root');
 const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
+    const [duration, setDuration] = useState(0);
     const [bpmState, setBpm] = useState('');
     const [tierlist, setTierlist] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
@@ -51,7 +52,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             }
         }
     
-        let newBeat = { title, bpm: bpmValue, genre, mood, keyword };
+        let newBeat = { title, bpm: bpmValue, genre, mood, keyword, duration: duration };
         if (tierlist && tierlist !== '') {
             newBeat.tierlist = tierlist;
         }
@@ -81,6 +82,13 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     
         const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
         setTitle(fileNameWithoutExtension);
+    
+        const audio = new Audio();
+        audio.src = URL.createObjectURL(file);
+        audio.addEventListener('loadedmetadata', () => {
+            setDuration(audio.duration);
+            URL.revokeObjectURL(audio.src);
+        });
     };
 
     const modalStyle = {
