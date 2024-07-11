@@ -1,0 +1,39 @@
+@import '../../globals/variables';
+
+.icon-button {
+    color: $color-gray-light;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    transition: transform 0.1s ease-in-out;
+
+
+    &:active {
+        color: $color-white !important;
+    }
+
+    &:hover {
+      color: $color-white;
+      cursor: pointer;
+      transform: scale(1.04);
+      
+      .tooltip,
+      .tooltip__addbeat {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+
+    &--mobile {
+        &:hover {
+            color: $color-gray-light;
+        }
+    }
+
+    &--addbeat {
+        background-color: $color-gray-mid;
+    }
+}
