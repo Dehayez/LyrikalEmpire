@@ -158,10 +158,10 @@ const BeatRow = ({
   };
 
   function formatDuration(durationInSeconds) {
-    const totalSeconds = Math.round(durationInSeconds); // Round to nearest second
+    const totalSeconds = Math.round(durationInSeconds);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`; // Format as "M:SS"
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 
   return (
@@ -315,9 +315,9 @@ const BeatRow = ({
         </td> 
         </>
       )}
-        {!isMobileOrTablet() && (
-         <td className='beat-row__data'>{formatDuration(beat.duration)}</td>
-         )}
+      {!(isMobileOrTablet() && mode === 'lock') && (
+        <td className='beat-row__data'>{formatDuration(beat.duration)}</td>
+      )}
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">
          <ContextMenu
