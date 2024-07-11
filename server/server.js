@@ -9,7 +9,7 @@ const fs = require('fs'); // Add this at the top of your file if it's not alread
 
 // Create an Express app
 const app = express();
-const expressPort = 4000;
+const port = 4000;
 
 // Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
@@ -190,7 +190,7 @@ db.connect(err => {
     process.exit(1);
   }
 
-  app.listen(expressPort, () => {
-    console.log(`Server is running on port ${expressPort}`);
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
   });
 });
