@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
-import './TableHeader.scss';
+import React, { useState, useRef, useEffect } from 'react';
+import { isMobileOrTablet } from '../../utils';
 import { useResizableColumns } from '../../hooks';
 import { IoChevronUpSharp, IoChevronDownSharp } from 'react-icons/io5';
+import './TableHeader.scss';
 
 const TableHeader = ({ onSort, sortConfig, mode }) => {
   const tableRef = useRef(null);
@@ -29,10 +30,14 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
 
   const columns = ['title', 'genre', 'BPM', 'tierlist', 'mood', 'keywords'];
 
+  useEffect(() => {
+    console.log(isMobileOrTablet())
+  }, []);
+
   return (
     <thead className="table-header" ref={tableRef}>
       <tr>
-      {mode !== 'lock' && (
+      {!(mode === 'lock' && isMobileOrTablet()) && (
         <th className={`table-header__cell table-header__cell--first ${isDragging ? 'no-transition' : ''}`}>#</th>
       )}
         {columns.map(column => {
