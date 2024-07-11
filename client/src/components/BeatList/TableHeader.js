@@ -3,7 +3,7 @@ import './TableHeader.scss';
 import { useResizableColumns } from '../../hooks';
 import { IoChevronUpSharp, IoChevronDownSharp } from 'react-icons/io5';
 
-const TableHeader = ({ onSort, sortConfig, isEditToggled }) => {
+const TableHeader = ({ onSort, sortConfig }) => {
   const tableRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [pressTimer, setPressTimer] = useState(null);
@@ -37,7 +37,7 @@ const TableHeader = ({ onSort, sortConfig, isEditToggled }) => {
           <th key={column}
               onMouseDown={() => handleMouseEvents('down', column)}
               onMouseUp={() => handleMouseEvents('up', column)}
-              className={`table-header__cell ${isDragging ? 'no-transition' : ''} ${isEditToggled || column === 'title' ? 'special-class' : ''}`}>
+              className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
             {column.charAt(0).toUpperCase() + column.slice(1)}
             {sortConfig.key === column && (
               <span className="table-header__sort-icon">

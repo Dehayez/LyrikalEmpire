@@ -6,7 +6,7 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import { IconButton } from '../Buttons';
-import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp } from "react-icons/io5";
+import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 import './BeatList.scss';
 
@@ -23,7 +23,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
-  const [isEditToggled, setIsEditToggled] = useState(() => {const saved = localStorage.getItem('isEditToggled'); return saved === null ? true : saved === 'true';});
+
   const [isHovering, setIsHovering] = useState(false);
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
@@ -85,12 +85,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats, handlePlayPause]);
 
-  useEffect(() => {
-    localStorage.setItem('isEditToggled', isEditToggled);
-  }, [isEditToggled]);
-
- 
-
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
     setIsSearchVisible(willBeVisible);
@@ -125,25 +119,50 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     }
   };
 
-const toggleEdit = () => {
-  const newState = !isEditToggled;
-  setIsEditToggled(newState);
-
-  toast.dismiss();
-
-  setTimeout(() => {
-    toast(<>{newState ? 'Edit Mode Enabled' : 'Listen Mode Enabled'}</>, {
-      position: "bottom-center",
-      autoClose: 400, 
-      hideProgressBar: true,
-      closeButton: false,
-      pauseOnFocusLoss: false,
-      className: `toaster--edit-mode ${!isMobileOrTablet() ? 'toaster--edit-mode--desktop' : ''}`,
-      icon: newState ? <IoPencil fontSize={30} /> : <IoHeadsetSharp fontSize={30} />,
-      transition: Slide,
-    });
-  }, 250);
-};
+  const [mode, setMode] = useState(() => {
+    const saved = localStorage.getItem('mode');
+    return saved || 'edit'; // Default to 'edit' if nothing is saved
+  });
+  
+  useEffect(() => {
+    localStorage.setItem('mode', mode);
+  }, [mode]);
+  
+  const toggleEdit = () => {
+    const newState = mode === 'edit' ? 'listen' : mode === 'listen' ? 'locked' : 'edit';
+    setMode(newState);
+  
+    toast.dismiss();
+  
+    setTimeout(() => {
+      let message, icon;
+      switch (newState) {
+        case 'edit':
+          message = 'Edit Mode Enabled';
+          icon = <IoPencil fontSize={30} />;
+          break;
+        case 'listen':
+          message = 'Listen Mode Enabled';
+          icon = <IoHeadsetSharp fontSize={30} />;
+          break;
+        case 'locked':
+          message = 'Locked Mode Enabled';
+          icon = <IoLockClosedSharp fontSize={30} />;
+          break;
+      }
+  
+      toast(<>{message}</>, {
+        position: "bottom-center",
+        autoClose: 400,
+        hideProgressBar: true,
+        closeButton: false,
+        pauseOnFocusLoss: false,
+        className: `toaster--mode ${!isMobileOrTablet() ? 'toaster--mode--desktop' : ''}`,
+        icon: icon,
+        transition: Slide,
+      });
+    }, 250);
+  };
 
   return (
     <div ref={containerRef} className="beat-list" style={{ overflowY: 'scroll', height: '100%' }}>
@@ -152,19 +171,27 @@ const toggleEdit = () => {
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
           <IconButton className={'beat-list__action-button--edit'} onClick={toggleEdit}>
-            {isEditToggled ? 
+            {mode === 'edit' ? 
             <>
               {!isMobileOrTablet() && (
-                <span className="tooltip tooltip--left tooltip--edit">Listen Mode</span>
+                <span className="tooltip tooltip--left tooltip--edit">Switch to Listen Mode</span>
               )}
               <IoPencil/> 
             </>
-            : 
+            : mode === 'listen' ?
             <>
               {!isMobileOrTablet() && (
-              <span className="tooltip tooltip--left tooltip--listen">Edit Mode</span>
+              <span className="tooltip tooltip--left tooltip--listen">Switch to Locked Mode</span>
             )}
               <IoHeadsetSharp/>
+            </>
+            :
+            <>
+              {!isMobileOrTablet() && (
+              <span className="tooltip tooltip--left tooltip--mixed">Switch to Edit Mode</span>
+            )}
+              <IoHeadsetSharp/>
+              <IoLockClosedSharp/>
             </>
             }
           </IconButton>
@@ -197,7 +224,7 @@ const toggleEdit = () => {
       {beats.length > 0 && (
         <div>
           <table className='beat-list__table' ref={tableRef}>
-            <TableHeader onSort={onSort} sortConfig={sortConfig} isEditToggled={isEditToggled} />
+            <TableHeader onSort={onSort} sortConfig={sortConfig} />
             <tbody>
               {filteredAndSortedBeats.map((beat, index) => (
                 <BeatRow
@@ -219,7 +246,7 @@ const toggleEdit = () => {
                   handleRightClick={handleRightClick}
                   addToCustomQueue={addToCustomQueue}
                   searchText={searchText}
-                  isEditToggled={isEditToggled}
+                  mode={mode}
                   setActiveContextMenu={setActiveContextMenu}
                   activeContextMenu={activeContextMenu}
                   onBeatClick={onBeatClick}

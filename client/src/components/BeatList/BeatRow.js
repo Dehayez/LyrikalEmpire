@@ -14,7 +14,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, isEditToggled
+  openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
@@ -210,8 +210,8 @@ const BeatRow = ({
           onFocus={handleFocus}
           onBlur={(e) => handleBlur(beat.id, 'title', e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-          onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
-          onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
+          onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+          onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
           spellCheck="false"
         />
       </td>
@@ -227,8 +227,8 @@ const BeatRow = ({
             handleItemToggle={handleGenreToggle}
             className='beat-row__input' 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
-            onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
+            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
             spellCheck="false"
           />
       </td>
@@ -239,8 +239,8 @@ const BeatRow = ({
             defaultValue={beat.bpm} 
             onKeyDown={handleOnKeyDown}
             onBlur={handleBpmBlur}
-            onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
-            onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
+            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
             spellCheck="false"
           />
         </td>
@@ -253,8 +253,8 @@ const BeatRow = ({
                 onChange={handleTierlistChange}
                 onFocus={(e) => e.target.style.color = 'white'}
                 onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
-                onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
-                onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
+                onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+                onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
                 style={{color: tierlist ? 'white' : 'grey'}}
               >
                 <option value="G">G</option>
@@ -282,8 +282,8 @@ const BeatRow = ({
             handleItemToggle={handleMoodToggle}
             className='beat-row__input' 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
-            onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
+            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
             spellCheck="false"
           />
         </td>
@@ -299,8 +299,8 @@ const BeatRow = ({
             handleItemToggle={handleKeywordToggle}
             className='beat-row__input' 
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={!isEditToggled ? undefined : (e) => e.stopPropagation()}
-            onMouseDown={!isEditToggled ? (e) => e.preventDefault() : undefined}
+            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
             spellCheck="false"
           />
         </td> 
