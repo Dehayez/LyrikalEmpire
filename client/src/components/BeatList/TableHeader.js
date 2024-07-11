@@ -30,10 +30,6 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
 
   const columns = ['title', 'genre', 'BPM', 'tierlist', 'mood', 'keywords'];
 
-  useEffect(() => {
-    console.log(isMobileOrTablet())
-  }, []);
-
   return (
     <thead className="table-header" ref={tableRef}>
       <tr>
