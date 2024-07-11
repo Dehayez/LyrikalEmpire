@@ -184,7 +184,7 @@ const BeatRow = ({
         setContextMenuY(e.clientY);
       }}
     >
-      {mode !== 'lock' && (
+      {!(mode === 'lock' && isMobileOrTablet()) && (
         <td className="beat-row__number">
           <div className="beat-row__button-cell">
             <BeatAnimation 
