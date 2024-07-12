@@ -28,7 +28,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
     }
   };
 
-  const columns = ['title', 'genre', 'BPM', 'tierlist', 'mood', 'keywords'];
+  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keywords'];
 
   return (
     <thead className="table-header" ref={tableRef}>
@@ -45,7 +45,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
                 onMouseDown={() => handleMouseEvents('down', column)}
                 onMouseUp={() => handleMouseEvents('up', column)}
                 className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-              {column.charAt(0).toUpperCase() + column.slice(1)}
+              {column === 'bpm' ? 'BPM' : column.charAt(0).toUpperCase() + column.slice(1)}
               {sortConfig.key === column && (
                 <span className="table-header__sort-icon">
                   {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
