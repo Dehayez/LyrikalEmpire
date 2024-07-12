@@ -190,27 +190,49 @@ function App() {
     setDroppedFiles([]);
   };
 
-const autoSubmitFiles = async (files) => {
-  setActiveUploads(activeUploads => activeUploads + files.length); 
-  Array.from(files).forEach(async (file) => {
-    const beat = {
-      title: file.name.replace(/\.[^/.]+$/, ""),
-    };
-    try {
-      const data = await addBeat(beat, file);
-      setShowToast(true); 
-      toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
+  const getAudioDuration = (file) => {
+    return new Promise((resolve, reject) => {
+      const audio = new Audio();
+      audio.src = URL.createObjectURL(file);
+      audio.addEventListener('loadedmetadata', () => {
+        resolve(audio.duration);
+        URL.revokeObjectURL(audio.src);
+      });
+      audio.onerror = () => reject(new Error('Failed to load audio metadata'));
+    });
+  };
+  
+  const autoSubmitFiles = async (files) => {
+    setActiveUploads(activeUploads => activeUploads + files.length);
+    files.forEach(async (file) => {
+      try {
+        const duration = await getAudioDuration(file);
+        const beat = {
+          title: file.name.replace(/\.[^/.]+$/, ""),
+          duration: duration,
+        };
+        const data = await addBeat(beat, file);
+        setShowToast(true);
+        toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
           autoClose: 3000,
           pauseOnFocusLoss: false,
           icon: <IoCheckmarkSharp size={24} />,
           className: "Toastify__toast--success",
-      });
-    } catch (error) {
-    } finally {
-      setActiveUploads(activeUploads => activeUploads - 1); 
-    }
-  });
-};
+        });
+      } catch (error) {
+        toast.dark(
+          <div><strong>Error:</strong> {error.message}</div>, {
+            autoClose: 5000,
+            pauseOnFocusLoss: false,
+            icon: <IoCloseSharp size={24} />,
+            className: "Toastify__toast--warning",
+          }
+        );
+      } finally {
+        setActiveUploads(activeUploads => activeUploads - 1);
+      }
+    });
+  };
 
 useEffect(() => {
   if (activeUploads === 0 && showToast) {
