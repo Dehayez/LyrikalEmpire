@@ -15,29 +15,12 @@ export const useResizableColumns = (tableRef) => {
       }
     });
 
-    headers.forEach((header, originalIndex) => {
+    headers.forEach((header, index) => { 
       header.classList.add('resizable-header');
 
       if (header.classList.contains('non-draggable')) {
         return;
       }
-
-      const handleMouseMove = e => {
-        const rect = header.getBoundingClientRect();
-        const resizeBuffer = 8;
-        const isNearBorder = e.clientX >= rect.right - resizeBuffer && e.clientX <= rect.right + resizeBuffer;
-        const isOverHeader = e.clientY >= rect.top && e.clientY <= rect.bottom;
-      
-        if (isNearBorder && isOverHeader) {
-          header.classList.add('near-border');
-          header.style.cursor = 'col-resize';
-        } else {
-          if (!header.classList.contains('dragging')) {
-            header.classList.remove('near-border');
-            header.style.cursor = '';
-          }
-        }
-      };
 
       const handleMouseDown = e => {
         e.preventDefault();
@@ -58,7 +41,7 @@ export const useResizableColumns = (tableRef) => {
           const newWidth = initialWidth + e.clientX - initialMouseX;
           header.style.width = `${newWidth}px`;
 
-          localStorage.setItem(`headerWidth${originalIndex + 1}`, newWidth);
+          localStorage.setItem(`headerWidth${index}`, newWidth);
         };
 
         const handleMouseUp = () => {
@@ -74,7 +57,6 @@ export const useResizableColumns = (tableRef) => {
         document.addEventListener('mouseup', handleMouseUp);
       };
 
-      document.addEventListener('mousemove', handleMouseMove);
       header.addEventListener('mousedown', handleMouseDown);
     });
   }, [tableRef]);
