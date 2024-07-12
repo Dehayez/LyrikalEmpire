@@ -40,7 +40,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.get('/api/beats', (req, res) => {
-  db.query('SELECT * FROM beats', (err, results) => {
+  db.query('SELECT * FROM beats ORDER BY created_at DESC', (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'An error occurred while fetching beats' });
