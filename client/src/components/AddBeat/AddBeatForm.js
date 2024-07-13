@@ -92,7 +92,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                 <div className="modal-content">
                     <h2 className='form__title'>Add Beat</h2>
                     <form className='form' onSubmit={handleSubmit}>
-                        <FileInput fileName={fileName} onChange={handleFileChange} />
+                        <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} />
                         <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
                         <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur}spellCheck="false"/>
                         <SelectableInput label="Genre" placeholder="Enter genre" value={genre} onChange={handleGenreChange} onFocus={handleGenreFocus} onBlur={handleGenreBlur} showItems={showGenres} filteredItems={filteredGenres.map(genre => ({ name: genre.name, selected: selectedGenres.includes(genre.name) }))} handleItemToggle={handleGenreToggle}/>
