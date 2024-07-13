@@ -331,15 +331,19 @@ const BeatRow = ({
         <td className='beat-row__data'>{formatDuration(beat.duration)}</td>
       )}
       <td className="beat-row__data">
-        <button 
-          className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
-          onClick={(e) => {
-            e.stopPropagation();
+      <button 
+        className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
+        onClick={(e) => {
+          e.stopPropagation();
+          if (activeContextMenu === beat.id) {
+            setActiveContextMenu(null);
+          } else {
             setActiveContextMenu(beat.id);
             setContextMenuX(e.clientX);
             setContextMenuY(e.clientY);
-          }}
-        >
+          }
+        }}
+      >
           <IoEllipsisHorizontal fontSize={24} />
         </button>
       </td>
