@@ -38,22 +38,29 @@ const BeatRow = ({
   });
 
   useEffect(() => {
-    const hideContextMenu = () => {
-      setActiveContextMenu(null);
+    const contextMenuElement = document.getElementById('context-menu');
+    let hideTimeoutId;
+  
+    const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
+    const manageContextMenuVisibility = (show) => {
+      window[`${show ? 'add' : 'remove'}EventListener`]('click', hideContextMenu);
+      toggleScroll(show);
+      if (contextMenuElement) {
+        ['mouseleave', 'mouseenter'].forEach(event => {
+          contextMenuElement[`${show ? 'add' : 'remove'}EventListener`](event, eventHandlers[event]);
+        });
+      }
     };
   
-    if (activeContextMenu === beat.id) {
-      window.addEventListener('click', hideContextMenu);
-      document.body.classList.add('no-scroll');
-    } else {
-      window.removeEventListener('click', hideContextMenu);
-      document.body.classList.remove('no-scroll');
-    }
-  
-    return () => {
-      window.removeEventListener('click', hideContextMenu);
-      document.body.classList.remove('no-scroll');
+    const hideContextMenu = () => setActiveContextMenu(null);
+    const eventHandlers = {
+      mouseleave: () => hideTimeoutId = setTimeout(hideContextMenu, 400),
+      mouseenter: () => clearTimeout(hideTimeoutId)
     };
+  
+    manageContextMenuVisibility(activeContextMenu === beat.id);
+  
+    return () => manageContextMenuVisibility(false);
   }, [activeContextMenu, beat.id]);
 
   const handleTierlistChange = (e) => {
