@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { IoTrashBinSharp, IoAddSharp, IoListSharp } from "react-icons/io5";
+import { IoTrashBinSharp, IoAddSharp, IoListSharp, IoEllipsisHorizontal } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
 import { isMobileOrTablet } from '../../utils';
@@ -172,11 +172,15 @@ const BeatRow = ({
         onClick: handleClick,
       } : {
         onMouseEnter: (e) => {
-          e.currentTarget.querySelector('button').style.opacity = 1;
+          e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
+            button.style.opacity = 1;
+          });
           setHoveredBeat(beat.id);
         },
         onMouseLeave: (e) => {
-          e.currentTarget.querySelector('button').style.opacity = 0;
+          e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
+            button.style.opacity = 0;
+          });
           setHoveredBeat(null);
         },
         onClick: (e) => handleBeatClick(beat, e),
@@ -318,6 +322,19 @@ const BeatRow = ({
       {!(isMobileOrTablet() && mode === 'lock') && (
         <td className='beat-row__data'>{formatDuration(beat.duration)}</td>
       )}
+      <td className="beat-row__data">
+        <button 
+          className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveContextMenu(beat.id);
+            setContextMenuX(e.clientX);
+            setContextMenuY(e.clientY);
+          }}
+        >
+          <IoEllipsisHorizontal fontSize={24} />
+        </button>
+      </td>
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">
          <ContextMenu

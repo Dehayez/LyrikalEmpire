@@ -34,7 +34,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
     <thead className="table-header" ref={tableRef}>
       <tr>
       {!(mode === 'lock' && isMobileOrTablet()) && (
-        <th className={`table-header__cell table-header__cell--center ${isDragging ? 'no-transition' : ''} non-draggable`}>#</th>
+        <th className={`table-header__cell table-header__cell--center non-draggable`}>#</th>
       )}
         {columns.map(column => {
           if (mode === 'lock' && column !== 'title') {
@@ -55,8 +55,9 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
           );
         })}
          {!(isMobileOrTablet() && mode === 'lock') && (
-         <th className={`table-header__cell table-header__cell--center ${isDragging ? 'no-transition' : ''} non-draggable`}><IoTimeOutline/></th>
+         <th className={`table-header__cell table-header__cell--center non-draggable`}><IoTimeOutline/></th>
          )}
+         <th className={`table-header__cell table-header__cell--center non-draggable`}></th>
       </tr>
     </thead>
   );
