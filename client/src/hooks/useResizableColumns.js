@@ -1,12 +1,22 @@
 import { useEffect } from 'react';
 
-export const useResizableColumns = (tableRef) => {
+export const useResizableColumns = (tableRef, mode) => {
   useEffect(() => {
-    if (!tableRef.current) {
-      return;
-    }
+    if (!tableRef.current) return;
 
     const headers = Array.from(tableRef.current.querySelectorAll('th'));
+
+        const removeEventListeners = () => {
+          headers.forEach(header => {
+            header.removeEventListener('mousedown', header.handleMouseDown);
+          });
+        };
+    
+        if (mode === 'lock') {
+          // Optionally, reset header widths or perform other cleanup tasks here
+          removeEventListeners();
+          return;
+        }
 
     headers.forEach((header, index) => {
       const savedWidth = localStorage.getItem(`headerWidth${index}`);
@@ -57,9 +67,15 @@ export const useResizableColumns = (tableRef) => {
         document.addEventListener('mouseup', handleMouseUp);
       };
 
+      header.handleMouseDown = handleMouseDown;
+
       header.addEventListener('mousedown', handleMouseDown);
     });
-  }, [tableRef]);
+
+    return () => {
+      removeEventListeners();
+    };
+  }, [tableRef, mode]);
 };
 
 export default useResizableColumns;

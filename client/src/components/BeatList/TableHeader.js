@@ -10,7 +10,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
   const [pressTimer, setPressTimer] = useState(null);
   const [exceededThreshold, setExceededThreshold] = useState(false);
 
-  useResizableColumns(tableRef, setIsDragging);
+  useResizableColumns(tableRef, mode, setIsDragging);
 
   const handleMouseEvents = (eventName, columnName) => {
     if (eventName === 'down') {
