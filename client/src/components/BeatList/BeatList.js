@@ -222,7 +222,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       </div>
       {beats.length > 0 && (
         <div>
-          <table className='beat-list__table' ref={tableRef}>
+          <table className={`beat-list__table ${mode === 'lock' ? 'beat-list__table--lock' : ''}`} ref={tableRef}>
             <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
             <tbody>
               {filteredAndSortedBeats.map((beat, index) => (

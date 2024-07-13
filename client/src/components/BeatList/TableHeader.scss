@@ -19,7 +19,6 @@
       cursor: default;
 
       &.resizable-header {
-
         &::after {
           content: '';
           position: absolute;
@@ -34,6 +33,7 @@
       }
 
       &.non-draggable {
+        width: 50px !important;
         &::after {
           display: none;
         }
