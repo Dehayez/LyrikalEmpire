@@ -18,8 +18,22 @@
       padding-right: 36px;
       cursor: default;
 
-      &.non-draggable {
+      &.resizable-header {
 
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: 4px;
+          cursor: col-resize;
+          background-color: transparent;
+          transition: background-color .2s ease-in-out;
+        }
+      }
+
+      &.non-draggable {
         &::after {
           display: none;
         }
@@ -33,18 +47,6 @@
         &:hover, &.table-header__cell:hover {
           background-color: $color-black;
         }
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 4px;
-        cursor: col-resize;
-        background-color: transparent;
-        transition: background-color .2s ease-in-out;
       }
 
       &:hover {

@@ -6,31 +6,27 @@ export const useResizableColumns = (tableRef, mode) => {
 
     const headers = Array.from(tableRef.current.querySelectorAll('th'));
 
-        const removeEventListeners = () => {
-          headers.forEach(header => {
-            header.removeEventListener('mousedown', header.handleMouseDown);
-          });
-        };
-    
-        if (mode === 'lock') {
-          // Optionally, reset header widths or perform other cleanup tasks here
-          removeEventListeners();
-          return;
-        }
+    const cleanupHeaders = () => {
+      headers.forEach(header => {
+        header.removeEventListener('mousedown', header.handleMouseDown);
+        header.classList.remove('resizable-header');
+      });
+    };
+
+    if (mode === 'lock') {
+      cleanupHeaders();
+      return;
+    }
 
     headers.forEach((header, index) => {
+      header.classList.add('resizable-header');
+
       const savedWidth = localStorage.getItem(`headerWidth${index}`);
       if (savedWidth) {
         header.style.width = `${savedWidth}px`;
       }
-    });
 
-    headers.forEach((header, index) => { 
-      header.classList.add('resizable-header');
-
-      if (header.classList.contains('non-draggable')) {
-        return;
-      }
+      if (header.classList.contains('non-draggable')) return;
 
       const handleMouseDown = e => {
         e.preventDefault();
@@ -42,23 +38,18 @@ export const useResizableColumns = (tableRef, mode) => {
         const initialMouseX = e.clientX;
         const initialWidth = header.offsetWidth;
 
-        header.classList.add('dragging', 'near-border');
-
         document.body.style.cursor = 'col-resize';
         document.body.classList.add('dragging');
 
         const handleMouseMove = e => {
           const newWidth = initialWidth + e.clientX - initialMouseX;
           header.style.width = `${newWidth}px`;
-
           localStorage.setItem(`headerWidth${index}`, newWidth);
         };
 
         const handleMouseUp = () => {
-          header.classList.remove('dragging', 'near-border');
-          document.body.classList.remove('dragging');
-
           document.body.style.cursor = '';
+          document.body.classList.remove('dragging');
           document.removeEventListener('mousemove', handleMouseMove);
           document.removeEventListener('mouseup', handleMouseUp);
         };
@@ -73,7 +64,7 @@ export const useResizableColumns = (tableRef, mode) => {
     });
 
     return () => {
-      removeEventListeners();
+      cleanupHeaders();
     };
   }, [tableRef, mode]);
 };
