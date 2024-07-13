@@ -22,6 +22,10 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
 
     const draggableRef = useRef(null);
 
+    const { items: genres, selectedItem: genre, filteredItems: filteredGenres, showItems: showGenres, selectedItems: selectedGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(getGenres);
+    const { items: keywords, selectedItem: keyword, filteredItems: filteredKeywords, showItems: showKeywords, selectedItems: selectedKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(getKeywords);
+    const { items: moods, selectedItem: mood, filteredItems: filteredMoods, showItems: showMoods, selectedItems: selectedMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableList(getMoods);
+
     const resetForm = () => {
         setTitle('');
         setAudio(null);
@@ -33,36 +37,20 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         setFileName('No file chosen');
     };
 
-  const { items: genres, selectedItem: genre, filteredItems: filteredGenres, showItems: showGenres, selectedItems: selectedGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(getGenres);
-  const { items: keywords, selectedItem: keyword, filteredItems: filteredKeywords, showItems: showKeywords, selectedItems: selectedKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(getKeywords);
-  const { items: moods, selectedItem: mood, filteredItems: filteredMoods, showItems: showMoods, selectedItems: selectedMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableList(getMoods);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        let bpmValue = null;
-    
-        if (bpm !== '') {
-            bpmValue = parseFloat(bpm.replace(',', '.'));
-            bpmValue = Math.round(bpmValue);
-    
-            if (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240) {
-                alert('Please enter a valid BPM (1-240) or leave it empty.');
-                return; 
-            }
+        const bpmValue = bpm ? Math.round(parseFloat(bpm.replace(',', '.'))) : null;
+        if (bpm && (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240)) {
+            alert('Please enter a valid BPM (1-240) or leave it empty.');
+            return;
         }
     
-        let newBeat = { title, bpm: bpmValue, genre, mood, keyword, duration: duration };
-        if (tierlist && tierlist !== '') {
-            newBeat.tierlist = tierlist;
-        }
+        const newBeat = { title, bpm: bpmValue, genre, mood, keyword, duration, ...(tierlist && { tierlist }) };
         try {
-            const response = await addBeat(newBeat, audio);
-            const addedBeat = { ...newBeat, id: response.id };
-            onAdd(addedBeat);
+            const { id } = await addBeat(newBeat, audio);
+            onAdd({ ...newBeat, id });
             resetForm();
             setIsOpen(false);
-            setShowToast(true);
             toast.dark(<div><strong>{title}</strong> added successfully!</div>, {
                 autoClose: 3000,
                 pauseOnFocusLoss: false,
@@ -75,61 +63,30 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         }
     };
 
-    const handleFileChange = (e) => {
+    const handleFileChange = e => {
         const file = e.target.files[0];
         setAudio(file);
         setFileName(file.name);
+        setTitle(file.name.replace(/\.[^/.]+$/, ""));
     
-        const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
-        setTitle(fileNameWithoutExtension);
-    
-        const audio = new Audio();
-        audio.src = URL.createObjectURL(file);
-        audio.addEventListener('loadedmetadata', () => {
+        const audio = new Audio(URL.createObjectURL(file));
+        audio.onloadedmetadata = () => {
             setDuration(audio.duration);
             URL.revokeObjectURL(audio.src);
-        });
-    };
-
-    const modalStyle = {
-        overlay: {
-            backgroundColor: 'rgba(30, 30, 30, 0.75)',
-            zIndex: 3,
-        },
-        content: {
-            backgroundColor: 'transparent',
-            color: 'white', 
-            border: 'none',
-            height: '100%',
-            width: '100%',
-            margin: 'auto', 
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            transform: 'translate(-50%, -50%)'
-        }
+        };
     };
 
     useEffect(() => {
-        const handleKeyDown = (event) => {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            handleSubmit(event);
-          }
-        };
-      
-        if (isOpen) {
-          document.addEventListener('keydown', handleKeyDown);
-        }
-        return () => {
-          document.removeEventListener('keydown', handleKeyDown);
-        };
-      }, [isOpen, handleSubmit]);
+        const handleKeyDown = (event) => isOpen && event.key === 'Enter' && handleSubmit(event);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, handleSubmit]);
 
     return (
-        <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={modalStyle}>
+        <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={{
+            overlay: { backgroundColor: 'rgba(30, 30, 30, 0.75)', zIndex: 3 },
+            content: { backgroundColor: 'transparent', color: 'white', border: 'none', height: '100%', width: '100%', margin: 'auto', position: 'absolute', top: '50%', left: '50%', right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)' }
+        }}>
             <Draggable handle=".form__title" nodeRef={draggableRef}>
                 <div ref={draggableRef}>
                 <div className="modal-content">
