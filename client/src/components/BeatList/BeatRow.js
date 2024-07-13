@@ -54,7 +54,7 @@ const BeatRow = ({
   
     const hideContextMenu = () => setActiveContextMenu(null);
     const eventHandlers = {
-      mouseleave: () => hideTimeoutId = setTimeout(hideContextMenu, 400),
+      mouseleave: () => hideTimeoutId = setTimeout(hideContextMenu, 200),
       mouseenter: () => clearTimeout(hideTimeoutId)
     };
   
@@ -71,6 +71,7 @@ const BeatRow = ({
 
   const handleAddToCustomQueueClick = () => {
     addToCustomQueue(selectedBeats);
+    console.log(beat.id)
   };
 
   const {
@@ -345,6 +346,7 @@ const BeatRow = ({
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">
          <ContextMenu
+            beat={beat}
             position={{ top: contextMenuY, left: contextMenuX }}
             items={[
               {

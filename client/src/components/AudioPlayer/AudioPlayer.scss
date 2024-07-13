@@ -22,7 +22,7 @@ $indicator-half-size: math.div($indicator-size, 2);
   &--mobile {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 36px;
+    padding-bottom: $safe-area-inset-bottom;
 
     .rhap_container {
       background-color: transparent;
