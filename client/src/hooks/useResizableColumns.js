@@ -10,6 +10,7 @@ export const useResizableColumns = (tableRef, mode) => {
       headers.forEach(header => {
         header.removeEventListener('mousedown', header.handleMouseDown);
         header.classList.remove('resizable-header');
+        header.style.width = '';
       });
     };
 
