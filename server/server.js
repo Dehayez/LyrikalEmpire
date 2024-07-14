@@ -81,9 +81,10 @@ app.put('/api/beats/:id', (req, res) => {
   const { id } = req.params;
   let updatedBeat = { ...req.body, edited_at: new Date() };
 
-  // Format the date correctly for MySQL
+  delete updatedBeat.created_at;
+
   for (let key in updatedBeat) {
-    if (key === 'created_at' || key === 'edited_at') {
+    if (key === 'edited_at') {
       const date = new Date(updatedBeat[key]);
       updatedBeat[key] = date.toISOString().split('.')[0].replace('T', ' ').replace('Z', '');
     }
@@ -97,7 +98,6 @@ app.put('/api/beats/:id', (req, res) => {
     queryParams.push(updatedBeat[key]);
   }
 
-  // Remove the last comma and space
   updateQuery = updateQuery.slice(0, -2);
 
   updateQuery += ' WHERE id = ?';
