@@ -33,9 +33,9 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     if (!isDragging) return;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     setCurrentY(clientY);
-    if (clientY - startY > 50) { // Threshold for drag down to hide
+    if (clientY - startY > 20) {
       hideContextMenu();
-      setIsDragging(false); // Stop dragging after hiding
+      setIsDragging(false);
     }
   };
 
