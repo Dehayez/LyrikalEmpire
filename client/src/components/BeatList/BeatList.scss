@@ -114,9 +114,13 @@
       width: 100%;
     }
 
-  &__table-head:hover {
-    background-color: $color-gray-dark;
-  }
+    &__table-head:hover {
+      background-color: $color-gray-dark;
+    }
+
+    &-container {
+      padding-right: 16px;
+    }
   }
   
   &__empty {
