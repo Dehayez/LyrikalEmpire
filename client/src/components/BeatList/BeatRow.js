@@ -172,6 +172,14 @@ const BeatRow = ({
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 
+  const handleMenuButtonClick = (e, beat) => {
+    e.preventDefault();
+    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
+      handleBeatClick(beat, e);
+    }
+    setActiveContextMenu({ top: e.clientY, left: e.clientX });
+  };
+
   return (
     <tr
       className={beatRowClasses}
@@ -335,6 +343,7 @@ const BeatRow = ({
         className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
         onClick={(e) => {
           e.stopPropagation();
+          handleMenuButtonClick(e, beat);
           if (isMobileOrTablet()) {
             setActiveContextMenu(beat.id);
           } else {
