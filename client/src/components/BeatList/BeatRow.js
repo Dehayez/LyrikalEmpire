@@ -71,7 +71,6 @@ const BeatRow = ({
 
   const handleAddToCustomQueueClick = () => {
     addToCustomQueue(selectedBeats);
-    console.log(beat.id)
   };
 
   const {
