@@ -335,12 +335,16 @@ const BeatRow = ({
         className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
         onClick={(e) => {
           e.stopPropagation();
-          if (activeContextMenu === beat.id) {
-            setActiveContextMenu(null);
-          } else {
+          if (isMobileOrTablet()) {
             setActiveContextMenu(beat.id);
-            setContextMenuX(e.clientX);
-            setContextMenuY(e.clientY);
+          } else {
+            if (activeContextMenu === beat.id) {
+              setActiveContextMenu(null);
+            } else {
+              setActiveContextMenu(beat.id);
+              setContextMenuX(e.clientX);
+              setContextMenuY(e.clientY);
+            }
           }
         }}
       >
@@ -352,6 +356,7 @@ const BeatRow = ({
          <ContextMenu
             beat={beat}
             position={{ top: contextMenuY, left: contextMenuX }}
+            setActiveContextMenu={setActiveContextMenu}
             items={[
               {
                 icon: IoAddSharp,
