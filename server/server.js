@@ -79,16 +79,11 @@ app.get('/api/beats/:id', (req, res) => {
 
 app.put('/api/beats/:id', (req, res) => {
   const { id } = req.params;
-  let updatedBeat = { ...req.body, edited_at: new Date() };
+  let updatedBeat = { ...req.body, edited_at: new Date().toISOString() };
 
   delete updatedBeat.created_at;
 
-  for (let key in updatedBeat) {
-    if (key === 'edited_at') {
-      const date = new Date(updatedBeat[key]);
-      updatedBeat[key] = date.toISOString().split('.')[0].replace('T', ' ').replace('Z', '');
-    }
-  }
+  updatedBeat.edited_at = updatedBeat.edited_at.replace('T', ' ').split('.')[0];
 
   let updateQuery = 'UPDATE beats SET ';
   let queryParams = [];
@@ -99,7 +94,6 @@ app.put('/api/beats/:id', (req, res) => {
   }
 
   updateQuery = updateQuery.slice(0, -2);
-
   updateQuery += ' WHERE id = ?';
   queryParams.push(id);
 
