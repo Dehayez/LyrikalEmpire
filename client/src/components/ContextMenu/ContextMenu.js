@@ -11,13 +11,12 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   const handleClick = (e, onClick) => {
     e.stopPropagation();
     onClick();
+    hideContextMenu();
   };
 
   const hideContextMenu = () => {
     setIsVisible(false);
-    setTimeout(() => {
       setActiveContextMenu(null);
-    }, 300);
   };
 
   useEffect(() => {
