@@ -25,7 +25,7 @@ const BeatRow = ({
   const [contextMenuY, setContextMenuY] = useState(0);
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
-  const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} beats` : 'Delete this beat';
+  const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} tracks` : 'Delete this track';
   const [isInputFocused, setInputFocused] = useState(false);
 
   const beatRowClasses = classNames({

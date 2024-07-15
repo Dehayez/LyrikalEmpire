@@ -7,7 +7,7 @@ function AddBeatButton({ setIsOpen, isRightPanelVisible, isRightDivVisible }) {
 
   return (
     <div className={`icon-button icon-button--addbeat ${buttonClass}`} onClick={() => setIsOpen(true)}>
-      <span className="tooltip tooltip--left tooltip--addbeat">Add Beat</span>
+      <span className="tooltip tooltip--left tooltip--addbeat">Add Track</span>
       <IoAddSharp />
     </div>
   );

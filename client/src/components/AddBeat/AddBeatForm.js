@@ -51,7 +51,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             onAdd({ ...newBeat, id });
             resetForm();
             setIsOpen(false);
-            toast.dark(<div><strong>{title}</strong> added successfully!</div>, {
+            toast.dark(<div><strong>{title}</strong> has been added!</div>, {
                 autoClose: 3000,
                 pauseOnFocusLoss: false,
                 icon: <IoCheckmarkSharp size={24} />,
@@ -59,7 +59,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             });
             setTimeout(() => setShowToast(false), 3000);
         } catch (error) {
-            console.error('An error occurred while uploading the beat.');
+            console.error('An error occurred while uploading the track.');
         }
     };
 
@@ -90,7 +90,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             <Draggable handle=".form__title" nodeRef={draggableRef}>
                 <div ref={draggableRef}>
                 <div className="modal-content">
-                    <h2 className='form__title'>Add Beat</h2>
+                    <h2 className='form__title'>Add Track</h2>
                     <form className='form' onSubmit={handleSubmit}>
                         <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} />
                         <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
