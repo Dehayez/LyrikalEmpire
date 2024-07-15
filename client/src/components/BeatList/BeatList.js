@@ -106,7 +106,23 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const handleConfirm = async () => {
     if (confirmModalState.beatsToDelete.length > 0) {
       await Promise.all(confirmModalState.beatsToDelete.map(beatId => handleDelete(beatId)));
-      setConfirmModalState({ isOpen: false, beatsToDelete: [] });
+  
+      const titlesToDelete = confirmModalState.beatsToDelete.map(beatId => {
+        const beat = beats.find(b => b.id === beatId);
+        return beat ? beat.title : 'Unknown Track';
+      });
+  
+      const message = confirmModalState.beatsToDelete.length === 1
+      ? <div><strong>{titlesToDelete[0]}</strong> has been deleted.</div>
+      : <div><strong>{confirmModalState.beatsToDelete.length} tracks</strong> have been deleted.</div>;
+    
+    setConfirmModalState({ isOpen: false, beatsToDelete: [] });
+    
+    toast.dark(message, {
+      autoClose: 3000,
+      pauseOnFocusLoss: false,
+      className: "Toastify__toast--warning",
+    });
     }
   };
 
