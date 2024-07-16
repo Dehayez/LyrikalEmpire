@@ -181,9 +181,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   };
 
   return (
-    <div ref={containerRef} className="beat-list" style={{ overflowY: 'scroll', height: '100%' }}>
+    <div ref={containerRef} className="beat-list">
       <div className='beat-list__buffer'/>
-      <div className="beat-list__header" style={{ opacity: headerOpacity }}>
+      <div className="beat-list__header">
         <h2 className='beat-list__title'>All Tracks</h2>
         <div className='beat-list__actions'>
           <IconButton className={'beat-list__action-button--edit'} onClick={toggleEdit}>
