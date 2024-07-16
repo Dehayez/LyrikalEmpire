@@ -12,12 +12,15 @@
   }
 
   &__header {
-    display: flex;
-    justify-content: space-between;
     position: absolute;
+    z-index: 3;
     top: 0;
     left: 0;
+    display: flex;
+    justify-content: space-between;
+    height: 70px;
     width: 100%;
+    background-color: $color-black;
   }
 
   &__title {
