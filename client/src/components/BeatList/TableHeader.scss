@@ -6,7 +6,15 @@
     color: $color-gray-light;
     text-align: left;
     z-index: 3;
-    border-bottom: $border-bottom-dark;
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-bottom: $border-bottom-dark;
+    }
   
     &__cell {
       position: relative;
