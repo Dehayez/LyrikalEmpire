@@ -117,7 +117,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     const audioElement = playerRef.current?.audio?.current;
     if (audioElement) {
       if (audioElement.currentTime > 3) {
-        audioElement.currentTime = 0; // Reset the current time to the beginning
+        audioElement.currentTime = 0;
       } else {
         onPrev();
       }

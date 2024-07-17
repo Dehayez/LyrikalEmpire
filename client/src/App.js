@@ -286,9 +286,12 @@ useEffect(() => {
       const nextBeat = queue[nextIndex];
       handlePlayWrapper(nextBeat, true, beats);
     }
+    if (repeat === 'Repeat One') {
+      setRepeat('Repeat');
+    }
   };
 
-  const handlePrevWrapper = () => handlePrev(repeat, beats, currentBeat, handlePlayWrapper);
+  const handlePrevWrapper = () => handlePrev(beats, currentBeat, handlePlayWrapper, repeat, setRepeat);
 
   const handleQueueUpdateAfterDelete = (deletedBeatId) => {
     const updatedQueue = queue.filter(beat => beat.id !== deletedBeatId);

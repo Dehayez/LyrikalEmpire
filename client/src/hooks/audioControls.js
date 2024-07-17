@@ -13,10 +13,7 @@ export const handlePlay = (beat, play, beats, setSelectedBeat, setBeats, current
     }
   };
   
-  export const handleNext = (repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlay, setIsPlaying, setRepeat) => {
-    if (repeat === 'Repeat One') {
-      setRepeat('Repeat');
-    }
+  export const handleNext = (repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlay, setIsPlaying) => {
     let nextIndex;
     if (shuffle) {
       do {
@@ -35,10 +32,9 @@ export const handlePlay = (beat, play, beats, setSelectedBeat, setBeats, current
     }
   };
   
-  export const handlePrev = (repeat, beats, currentBeat, handlePlay) => {
+  export const handlePrev = (beats, currentBeat, handlePlay, repeat, setRepeat) => {
     if (repeat === 'Repeat One') {
-      handlePlay(currentBeat, true, beats);
-      return;
+      setRepeat('Repeat');
     }
     const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
     const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
