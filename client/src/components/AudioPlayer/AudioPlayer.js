@@ -113,6 +113,17 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     if (rhapProgressContainer) rhapProgressContainer.tabIndex = -1;
   }, []);
 
+  const handlePrevClick = useCallback(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      if (audioElement.currentTime > 3) {
+        audioElement.currentTime = 0; // Reset the current time to the beginning
+      } else {
+        onPrev();
+      }
+    }
+  }, [onPrev, playerRef]);
+
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       <H5AudioPlayer
@@ -153,7 +164,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           ]}
           customControlsSection={[
             <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
-            <PrevButton onPrev={onPrev} />,
+            <PrevButton onPrev={handlePrevClick} />,
             <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
             <NextButton onNext={onNext} />,
             <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
