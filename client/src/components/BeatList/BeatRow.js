@@ -13,13 +13,14 @@ import './BeatRow.scss';
 
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
-  hoveredBeat, setHoveredBeat, selectedBeats = [], handleBeatClick, 
+  selectedBeats = [], handleBeatClick, 
   openConfirmModal, beats, handleRightClick, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
   const hasSelectedBefore = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1);
   const hasSelectedAfter = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] + 1);
+  const [hoveredBeat, setHoveredBeat] = useState(null);
   const isMiddle = hasSelectedBefore && hasSelectedAfter;
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);

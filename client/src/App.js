@@ -452,6 +452,7 @@ useEffect(() => {
                   <History
                     currentBeat={currentBeat} 
                     onBeatClick={handleBeatClick}  
+                    addToCustomQueue={addToCustomQueue}
                   />
                 )}
               </div>

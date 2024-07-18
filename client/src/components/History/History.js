@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { IoTrashBinSharp, IoAddSharp, IoListSharp, IoEllipsisHorizontal } from "react-icons/io5";
+import { IoAddSharp, IoListSharp, IoEllipsisHorizontal } from "react-icons/io5";
 import { ContextMenu } from '../ContextMenu';
+import { isMobileOrTablet } from '../../utils';
 import './History.scss';
 
-const History = ({ onBeatClick, currentBeat }) => {
+const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
   const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');
 
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
+  const [hoveredBeat, setHoveredBeat] = useState(null);
 
   useEffect(() => {
     const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
@@ -41,8 +43,17 @@ const History = ({ onBeatClick, currentBeat }) => {
       setContextMenuY(e.clientY - top + 84);
     }
   };
-  
 
+  const handleAddToCustomQueueClick = (beat) => {
+    addToCustomQueue(beat);
+  };
+
+  const handleMenuButtonClick = (e, beat) => {
+    e.preventDefault();
+    handleBeatClick(beat, e);
+    setActiveContextMenu({ top: e.clientY, left: e.clientX });
+  };
+  
   return (
     <div className="history">
        <ul className='history__list'>
@@ -50,10 +61,46 @@ const History = ({ onBeatClick, currentBeat }) => {
               <li 
                 key={index}
                 className={`history__list-item ${currentBeat && beat.id === currentBeat.id ? 'history__list-item--playing' : ''}`}
-                onClick={() => handleBeatClick(beat)}
                 onContextMenu={(e) => handleRightClick(e, beat, index)}
+                {...(isMobileOrTablet() ? {
+                  onClick: handleBeatClick(beat),
+                } : {
+                  onMouseEnter: (e) => {
+                    e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
+                      button.style.opacity = 1;
+                    });
+                    setHoveredBeat(beat.id);
+                  },
+                  onMouseLeave: (e) => {
+                    e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
+                      button.style.opacity = 0;
+                    });
+                    setHoveredBeat(null);
+                  },
+                  onClick: (e) => handleBeatClick(beat, e),
+                })}
               >
                 {beat.title}
+                <button 
+                  className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMenuButtonClick(e, beat);
+                    if (isMobileOrTablet()) {
+                      setActiveContextMenu(beat.id);
+                    } else {
+                      if (activeContextMenu === beat.id) {
+                        setActiveContextMenu(null);
+                      } else {
+                        setActiveContextMenu(beat.id);
+                        setContextMenuX(e.clientX);
+                        setContextMenuY(e.clientY);
+                      }
+                    }
+                  }}
+                >
+                    <IoEllipsisHorizontal fontSize={24} />
+                  </button>
                 {activeContextMenu === `${beat.id}-${index}` && (
                <ContextMenu
                  beat={beat}
@@ -66,6 +113,13 @@ const History = ({ onBeatClick, currentBeat }) => {
                      text: 'Add to playlist',
                      buttonClass: 'add-playlist',
                      onClick: () => console.log(`Add ${beat.id} to playlist clicked`),
+                   },
+                   {
+                     icon: IoListSharp,
+                     iconClass: 'add-queue',
+                     text: 'Add to queue',
+                     buttonClass: 'add-queue',
+                     onClick: () => handleAddToCustomQueueClick(beat),
                    },
                  ]}
                />
