@@ -81,9 +81,64 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue,
         <div className='queue__section'> 
           <h3 className="queue__subtitle">Now Playing</h3>
           <ul className="queue__list">
-            <li className={`queue__list-item queue__list-item--playing`} key={queue[0].id}>
-              {queue[0].title}
-            </li>
+          <li
+            className={`queue__list-item queue__list-item--playing`}
+            key={queue[0].id}
+            onContextMenu={(e) => handleRightClick(e, queue[0], 0)}
+            onClick={(e) => {
+              if (isMobileOrTablet()) {
+                handleBeatClick(queue[0]);
+              }
+            }}
+            onMouseEnter={(e) => {
+              if (!isMobileOrTablet()) {
+                e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
+                  button.style.opacity = 1;
+                });
+                setHoveredBeat(queue[0].id);
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isMobileOrTablet()) {
+                e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
+                  button.style.opacity = 0;
+                });
+                setHoveredBeat(null);
+              }
+            }}
+          >
+            {queue[0].title}
+            <button 
+              className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
+              onClick={(e) => handleMenuButtonClick(e, queue[0], 0)}
+            >
+              <IoEllipsisHorizontal fontSize={24} />
+            </button>
+
+            {activeContextMenu === `${queue[0].id}-0` && (
+              <ContextMenu
+                beat={queue[0]}
+                position={{ top: contextMenuY, left: contextMenuX }}
+                setActiveContextMenu={setActiveContextMenu}
+                items={[
+                  {
+                    icon: IoAddSharp,
+                    iconClass: 'add-playlist',
+                    text: 'Add to playlist',
+                    buttonClass: 'add-playlist',
+                    onClick: () => console.log(`Add ${queue[0].id} to playlist clicked`),
+                  },
+                  {
+                    icon: IoListSharp,
+                    iconClass: 'add-queue',
+                    text: 'Add to queue',
+                    buttonClass: 'add-queue',
+                    onClick: () => handleAddToCustomQueueClick(queue[0]),
+                  },
+                ]}
+              />
+            )}
+          </li>
           </ul>
         </div>
       )}
@@ -93,65 +148,65 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue,
           <h3 className="queue__subtitle">Next in Queue</h3>
           <ul className='queue__list'>
           {customQueue.map((beat, index) => (
-  <li
-    className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
-    key={beat.id ? `custom-${beat.id}-${index}` : `custom-index-${index}`}
-    onContextMenu={(e) => handleRightClick(e, beat, index)}
-    onClick={(e) => {
-      if (isMobileOrTablet()) {
-        handleBeatClick(beat);
-      }
-    }}
-    onMouseEnter={(e) => {
-      if (!isMobileOrTablet()) {
-        e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
-          button.style.opacity = 1;
-        });
-        setHoveredBeat(beat.id);
-      }
-    }}
-    onMouseLeave={(e) => {
-      if (!isMobileOrTablet()) {
-        e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
-          button.style.opacity = 0;
-        });
-        setHoveredBeat(null);
-      }
-    }}
-  >
-    {beat.title}
-    <button 
-      className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
-      onClick={(e) => handleMenuButtonClick(e, beat, index)}
-    >
-      <IoEllipsisHorizontal fontSize={24} />
-    </button>
+              <li
+                className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
+                key={beat.id ? `custom-${beat.id}-${index}` : `custom-index-${index}`}
+                onContextMenu={(e) => handleRightClick(e, beat, index)}
+                onClick={(e) => {
+                  if (isMobileOrTablet()) {
+                    handleBeatClick(beat);
+                  }
+                }}
+                onMouseEnter={(e) => {
+                  if (!isMobileOrTablet()) {
+                    e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
+                      button.style.opacity = 1;
+                    });
+                    setHoveredBeat(beat.id);
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isMobileOrTablet()) {
+                    e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
+                      button.style.opacity = 0;
+                    });
+                    setHoveredBeat(null);
+                  }
+                }}
+              >
+                {beat.title}
+                <button 
+                  className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
+                  onClick={(e) => handleMenuButtonClick(e, beat, index)}
+                >
+                  <IoEllipsisHorizontal fontSize={24} />
+                </button>
 
-    {activeContextMenu === `${beat.id}-${index}` && (
-      <ContextMenu
-        beat={beat}
-        position={{ top: contextMenuY, left: contextMenuX }}
-        setActiveContextMenu={setActiveContextMenu}
-        items={[
-          {
-            icon: IoAddSharp,
-            iconClass: 'add-playlist',
-            text: 'Add to playlist',
-            buttonClass: 'add-playlist',
-            onClick: () => console.log(`Add ${beat.id} to playlist clicked`),
-          },
-          {
-            icon: IoListSharp,
-            iconClass: 'add-queue',
-            text: 'Add to queue',
-            buttonClass: 'add-queue',
-            onClick: () => handleAddToCustomQueueClick(beat),
-          },
-        ]}
-      />
-    )}
-  </li>
-))}
+                {activeContextMenu === `${beat.id}-${index}` && (
+                  <ContextMenu
+                    beat={beat}
+                    position={{ top: contextMenuY, left: contextMenuX }}
+                    setActiveContextMenu={setActiveContextMenu}
+                    items={[
+                      {
+                        icon: IoAddSharp,
+                        iconClass: 'add-playlist',
+                        text: 'Add to playlist',
+                        buttonClass: 'add-playlist',
+                        onClick: () => console.log(`Add ${beat.id} to playlist clicked`),
+                      },
+                      {
+                        icon: IoListSharp,
+                        iconClass: 'add-queue',
+                        text: 'Add to queue',
+                        buttonClass: 'add-queue',
+                        onClick: () => handleAddToCustomQueueClick(beat),
+                      },
+                    ]}
+                  />
+                )}
+              </li>
+            ))}
           </ul>
         </div>
       )}
