@@ -87,13 +87,7 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
                 {beat.title}
                 <button 
                   className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActiveContextMenu(e, beat, index);
-                    setContextMenuX(e.clientX);
-                    setContextMenuY(e.clientY);
-                    console.log('lol')
-                  }}
+                  onClick={handleMenuButtonClick}
                 >
                     <IoEllipsisHorizontal fontSize={24} />
                   </button>
