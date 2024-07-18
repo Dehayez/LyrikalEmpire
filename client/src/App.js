@@ -447,6 +447,7 @@ useEffect(() => {
                     onBeatClick={handleBeatClick} 
                     isShuffleEnabled={shuffle}
                     customQueue={customQueue}
+                    addToCustomQueue={addToCustomQueue}
                   />
                 ) : (
                   <History
