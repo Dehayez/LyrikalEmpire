@@ -69,8 +69,11 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
     addToCustomQueue(beat);
   };
 
-  const handleRemoveFromCustomQueueClick = (beat) => {
-    setCustomQueue(currentCustomQueue => currentCustomQueue.filter(item => item.id !== beat.id));
+  const handleRemoveFromCustomQueueClick = (index) => {
+    setCustomQueue(currentCustomQueue => [
+      ...currentCustomQueue.slice(0, index),
+      ...currentCustomQueue.slice(index + 1)
+    ]);
   };
 
   const getNextItemForShuffle = () => {
@@ -215,7 +218,7 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                         iconClass: 'remove-queue',
                         text: 'Remove from queue',
                         buttonClass: 'remove-queue',
-                        onClick: () => handleRemoveFromCustomQueueClick(beat),
+                        onClick: () => handleRemoveFromCustomQueueClick(index),
                       },
                     ]}
                   />
