@@ -54,7 +54,7 @@ const BeatRow = ({
   
     const hideContextMenu = () => setActiveContextMenu(null);
     const eventHandlers = {
-      mouseleave: () => hideTimeoutId = setTimeout(hideContextMenu, 200),
+      mouseleave: () => hideTimeoutId = setTimeout(hideContextMenu, 0),
       mouseenter: () => clearTimeout(hideTimeoutId)
     };
   
@@ -62,6 +62,15 @@ const BeatRow = ({
   
     return () => manageContextMenuVisibility(false);
   }, [activeContextMenu, beat.id]);
+
+
+  const handleMenuButtonClick = (e, beat) => {
+    e.preventDefault();
+    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
+      handleBeatClick(beat, e);
+    }
+    setActiveContextMenu({ top: e.clientY, left: e.clientX });
+  };
 
   const handleTierlistChange = (e) => {
     const newTierlist = e.target.value;
@@ -170,14 +179,6 @@ const BeatRow = ({
     const seconds = totalSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
-
-  const handleMenuButtonClick = (e, beat) => {
-    e.preventDefault();
-    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
-      handleBeatClick(beat, e);
-    }
-    setActiveContextMenu({ top: e.clientY, left: e.clientX });
-  };
 
   return (
     <tr
