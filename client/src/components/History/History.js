@@ -105,28 +105,28 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
                   <IoEllipsisHorizontal fontSize={24} />
                 </button>
                 {activeContextMenu === `${beat.id}-${index}` && (
-               <ContextMenu
-                 beat={beat}
-                 position={{ top: contextMenuY, left: contextMenuX }}
-                 setActiveContextMenu={setActiveContextMenu}
-                 items={[
-                   {
-                     icon: IoAddSharp,
-                     iconClass: 'add-playlist',
-                     text: 'Add to playlist',
-                     buttonClass: 'add-playlist',
-                     onClick: () => console.log(`Add ${beat.id} to playlist clicked`),
-                   },
-                   {
-                     icon: IoListSharp,
-                     iconClass: 'add-queue',
-                     text: 'Add to queue',
-                     buttonClass: 'add-queue',
-                     onClick: () => handleAddToCustomQueueClick(beat),
-                   },
-                 ]}
-               />
-              )}
+                  <ContextMenu
+                    beat={beat}
+                    position={{ top: contextMenuY, left: contextMenuX }}
+                    setActiveContextMenu={setActiveContextMenu}
+                    items={[
+                      {
+                        icon: IoAddSharp,
+                        iconClass: 'add-playlist',
+                        text: 'Add to playlist',
+                        buttonClass: 'add-playlist',
+                        onClick: () => console.log(`Add ${beat.id} to playlist clicked`),
+                      },
+                      {
+                        icon: IoListSharp,
+                        iconClass: 'add-queue',
+                        text: 'Add to queue',
+                        buttonClass: 'add-queue',
+                        onClick: () => handleAddToCustomQueueClick(beat),
+                      },
+                    ]}
+                  />
+                )}
               </li>
               
           ))}

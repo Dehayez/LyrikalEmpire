@@ -26,6 +26,7 @@
 }
 
 .left-side-panel {
+  overflow-x: hidden;
   &--hover {
     left: 0;
   }
@@ -38,6 +39,7 @@
 }
 
 .right-side-panel {
+  overflow-x: hidden;
   &--hover {
     right: 0;
   }
