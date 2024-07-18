@@ -48,10 +48,23 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
     addToCustomQueue(beat);
   };
 
-  const handleMenuButtonClick = (e, beat) => {
-    e.preventDefault();
-    handleBeatClick(beat, e);
-    setActiveContextMenu({ top: e.clientY, left: e.clientX });
+  const handleMenuButtonClick = (e, beat, index) => {
+    e.stopPropagation();
+    const button = e.currentTarget;
+  
+    const historyListElement = document.querySelector('.history__list');
+  
+    if (historyListElement) {
+      const { left, top } = historyListElement.getBoundingClientRect();
+  
+      const buttonRect = button.getBoundingClientRect();
+      const adjustedX = buttonRect.left - left + buttonRect.width - 170;
+      const adjustedY = buttonRect.top - top + 100; 
+  
+      setActiveContextMenu(`${beat.id}-${index}`);
+      setContextMenuX(adjustedX);
+      setContextMenuY(adjustedY);
+    }
   };
   
   return (
@@ -87,10 +100,10 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
                 {beat.title}
                 <button 
                   className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
-                  onClick={handleMenuButtonClick}
+                  onClick={(e) => handleMenuButtonClick(e, beat, index)}
                 >
-                    <IoEllipsisHorizontal fontSize={24} />
-                  </button>
+                  <IoEllipsisHorizontal fontSize={24} />
+                </button>
                 {activeContextMenu === `${beat.id}-${index}` && (
                <ContextMenu
                  beat={beat}
