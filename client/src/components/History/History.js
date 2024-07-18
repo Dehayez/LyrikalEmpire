@@ -62,41 +62,37 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
                 key={index}
                 className={`history__list-item ${currentBeat && beat.id === currentBeat.id ? 'history__list-item--playing' : ''}`}
                 onContextMenu={(e) => handleRightClick(e, beat, index)}
-                {...(isMobileOrTablet() ? {
-                  onClick: handleBeatClick(beat),
-                } : {
-                  onMouseEnter: (e) => {
+                onClick={(e) => {
+                  if (isMobileOrTablet()) {
+                    handleBeatClick(beat);
+                  }
+                }}
+                onMouseEnter={(e) => {
+                  if (!isMobileOrTablet()) {
                     e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
                       button.style.opacity = 1;
                     });
                     setHoveredBeat(beat.id);
-                  },
-                  onMouseLeave: (e) => {
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isMobileOrTablet()) {
                     e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
                       button.style.opacity = 0;
                     });
                     setHoveredBeat(null);
-                  },
-                  onClick: (e) => handleBeatClick(beat, e),
-                })}
+                  }
+                }}
               >
                 {beat.title}
                 <button 
                   className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleMenuButtonClick(e, beat);
-                    if (isMobileOrTablet()) {
-                      setActiveContextMenu(beat.id);
-                    } else {
-                      if (activeContextMenu === beat.id) {
-                        setActiveContextMenu(null);
-                      } else {
-                        setActiveContextMenu(beat.id);
-                        setContextMenuX(e.clientX);
-                        setContextMenuY(e.clientY);
-                      }
-                    }
+                    setActiveContextMenu(e, beat, index);
+                    setContextMenuX(e.clientX);
+                    setContextMenuY(e.clientY);
+                    console.log('lol')
                   }}
                 >
                     <IoEllipsisHorizontal fontSize={24} />
