@@ -47,7 +47,6 @@ const History = ({ onBeatClick, currentBeat }) => {
     <div className="history">
        <ul className='history__list'>
           {history.map((beat, index) => (
-            <>
               <li 
                 key={index}
                 className={`history__list-item ${currentBeat && beat.id === currentBeat.id ? 'history__list-item--playing' : ''}`}
@@ -55,8 +54,7 @@ const History = ({ onBeatClick, currentBeat }) => {
                 onContextMenu={(e) => handleRightClick(e, beat, index)}
               >
                 {beat.title}
-              </li>
-              {activeContextMenu === `${beat.id}-${index}` && (
+                {activeContextMenu === `${beat.id}-${index}` && (
                <ContextMenu
                  beat={beat}
                  position={{ top: contextMenuY, left: contextMenuX }}
@@ -67,12 +65,13 @@ const History = ({ onBeatClick, currentBeat }) => {
                      iconClass: 'add-playlist',
                      text: 'Add to playlist',
                      buttonClass: 'add-playlist',
-                     onClick: () => console.log('Add to playlist clicked'),
+                     onClick: () => console.log(`Add ${beat.id} to playlist clicked`),
                    },
                  ]}
                />
               )}
-            </>
+              </li>
+              
           ))}
         </ul>
     </div>
