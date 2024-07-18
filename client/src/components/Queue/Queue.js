@@ -97,6 +97,7 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
             key={queue[0].id}
             onContextMenu={(e) => handleRightClick(e, queue[0], 0)}
             onClick={(e) => {
+              handleBeatClick(queue[0]);
               if (isMobileOrTablet()) {
                 handleBeatClick(queue[0]);
               }
@@ -164,6 +165,7 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                 key={beat.id ? `custom-${beat.id}-${index}` : `custom-index-${index}`}
                 onContextMenu={(e) => handleRightClick(e, beat, index)}
                 onClick={(e) => {
+                  handleBeatClick(beat);
                   if (isMobileOrTablet()) {
                     handleBeatClick(beat);
                   }
@@ -242,6 +244,7 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
               key={beat.uniqueKey}
               onContextMenu={(e) => handleRightClick(e, beat, index)}
               onClick={(e) => {
+                handleBeatClick(beat);
                 if (isMobileOrTablet()) {
                   handleBeatClick(beat);
                 }
