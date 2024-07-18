@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { IoAddSharp, IoListSharp, IoEllipsisHorizontal } from "react-icons/io5";
+import { IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinSharp } from "react-icons/io5";
 import { ContextMenu } from '../ContextMenu';
 import { isMobileOrTablet } from '../../utils';
 import './Queue.scss';
 
-const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue, addToCustomQueue }) => {
+const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, customQueue, setCustomQueue, addToCustomQueue }) => {
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
@@ -36,10 +36,6 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue,
     }
   };
 
-  const handleAddToCustomQueueClick = (beat) => {
-    addToCustomQueue(beat);
-  };
-
   const handleMenuButtonClick = (e, beat, index) => {
     e.stopPropagation();
     const button = e.currentTarget;
@@ -63,6 +59,18 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue,
     if (onBeatClick) {
       onBeatClick(beat);
     }
+  };
+
+  const handleRemoveFromQueueClick = (beat) => {
+    setQueue(currentQueue => currentQueue.filter(item => item.id !== beat.id));
+  };
+
+  const handleAddToCustomQueueClick = (beat) => {
+    addToCustomQueue(beat);
+  };
+
+  const handleRemoveFromCustomQueueClick = (beat) => {
+    setCustomQueue(currentCustomQueue => currentCustomQueue.filter(item => item.id !== beat.id));
   };
 
   const getNextItemForShuffle = () => {
@@ -202,6 +210,13 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue,
                         buttonClass: 'add-queue',
                         onClick: () => handleAddToCustomQueueClick(beat),
                       },
+                      {
+                        icon: IoTrashBinSharp,
+                        iconClass: 'remove-queue',
+                        text: 'Remove from queue',
+                        buttonClass: 'remove-queue',
+                        onClick: () => handleRemoveFromCustomQueueClick(beat),
+                      },
                     ]}
                   />
                 )}
@@ -272,6 +287,13 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue,
                     text: 'Add to queue',
                     buttonClass: 'add-queue',
                     onClick: () => handleAddToCustomQueueClick(beat),
+                  },
+                  {
+                    icon: IoTrashBinSharp,
+                    iconClass: 'remove-queue',
+                    text: 'Remove from queue',
+                    buttonClass: 'remove-queue',
+                    onClick: () => handleRemoveFromQueueClick(beat),
                   },
                 ]}
               />

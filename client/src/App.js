@@ -443,10 +443,12 @@ useEffect(() => {
                 {viewState === "queue" ? (
                   <Queue 
                     queue={queue} 
+                    setQueue={setQueue}
                     currentBeat={currentBeat} 
                     onBeatClick={handleBeatClick} 
                     isShuffleEnabled={shuffle}
                     customQueue={customQueue}
+                    setCustomQueue={setCustomQueue}
                     addToCustomQueue={addToCustomQueue}
                   />
                 ) : (
