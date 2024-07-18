@@ -26,7 +26,7 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue,
 
   const handleRightClick = (e, beat, index) => {
     e.preventDefault();
-    const historyListElement = document.querySelector('.queue__list');
+    const historyListElement = document.querySelector('.queue');
   
     if (historyListElement) {
       const { left, top } = historyListElement.getBoundingClientRect();
@@ -44,7 +44,7 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue,
     e.stopPropagation();
     const button = e.currentTarget;
   
-    const historyListElement = document.querySelector('.queue__list');
+    const historyListElement = document.querySelector('.queue');
   
     if (historyListElement) {
       const { left, top } = historyListElement.getBoundingClientRect();
@@ -95,7 +95,7 @@ const Queue = ({ queue, currentBeat, onBeatClick, isShuffleEnabled, customQueue,
           {customQueue.map((beat, index) => (
   <li
     className={`queue__list-item ${currentBeat && beat.id === currentBeat.id ? 'queue__list-item--playing' : ''}`}
-    key={beat.id ? `custom-${beat.id}-${index}` : `custom-index-${index}`} // Adjusted key to include index
+    key={beat.id ? `custom-${beat.id}-${index}` : `custom-index-${index}`}
     onContextMenu={(e) => handleRightClick(e, beat, index)}
     onClick={(e) => {
       if (isMobileOrTablet()) {
