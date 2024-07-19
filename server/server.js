@@ -172,6 +172,97 @@ app.get('/api/moods', (req, res) => {
   });
 });
 
+// Create Playlist
+app.post('/api/playlists', (req, res) => {
+  const { title, description } = req.body;
+  db.query('INSERT INTO playlists (title, description) VALUES (?, ?)', [title, description], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while creating the playlist' });
+    } else {
+      res.status(201).json({ message: 'Playlist created successfully', playlistId: results.insertId });
+    }
+  });
+});
+
+// Get Playlists
+app.get('/api/playlists', (req, res) => {
+  db.query('SELECT * FROM playlists', (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching playlists' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Update Playlist
+app.put('/api/playlists/:id', (req, res) => {
+  const { title, description } = req.body;
+  const { id } = req.params;
+  db.query('UPDATE playlists SET title = ?, description = ? WHERE id = ?', [title, description, id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while updating the playlist' });
+    } else {
+      res.json({ message: 'Playlist updated successfully' });
+    }
+  });
+});
+
+// Delete Playlist
+app.delete('/api/playlists/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM playlists WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while deleting the playlist' });
+    } else {
+      res.json({ message: 'Playlist deleted successfully' });
+    }
+  });
+});
+
+// Add Beat to Playlist
+app.post('/api/playlists/:playlist_id/beats/:beat_id', (req, res) => {
+  const { playlist_id, beat_id } = req.params;
+  db.query('INSERT INTO playlist_beats (playlist_id, beat_id) VALUES (?, ?)', [playlist_id, beat_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while adding the beat to the playlist' });
+    } else {
+      res.status(201).json({ message: 'Beat added to playlist successfully' });
+    }
+  });
+});
+
+// Remove Beat from Playlist
+app.delete('/api/playlists/:playlist_id/beats/:beat_id', (req, res) => {
+  const { playlist_id, beat_id } = req.params;
+  db.query('DELETE FROM playlist_beats WHERE playlist_id = ? AND beat_id = ?', [playlist_id, beat_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while removing the beat from the playlist' });
+    } else {
+      res.json({ message: 'Beat removed from playlist successfully' });
+    }
+  });
+});
+
+// Get Beats in Playlist
+app.get('/api/playlists/:playlist_id/beats', (req, res) => {
+  const { playlist_id } = req.params;
+  db.query('SELECT b.* FROM beats b INNER JOIN playlist_beats pb ON b.id = pb.beat_id WHERE pb.playlist_id = ?', [playlist_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching beats in the playlist' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 db.connect(err => {
   if (err) {
     console.error('An error occurred while connecting to the database:', err);
