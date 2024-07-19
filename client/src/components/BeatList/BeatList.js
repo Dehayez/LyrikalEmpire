@@ -22,7 +22,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
-
   const [isHovering, setIsHovering] = useState(false);
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
@@ -126,13 +125,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   };
 
   const openConfirmModal = () => setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
-
-  const handleRightClick = (e, beat) => {
-    e.preventDefault();
-    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
-      handleBeatClick(beat, e);
-    }
-  };
 
   const [mode, setMode] = useState(() => {
     const saved = localStorage.getItem('mode');
@@ -255,7 +247,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
                   selectedBeats={selectedBeats}
                   openConfirmModal={openConfirmModal}
                   beats={beats}
-                  handleRightClick={handleRightClick}
                   addToCustomQueue={addToCustomQueue}
                   searchText={searchText}
                   mode={mode}
