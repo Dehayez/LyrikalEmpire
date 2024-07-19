@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
 import { ContextMenu } from '../ContextMenu';
-import { IoAddSharp, IoRemoveCircleOutline } from "react-icons/io5";
+import { UpdatePlaylistForm } from './UpdatePlaylistForm';
+import { IoAddSharp, IoRemoveCircleOutline, IoPencil } from "react-icons/io5";
 import './Playlists.scss';
 
 const Playlists = () => {
@@ -9,11 +11,27 @@ const Playlists = () => {
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
-  const [hoveredBeat, setHoveredBeat] = useState(null);
+
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [currentPlaylist, setCurrentPlaylist] = useState(null);
 
   useEffect(() => {
     fetchPlaylists();
   }, []);
+
+  useEffect(() => {
+    const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
+    const hideContextMenu = () => setActiveContextMenu(null);
+
+    const manageContextMenuVisibility = (show) => {
+      window[`${show ? 'add' : 'remove'}EventListener`]('click', hideContextMenu);
+      toggleScroll(show);
+    };
+
+    manageContextMenuVisibility(!!activeContextMenu);
+
+    return () => manageContextMenuVisibility(false);
+  }, [activeContextMenu]);
 
   const fetchPlaylists = async () => {
     try {
@@ -43,19 +61,11 @@ const Playlists = () => {
     }
   };
 
-  useEffect(() => {
-    const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
-    const hideContextMenu = () => setActiveContextMenu(null);
-
-    const manageContextMenuVisibility = (show) => {
-      window[`${show ? 'add' : 'remove'}EventListener`]('click', hideContextMenu);
-      toggleScroll(show);
-    };
-
-    manageContextMenuVisibility(!!activeContextMenu);
-
-    return () => manageContextMenuVisibility(false);
-  }, [activeContextMenu]);
+  const handleOpenUpdateForm = (playlist) => {
+    setCurrentPlaylist(playlist);
+    setShowUpdateForm(true);
+  };
+  
 
   const handleRightClick = (e, beat, index) => {
     e.preventDefault();
@@ -99,6 +109,13 @@ const Playlists = () => {
                         text: 'Delete',
                         buttonClass: 'delete-playlist',
                         onClick: () => handleDeletePlaylist(playlist.id),
+                      },
+                      {
+                        icon: IoPencil,
+                        iconClass: 'edit-playlist',
+                        text: 'Edit',
+                        buttonClass: 'edit-playlist',
+                        onClick: () => handleOpenUpdateForm(playlist),
                       }
                     ]}
                   />
@@ -106,6 +123,14 @@ const Playlists = () => {
           </li>
         ))}
       </ul>
+      {showUpdateForm && currentPlaylist && ReactDOM.createPortal(
+        <UpdatePlaylistForm
+          playlist={currentPlaylist}
+          onClose={() => setShowUpdateForm(false)}
+          onUpdated={fetchPlaylists}
+        />,
+        document.getElementById('modal-root')
+      )}
     </div>
   );
 };
