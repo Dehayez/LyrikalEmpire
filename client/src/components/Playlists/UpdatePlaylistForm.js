@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { updatePlaylist } from '../../services/playlistService';
+import { FormInput, FormTextarea } from '../Inputs';
 import './UpdatePlaylistForm.scss';
 
 export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
@@ -17,15 +18,18 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
     };
   
     return (
-        <div className='update-playlist'>
+        <>
             <div className="update-playlist__overlay" onClick={onClose}>
                 <div className="update-playlist__form" onClick={(e) => e.stopPropagation()}>
-                    <input type="text" className="update-playlist__input update-playlist__input--title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
-                    <textarea className="update-playlist__textarea" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description"></textarea>
-                    <button className="update-playlist__button update-playlist__button--update" onClick={handleUpdate}>Update</button>
-                    <button className="update-playlist__button update-playlist__button--cancel" onClick={onClose}>Cancel</button>
+                    <h2 className='update-playlist__title'>Edit details</h2>
+                    <FormInput label="Title" type="text" placeholder='Enter name' value={title} onChange={(e) => setTitle(e.target.value)} spellCheck="false" />
+                    <FormTextarea label="Description" type="text" placeholder='Enter description' value={description} onChange={(e) => setDescription(e.target.value)} spellCheck="false" />
+                    <div className="update-playlist__buttons">
+                        <button className="update-playlist__button update-playlist__button--update" onClick={handleUpdate}>Save</button>
+                        <button className="update-playlist__button update-playlist__button--cancel" onClick={onClose}>Cancel</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
   };
