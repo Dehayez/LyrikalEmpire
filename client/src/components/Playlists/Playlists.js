@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getPlaylists, createPlaylist } from '../../services/playlistService';
+import { IoAddSharp } from "react-icons/io5";
 import './Playlists.scss';
 
 const Playlists = () => {
@@ -22,7 +23,7 @@ const Playlists = () => {
     const newPlaylistTitle = `Playlist #${playlists.length + 1}`;
     try {
       await createPlaylist({ title: newPlaylistTitle, description: 'Automatically generated playlist' });
-      await fetchPlaylists(); // Refresh the playlists to include the new one
+      await fetchPlaylists();
     } catch (error) {
       console.error('Error adding new playlist:', error);
     }
@@ -30,8 +31,13 @@ const Playlists = () => {
 
   return (
     <div className="playlists">
-      <h2 className="playlists__title">Playlists</h2>
-      <button onClick={handleAddPlaylist}>Add New Playlist</button>
+      <div className="playlists__header">
+        <h2 className="playlists__title">Playlists</h2>
+        <button className='icon-button' onClick={handleAddPlaylist}>
+        <span className="tooltip tooltip--left">Add playlist</span>
+          <IoAddSharp />
+        </button>
+      </div>
       <ul>
         {playlists.map(playlist => (
           <li key={playlist.id}>{playlist.title}</li>
