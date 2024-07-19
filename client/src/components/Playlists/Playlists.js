@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { getPlaylists, createPlaylist } from '../../services/playlistService';
+import { ContextMenu } from '../ContextMenu';
 import { IoAddSharp } from "react-icons/io5";
 import './Playlists.scss';
 
 const Playlists = () => {
   const [playlists, setPlaylists] = useState([]);
+  const [activeContextMenu, setActiveContextMenu] = useState(null);
+  const [contextMenuX, setContextMenuX] = useState(0);
+  const [contextMenuY, setContextMenuY] = useState(0);
+  const [hoveredBeat, setHoveredBeat] = useState(null);
 
   useEffect(() => {
     fetchPlaylists();
@@ -29,6 +34,32 @@ const Playlists = () => {
     }
   };
 
+  useEffect(() => {
+    const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
+    const hideContextMenu = () => setActiveContextMenu(null);
+
+    const manageContextMenuVisibility = (show) => {
+      window[`${show ? 'add' : 'remove'}EventListener`]('click', hideContextMenu);
+      toggleScroll(show);
+    };
+
+    manageContextMenuVisibility(!!activeContextMenu);
+
+    return () => manageContextMenuVisibility(false);
+  }, [activeContextMenu]);
+
+  const handleRightClick = (e, beat, index) => {
+    e.preventDefault();
+    const historyListElement = document.querySelector('.playlists__list');
+  
+    if (historyListElement) {
+      const { left, top } = historyListElement.getBoundingClientRect();
+      setActiveContextMenu(`${beat.id}-${index}`);
+      setContextMenuX(e.clientX - left + 16);
+      setContextMenuY(e.clientY - top + 84);
+    }
+  };
+
   return (
     <div className="playlists">
       <div className="playlists__header">
@@ -39,9 +70,30 @@ const Playlists = () => {
         </button>
       </div>
       <ul className='playlists__list'>
-        {playlists.map(playlist => (
-          <li className='playlists__list-item' key={playlist.id}>
+        {playlists.map((playlist, index) => (
+          <li 
+            className='playlists__list-item' 
+            key={index}
+            onContextMenu={(e) => handleRightClick(e, playlist, index)}
+          >
             {playlist.title}
+
+            {activeContextMenu === `${playlist.id}-${index}` && (
+                  <ContextMenu
+                    beat={playlist}
+                    position={{ top: contextMenuY, left: contextMenuX }}
+                    setActiveContextMenu={setActiveContextMenu}
+                    items={[
+                      {
+                        icon: IoAddSharp,
+                        iconClass: 'add-playlist',
+                        text: 'Add to playlist',
+                        buttonClass: 'add-playlist',
+                        onClick: () => console.log(`Add ${playlist.id} to playlist clicked`),
+                      },
+                    ]}
+                  />
+                )}
           </li>
         ))}
       </ul>
