@@ -94,13 +94,6 @@ const Playlists = () => {
                     setActiveContextMenu={setActiveContextMenu}
                     items={[
                       {
-                        icon: IoAddSharp,
-                        iconClass: 'add-playlist',
-                        text: 'Add to playlist',
-                        buttonClass: 'add-playlist',
-                        onClick: () => console.log(`Add ${playlist.id} to playlist clicked`),
-                      },
-                      {
                         icon: IoRemoveCircleOutline,
                         iconClass: 'delete-playlist',
                         text: 'Delete',
