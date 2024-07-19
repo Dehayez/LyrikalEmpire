@@ -38,9 +38,11 @@ const Playlists = () => {
           <IoAddSharp />
         </button>
       </div>
-      <ul>
+      <ul className='playlists__list'>
         {playlists.map(playlist => (
-          <li key={playlist.id}>{playlist.title}</li>
+          <li className='playlists__list-item' key={playlist.id}>
+            {playlist.title}
+          </li>
         ))}
       </ul>
     </div>
