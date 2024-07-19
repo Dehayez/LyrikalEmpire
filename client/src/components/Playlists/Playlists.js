@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getPlaylists, createPlaylist } from '../../services/playlistService';
+import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
 import { ContextMenu } from '../ContextMenu';
-import { IoAddSharp } from "react-icons/io5";
+import { IoAddSharp, IoRemoveCircleOutline } from "react-icons/io5";
 import './Playlists.scss';
 
 const Playlists = () => {
@@ -27,10 +27,19 @@ const Playlists = () => {
   const handleAddPlaylist = async () => {
     const newPlaylistTitle = `Playlist #${playlists.length + 1}`;
     try {
-      await createPlaylist({ title: newPlaylistTitle, description: 'Automatically generated playlist' });
+      await createPlaylist({ title: newPlaylistTitle, description: null });
       await fetchPlaylists();
     } catch (error) {
       console.error('Error adding new playlist:', error);
+    }
+  };
+
+  const handleDeletePlaylist = async (playlistId) => {
+    try {
+      await deletePlaylist(playlistId);
+      await fetchPlaylists();
+    } catch (error) {
+      console.error(`Error deleting playlist with ID ${playlistId}:`, error);
     }
   };
 
@@ -91,6 +100,13 @@ const Playlists = () => {
                         buttonClass: 'add-playlist',
                         onClick: () => console.log(`Add ${playlist.id} to playlist clicked`),
                       },
+                      {
+                        icon: IoRemoveCircleOutline,
+                        iconClass: 'delete-playlist',
+                        text: 'Delete',
+                        buttonClass: 'delete-playlist',
+                        onClick: () => handleDeletePlaylist(playlist.id),
+                      }
                     ]}
                   />
                 )}
