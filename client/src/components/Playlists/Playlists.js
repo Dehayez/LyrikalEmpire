@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
 import { ContextMenu } from '../ContextMenu';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
+import ConfirmModal from '../ConfirmModal/ConfirmModal'; // Import ConfirmModal
 import { IoAddSharp, IoRemoveCircleOutline, IoPencil } from "react-icons/io5";
 import './Playlists.scss';
 
@@ -14,6 +15,10 @@ const Playlists = () => {
 
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
+
+  // State for ConfirmModal
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [playlistToDelete, setPlaylistToDelete] = useState(null);
 
   useEffect(() => {
     fetchPlaylists();
@@ -56,6 +61,7 @@ const Playlists = () => {
     try {
       await deletePlaylist(playlistId);
       await fetchPlaylists();
+      setShowConfirmModal(false); // Close the modal after deletion
     } catch (error) {
       console.error(`Error deleting playlist with ID ${playlistId}:`, error);
     }
@@ -65,18 +71,23 @@ const Playlists = () => {
     setCurrentPlaylist(playlist);
     setShowUpdateForm(true);
   };
-  
 
-  const handleRightClick = (e, beat, index) => {
+  const handleRightClick = (e, playlist, index) => {
     e.preventDefault();
     const historyListElement = document.querySelector('.playlists__list');
   
     if (historyListElement) {
       const { left, top } = historyListElement.getBoundingClientRect();
-      setActiveContextMenu(`${beat.id}-${index}`);
+      setActiveContextMenu(`${playlist.id}-${index}`);
       setContextMenuX(e.clientX - left + 16);
       setContextMenuY(e.clientY - top + 84);
     }
+  };
+
+  // Function to open ConfirmModal
+  const openConfirmModal = (playlistId) => {
+    setPlaylistToDelete(playlistId);
+    setShowConfirmModal(true);
   };
 
   return (
@@ -108,7 +119,7 @@ const Playlists = () => {
                         iconClass: 'delete-playlist',
                         text: 'Delete',
                         buttonClass: 'delete-playlist',
-                        onClick: () => handleDeletePlaylist(playlist.id),
+                        onClick: () => openConfirmModal(playlist.id),
                       },
                       {
                         icon: IoPencil,
@@ -131,6 +142,15 @@ const Playlists = () => {
         />,
         document.getElementById('modal-root')
       )}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        title="Delete playlist"
+        message="Are you sure you want to delete this playlist?"
+        confirmButtonText="Delete"
+        cancelButtonText="Cancel"
+        onConfirm={() => handleDeletePlaylist(playlistToDelete)}
+        onCancel={() => setShowConfirmModal(false)}
+      />
     </div>
   );
 };
