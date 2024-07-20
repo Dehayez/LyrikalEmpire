@@ -26,7 +26,7 @@ const modalStyle = {
   }
 };
 
-const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => {
+const ConfirmModal = ({ isOpen, title = "Confirm", message, confirmButtonText = "Confirm", cancelButtonText = "Cancel", onConfirm, onCancel }) => {
   const draggableRef = useRef(null);
 
   useEffect(() => {
@@ -48,10 +48,10 @@ const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => {
       <Draggable handle=".modal__title" nodeRef={draggableRef}>
         <div ref={draggableRef} className='modal'>
           <div className='modal-content'>
-            <h2 className='modal__title' style={{ marginTop: '0' }}>Confirm</h2>
+            <h2 className='modal__title' style={{ marginTop: '0' }}>{title}</h2>
             <p>{message}</p>
-            <button className="modal__button modal__button--delete" onClick={onConfirm}>Delete</button>
-            <button className="modal__button" onClick={onCancel}>Cancel</button>
+            <button className="modal__button modal__button--delete" onClick={onConfirm}>{confirmButtonText}</button>
+            <button className="modal__button" onClick={onCancel}>{cancelButtonText}</button>
           </div>
         </div>
       </Draggable>
