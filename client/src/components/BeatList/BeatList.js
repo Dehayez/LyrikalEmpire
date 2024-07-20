@@ -259,12 +259,16 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
           </table>
         </div>
       )}
+     
       {beats.length === 0 && <p className='beat-list__empty'>No tracks are added yet.</p>}
-      <ConfirmModal
-        isOpen={confirmModalState.isOpen}
+      <ConfirmModal 
+        isOpen={confirmModalState.isOpen} 
+        title={`Delete ${confirmModalState.beatsToDelete.length > 1 ? `tracks` : 'track'}`}
         message={`Are you sure you want to delete ${confirmModalState.beatsToDelete.length > 1 ? ` ${confirmModalState.beatsToDelete.length} tracks` : 'this track'}?`}
-        onConfirm={handleConfirm}
-        onCancel={() => setConfirmModalState({ isOpen: false, beatsToDelete: [] })}
+        confirmButtonText="Delete" 
+        cancelButtonText="Cancel" 
+        onConfirm={handleConfirm} 
+        onCancel={() => setConfirmModalState({ ...confirmModalState, isOpen: false })}
       />
     </div>
   );
