@@ -13,6 +13,14 @@
         display: flex;
         flex-direction: column;
         min-width: 240px;
+
+        .form-group {
+            margin-bottom: 16px;
+
+            label {
+                margin-bottom: 8px;
+            }
+        }
     }
 
     &__buttons {
