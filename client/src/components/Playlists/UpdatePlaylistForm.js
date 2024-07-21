@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { updatePlaylist } from '../../services/playlistService';
 import { FormInput, FormTextarea } from '../Inputs';
 import './UpdatePlaylistForm.scss';
@@ -6,17 +6,33 @@ import './UpdatePlaylistForm.scss';
 export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
     const [title, setTitle] = useState(playlist.title);
     const [description, setDescription] = useState(playlist.description || '');
-  
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter') {
+                handleUpdate();
+            } else if (event.key === 'Escape') {
+                onClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [title, description]);
+
     const handleUpdate = async () => {
-      try {
-        await updatePlaylist(playlist.id, { title, description });
-        onUpdated();
-        onClose();
-      } catch (error) {
-        console.error('Error updating playlist:', error);
-      }
+        try {
+            await updatePlaylist(playlist.id, { title, description });
+            onUpdated();
+            onClose();
+        } catch (error) {
+            console.error('Error updating playlist:', error);
+        }
     };
-  
+
     return (
         <>
             <div className="update-playlist__overlay" onClick={onClose}>
@@ -32,4 +48,4 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
             </div>
         </>
     );
-  };
+};
