@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Draggable from 'react-draggable';
 import { updatePlaylist } from '../../services/playlistService';
 import { FormInput, FormTextarea } from '../Inputs';
 import './UpdatePlaylistForm.scss';
@@ -6,6 +7,7 @@ import './UpdatePlaylistForm.scss';
 export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
     const [title, setTitle] = useState(playlist.title);
     const [description, setDescription] = useState(playlist.description || '');
+    const draggableRef = useRef(null);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -34,9 +36,9 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
     };
 
     return (
-        <>
-            <div className="update-playlist__overlay" onClick={onClose}>
-                <div className="update-playlist__form" onClick={(e) => e.stopPropagation()}>
+        <div className="update-playlist__overlay" onClick={onClose}>
+            <Draggable handle=".update-playlist__title" nodeRef={draggableRef}>
+                <div className="update-playlist__form" onClick={(e) => e.stopPropagation()} ref={draggableRef}>
                     <h2 className='update-playlist__title'>Edit details</h2>
                     <FormInput label="Title" type="text" placeholder='Enter name' value={title} onChange={(e) => setTitle(e.target.value)} spellCheck="false" />
                     <FormTextarea label="Description" type="text" placeholder='Enter description' value={description} onChange={(e) => setDescription(e.target.value)} spellCheck="false" />
@@ -45,7 +47,7 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
                         <button className="update-playlist__button update-playlist__button--cancel" onClick={onClose}>Cancel</button>
                     </div>
                 </div>
-            </div>
-        </>
+            </Draggable>
+        </div>
     );
 };

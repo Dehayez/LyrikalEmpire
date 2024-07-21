@@ -13,6 +13,9 @@
         display: flex;
         flex-direction: column;
         width: 100%;
+        align-items: unset;
+        height: auto;
+
         max-width: 400px;
 
         .form-group {
