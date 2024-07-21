@@ -19,7 +19,6 @@ const Playlists = () => {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
 
-  // State for ConfirmModal
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
 
@@ -91,9 +90,9 @@ const Playlists = () => {
     }
   };
 
-  // Function to open ConfirmModal
   const openConfirmModal = (playlistId) => {
-    setPlaylistToDelete(playlistId);
+    const playlist = playlists.find(p => p.id === playlistId);
+    setPlaylistToDelete(playlist);
     setShowConfirmModal(true);
   };
 
@@ -111,11 +110,11 @@ const Playlists = () => {
           <li 
             key={index} 
             className='playlists__list-item' 
-            onClick={() => handleLeftClick(playlist.id)} // Handle left click for navigation
-            onContextMenu={(e) => handleRightClick(e, playlist, index)} // Handle right click for context menu
+            onClick={() => handleLeftClick(playlist.id)}
+            onContextMenu={(e) => handleRightClick(e, playlist, index)}
             style={{ textDecoration: 'none' }}
           >
-            <div>{playlist.title}</div> {/* Wrapped content inside div */}
+            <div>{playlist.title}</div>
 
             {activeContextMenu === `${playlist.id}-${index}` && (
               <ContextMenu
@@ -126,14 +125,14 @@ const Playlists = () => {
                   {
                     icon: IoRemoveCircleOutline,
                     iconClass: 'delete-playlist',
-                    text: 'Delete',
+                    text: 'Delete playlist',
                     buttonClass: 'delete-playlist',
                     onClick: () => openConfirmModal(playlist.id),
                   },
                   {
                     icon: IoPencil,
                     iconClass: 'edit-playlist',
-                    text: 'Edit',
+                    text: 'Edit details',
                     buttonClass: 'edit-playlist',
                     onClick: () => handleOpenUpdateForm(playlist),
                   }
@@ -154,7 +153,7 @@ const Playlists = () => {
       <ConfirmModal
         isOpen={showConfirmModal}
         title="Delete playlist"
-        message="Are you sure you want to delete this playlist?"
+        message={<span>Are you sure you want to delete <strong>{playlistToDelete?.title}</strong>?</span>}
         confirmButtonText="Delete"
         cancelButtonText="Cancel"
         onConfirm={() => handleDeletePlaylist(playlistToDelete)}
