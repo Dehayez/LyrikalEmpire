@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { IoTrashBinSharp, IoAddSharp, IoListSharp, IoEllipsisHorizontal } from "react-icons/io5";
+import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
 import { isMobileOrTablet } from '../../utils';
@@ -394,7 +394,7 @@ const BeatRow = ({
                 onClick: handleAddToCustomQueueClick,
               },
               {
-                icon: IoTrashBinSharp,
+                icon: IoRemoveCircleOutline,
                 iconClass: 'delete',
                 text: deleteText,
                 buttonClass: 'delete',
