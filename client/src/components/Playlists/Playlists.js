@@ -92,6 +92,10 @@ const Playlists = () => {
 
   const openConfirmModal = (playlistId) => {
     const playlist = playlists.find(p => p.id === playlistId);
+    if (!playlist) {
+      console.error('Playlist not found:', playlistId);
+      return;
+    }
     setPlaylistToDelete(playlist);
     setShowConfirmModal(true);
   };
