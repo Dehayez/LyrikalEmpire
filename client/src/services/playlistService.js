@@ -64,6 +64,16 @@ const removeBeatFromPlaylist = async (playlistId, beatId) => {
   }
 };
 
+const getBeatsByPlaylistId = async (playlistId) => {
+  try {
+    const response = await axios.get(`${API_URL}/${playlistId}/beats`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch beats for playlist:', error);
+    throw error;
+  }
+};
+
 const removeAllBeatsFromPlaylist = async (playlistId) => {
   try {
     const response = await axios.delete(`${API_URL}/${playlistId}/beats`);
@@ -90,6 +100,7 @@ export {
   updatePlaylist,
   deletePlaylist,
   addBeatToPlaylist,
+  getBeatsByPlaylistId,
   removeBeatFromPlaylist,
   getPlaylistById,
   removeAllBeatsFromPlaylist

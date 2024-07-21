@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactDOM from 'react-dom';
-import { getPlaylistById } from '../../services/playlistService';
+import { getPlaylistById, getBeatsByPlaylistId } from '../../services/playlistService';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm'; 
 import './PlaylistDetail.scss';
 
 const PlaylistDetail = () => {
   const { id } = useParams();
   const [playlist, setPlaylist] = useState(null);
+  const [beats, setBeats] = useState([]);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   useEffect(() => {
-    const fetchPlaylist = async () => {
-      const data = await getPlaylistById(id);
-      setPlaylist(data);
+    const fetchPlaylistDetails = async () => {
+      const playlistData = await getPlaylistById(id);
+      setPlaylist(playlistData);
+      const beatsData = await getBeatsByPlaylistId(id);
+      setBeats(beatsData);
     };
 
-    fetchPlaylist();
+    fetchPlaylistDetails();
   }, [id]);
 
   const handleHeaderClick = () => {
@@ -26,6 +29,8 @@ const PlaylistDetail = () => {
   const refreshPlaylist = async () => {
     const updatedPlaylist = await getPlaylistById(id);
     setPlaylist(updatedPlaylist);
+    const updatedBeats = await getBeatsByPlaylistId(id);
+    setBeats(updatedBeats);
   };
 
   return (
@@ -35,6 +40,14 @@ const PlaylistDetail = () => {
           <div className='playlist__header' onClick={handleHeaderClick}>
             <h2 className='playlist__title'>{playlist.title}</h2>
             <p className='playlist__description'>{playlist.description}</p>
+          </div>
+          <div className='playlist__beats'>
+            <h3>Beats</h3>
+            <ul>
+              {beats.map((beat, index) => (
+                <li key={index}>{beat.title}</li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
