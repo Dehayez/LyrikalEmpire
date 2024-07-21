@@ -156,7 +156,7 @@ const Playlists = () => {
         message={<span>Are you sure you want to delete <strong>{playlistToDelete?.title}</strong>?</span>}
         confirmButtonText="Delete"
         cancelButtonText="Cancel"
-        onConfirm={() => handleDeletePlaylist(playlistToDelete)}
+        onConfirm={() => handleDeletePlaylist(playlistToDelete?.id)}
         onCancel={() => setShowConfirmModal(false)}
       />
     </div>
