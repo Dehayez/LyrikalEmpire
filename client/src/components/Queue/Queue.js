@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinSharp } from "react-icons/io5";
+import { IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoRemoveCircleOutline } from "react-icons/io5";
 import { ContextMenu } from '../ContextMenu';
 import { isMobileOrTablet } from '../../utils';
 import './Queue.scss';
@@ -216,7 +216,7 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                         onClick: () => handleAddToCustomQueueClick(beat),
                       },
                       {
-                        icon: IoTrashBinSharp,
+                        icon: IoRemoveCircleOutline,
                         iconClass: 'remove-queue',
                         text: 'Remove from queue',
                         buttonClass: 'remove-queue',
@@ -295,7 +295,7 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                     onClick: () => handleAddToCustomQueueClick(beat),
                   },
                   {
-                    icon: IoTrashBinSharp,
+                    icon: IoRemoveCircleOutline,
                     iconClass: 'remove-queue',
                     text: 'Remove from queue',
                     buttonClass: 'remove-queue',
