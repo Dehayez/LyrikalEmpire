@@ -161,6 +161,7 @@ app.get('/api/keywords', (req, res) => {
     }
   });
 });
+
 app.get('/api/moods', (req, res) => {
   db.query('SELECT * FROM moods', (err, results) => {
     if (err) {
@@ -229,15 +230,25 @@ app.put('/api/playlists/:id', (req, res) => {
 });
 
 
-// Delete Playlist
+// Delete Playlist and associated beats
 app.delete('/api/playlists/:id', (req, res) => {
   const { id } = req.params;
-  db.query('DELETE FROM playlists WHERE id = ?', [id], (err, results) => {
+  
+  // First, delete all beats associated with the playlist
+  db.query('DELETE FROM playlist_beats WHERE playlist_id = ?', [id], (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).json({ error: 'An error occurred while deleting the playlist' });
+      res.status(500).json({ error: 'An error occurred while removing beats from the playlist' });
     } else {
-      res.json({ message: 'Playlist deleted successfully' });
+      // After successfully deleting beats, delete the playlist
+      db.query('DELETE FROM playlists WHERE id = ?', [id], (err, results) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'An error occurred while deleting the playlist' });
+        } else {
+          res.json({ message: 'Playlist deleted successfully' });
+        }
+      });
     }
   });
 });
@@ -277,6 +288,20 @@ app.get('/api/playlists/:playlist_id/beats', (req, res) => {
       res.status(500).json({ error: 'An error occurred while fetching beats in the playlist' });
     } else {
       res.json(results);
+    }
+  });
+});
+
+app.delete('/api/playlists/:id/beats', (req, res) => {
+  const { id } = req.params;
+  const deleteQuery = 'DELETE FROM playlist_beats WHERE playlist_id = ?';
+
+  db.query(deleteQuery, [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while deleting beats from the playlist' });
+    } else {
+      res.status(200).json({ message: 'All beats removed from playlist successfully' });
     }
   });
 });
