@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
 import { ContextMenu } from '../ContextMenu';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
-import ConfirmModal from '../ConfirmModal/ConfirmModal'; // Import ConfirmModal
+import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import { IoAddSharp, IoRemoveCircleOutline, IoPencil } from "react-icons/io5";
 import './Playlists.scss';
 
@@ -61,7 +62,7 @@ const Playlists = () => {
     try {
       await deletePlaylist(playlistId);
       await fetchPlaylists();
-      setShowConfirmModal(false); // Close the modal after deletion
+      setShowConfirmModal(false);
     } catch (error) {
       console.error(`Error deleting playlist with ID ${playlistId}:`, error);
     }
@@ -106,7 +107,9 @@ const Playlists = () => {
             key={index}
             onContextMenu={(e) => handleRightClick(e, playlist, index)}
           >
-            {playlist.title}
+            <Link to={`/playlists/${playlist.id}`}>
+              {playlist.title}
+            </Link>
 
             {activeContextMenu === `${playlist.id}-${index}` && (
                   <ContextMenu
