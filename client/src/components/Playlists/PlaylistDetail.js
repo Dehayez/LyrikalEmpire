@@ -5,10 +5,7 @@ import { getPlaylistById } from '../../services/playlistService';
 const PlaylistDetail = () => {
   const { id } = useParams();
   const [playlist, setPlaylist] = useState(null);
-
-  useEffect(() => {
-    console.log(playlist)
-  }, [playlist]);
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     const fetchPlaylist = async () => {
@@ -19,11 +16,19 @@ const PlaylistDetail = () => {
     fetchPlaylist();
   }, [id]);
 
-  if (!playlist) return <div>Loading...</div>;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoading(true); 
+    }, 1000); 
+
+    return () => clearTimeout(timer); 
+  }, []); 
+
+  if (!playlist && showLoading) return <div>Loading...</div>;
 
   return (
     <div>
-      <h2>{playlist.title}</h2>
+       <h2>{playlist?.title}</h2>
     </div>
   );
 };
