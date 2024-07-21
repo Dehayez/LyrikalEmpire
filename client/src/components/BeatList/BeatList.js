@@ -39,6 +39,12 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
   };
 
+  const message = confirmModalState.beatsToDelete.length > 1 
+  ? `Are you sure you want to delete ${confirmModalState.beatsToDelete.length} tracks?`
+  : (
+    <span>Are you sure you want to delete <strong>{beats.find(beat => beat.id === confirmModalState.beatsToDelete[0]).title}</strong>?</span>
+  );
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowMessage(true);
@@ -276,7 +282,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       <ConfirmModal 
         isOpen={confirmModalState.isOpen} 
         title={`Delete ${confirmModalState.beatsToDelete.length > 1 ? `tracks` : 'track'}`}
-        message={`Are you sure you want to delete ${confirmModalState.beatsToDelete.length > 1 ? ` ${confirmModalState.beatsToDelete.length} tracks` : 'this track'}?`}
+        message={message}
         confirmButtonText="Delete" 
         cancelButtonText="Cancel" 
         onConfirm={handleConfirm} 
