@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { isMobileOrTablet } from './utils';
-import { getBeats, addBeat, getMoods } from './services';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History } from './components';
+import { getBeats, addBeat } from './services';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
 import { handlePlay, handlePrev } from './hooks';
 import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
@@ -375,117 +376,124 @@ useEffect(() => {
   };
 
   return (
-    <div className="app app--hidden">
-      {isDraggingOver && (
-        <div className='app__overlay'>
-          Drop files to upload
-        </div>
-      )}
-      {!isMobileOrTablet() && (
-        <>
-          <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
-          <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
-        </>
-      )}
-      <ToastContainer />
-      <Header 
-        isLeftPanelVisible={isLeftPanelVisible} 
-        isRightPanelVisible={isRightPanelVisible} 
-        toggleSidePanel={toggleSidePanel}
-        handleMouseEnterLeft={handleMouseEnterLeft} 
-        handleMouseLeaveLeft={handleMouseLeaveLeft} 
-        handleMouseEnterRight={handleMouseEnterRight}
-        handleMouseLeaveRight={handleMouseLeaveRight}
-        isLeftDivVisible={isLeftDivVisible}
-        isRightDivVisible={isRightDivVisible}
-      />
-      <div className="container">
-        <div className='container__content'>
-          <div className={`container__content__left ${isMobileOrTablet() && isLeftPanelVisible ? 'container__content__left--mobile' : ''} ${isLeftPanelVisible ? 'container__content__left--pinned' : ''}`}>
-            {isLeftPanelVisible || isLeftDivVisible ? (
-              <LeftSidePanel
-                isDivVisible={isLeftPanelVisible || (isLeftDivVisible && !isSidePanelInContent)}
-                className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
-                {...(isLeftDivVisible && !isLeftPanelVisible && { handleMouseEnter: handleMouseEnterLeft, handleMouseLeave: handleMouseLeaveLeft })}
-              >
-                <Playlists />
-              </LeftSidePanel>
-            ) : null}
+      <div className="app app--hidden">
+        {isDraggingOver && (
+          <div className='app__overlay'>
+            Drop files to upload
           </div>
-          <div className={`container__content__middle ${isMobileOrTablet() ? 'container__content__middle--mobile' : ''} ${isMobileOrTablet() && (isRightPanelVisible || isLeftPanelVisible) ? 'container__content__middle--hide' : ''}`}>
-            <BeatList 
-              key={refresh} 
-              onPlay={handlePlayWrapper} 
-              selectedBeat={selectedBeat} 
-              isPlaying={isPlaying} 
-              handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
-              currentBeat={currentBeat} 
-              sortedBeats={sortedBeats} 
-              onSort={onSort} 
-              sortConfig={sortConfig}
-              addToCustomQueue={addToCustomQueue}
-              onBeatClick={handleBeatClick} 
-            />
-            <AddBeatButton setIsOpen={setIsOpen} />
-          </div>
-          <div className={`container__content__right ${isMobileOrTablet() && isRightPanelVisible ? 'container__content__right--mobile' : ''} ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
-            {isRightPanelVisible || isRightDivVisible ? (
-              <RightSidePanel
-                isDivVisible={isRightPanelVisible || (isRightDivVisible && !isSidePanelInContent)}
-                className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
-                {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
-              >
-              <div>
-                <div className='view-toggle-container'>
-                  <h3 onClick={() => toggleView("queue")} className={`view-toggle-container__title ${viewState === "queue" ? 'view-toggle-container__title--active' : ''}`}>Queue</h3>
-                  <h3 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h3>
+        )}
+        {!isMobileOrTablet() && (
+          <>
+            <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
+            <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
+          </>
+        )}
+        <ToastContainer />
+        <Header 
+          isLeftPanelVisible={isLeftPanelVisible} 
+          isRightPanelVisible={isRightPanelVisible} 
+          toggleSidePanel={toggleSidePanel}
+          handleMouseEnterLeft={handleMouseEnterLeft} 
+          handleMouseLeaveLeft={handleMouseLeaveLeft} 
+          handleMouseEnterRight={handleMouseEnterRight}
+          handleMouseLeaveRight={handleMouseLeaveRight}
+          isLeftDivVisible={isLeftDivVisible}
+          isRightDivVisible={isRightDivVisible}
+        />
+        <div className="container">
+          <div className='container__content'>
+            <div className={`container__content__left ${isMobileOrTablet() && isLeftPanelVisible ? 'container__content__left--mobile' : ''} ${isLeftPanelVisible ? 'container__content__left--pinned' : ''}`}>
+              {isLeftPanelVisible || isLeftDivVisible ? (
+                <LeftSidePanel
+                  isDivVisible={isLeftPanelVisible || (isLeftDivVisible && !isSidePanelInContent)}
+                  className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
+                  {...(isLeftDivVisible && !isLeftPanelVisible && { handleMouseEnter: handleMouseEnterLeft, handleMouseLeave: handleMouseLeaveLeft })}
+                >
+                  <Playlists />
+                </LeftSidePanel>
+              ) : null}
+            </div>
+            <div className={`container__content__middle ${isMobileOrTablet() ? 'container__content__middle--mobile' : ''} ${isMobileOrTablet() && (isRightPanelVisible || isLeftPanelVisible) ? 'container__content__middle--hide' : ''}`}>
+            <Routes>
+            <Route path="/" element={
+              <>
+               <BeatList 
+                key={refresh} 
+                onPlay={handlePlayWrapper} 
+                selectedBeat={selectedBeat} 
+                isPlaying={isPlaying} 
+                handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
+                currentBeat={currentBeat} 
+                sortedBeats={sortedBeats} 
+                onSort={onSort} 
+                sortConfig={sortConfig}
+                addToCustomQueue={addToCustomQueue}
+                onBeatClick={handleBeatClick} 
+              />
+              <AddBeatButton setIsOpen={setIsOpen} />
+              </>
+            } />
+              <Route path="/playlists/:id" element={<PlaylistDetail />} />
+              </Routes>
+            </div>
+            <div className={`container__content__right ${isMobileOrTablet() && isRightPanelVisible ? 'container__content__right--mobile' : ''} ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
+              {isRightPanelVisible || isRightDivVisible ? (
+                <RightSidePanel
+                  isDivVisible={isRightPanelVisible || (isRightDivVisible && !isSidePanelInContent)}
+                  className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
+                  {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
+                >
+                <div>
+                  <div className='view-toggle-container'>
+                    <h3 onClick={() => toggleView("queue")} className={`view-toggle-container__title ${viewState === "queue" ? 'view-toggle-container__title--active' : ''}`}>Queue</h3>
+                    <h3 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h3>
+                  </div>
+                  {viewState === "queue" ? (
+                    <Queue 
+                      queue={queue} 
+                      setQueue={setQueue}
+                      currentBeat={currentBeat} 
+                      onBeatClick={handleBeatClick} 
+                      isShuffleEnabled={shuffle}
+                      customQueue={customQueue}
+                      setCustomQueue={setCustomQueue}
+                      addToCustomQueue={addToCustomQueue}
+                    />
+                  ) : (
+                    <History
+                      currentBeat={currentBeat} 
+                      onBeatClick={handleBeatClick}  
+                      addToCustomQueue={addToCustomQueue}
+                    />
+                  )}
                 </div>
-                {viewState === "queue" ? (
-                  <Queue 
-                    queue={queue} 
-                    setQueue={setQueue}
-                    currentBeat={currentBeat} 
-                    onBeatClick={handleBeatClick} 
-                    isShuffleEnabled={shuffle}
-                    customQueue={customQueue}
-                    setCustomQueue={setCustomQueue}
-                    addToCustomQueue={addToCustomQueue}
-                  />
-                ) : (
-                  <History
-                    currentBeat={currentBeat} 
-                    onBeatClick={handleBeatClick}  
-                    addToCustomQueue={addToCustomQueue}
-                  />
-                )}
-              </div>
-              </RightSidePanel>
-            ) : null}
+                </RightSidePanel>
+              ) : null}
+            </div>
           </div>
+          <AddBeatForm 
+            onAdd={handleAdd} 
+            isOpen={isOpen} 
+            setIsOpen={setIsOpen} 
+            droppedFiles={droppedFiles} 
+            clearDroppedFiles={clearDroppedFiles} 
+          />
         </div>
-        <AddBeatForm 
-          onAdd={handleAdd} 
-          isOpen={isOpen} 
-          setIsOpen={setIsOpen} 
-          droppedFiles={droppedFiles} 
-          clearDroppedFiles={clearDroppedFiles} 
+        <AudioPlayer 
+          currentBeat={currentBeat} 
+          setCurrentBeat={setCurrentBeat} 
+          isPlaying={isPlaying} 
+          setIsPlaying={setIsPlaying} 
+          onNext={handleNextWrapper} 
+          onPrev={handlePrevWrapper} 
+          volume={volume} 
+          setVolume={setVolume} 
+          shuffle={shuffle} 
+          setShuffle={setShuffle} 
+          repeat={repeat} 
+          setRepeat={setRepeat}
         />
       </div>
-      <AudioPlayer 
-        currentBeat={currentBeat} 
-        setCurrentBeat={setCurrentBeat} 
-        isPlaying={isPlaying} 
-        setIsPlaying={setIsPlaying} 
-        onNext={handleNextWrapper} 
-        onPrev={handlePrevWrapper} 
-        volume={volume} 
-        setVolume={setVolume} 
-        shuffle={shuffle} 
-        setShuffle={setShuffle} 
-        repeat={repeat} 
-        setRepeat={setRepeat}
-      />
-    </div>
   );
 }
 

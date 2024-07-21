@@ -197,6 +197,23 @@ app.get('/api/playlists', (req, res) => {
   });
 });
 
+// Get Playlist by ID
+app.get('/api/playlists/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM playlists WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching the playlist' });
+    } else {
+      if (results.length === 0) {
+        res.status(404).json({ error: 'Playlist not found' });
+      } else {
+        res.json(results[0]);
+      }
+    }
+  });
+});
+
 // Update Playlist
 app.put('/api/playlists/:id', (req, res) => {
   const { title, description } = req.body;
@@ -210,6 +227,7 @@ app.put('/api/playlists/:id', (req, res) => {
     }
   });
 });
+
 
 // Delete Playlist
 app.delete('/api/playlists/:id', (req, res) => {
