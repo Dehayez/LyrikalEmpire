@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
 import { ContextMenu } from '../ContextMenu';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
@@ -9,6 +9,8 @@ import { IoAddSharp, IoRemoveCircleOutline, IoPencil } from "react-icons/io5";
 import './Playlists.scss';
 
 const Playlists = () => {
+  const navigate = useNavigate();
+
   const [playlists, setPlaylists] = useState([]);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
@@ -73,6 +75,10 @@ const Playlists = () => {
     setShowUpdateForm(true);
   };
 
+  const handleLeftClick = (playlistId) => {
+    navigate(`/playlists/${playlistId}`);
+  };
+
   const handleRightClick = (e, playlist, index) => {
     e.preventDefault();
     const historyListElement = document.querySelector('.playlists__list');
@@ -103,37 +109,37 @@ const Playlists = () => {
       <ul className='playlists__list'>
         {playlists.map((playlist, index) => (
           <li 
+            key={index} 
             className='playlists__list-item' 
-            key={index}
-            onContextMenu={(e) => handleRightClick(e, playlist, index)}
+            onClick={() => handleLeftClick(playlist.id)} // Handle left click for navigation
+            onContextMenu={(e) => handleRightClick(e, playlist, index)} // Handle right click for context menu
+            style={{ textDecoration: 'none' }}
           >
-            <Link to={`/playlists/${playlist.id}`}>
-              {playlist.title}
-            </Link>
+            <div>{playlist.title}</div> {/* Wrapped content inside div */}
 
             {activeContextMenu === `${playlist.id}-${index}` && (
-                  <ContextMenu
-                    beat={playlist}
-                    position={{ top: contextMenuY, left: contextMenuX }}
-                    setActiveContextMenu={setActiveContextMenu}
-                    items={[
-                      {
-                        icon: IoRemoveCircleOutline,
-                        iconClass: 'delete-playlist',
-                        text: 'Delete',
-                        buttonClass: 'delete-playlist',
-                        onClick: () => openConfirmModal(playlist.id),
-                      },
-                      {
-                        icon: IoPencil,
-                        iconClass: 'edit-playlist',
-                        text: 'Edit',
-                        buttonClass: 'edit-playlist',
-                        onClick: () => handleOpenUpdateForm(playlist),
-                      }
-                    ]}
-                  />
-                )}
+              <ContextMenu
+                beat={playlist}
+                position={{ top: contextMenuY, left: contextMenuX }}
+                setActiveContextMenu={setActiveContextMenu}
+                items={[
+                  {
+                    icon: IoRemoveCircleOutline,
+                    iconClass: 'delete-playlist',
+                    text: 'Delete',
+                    buttonClass: 'delete-playlist',
+                    onClick: () => openConfirmModal(playlist.id),
+                  },
+                  {
+                    icon: IoPencil,
+                    iconClass: 'edit-playlist',
+                    text: 'Edit',
+                    buttonClass: 'edit-playlist',
+                    onClick: () => handleOpenUpdateForm(playlist),
+                  }
+                ]}
+              />
+            )}
           </li>
         ))}
       </ul>
