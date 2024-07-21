@@ -197,7 +197,7 @@ const BeatRow = ({
   const handleAddBeatToPlaylist = async (playlistId, beatId) => {
     try {
       await addBeatToPlaylist(playlistId, beatId);
-      // Handle success (e.g., show a message or refresh the list)
+      // Handle success
     } catch (error) {
       console.error('Error adding beat to playlist:', error);
     }
@@ -394,7 +394,7 @@ const BeatRow = ({
         }}
       >
     <IoEllipsisHorizontal fontSize={24} />
-</button>
+    </button>
       </td>
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">
