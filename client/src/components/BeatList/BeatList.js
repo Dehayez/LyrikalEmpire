@@ -18,6 +18,7 @@ const fetchBeats = async (handleUpdateAll) => {
 const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
+  const [showMessage, setShowMessage] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
@@ -39,8 +40,17 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   };
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowMessage(true);
+    }, 1000); 
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     fetchBeats(handleUpdateAll);
   }, []);
+  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -260,7 +270,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
         </div>
       )}
      
-      {beats.length === 0 && <p className='beat-list__empty'>No tracks are added yet.</p>}
+     {beats.length === 0 && showMessage && (
+        <p className='beat-list__empty'>No tracks are added yet.</p>
+      )}
       <ConfirmModal 
         isOpen={confirmModalState.isOpen} 
         title={`Delete ${confirmModalState.beatsToDelete.length > 1 ? `tracks` : 'track'}`}
