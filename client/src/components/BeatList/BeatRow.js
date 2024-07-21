@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
+import { addBeatToPlaylist, getPlaylists } from '../../services/playlistService';
 import { isMobileOrTablet } from '../../utils';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
@@ -28,6 +29,7 @@ const BeatRow = ({
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
   const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} tracks` : 'Delete this track';
   const [isInputFocused, setInputFocused] = useState(false);
+  const [playlists, setPlaylists] = useState([]);
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -37,6 +39,19 @@ const BeatRow = ({
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
     'beat-row--playing': currentBeat && beat.id === currentBeat.id
   });
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const data = await getPlaylists();
+        setPlaylists(data);
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
+    };
+
+    fetchPlaylists();
+  }, []);
 
   useEffect(() => {
     const contextMenuElement = document.getElementById('context-menu');
@@ -176,6 +191,15 @@ const BeatRow = ({
     e.preventDefault();
     if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
       handleBeatClick(beat, e);
+    }
+  };
+
+  const handleAddBeatToPlaylist = async (playlistId, beatId) => {
+    try {
+      await addBeatToPlaylist(playlistId, beatId);
+      // Handle success (e.g., show a message or refresh the list)
+    } catch (error) {
+      console.error('Error adding beat to playlist:', error);
     }
   };
 
@@ -384,7 +408,10 @@ const BeatRow = ({
                 iconClass: 'add-playlist',
                 text: 'Add to playlist',
                 buttonClass: 'add-playlist',
-                onClick: () => console.log('Add to playlist clicked'),
+                subItems: playlists.map(playlist => ({
+                  text: playlist.title,
+                  onClick: () => handleAddBeatToPlaylist(playlist.id, beat.id),
+                })),
               },
               {
                 icon: IoListSharp,
