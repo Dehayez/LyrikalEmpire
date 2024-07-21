@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ContextMenu.scss';
 import { isMobileOrTablet } from '../../utils';
+import { IoChevronForwardSharp } from "react-icons/io5";
 
 const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -76,6 +77,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
         >
           {item.icon && <item.icon className={`context-menu__icon context-menu__icon--${item.iconClass}`} />}
           <p className="context-menu__text">{item.text}</p>
+          {item.subItems && (<button className='icon-button context-menu__subitem-icon'><IoChevronForwardSharp fontSize={16} /></button>)}
           {item.subItems && hoveredItem === index && (
             <div className="context-menu__nested-list">
               {item.subItems.map((subItem, subIndex) => (
@@ -87,7 +89,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
           )}
         </div>
       ))}
-    </div>
+  </div>
   );
 };
 
