@@ -64,15 +64,6 @@ const BeatRow = ({
     return () => manageContextMenuVisibility(false);
   }, [activeContextMenu, beat.id]);
 
-
-  const handleMenuButtonClick = (e, beat) => {
-    e.preventDefault();
-    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
-      handleBeatClick(beat, e);
-    }
-    setActiveContextMenu({ top: e.clientY, left: e.clientX });
-  };
-
   const handleTierlistChange = (e) => {
     const newTierlist = e.target.value;
     setTierlist(newTierlist);
@@ -174,19 +165,26 @@ const BeatRow = ({
     }
   };
 
-  function formatDuration(durationInSeconds) {
-    const totalSeconds = Math.round(durationInSeconds);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  }
-
   const handleRightClick = (e, beat) => {
     e.preventDefault();
     if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
       handleBeatClick(beat, e);
     }
   };
+
+  const handleMenuButtonClick = (e, beat) => {
+    e.preventDefault();
+    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
+      handleBeatClick(beat, e);
+    }
+  };
+
+  function formatDuration(durationInSeconds) {
+    const totalSeconds = Math.round(durationInSeconds);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
 
   return (
     <tr
@@ -359,14 +357,20 @@ const BeatRow = ({
               setActiveContextMenu(null);
             } else {
               setActiveContextMenu(beat.id);
-              setContextMenuX(e.clientX);
-              setContextMenuY(e.clientY);
+              const contextMenuWidth = -640;
+              let calculatedX = window.innerWidth - e.clientX - contextMenuWidth;
+              let calculatedY = e.clientY;
+              if (calculatedX < 0) {
+                calculatedX = 0;
+              }
+              setContextMenuX(calculatedX);
+              setContextMenuY(calculatedY);
             }
           }
         }}
       >
-          <IoEllipsisHorizontal fontSize={24} />
-        </button>
+    <IoEllipsisHorizontal fontSize={24} />
+</button>
       </td>
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">
