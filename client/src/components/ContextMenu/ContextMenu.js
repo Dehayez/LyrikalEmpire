@@ -7,6 +7,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [currentY, setCurrentY] = useState(0);
+  const [hoveredItem, setHoveredItem] = useState(null);
 
   const handleClick = (e, onClick) => {
     e.stopPropagation();
@@ -66,9 +67,24 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   return (
     <div className="context-menu" id='context-menu' style={{ top: position.top, left: position.left }} onMouseDown={handleDragStart} onMouseMove={handleDragMove} onMouseUp={handleDragEnd} onMouseLeave={hideContextMenu}>
       {items.map((item, index) => (
-        <div key={index} className={`context-menu__button context-menu__button--${item.buttonClass}`} onClick={(e) => handleClick(e, item.onClick)}>
+        <div
+          key={index}
+          className={`context-menu__button context-menu__button--${item.buttonClass}`}
+          onClick={(e) => handleClick(e, item.onClick)}
+          onMouseEnter={() => setHoveredItem(index)}
+          onMouseLeave={() => setHoveredItem(null)}
+        >
           {item.icon && <item.icon className={`context-menu__icon context-menu__icon--${item.iconClass}`} />}
           <p className="context-menu__text">{item.text}</p>
+          {item.subItems && hoveredItem === index && (
+            <div className="context-menu__nested-list">
+              {item.subItems.map((subItem, subIndex) => (
+                <div key={subIndex} className="context-menu__nested-list-item" onClick={subItem.onClick}>
+                  {subItem.text}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>
