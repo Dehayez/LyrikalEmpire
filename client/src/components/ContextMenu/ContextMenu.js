@@ -64,7 +64,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   }
 
   return (
-    <div className="context-menu" id='context-menu' style={{ top: position.top, left: position.left }} onMouseDown={handleDragStart} onMouseMove={handleDragMove} onMouseUp={handleDragEnd}>
+    <div className="context-menu" id='context-menu' style={{ top: position.top, left: position.left }} onMouseDown={handleDragStart} onMouseMove={handleDragMove} onMouseUp={handleDragEnd} onMouseLeave={hideContextMenu}>
       {items.map((item, index) => (
         <div key={index} className={`context-menu__button context-menu__button--${item.buttonClass}`} onClick={(e) => handleClick(e, item.onClick)}>
           {item.icon && <item.icon className={`context-menu__icon context-menu__icon--${item.iconClass}`} />}
