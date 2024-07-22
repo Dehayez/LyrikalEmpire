@@ -42,10 +42,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     <>
       {playlist && (
         <div className='playlist'>
-          <div className='playlist__header' onClick={handleHeaderClick}>
-            <h2 className='playlist__title'>{playlist.title}</h2>
-            <p className='playlist__description'>{playlist.description}</p>
-          </div>
           <div className='playlist__beats'>
             {beats && beats.length > 0 && (
               <BeatList
@@ -62,6 +58,12 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                 sortConfig={sortConfig}
                 addToCustomQueue={addToCustomQueue}
                 onBeatClick={onBeatClick}
+                headerContent={
+                  <div className='playlist__text' onClick={handleHeaderClick}>
+                    <h2 className='playlist__title'>{playlist.title}</h2>
+                    <p className='playlist__description'>{playlist.description}</p>
+                  </div>
+                }
               />
             )}
           </div>

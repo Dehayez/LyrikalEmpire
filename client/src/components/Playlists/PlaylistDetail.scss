@@ -1,22 +1,30 @@
 @import '../../globals/variables.scss';
 
 .playlist {
-   &__title {
-      padding-right: 16px;
-   } 
-   &__description {
-      padding-left: 16px;
-      border-left: 1px solid $color-gray-dark-hover;
-      color: $color-gray;
-   } 
-   &__header {
+   
+   &__text {
    display: flex;
    align-items: center;
-   position: absolute;
-   z-index: 4;
    background-color: $color-black;
+   overflow: hidden;
+   padding-left: 16px;
       &:hover {
       cursor: pointer;
       }
    }
+   &__title {
+      padding-right: 16px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+   } 
+
+   &__description {
+      padding: 0 16px;
+      border-left: 1px solid $color-gray-dark-hover;
+      color: $color-gray;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+   } 
 }

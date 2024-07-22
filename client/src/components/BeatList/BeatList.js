@@ -15,7 +15,7 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const isExternalBeats = externalBeats.length > 0;
@@ -195,7 +195,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
     <div ref={containerRef} className="beat-list">
       <div className='beat-list__buffer'/>
       <div className="beat-list__header">
-        <h2 className='beat-list__title'>All Tracks</h2>
+        {
+          headerContent ? (
+            headerContent
+          ) : (
+            <h2 className='beat-list__title'>All Tracks</h2>
+          )
+        }
         <div className='beat-list__actions'>
           <IconButton className={'beat-list__action-button--edit'} onClick={toggleEdit}>
             {mode === 'edit' ? 
