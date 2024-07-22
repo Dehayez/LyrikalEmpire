@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import { getPlaylistById, getBeatsByPlaylistId } from '../../services/playlistService';
+import { BeatList } from '../BeatList';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm'; 
 import './PlaylistDetail.scss';
 
-const PlaylistDetail = () => {
+const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick }) => {
   const { id } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [beats, setBeats] = useState([]);
@@ -33,6 +34,10 @@ const PlaylistDetail = () => {
     setBeats(updatedBeats);
   };
 
+  useEffect(() => {
+    console.log(beats);
+  }, [beats]);
+
   return (
     <>
       {playlist && (
@@ -42,12 +47,27 @@ const PlaylistDetail = () => {
             <p className='playlist__description'>{playlist.description}</p>
           </div>
           <div className='playlist__beats'>
-            <h3>Beats</h3>
             <ul>
               {beats.map((beat, index) => (
                 <li key={index}>{beat.title}</li>
               ))}
             </ul>
+            {beats && beats.length > 0 && (
+              <BeatList
+                externalBeats={beats}
+                shouldFetchBeats={false}
+                onPlay={onPlay}
+                selectedBeat={selectedBeat}
+                isPlaying={isPlaying}
+                handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete}
+                currentBeat={currentBeat}
+                sortedBeats={sortedBeats}
+                onSort={onSort}
+                sortConfig={sortConfig}
+                addToCustomQueue={addToCustomQueue}
+                onBeatClick={onBeatClick}
+              />
+            )}
           </div>
         </div>
       )}

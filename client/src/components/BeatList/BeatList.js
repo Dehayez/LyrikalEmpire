@@ -15,21 +15,24 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
+  const isExternalBeats = externalBeats.length > 0;
+  const initialBeats = isExternalBeats ? externalBeats : [];
+  const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions(initialBeats, handleQueueUpdateAfterDelete);
   const [showMessage, setShowMessage] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
   const [isHovering, setIsHovering] = useState(false);
-  const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions([], handleQueueUpdateAfterDelete);
-  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const containerRef = useRef(null);
   const [headerOpacity, setHeaderOpacity] = useState(1);
+  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
+  const beatsToFilter = isExternalBeats ? externalBeats : sortedBeats;
 
-  const filteredAndSortedBeats = sortedBeats.filter(beat => {
+  const filteredAndSortedBeats = beatsToFilter.filter(beat => {
     const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
     return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
   });
@@ -48,8 +51,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   }, []);
 
   useEffect(() => {
-    fetchBeats(handleUpdateAll);
-  }, []);
+    const fetchAndSetBeats = async () => {
+      if (shouldFetchBeats && !isExternalBeats) {
+        const fetchedBeats = await getBeats();
+        handleUpdateAll(fetchedBeats);
+      }
+    };
+  
+    fetchAndSetBeats();
+  }, [shouldFetchBeats, isExternalBeats, externalBeats, handleUpdateAll]);
   
 
   useEffect(() => {

@@ -433,7 +433,20 @@ useEffect(() => {
               <AddBeatButton setIsOpen={setIsOpen} />
               </>
             } />
-              <Route path="/playlists/:id" element={<PlaylistDetail />} />
+              <Route path="/playlists/:id" element={
+                <PlaylistDetail
+                key={refresh} 
+                onPlay={handlePlayWrapper} 
+                selectedBeat={selectedBeat} 
+                isPlaying={isPlaying} 
+                handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
+                currentBeat={currentBeat} 
+                sortedBeats={sortedBeats} 
+                onSort={onSort} 
+                sortConfig={sortConfig}
+                addToCustomQueue={addToCustomQueue}
+                onBeatClick={handleBeatClick}  />} 
+                />
               </Routes>
             </div>
             <div className={`container__content__right ${isMobileOrTablet() && isRightPanelVisible ? 'container__content__right--mobile' : ''} ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
