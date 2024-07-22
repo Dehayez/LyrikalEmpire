@@ -47,13 +47,9 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
             <p className='playlist__description'>{playlist.description}</p>
           </div>
           <div className='playlist__beats'>
-            <ul>
-              {beats.map((beat, index) => (
-                <li key={index}>{beat.title}</li>
-              ))}
-            </ul>
             {beats && beats.length > 0 && (
               <BeatList
+                title={playlist.title}
                 externalBeats={beats}
                 shouldFetchBeats={false}
                 onPlay={onPlay}

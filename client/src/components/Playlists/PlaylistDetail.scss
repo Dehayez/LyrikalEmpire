@@ -1,5 +1,22 @@
-.playlist__header {
-   &:hover {
-    cursor: pointer;
+@import '../../globals/variables.scss';
+
+.playlist {
+   &__title {
+      padding-right: 16px;
+   } 
+   &__description {
+      padding-left: 16px;
+      border-left: 1px solid $color-gray-dark-hover;
+      color: $color-gray;
+   } 
+   &__header {
+   display: flex;
+   align-items: center;
+   position: absolute;
+   z-index: 4;
+   background-color: $color-black;
+      &:hover {
+      cursor: pointer;
+      }
    }
 }
