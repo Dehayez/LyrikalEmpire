@@ -34,17 +34,13 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     setBeats(updatedBeats);
   };
 
-  useEffect(() => {
-    console.log(beats);
-  }, [beats]);
-
   return (
     <>
       {playlist && (
         <div className='playlist'>
           <div className='playlist__beats'>
-            {beats && beats.length > 0 && (
               <BeatList
+                key={beats.length}
                 title={playlist.title}
                 externalBeats={beats}
                 shouldFetchBeats={false}
@@ -65,7 +61,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                   </div>
                 }
               />
-            )}
           </div>
         </div>
       )}
