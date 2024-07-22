@@ -45,7 +45,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowMessage(true);
-    }, 1000); 
+    }, 100); 
 
     return () => clearTimeout(timer);
   }, []);
