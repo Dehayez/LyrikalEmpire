@@ -15,7 +15,7 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent, onDeleteFromPlaylist }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const isExternalBeats = externalBeats.length > 0;
@@ -123,7 +123,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
 
   const handleConfirm = async () => {
     if (confirmModalState.beatsToDelete.length > 0) {
-      await Promise.all(confirmModalState.beatsToDelete.map(beatId => handleDelete(beatId)));
+      if (onDeleteFromPlaylist) {
+        // Use the new prop function for playlist-specific deletion
+        await onDeleteFromPlaylist(confirmModalState.beatsToDelete);
+      } else {
+        // Fallback to the default deletion behavior
+        await Promise.all(confirmModalState.beatsToDelete.map(beatId => handleDelete(beatId)));
+      }
   
       const titlesToDelete = confirmModalState.beatsToDelete.map(beatId => {
         const beat = beats.find(b => b.id === beatId);
