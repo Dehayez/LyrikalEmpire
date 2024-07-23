@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Link, useNavigate } from 'react-router-dom';
 import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
+import { eventBus } from '../../utils';
 import { ContextMenu } from '../ContextMenu';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
@@ -39,6 +40,25 @@ const Playlists = () => {
 
     return () => manageContextMenuVisibility(false);
   }, [activeContextMenu]);
+
+  useEffect(() => {
+    const updatePlaylistDetails = (updatedPlaylist) => {
+      setPlaylists(currentPlaylists =>
+        currentPlaylists.map(playlist =>
+          playlist.id === updatedPlaylist.id
+            ? { ...playlist, title: updatedPlaylist.title, description: updatedPlaylist.description }
+            : playlist
+        )
+      );
+    };
+  
+    eventBus.on('playlistUpdated', updatePlaylistDetails);
+  
+    return () => {
+      eventBus.off('playlistUpdated', updatePlaylistDetails);
+    };
+  }, [playlists]);
+  
 
   const fetchPlaylists = async () => {
     try {
