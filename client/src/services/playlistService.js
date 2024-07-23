@@ -3,6 +3,16 @@ import API_BASE_URL from '../utils/apiConfig';
 
 const API_URL = `${API_BASE_URL}/api/playlists`;
 
+const deleteBeat = async (beatId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/beats/${beatId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to delete beat:', error);
+    throw error;
+  }
+};
+
 const createPlaylist = async (playlistData) => {
   try {
     const response = await axios.post(API_URL, playlistData);
@@ -95,6 +105,7 @@ const getPlaylistById = async (id) => {
 };
 
 export {
+  deleteBeat,
   createPlaylist,
   getPlaylists,
   updatePlaylist,

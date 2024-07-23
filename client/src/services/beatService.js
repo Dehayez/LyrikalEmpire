@@ -35,4 +35,12 @@ export const updateBeat = async (id, updatedBeat) => {
   return data;
 };
 
-export const deleteBeat = (id) => axios.delete(`${API_URL}/${id}`);
+export const deleteBeat = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to delete beat:', error);
+    throw error;
+  }
+};
