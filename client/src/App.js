@@ -52,7 +52,6 @@ function App() {
 
   useEffect(() => {
     if (location.pathname === '/') {
-      console.log('Navigated to home. Refreshing BeatList...');
       setRefresh(prev => !prev);
     }
   }, [location]);
