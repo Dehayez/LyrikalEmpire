@@ -40,6 +40,9 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         handleKeywordChange({ target: { value: '' } });
         setTierlist('');
         setFileName('No file chosen');
+        setWarningMessage(''); 
+        setIsTitleEmpty(false); 
+        setIsBpmInvalid(false);
     };
 
     const handleSubmit = async (e) => {
@@ -115,12 +118,26 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                 <div ref={draggableRef}>
                 <div className="modal-content">
                     <h2 className='form__title'>Add Track</h2>
-                    {warningMessage && (
+                    {isTitleEmpty ? (
+                        <Warning message="Title is required." />
+                    ) : warningMessage && (
                         <Warning message={warningMessage} />
                     )}
                     <form className='form' onSubmit={handleSubmit} noValidate>
                         <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} labelRef={labelRef} />
-                        <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" isWarning={isTitleEmpty} />
+                        <FormInput 
+                            label="Title" 
+                            type="text" 
+                            placeholder='Enter title' 
+                            value={title} 
+                            onChange={(e) => {
+                                setTitle(e.target.value);
+                                setIsTitleEmpty(!e.target.value.trim()); // Update isTitleEmpty based on input
+                            }} 
+                            required 
+                            spellCheck="false" 
+                            isWarning={isTitleEmpty} // Use isWarning prop to show/hide warning based on isTitleEmpty
+                        />
                         <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
                         <SelectableInput label="Genre" placeholder="Enter genre" value={genre} onChange={handleGenreChange} onFocus={handleGenreFocus} onBlur={handleGenreBlur} showItems={showGenres} filteredItems={filteredGenres.map(genre => ({ name: genre.name, selected: selectedGenres.includes(genre.name) }))} handleItemToggle={handleGenreToggle}/>
                         <SelectInput 
