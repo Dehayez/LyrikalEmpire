@@ -1,9 +1,32 @@
 @import '../../globals/variables';
 
 .update-playlist {
+    &__warning {
+        color: $color-white;
+        background-color: $color-warning-background;
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        border-radius: 4px;
+        padding: 12px;
+        margin-bottom: 16px;
+
+        &-icon {
+            margin-right: 12px;
+        }
+        &-text {
+            margin: 0;
+        }
+    }
     &__title {
         margin: 0;
         margin-bottom: 1em;
+    }
+
+    &__input-name {
+        & input {
+            border-bottom: 3px solid $color-warning-background;
+        }
     }
   
     &__form {
