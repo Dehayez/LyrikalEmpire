@@ -59,7 +59,7 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
                             <p className="update-playlist__warning-text">Playlist name is required.</p>
                         </div>
                     }
-                    <FormInput className={isTitleEmpty ? "update-playlist__input-name" : ""} label="Name" type="text" placeholder='Enter name' value={title} onChange={handleTitleChange} spellCheck="false" required={true} />
+                    <FormInput label="Name" type="text" placeholder='Enter name' value={title} onChange={handleTitleChange} spellCheck="false" required={true} isWarning={isTitleEmpty} />
                     <FormTextarea label="Description" type="text" placeholder='Enter description' value={description} onChange={(e) => setDescription(e.target.value)} spellCheck="false" maxLength={400}/>
                     <div className="update-playlist__buttons">
                         <button className="update-playlist__button update-playlist__button--update" onClick={handleUpdate}>Save</button>
