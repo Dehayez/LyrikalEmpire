@@ -110,34 +110,41 @@ app.put('/api/beats/:id', (req, res) => {
 
 app.delete('/api/beats/:id', (req, res) => {
   const { id } = req.params;
-  
-  // Fetch the beat's details
-  db.query('SELECT * FROM beats WHERE id = ?', [id], (err, results) => {
+
+  db.beginTransaction(err => {
     if (err) {
       console.error(err);
-      res.status(500).json({ error: 'An error occurred while fetching the beat' });
-    } else {
-      // Extract the file path
-      const filePath = path.join(__dirname, '../client/public', results[0].audio);
-      
-      // Delete the file
-      fs.unlink(filePath, (err) => {
+      return res.status(500).json({ error: 'An error occurred starting the transaction' });
+    }
+
+    db.query('DELETE FROM playlist_beats WHERE beat_id = ?', [id], (err, results) => {
+      if (err) {
+        console.error(err);
+        return db.rollback(() => {
+          res.status(500).json({ error: 'An error occurred while removing the beat from playlists' });
+        });
+      }
+
+      db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
         if (err) {
-          console.error(`An error occurred while deleting the file at path ${filePath}:`, err);
-          res.status(500).json({ error: 'An error occurred while deleting the audio file' });
-        } else {
-          // Delete the beat from the database
-          db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
-            if (err) {
-              console.error(err);
-              res.status(500).json({ error: 'An error occurred while deleting the beat' });
-            } else {
-              res.status(200).json(results);
-            }
+          console.error(err);
+          return db.rollback(() => {
+            res.status(500).json({ error: 'An error occurred while deleting the beat' });
           });
         }
+
+        db.commit(err => {
+          if (err) {
+            console.error(err);
+            return db.rollback(() => {
+              res.status(500).json({ error: 'An error occurred while committing the transaction' });
+            });
+          }
+
+          res.json({ message: 'Beat deleted successfully' });
+        });
       });
-    }
+    });
   });
 });
 
