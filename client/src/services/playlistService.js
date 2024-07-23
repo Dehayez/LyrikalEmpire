@@ -54,12 +54,12 @@ const deletePlaylist = async (id) => {
   }
 };
 
-const addBeatToPlaylist = async (playlistId, beatId) => {
+const addBeatsToPlaylist = async (playlistId, beatIds) => {
   try {
-    const response = await axios.post(`${API_URL}/${playlistId}/beats/${beatId}`);
+    const response = await axios.post(`${API_URL}/${playlistId}/beats`, { beatIds });
     return response.data;
   } catch (error) {
-    console.error('Failed to add beat to playlist:', error);
+    console.error('Failed to add beats to playlist:', error);
     throw error;
   }
 };
@@ -110,7 +110,7 @@ export {
   getPlaylists,
   updatePlaylist,
   deletePlaylist,
-  addBeatToPlaylist,
+  addBeatsToPlaylist,
   getBeatsByPlaylistId,
   removeBeatFromPlaylist,
   getPlaylistById,

@@ -300,6 +300,40 @@ app.get('/api/playlists/:playlist_id/beats', (req, res) => {
   });
 });
 
+app.post('/api/playlists/:playlist_id/beats', (req, res) => {
+  const { playlist_id } = req.params;
+  const { beatIds } = req.body;
+  
+  const insertValues = beatIds.map(beatId => [playlist_id, beatId]);
+
+  db.beginTransaction(err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'An error occurred starting the transaction' });
+    }
+
+    db.query('INSERT INTO playlist_beats (playlist_id, beat_id) VALUES ?', [insertValues], (err, results) => {
+      if (err) {
+        db.rollback(() => {
+          console.error(err);
+          res.status(500).json({ error: 'An error occurred while adding the beats to the playlist' });
+        });
+      } else {
+        db.commit(err => {
+          if (err) {
+            db.rollback(() => {
+              console.error(err);
+              res.status(500).json({ error: 'An error occurred while committing the transaction' });
+            });
+          } else {
+            res.status(201).json({ message: 'Beats added to playlist successfully' });
+          }
+        });
+      }
+    });
+  });
+});
+
 app.delete('/api/playlists/:id/beats', (req, res) => {
   const { id } = req.params;
   const deleteQuery = 'DELETE FROM playlist_beats WHERE playlist_id = ?';
