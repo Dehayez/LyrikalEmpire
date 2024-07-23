@@ -103,6 +103,12 @@ input[type="number"] {
     display: flex;
     flex-direction: column;
 
+    &__input {
+        &--warning {
+            border-bottom: 3px solid $color-warning-background;
+        }
+    }
+
     input,
     select,
     textarea {

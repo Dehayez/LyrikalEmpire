@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { IoAlertCircleOutline } from 'react-icons/io5';
 import Modal from 'react-modal';
 import Draggable from 'react-draggable';
 import { addBeat, getGenres, getMoods, getKeywords } from '../../services';
@@ -11,6 +12,7 @@ import './AddBeatForm.scss';
 Modal.setAppElement('#root');
 
 const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
+    const [warningMessage, setWarningMessage] = useState('');
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
     const [duration, setDuration] = useState(0);
@@ -41,8 +43,10 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         e.preventDefault();
         const bpmValue = bpm ? Math.round(parseFloat(bpm.replace(',', '.'))) : null;
         if (bpm && (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240)) {
-            alert('Please enter a valid BPM (1-240) or leave it empty.');
+            setWarningMessage('Please enter a valid BPM (1-240).');
             return;
+        } else {
+            setWarningMessage('');
         }
     
         const newBeat = { title, bpm: bpmValue, genre, mood, keyword, duration, ...(tierlist && { tierlist }) };
@@ -93,6 +97,12 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                 <div ref={draggableRef}>
                 <div className="modal-content">
                     <h2 className='form__title'>Add Track</h2>
+                    {warningMessage && (
+                        <div className="update-playlist__warning">
+                        <IoAlertCircleOutline className="update-playlist__warning-icon"/>
+                        <p className="update-playlist__warning-text">{warningMessage}</p>
+                        </div>
+                    )}
                     <form className='form' onSubmit={handleSubmit}>
                         <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} />
                         <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />

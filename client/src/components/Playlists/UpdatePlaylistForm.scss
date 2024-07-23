@@ -22,12 +22,6 @@
         margin: 0;
         margin-bottom: 1em;
     }
-
-    &__input-name {
-        & input {
-            border-bottom: 3px solid $color-warning-background;
-        }
-    }
   
     &__form {
         border-radius: 6px;
