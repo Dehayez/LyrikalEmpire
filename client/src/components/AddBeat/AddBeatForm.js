@@ -67,7 +67,9 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         const file = e.target.files[0];
         setAudio(file);
         setFileName(file.name);
-        setTitle(file.name.replace(/\.[^/.]+$/, ""));
+        if (!title) {
+            setTitle(file.name.replace(/\.[^/.]+$/, ""));
+        }
     
         const audio = new Audio(URL.createObjectURL(file));
         audio.onloadedmetadata = () => {
