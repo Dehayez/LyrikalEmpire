@@ -35,10 +35,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     setBeats(updatedBeats);
   };
 
-  useEffect(() => {
-    console.log(isPlaying);
-  }, [isPlaying]);
-
   return (
     <>
       {playlist && (
