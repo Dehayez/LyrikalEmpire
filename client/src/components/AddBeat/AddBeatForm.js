@@ -19,10 +19,13 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [tierlist, setTierlist] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
     const [warningMessage, setWarningMessage] = useState('');
+    const [isTitleEmpty, setIsTitleEmpty] = useState(false);
+    const [isBpmInvalid, setIsBpmInvalid] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
 
     const draggableRef = useRef(null);
+    const labelRef = useRef(null);
 
     const { items: genres, selectedItem: genre, filteredItems: filteredGenres, showItems: showGenres, selectedItems: selectedGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(getGenres);
     const { items: keywords, selectedItem: keyword, filteredItems: filteredKeywords, showItems: showKeywords, selectedItems: selectedKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(getKeywords);
@@ -41,7 +44,22 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        if (!audio) {
+            setWarningMessage('Audio file is required.');
+            return;
+        }
+    
         const bpmValue = bpm ? Math.round(parseFloat(bpm.replace(',', '.'))) : null;
+    
+        setIsTitleEmpty(!title.trim());
+        setIsBpmInvalid(bpm && (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240));
+    
+        if (!title.trim()) {
+            setWarningMessage('Title is required.');
+            return;
+        }
+    
         if (bpm && (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240)) {
             setWarningMessage('Please enter a valid BPM (1-240).');
             return;
@@ -100,10 +118,10 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                     {warningMessage && (
                         <Warning message={warningMessage} />
                     )}
-                    <form className='form' onSubmit={handleSubmit}>
-                        <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} />
-                        <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" />
-                        <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur}spellCheck="false"/>
+                    <form className='form' onSubmit={handleSubmit} noValidate>
+                        <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} labelRef={labelRef} />
+                        <FormInput label="Title" type="text" placeholder='Enter title' value={title} onChange={(e) => setTitle(e.target.value)} required spellCheck="false" isWarning={isTitleEmpty} />
+                        <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
                         <SelectableInput label="Genre" placeholder="Enter genre" value={genre} onChange={handleGenreChange} onFocus={handleGenreFocus} onBlur={handleGenreBlur} showItems={showGenres} filteredItems={filteredGenres.map(genre => ({ name: genre.name, selected: selectedGenres.includes(genre.name) }))} handleItemToggle={handleGenreToggle}/>
                         <SelectInput 
                             label="Tierlist"
