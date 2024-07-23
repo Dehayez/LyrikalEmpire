@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
-import { addBeatToPlaylist, getPlaylists } from '../../services/playlistService';
+import { addBeatsToPlaylist, getPlaylists } from '../../services/playlistService';
 import { isMobileOrTablet } from '../../utils';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
@@ -200,12 +200,11 @@ const BeatRow = ({
     }
   };
 
-  const handleAddBeatToPlaylist = async (playlistId, beatId) => {
+  const handleAddBeatToPlaylist = async (playlistId, beatIds) => {
     try {
-      await addBeatToPlaylist(playlistId, beatId);
-      // Handle success
+      await addBeatsToPlaylist(playlistId, beatIds);
     } catch (error) {
-      console.error('Error adding beat to playlist:', error);
+      console.error('Error adding beats to playlist:', error);
     }
   };
 
@@ -416,7 +415,10 @@ const BeatRow = ({
                 buttonClass: 'add-playlist',
                 subItems: playlists.map(playlist => ({
                   text: playlist.title,
-                  onClick: () => handleAddBeatToPlaylist(playlist.id, beat.id),
+                  onClick: () => {
+                    const selectedBeatIds = selectedBeats.map(beat => beat.id);
+                    handleAddBeatToPlaylist(playlist.id, selectedBeatIds);
+                  },
                 })),
               },
               {
