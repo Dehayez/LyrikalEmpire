@@ -1,24 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { IoAlertCircleOutline } from 'react-icons/io5';
+import './AddBeatForm.scss';
+import { IoAlertCircleOutline, IoCheckmarkSharp } from "react-icons/io5";
 import Modal from 'react-modal';
 import Draggable from 'react-draggable';
+import { toast } from 'react-toastify';
 import { addBeat, getGenres, getMoods, getKeywords } from '../../services';
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
-import { IoCheckmarkSharp } from "react-icons/io5";
-import { toast } from 'react-toastify';
-import './AddBeatForm.scss';
+import { Warning } from '../Warning';
 
 Modal.setAppElement('#root');
 
 const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
-    const [warningMessage, setWarningMessage] = useState('');
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
     const [duration, setDuration] = useState(0);
     const [bpmState, setBpm] = useState('');
     const [tierlist, setTierlist] = useState('');
     const [fileName, setFileName] = useState('No file chosen');
+    const [warningMessage, setWarningMessage] = useState('');
     const [showToast, setShowToast] = useState(false);
     const { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
 
@@ -98,10 +98,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                 <div className="modal-content">
                     <h2 className='form__title'>Add Track</h2>
                     {warningMessage && (
-                        <div className="update-playlist__warning">
-                        <IoAlertCircleOutline className="update-playlist__warning-icon"/>
-                        <p className="update-playlist__warning-text">{warningMessage}</p>
-                        </div>
+                        <Warning message={warningMessage} />
                     )}
                     <form className='form' onSubmit={handleSubmit}>
                         <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} />

@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Draggable from 'react-draggable';
-import { updatePlaylist } from '../../services/playlistService';
-import { IoAlertCircleOutline } from 'react-icons/io5';
-import { Warning } from '../Warning';
-import { eventBus } from '../../utils';
-import { FormInput, FormTextarea } from '../Inputs';
 import './UpdatePlaylistForm.scss';
+import Draggable from 'react-draggable';
+import { FormInput, FormTextarea } from '../Inputs';
+import { Warning } from '../Warning';
+import { updatePlaylist } from '../../services/playlistService';
+import { eventBus } from '../../utils';
 
 export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
     const [title, setTitle] = useState(playlist.title);
-    const [isTitleEmpty, setIsTitleEmpty] = useState(false);
     const [description, setDescription] = useState(playlist.description || '');
+    const [isTitleEmpty, setIsTitleEmpty] = useState(false);
     const draggableRef = useRef(null);
 
     useEffect(() => {
