@@ -50,12 +50,13 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     setBeats(updatedBeats);
   };
 
-  const handleDeleteBeat = async (beatId) => {
+  const handleDeleteBeats = async (beatIds) => {
     try {
-      await removeBeatFromPlaylist(id, beatId);
+      const ids = Array.isArray(beatIds) ? beatIds : [beatIds];
+      await Promise.all(ids.map(beatId => removeBeatFromPlaylist(id, beatId)));
       await refreshPlaylist();
     } catch (error) {
-      console.error('Error deleting beat from playlist:', error);
+      console.error('Error deleting beats from playlist:', error);
     }
   };
 
@@ -78,7 +79,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                 sortConfig={sortConfig}
                 addToCustomQueue={addToCustomQueue}
                 onBeatClick={onBeatClick}
-                onDeleteFromPlaylist={handleDeleteBeat}
+                onDeleteFromPlaylist={handleDeleteBeats}
                 headerContent={
                   <div className='playlist__text' onClick={handleHeaderClick}>
                     <h2 className='playlist__title'>{playlist.title}</h2>
