@@ -66,7 +66,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         if (bpm && (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240)) {
             setWarningMessage('Please enter a valid BPM (1-240).');
             return;
-        } else {
+        } else if (bpm) {
             setWarningMessage('');
         }
     
@@ -106,14 +106,18 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const handleBpmChangeExtended = (e) => {
         const bpmInput = e.target.value;
         const bpmValue = bpmInput.replace(',', '.');
-        const isValidBpm = !isNaN(bpmValue) && bpmValue > 0 && bpmValue <= 240;
+        const isNumericOrEmpty = bpmInput === '' || !isNaN(bpmValue);
     
-        originalHandleBpmChange(e);
+        if (isNumericOrEmpty) {
+            const isValidBpm = bpmInput && !isNaN(bpmValue) && bpmValue > 0 && bpmValue <= 240;
     
-        setIsBpmInvalid(!isValidBpm);
+            originalHandleBpmChange(e);
     
-        if (isValidBpm) {
-            setWarningMessage('');
+            setIsBpmInvalid(bpmInput && !isValidBpm);
+    
+            if (isValidBpm || !bpmInput) {
+                setWarningMessage('');
+            }
         }
     };
 
