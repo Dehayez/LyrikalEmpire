@@ -124,6 +124,10 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, [onPrev, playerRef]);
 
+  useEffect(() => {
+    console.log(currentBeat.audio);
+  }, [currentBeat]);
+
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       <H5AudioPlayer
