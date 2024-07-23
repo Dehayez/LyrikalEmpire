@@ -27,9 +27,13 @@ const BeatRow = ({
   const [contextMenuY, setContextMenuY] = useState(0);
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
-  const deleteText = deleteMode === 'playlist' 
-    ? selectedBeats.length > 1 ? `Remove ${selectedBeats.length} tracks` : 'Remove from this playlist'
-    : selectedBeats.length > 1 ? `Delete ${selectedBeats.length} tracks` : 'Delete this track';
+  const deleteText = selectedBeats.length > 1
+    ? deleteMode === 'playlist'
+        ? `Remove ${selectedBeats.length} tracks from playlist`
+        : `Delete ${selectedBeats.length} tracks`
+    : deleteMode === 'playlist'
+        ? 'Remove this track from playlist'
+        : 'Delete this track';
   const [isInputFocused, setInputFocused] = useState(false);
   const [playlists, setPlaylists] = useState([]);
 
