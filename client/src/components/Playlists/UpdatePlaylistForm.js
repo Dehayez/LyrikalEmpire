@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import { updatePlaylist } from '../../services/playlistService';
 import { IoAlertCircleOutline } from 'react-icons/io5';
+import { Warning } from '../Warning';
 import { eventBus } from '../../utils';
 import { FormInput, FormTextarea } from '../Inputs';
 import './UpdatePlaylistForm.scss';
@@ -54,10 +55,7 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
                 <div className="update-playlist__form" onClick={(e) => e.stopPropagation()} ref={draggableRef}>
                     <h2 className='update-playlist__title'>Edit details</h2>
                     {isTitleEmpty && 
-                        <div className="update-playlist__warning">
-                            <IoAlertCircleOutline className="update-playlist__warning-icon"/>
-                            <p className="update-playlist__warning-text">Playlist name is required.</p>
-                        </div>
+                        <Warning message="Playlist name is required." />
                     }
                     <FormInput label="Name" type="text" placeholder='Enter name' value={title} onChange={handleTitleChange} spellCheck="false" required={true} isWarning={isTitleEmpty} />
                     <FormTextarea label="Description" type="text" placeholder='Enter description' value={description} onChange={(e) => setDescription(e.target.value)} spellCheck="false" maxLength={400}/>
