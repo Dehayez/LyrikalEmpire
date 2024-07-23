@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import { getPlaylistById, getBeatsByPlaylistId } from '../../services/playlistService';
+import { eventBus } from '../../utils';
 import { BeatList } from '../BeatList';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm'; 
 import classNames from 'classnames';
@@ -23,6 +24,20 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
 
     fetchPlaylistDetails();
   }, [id]);
+
+  useEffect(() => {
+    const updatePlaylistDetails = (updatedPlaylist) => {
+      if (updatedPlaylist.id === playlist?.id) {
+        setPlaylist({ ...playlist, title: updatedPlaylist.title, description: updatedPlaylist.description });
+      }
+    };
+  
+    eventBus.on('playlistUpdated', updatePlaylistDetails);
+  
+    return () => {
+      eventBus.off('playlistUpdated', updatePlaylistDetails);
+    };
+  }, [playlist]);
 
   const handleHeaderClick = () => {
     setShowUpdateForm(true);

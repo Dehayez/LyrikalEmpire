@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import { updatePlaylist } from '../../services/playlistService';
+import { eventBus } from '../../utils';
 import { FormInput, FormTextarea } from '../Inputs';
 import './UpdatePlaylistForm.scss';
 
@@ -28,6 +29,7 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
     const handleUpdate = async () => {
         try {
             await updatePlaylist(playlist.id, { title, description });
+            eventBus.emit('playlistUpdated', { id: playlist.id, title, description });
             onUpdated();
             onClose();
         } catch (error) {
