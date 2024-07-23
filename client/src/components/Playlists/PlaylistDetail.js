@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactDOM from 'react-dom';
-import { getPlaylistById, getBeatsByPlaylistId } from '../../services/playlistService';
+import { getPlaylistById, getBeatsByPlaylistId, removeBeatFromPlaylist } from '../../services/playlistService';
 import { eventBus } from '../../utils';
 import { BeatList } from '../BeatList';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm'; 
@@ -50,6 +50,15 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     setBeats(updatedBeats);
   };
 
+  const handleDeleteBeat = async (beatId) => {
+    try {
+      await removeBeatFromPlaylist(id, beatId);
+      await refreshPlaylist();
+    } catch (error) {
+      console.error('Error deleting beat from playlist:', error);
+    }
+  };
+
   return (
     <>
       {playlist && (
@@ -57,7 +66,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
           <div className='playlist__beats'>
               <BeatList
                 key={beats.length}
-                title={playlist.title}
                 externalBeats={beats}
                 shouldFetchBeats={false}
                 onPlay={onPlay}
@@ -70,6 +78,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                 sortConfig={sortConfig}
                 addToCustomQueue={addToCustomQueue}
                 onBeatClick={onBeatClick}
+                onDeleteFromPlaylist={handleDeleteBeat}
                 headerContent={
                   <div className='playlist__text' onClick={handleHeaderClick}>
                     <h2 className='playlist__title'>{playlist.title}</h2>
