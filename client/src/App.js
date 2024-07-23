@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { isMobileOrTablet } from './utils';
 import { getBeats, addBeat } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
 function App() {
+  const location = useLocation();
   const [refresh, setRefresh] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [beats, setBeats] = useState([]);
@@ -48,6 +49,13 @@ function App() {
   useEffect(() => {
     localStorage.setItem('sortConfig', JSON.stringify(sortConfig));
   }, [sortConfig]);
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      console.log('Navigated to home. Refreshing BeatList...');
+      setRefresh(prev => !prev);
+    }
+  }, [location]);
 
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
