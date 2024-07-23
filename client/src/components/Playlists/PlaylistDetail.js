@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { getPlaylistById, getBeatsByPlaylistId } from '../../services/playlistService';
 import { BeatList } from '../BeatList';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm'; 
+import classNames from 'classnames';
 import './PlaylistDetail.scss';
 
 const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick }) => {
@@ -61,7 +62,9 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                 headerContent={
                   <div className='playlist__text' onClick={handleHeaderClick}>
                     <h2 className='playlist__title'>{playlist.title}</h2>
-                    <p className='playlist__description'>{playlist.description}</p>
+                    <p className={classNames('playlist__description', { 'has-description': playlist.description })}>
+                      {playlist.description}
+                    </p>
                   </div>
                 }
               />
