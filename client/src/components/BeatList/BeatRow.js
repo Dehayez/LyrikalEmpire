@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal } from "react-icons/io5";
+import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
 import { addBeatToPlaylist, getPlaylists } from '../../services/playlistService';
@@ -15,7 +15,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode
+  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
@@ -27,7 +27,9 @@ const BeatRow = ({
   const [contextMenuY, setContextMenuY] = useState(0);
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
-  const deleteText = selectedBeats.length > 1 ? `Delete ${selectedBeats.length} tracks` : 'Delete this track';
+  const deleteText = deleteMode === 'playlist' 
+    ? selectedBeats.length > 1 ? `Remove ${selectedBeats.length} tracks` : 'Remove from this playlist'
+    : selectedBeats.length > 1 ? `Delete ${selectedBeats.length} tracks` : 'Delete this track';
   const [isInputFocused, setInputFocused] = useState(false);
   const [playlists, setPlaylists] = useState([]);
 
@@ -421,7 +423,7 @@ const BeatRow = ({
                 onClick: handleAddToCustomQueueClick,
               },
               {
-                icon: IoRemoveCircleOutline,
+                icon: deleteMode === "playlist" ? IoTrashBinOutline : IoRemoveCircleOutline,
                 iconClass: 'delete',
                 text: deleteText,
                 buttonClass: 'delete',
