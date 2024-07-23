@@ -1,8 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { IoCloudUploadSharp } from 'react-icons/io5';
 
-export const FileInput = ({ fileName, onChange, fileObject }) => {
-    const labelRef = useRef(null);
+export const FileInput = ({ fileName, onChange, fileObject, labelRef }) => {
     const fileInputRef = useRef(null);
 
     const handleChange = (event) => {
