@@ -15,7 +15,7 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent, onDeleteFromPlaylist }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const isExternalBeats = externalBeats.length > 0;
@@ -124,10 +124,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const handleConfirm = async () => {
     if (confirmModalState.beatsToDelete.length > 0) {
       if (onDeleteFromPlaylist) {
-        // Use the new prop function for playlist-specific deletion
         await onDeleteFromPlaylist(confirmModalState.beatsToDelete);
       } else {
-        // Fallback to the default deletion behavior
         await Promise.all(confirmModalState.beatsToDelete.map(beatId => handleDelete(beatId)));
       }
   
@@ -137,8 +135,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       });
   
       const message = confirmModalState.beatsToDelete.length === 1
-      ? <div><strong>{titlesToDelete[0]}</strong> has been deleted.</div>
-      : <div><strong>{confirmModalState.beatsToDelete.length} tracks</strong> have been deleted.</div>;
+      ? <div><strong>{titlesToDelete[0]}</strong> has been {deleteMode === 'playlist' ? <>removed from <strong>{playlistName}</strong></> : 'deleted'}.</div>
+      : <div><strong>{confirmModalState.beatsToDelete.length} tracks</strong> have been {deleteMode === 'playlist' ? <>removed from <strong>{playlistName}</strong></> : 'deleted'}.</div>;
     
     setConfirmModalState({ isOpen: false, beatsToDelete: [] });
     
@@ -285,6 +283,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
                   setActiveContextMenu={setActiveContextMenu}
                   activeContextMenu={activeContextMenu}
                   onBeatClick={onBeatClick}
+                  deleteMode={deleteMode}
                 />
               ))}
             </tbody>
@@ -297,9 +296,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
       )}
       <ConfirmModal 
         isOpen={confirmModalState.isOpen} 
-        title={`Delete ${confirmModalState.beatsToDelete.length > 1 ? `tracks` : 'track'}`}
-        message={`Are you sure you want to delete ${confirmModalState.beatsToDelete.length > 1 ? ` ${confirmModalState.beatsToDelete.length} tracks` : 'this track'}?`}
-        confirmButtonText="Delete" 
+        title={`${deleteMode === 'playlist' ? 'Remove' : 'Delete'} ${confirmModalState.beatsToDelete.length > 1 ? `tracks` : 'track'}`}
+        message={<span>Are you sure you want to {deleteMode === 'playlist' ? 'remove' : 'delete'} {confirmModalState.beatsToDelete.length > 1 ? `${confirmModalState.beatsToDelete.length} tracks` : 'this track'}{deleteMode === 'playlist' ? <> from <strong>{playlistName}</strong></> : ''}?</span>}
+        confirmButtonText={`${deleteMode === 'playlist' ? 'Remove' : 'Delete'}`}
         cancelButtonText="Cancel" 
         onConfirm={handleConfirm} 
         onCancel={() => setConfirmModalState({ ...confirmModalState, isOpen: false })}

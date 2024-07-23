@@ -79,6 +79,8 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                 sortConfig={sortConfig}
                 addToCustomQueue={addToCustomQueue}
                 onBeatClick={onBeatClick}
+                deleteMode='playlist'
+                playlistName={playlist.title}
                 onDeleteFromPlaylist={handleDeleteBeats}
                 headerContent={
                   <div className='playlist__text' onClick={handleHeaderClick}>
