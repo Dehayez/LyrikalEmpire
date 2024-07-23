@@ -382,10 +382,6 @@ useEffect(() => {
     ]);
   };
 
-  useEffect(() => {
-    console.log(currentBeat);
-  }, [currentBeat]);
-
   return (
       <div className="app app--hidden">
         {isDraggingOver && (
