@@ -22,7 +22,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [isTitleEmpty, setIsTitleEmpty] = useState(false);
     const [isBpmInvalid, setIsBpmInvalid] = useState(false);
     const [showToast, setShowToast] = useState(false);
-    const { bpm, handleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
+    const { bpm, handleBpmChange: originalHandleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
 
     const draggableRef = useRef(null);
     const labelRef = useRef(null);
@@ -103,6 +103,20 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         };
     };
 
+    const handleBpmChangeExtended = (e) => {
+        const bpmInput = e.target.value;
+        const bpmValue = bpmInput.replace(',', '.');
+        const isValidBpm = !isNaN(bpmValue) && bpmValue > 0 && bpmValue <= 240;
+    
+        originalHandleBpmChange(e);
+    
+        setIsBpmInvalid(!isValidBpm);
+    
+        if (isValidBpm) {
+            setWarningMessage('');
+        }
+    };
+
     useEffect(() => {
         const handleKeyDown = (event) => isOpen && event.key === 'Enter' && handleSubmit(event);
         document.addEventListener('keydown', handleKeyDown);
@@ -132,13 +146,13 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             value={title} 
                             onChange={(e) => {
                                 setTitle(e.target.value);
-                                setIsTitleEmpty(!e.target.value.trim()); // Update isTitleEmpty based on input
+                                setIsTitleEmpty(!e.target.value.trim());
                             }} 
                             required 
                             spellCheck="false" 
-                            isWarning={isTitleEmpty} // Use isWarning prop to show/hide warning based on isTitleEmpty
+                            isWarning={isTitleEmpty}
                         />
-                        <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChange} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
+                        <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChangeExtended} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
                         <SelectableInput label="Genre" placeholder="Enter genre" value={genre} onChange={handleGenreChange} onFocus={handleGenreFocus} onBlur={handleGenreBlur} showItems={showGenres} filteredItems={filteredGenres.map(genre => ({ name: genre.name, selected: selectedGenres.includes(genre.name) }))} handleItemToggle={handleGenreToggle}/>
                         <SelectInput 
                             label="Tierlist"
