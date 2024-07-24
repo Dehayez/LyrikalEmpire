@@ -81,6 +81,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                 onBeatClick={onBeatClick}
                 deleteMode='playlist'
                 playlistName={playlist.title}
+                playlistId={playlist.id}
                 onDeleteFromPlaylist={handleDeleteBeats}
                 headerContent={
                   <div className='playlist__text' onClick={handleHeaderClick}>

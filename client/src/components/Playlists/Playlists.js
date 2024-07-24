@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Link, useNavigate } from 'react-router-dom';
 import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
+import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus } from '../../utils';
 import { ContextMenu } from '../ContextMenu';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
@@ -23,9 +24,15 @@ const Playlists = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
 
+  const { currentPlaylistId } = usePlaylist();
+
   useEffect(() => {
     fetchPlaylists();
   }, []);
+
+  useEffect(() => {
+    console.log(currentPlaylistId)
+  }, [currentPlaylistId]);
 
   useEffect(() => {
     const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);

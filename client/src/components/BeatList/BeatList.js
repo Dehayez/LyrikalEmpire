@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { isMobileOrTablet } from '../../utils';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
+import { usePlaylist } from '../../contexts/PlaylistContext';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
@@ -15,7 +16,7 @@ const fetchBeats = async (handleUpdateAll) => {
   handleUpdateAll(fetchedBeats);
 };
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const isExternalBeats = externalBeats.length > 0;
@@ -31,6 +32,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const [headerOpacity, setHeaderOpacity] = useState(1);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const beatsToFilter = isExternalBeats ? externalBeats : sortedBeats;
+  const { setPlaylistId } = usePlaylist();
 
   const filteredAndSortedBeats = beatsToFilter.filter(beat => {
     const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
@@ -40,6 +42,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const handlePlayPause = (beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
+    setPlaylistId(playlistId);
   };
 
   useEffect(() => {
