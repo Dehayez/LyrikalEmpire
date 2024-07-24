@@ -1,15 +1,26 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const PlaylistContext = createContext();
 
 export const usePlaylist = () => useContext(PlaylistContext);
 
 export const PlaylistProvider = ({ children }) => {
-  const [currentPlaylistId, setCurrentPlaylistId] = useState(null);
+  const [currentPlaylistId, setCurrentPlaylistId] = useState(() => {
+    return localStorage.getItem('currentPlaylistId');
+  });
 
   const setPlaylistId = (id) => {
     setCurrentPlaylistId(id);
   };
+
+  useEffect(() => {
+    if (currentPlaylistId) {
+      localStorage.setItem('currentPlaylistId', currentPlaylistId);
+    } else {
+      localStorage.removeItem('currentPlaylistId');
+    }
+    console.log('currentPlaylistId:', currentPlaylistId);
+  }, [currentPlaylistId]);
 
   return (
     <PlaylistContext.Provider value={{ currentPlaylistId, setPlaylistId }}>
