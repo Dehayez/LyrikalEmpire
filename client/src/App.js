@@ -416,7 +416,7 @@ useEffect(() => {
                   className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
                   {...(isLeftDivVisible && !isLeftPanelVisible && { handleMouseEnter: handleMouseEnterLeft, handleMouseLeave: handleMouseLeaveLeft })}
                 >
-                  <Playlists />
+                  <Playlists isPlaying={isPlaying} />
                 </LeftSidePanel>
               ) : null}
             </div>
@@ -452,7 +452,8 @@ useEffect(() => {
                 onSort={onSort} 
                 sortConfig={sortConfig}
                 addToCustomQueue={addToCustomQueue}
-                onBeatClick={handleBeatClick}  />} 
+                onBeatClick={handleBeatClick}  
+                />} 
                 />
               </Routes>
             </div>
