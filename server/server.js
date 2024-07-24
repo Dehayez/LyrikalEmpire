@@ -312,25 +312,45 @@ app.post('/api/playlists/:playlist_id/beats', (req, res) => {
       return res.status(500).json({ error: 'An error occurred starting the transaction' });
     }
 
-    db.query('INSERT INTO playlist_beats (playlist_id, beat_id) VALUES ?', [insertValues], (err, results) => {
-      if (err) {
-        db.rollback(() => {
-          console.error(err);
-          res.status(500).json({ error: 'An error occurred while adding the beats to the playlist' });
+    const checkAndInsertPromises = insertValues.map(([playlistId, beatId]) => 
+      new Promise((resolve, reject) => {
+        db.query('SELECT 1 FROM playlist_beats WHERE playlist_id = ? AND beat_id = ?', [playlistId, beatId], (err, results) => {
+          if (err) {
+            return reject(err);
+          }
+          if (results.length === 0) { 
+            db.query('INSERT INTO playlist_beats (playlist_id, beat_id) VALUES (?, ?)', [playlistId, beatId], (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+              resolve();
+            });
+          } else {
+            resolve();
+          }
         });
-      } else {
+      })
+    );
+
+    Promise.all(checkAndInsertPromises)
+      .then(() => {
         db.commit(err => {
           if (err) {
+            console.error(err);
             db.rollback(() => {
-              console.error(err);
               res.status(500).json({ error: 'An error occurred while committing the transaction' });
             });
           } else {
-            res.status(201).json({ message: 'Beats added to playlist successfully' });
+            res.status(201).json({ message: 'Beats added to playlist successfully, duplicates avoided' });
           }
         });
-      }
-    });
+      })
+      .catch(err => {
+        console.error(err);
+        db.rollback(() => {
+          res.status(500).json({ error: 'An error occurred while adding the beats to the playlist' });
+        });
+      });
   });
 });
 
