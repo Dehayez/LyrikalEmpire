@@ -31,10 +31,6 @@ const Playlists = () => {
   }, []);
 
   useEffect(() => {
-    console.log(currentPlaylistId)
-  }, [currentPlaylistId]);
-
-  useEffect(() => {
     const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
     const hideContextMenu = () => setActiveContextMenu(null);
 
@@ -140,7 +136,7 @@ const Playlists = () => {
         {playlists.map((playlist, index) => (
           <li 
             key={index} 
-            className='playlists__list-item' 
+            className={`playlists__list-item ${currentPlaylistId === playlist.id ? 'playlists__list-item--playing' : ''}`}
             onClick={() => handleLeftClick(playlist.id)}
             onContextMenu={(e) => handleRightClick(e, playlist, index)}
             style={{ textDecoration: 'none' }}
