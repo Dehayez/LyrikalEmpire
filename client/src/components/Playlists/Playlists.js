@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus } from '../../utils';
@@ -14,6 +14,7 @@ const Playlists = ({isPlaying}) => {
   const navigate = useNavigate();
 
   const [playlists, setPlaylists] = useState([]);
+  const [activePlaylist, setActivePlaylist] = useState([]);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
@@ -25,6 +26,14 @@ const Playlists = ({isPlaying}) => {
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
 
   const { currentPlaylistId } = usePlaylist();
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathParts = location.pathname.split('/');
+    const playlistId = pathParts[pathParts.length - 1];
+  
+    setActivePlaylist(playlistId);
+  }, [location]);
 
   useEffect(() => {
     fetchPlaylists();
@@ -136,8 +145,11 @@ const Playlists = ({isPlaying}) => {
         {playlists.map((playlist, index) => (
           <li 
             key={index} 
-            className={`playlists__list-item ${currentPlaylistId === playlist.id ? 'playlists__list-item--playing' : ''}`}
-            onClick={() => handleLeftClick(playlist.id)}
+            className={`playlists__list-item${currentPlaylistId === playlist.id ? ' playlists__list-item--playing' : ''}${playlist.id == activePlaylist ? ' playlists__list-item--active' : ''}`}
+            onClick={() => {
+              console.log(playlist.id);
+              handleLeftClick(playlist.id);
+            }}
             onContextMenu={(e) => handleRightClick(e, playlist, index)}
             style={{ textDecoration: 'none' }}
           >
