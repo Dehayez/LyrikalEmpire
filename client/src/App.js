@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { isMobileOrTablet } from './utils';
 import { getBeats, addBeat } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
 import { handlePlay, handlePrev } from './hooks';
+import { usePlaylist } from './contexts/PlaylistContext';
 import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
@@ -44,6 +45,7 @@ function App() {
   const addBeatFormRef = useRef();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [activeUploads, setActiveUploads] = useState(0);
+  const { currentPlaylistId } = usePlaylist();
   const [sortConfig, setSortConfig] = useState(() => {
     const savedSortConfig = localStorage.getItem('sortConfig');
     return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };
@@ -54,10 +56,10 @@ function App() {
   }, [sortConfig]);
 
   useEffect(() => {
-    if (location.pathname === '/') {
+    if (location.pathname === '/' && !currentPlaylistId) {
       setRefresh(prev => !prev);
     }
-  }, [location]);
+  }, [location, currentPlaylistId]);
 
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
