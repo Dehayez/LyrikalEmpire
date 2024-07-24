@@ -26,7 +26,10 @@ function App() {
   const [allowHover, setAllowHover] = useState(true);
   const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
   const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
-  const [selectedBeat, setSelectedBeat] = useState(() => JSON.parse(localStorage.getItem('selectedBeat') || 'null'));
+  const [selectedBeat, setSelectedBeat] = useState(() => {
+    const item = localStorage.getItem('selectedBeat');
+    return item && item !== "undefined" ? JSON.parse(item) : null;
+  });
   const [shuffle, setShuffle] = useState(() => JSON.parse(localStorage.getItem('shuffle') || 'false'));
   const [repeat, setRepeat] = useState(() => localStorage.getItem('repeat') || 'Disabled Repeat');
   const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
