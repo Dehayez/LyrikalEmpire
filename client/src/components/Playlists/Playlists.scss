@@ -20,13 +20,20 @@
             padding: 16px;
             border-radius: 4px;
 
+            &:hover {
+                background-color: $color-gray-dark;
+                cursor: pointer;
+            }
+
             &--playing {
                 color: $color-yellow;
             }
 
-            &:hover {
-                background-color: $color-gray-dark;
-                cursor: pointer;
+            &--active {
+                background-color: $color-gray-dark-active;
+                &:hover {
+                    background-color: $color-gray-dark-hover;
+                }
             }
         }
     }
