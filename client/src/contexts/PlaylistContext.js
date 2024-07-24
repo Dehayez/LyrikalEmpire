@@ -19,7 +19,6 @@ export const PlaylistProvider = ({ children }) => {
     } else {
       localStorage.removeItem('currentPlaylistId');
     }
-    console.log('currentPlaylistId:', currentPlaylistId);
   }, [currentPlaylistId]);
 
   return (
