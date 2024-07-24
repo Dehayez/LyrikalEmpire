@@ -7,10 +7,10 @@ import { eventBus } from '../../utils';
 import { ContextMenu } from '../ContextMenu';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
-import { IoAddSharp, IoRemoveCircleOutline, IoPencil } from "react-icons/io5";
+import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp } from "react-icons/io5";
 import './Playlists.scss';
 
-const Playlists = () => {
+const Playlists = ({isPlaying}) => {
   const navigate = useNavigate();
 
   const [playlists, setPlaylists] = useState([]);
@@ -142,6 +142,7 @@ const Playlists = () => {
             style={{ textDecoration: 'none' }}
           >
             <div>{playlist.title}</div>
+           {currentPlaylistId === playlist.id && isPlaying && <IoVolumeMediumSharp/>}
 
             {activeContextMenu === `${playlist.id}-${index}` && (
               <ContextMenu
