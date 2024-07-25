@@ -25,6 +25,14 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     fetchPlaylistDetails();
   }, [id]);
 
+  const handleUpdateBeat = (beatId, updatedFields) => {
+    setBeats((prevBeats) =>
+      prevBeats.map((beat) =>
+        beat.id === beatId ? { ...beat, ...updatedFields } : beat
+      )
+    );
+  };
+
   useEffect(() => {
     const updatePlaylistDetails = (updatedPlaylist) => {
       if (updatedPlaylist.id === playlist?.id) {
@@ -93,7 +101,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                 playlistName={playlist.title}
                 playlistId={playlist.id}
                 onDeleteFromPlaylist={handleDeleteBeats}
-                onUpdateBeat={onUpdateBeat}
+                onUpdateBeat={handleUpdateBeat}
                 onUpdate={onUpdate}
                 headerContent={
                   <div className='playlist__text' onClick={handleHeaderClick}>
