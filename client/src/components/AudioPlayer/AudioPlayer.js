@@ -7,7 +7,10 @@ import './AudioPlayer.scss';
 
 const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat }) => {
   const playerRef = useRef();
-  const [volume, setVolume] = useState(() => parseFloat(localStorage.getItem('volume')) || 1.0);
+  const [volume, setVolume] = useState(() => {
+    const savedVolume = localStorage.getItem('volume');
+    return savedVolume !== null ? parseFloat(savedVolume) : 1.0;
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [dragPosition, setDragPosition] = useState(0);
@@ -15,6 +18,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const handleVolumeChange = e => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
+    console.log(newVolume);
     localStorage.setItem('volume', newVolume.toString());
   };
 
