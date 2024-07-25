@@ -15,7 +15,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode
+  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
@@ -84,6 +84,10 @@ const BeatRow = ({
   
     return () => manageContextMenuVisibility(false);
   }, [activeContextMenu, beat.id]);
+
+  const handleInputChange = (property, value) => {
+    onUpdateBeat(beat.id, { [property]: value });
+  };
 
   const handleTierlistChange = (e) => {
     const newTierlist = e.target.value;
@@ -270,7 +274,10 @@ const BeatRow = ({
           type="text"
           defaultValue={beat.title} 
           onFocus={handleFocus}
-          onBlur={(e) => handleBlur(beat.id, 'title', e.target.value)}
+          onBlur={(e) => {
+            handleInputChange('title', e.target.value);
+            handleBlur(beat.id, 'title', e.target.value);
+          }}
           onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
           onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
           onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
@@ -302,7 +309,10 @@ const BeatRow = ({
             type="text" 
             defaultValue={beat.bpm} 
             onKeyDown={handleOnKeyDown}
-            onBlur={handleBpmBlur}
+            onBlur={(e) => {
+              handleInputChange('bpm', e.target.value);
+              handleBpmBlur(e);
+            }}
             onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
             onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
             spellCheck="false"

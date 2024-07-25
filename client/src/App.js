@@ -61,6 +61,16 @@ function App() {
     }
   }, [location, currentPlaylistId]);
 
+  const updateBeat = (id, newData) => {
+    setBeats(currentBeats =>
+      currentBeats.map(beat => beat.id === id ? { ...beat, ...newData } : beat)
+    );
+  };
+
+  useEffect(() => {
+    console.log(beats)
+  }, [beats]);
+
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
     if (shuffle) {
@@ -441,6 +451,7 @@ useEffect(() => {
                 sortConfig={sortConfig}
                 addToCustomQueue={addToCustomQueue}
                 onBeatClick={handleBeatClick} 
+                onUpdateBeat={updateBeat}
               />
               <AddBeatButton setIsOpen={setIsOpen} />
               </>
