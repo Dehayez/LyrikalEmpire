@@ -1,3 +1,5 @@
+@import '../../globals/variables';
+
 .beat-row {
   td:first-child {
     border-top-left-radius: 4px;
@@ -10,7 +12,7 @@
   }
 
   &:hover {
-    background-color: #202020;
+    background-color: $color-gray-dark;
   }
 
   &__input {
@@ -22,7 +24,7 @@
     cursor: default;
 
     &--title, &--bpm {
-      color: white;
+      color: $color-white;
     }
 
     &--bpm {
@@ -30,9 +32,9 @@
     }
 
     &:focus {
-      background-color: #202020;
+      background-color: $color-gray-dark;
       outline: none;
-      box-shadow: 0 0 0 1px #ccc;
+      box-shadow: 0 0 0 1px $color-gray;
       cursor: text;
     }
   }
@@ -54,7 +56,7 @@
   &__number, &__data, &__button-cell {
     padding: 8px 0;
     text-align: center;
-    color: #FFFFFF;
+    color: $color-white;
   }
 
   &__button-cell {
@@ -65,15 +67,19 @@
     padding: 8px 0;
   }
 
+  &--focused {
+    background-color: $color-gray-dark-active;
+  }
+
   &--playing {
-    color: #FFCC44;
+    color: $color-yellow;
 
     .beat-row__index-number, .beat-row__input--title {
-      color: #FFCC44;
+      color: $color-yellow;
     }
 
     .beat-row__input--title:focus {
-      color: white;
+      color: $color-white;
     }
   }
 
@@ -102,7 +108,7 @@
       border-radius: 4px;
       font-size: 16px;
       background-color: transparent;
-      color: white;
+      color: $color-white;
 
       &:hover {
         cursor: pointer;
@@ -110,8 +116,8 @@
       }
 
       &:focus {
-        background-color: #202020;
-        box-shadow: 0 0 0 1px #ccc;
+        background-color: $color-gray-dark;
+        box-shadow: 0 0 0 1px $color-gray;
       }
     }
 
@@ -122,10 +128,10 @@
 }
 
 .beat-row--selected, .beat-row--selected-top, .beat-row--selected-bottom, .beat-row--selected-middle {
-  background-color: #505050;
+  background-color: $color-gray-mid;
 
   &:hover {
-    background-color: #505050;
+    background-color: $color-gray-mid;
   }
 
   &-top {
