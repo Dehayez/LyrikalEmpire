@@ -15,7 +15,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat
+  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate
 }) => {
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
@@ -99,6 +99,7 @@ const BeatRow = ({
     addToCustomQueue(selectedBeats);
   };
 
+
   const {
     selectedItem: selectedGenre,
     filteredItems: filteredGenres,
@@ -111,7 +112,7 @@ const BeatRow = ({
 
   useEffect(() => {
     if (selectedGenre) {
-      handleUpdate(beat.id, 'genre', selectedGenre);
+      onUpdate(beat.id, 'genre', selectedGenre);
     }
   }, [selectedGenre]);
 
@@ -124,10 +125,10 @@ const BeatRow = ({
     handleItemFocus: handleMoodFocus,
     handleItemBlur: handleMoodBlur
   } = useSelectableList(getMoods, beat.mood);
-  
+
   useEffect(() => {
     if (selectedMood) {
-      handleUpdate(beat.id, 'mood', selectedMood);
+      onUpdate(beat.id, 'mood', selectedMood);
     }
   }, [selectedMood]);
 
@@ -140,10 +141,10 @@ const BeatRow = ({
     handleItemFocus: handleKeywordFocus,
     handleItemBlur: handleKeywordBlur
   } = useSelectableList(getKeywords, beat.keywords);
-  
+
   useEffect(() => {
     if (selectedKeyword) {
-      handleUpdate(beat.id, 'keywords', selectedKeyword);
+      onUpdate(beat.id, 'keywords', selectedKeyword);
     }
   }, [selectedKeyword]);
 

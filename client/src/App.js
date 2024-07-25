@@ -67,9 +67,13 @@ function App() {
     );
   };
 
-  useEffect(() => {
-    console.log(beats)
-  }, [beats]);
+  const onUpdate = (id, field, value) => {
+    setBeats(prevBeats =>
+      prevBeats.map(beat =>
+        beat.id === id ? { ...beat, [field]: value } : beat
+      )
+    );
+  };
 
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
@@ -452,6 +456,7 @@ useEffect(() => {
                 addToCustomQueue={addToCustomQueue}
                 onBeatClick={handleBeatClick} 
                 onUpdateBeat={updateBeat}
+                onUpdate={onUpdate}
               />
               <AddBeatButton setIsOpen={setIsOpen} />
               </>
