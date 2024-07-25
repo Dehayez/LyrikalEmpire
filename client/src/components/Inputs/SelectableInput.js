@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './Inputs.scss';
 
 export const SelectableInput = ({
-  label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onClick, spellCheck, onMouseDown
+  label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onClick, spellCheck, onMouseDown, onKeyDown
 }) => {
   const [selectedValues, setSelectedValues] = useState(value.split(',').map(item => item.trim()));
   const [focusedItemIndex, setFocusedItemIndex] = useState(-1);
   const [isListVisible, setIsListVisible] = useState(false);
 
   const handleKeyDown = (e) => {
+    if (onKeyDown) {
+      onKeyDown(e);
+    }
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
       e.preventDefault();
       e.stopPropagation();
