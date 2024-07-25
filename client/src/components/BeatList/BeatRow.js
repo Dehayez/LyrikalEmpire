@@ -11,6 +11,7 @@ import { ContextMenu } from '../ContextMenu';
 import { Highlight } from '../Highlight';
 import { SelectableInput } from '../Inputs';
 import './BeatRow.scss';
+import { useFetcher } from 'react-router-dom';
 
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
@@ -34,7 +35,7 @@ const BeatRow = ({
     : deleteMode === 'playlist'
         ? 'Remove this track from playlist'
         : 'Delete this track';
-  const [isInputFocused, setInputFocused] = useState(false);
+  const [isInputFocused, setInputFocused] = useState();
   const [playlists, setPlaylists] = useState([]);
 
   const beatRowClasses = classNames({
@@ -43,8 +44,12 @@ const BeatRow = ({
     'beat-row--selected-bottom': isSelected && !isMiddle && hasSelectedBefore,
     'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
-    'beat-row--playing': currentBeat && beat.id === currentBeat.id
+    'beat-row--playing': currentBeat && beat.id === currentBeat.id,
   });
+
+  useEffect(() => {
+    console.log(isInputFocused);
+  }, [isInputFocused]);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -222,7 +227,7 @@ const BeatRow = ({
 
   return (
     <tr
-      className={beatRowClasses}
+      className={`${beatRowClasses} ${isInputFocused ? 'beat-row--focused' : ''}`}
       key={beatRowClasses}
       {...(isMobileOrTablet() ? {
         onClick: handleClick,
