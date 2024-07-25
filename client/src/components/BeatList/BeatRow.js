@@ -324,7 +324,10 @@ const BeatRow = ({
               <select 
                 className="select-wrapper__select" 
                 value={tierlist}
-                onChange={handleTierlistChange}
+                onChange={(e) => {
+                  handleInputChange('tierlist', e.target.value);
+                  handleTierlistChange(e);
+                }}
                 onFocus={(e) => e.target.style.color = 'white'}
                 onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
                 onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
