@@ -21,7 +21,7 @@ const BeatAnimation = ({ beat, currentBeat, isPlaying, hoveredBeat, index }) => 
         <div className="bar" style={{ animationDelay: `-${delays[2]}s`, animationDuration: `${durations[2]}s` }}></div>
         <div className="bar" style={{ animationDelay: `-${delays[3]}s`, animationDuration: `${durations[3]}s` }}></div>
       </div> : 
-      <div className='beat-row__index-number' style={{ zIndex: 1, minWidth: '30px', color: currentBeat && currentBeat.id === beat.id ? '#FFCC44' : '', opacity: hoveredBeat === beat.id ? 0 : 1 }}>{index + 1}</div>
+      <div className='beat-row__index-number' style={{ zIndex: 1, minWidth: '30px', color: currentBeat && currentBeat.id === beat.id && isSamePlaylist ? '#FFCC44' : '', opacity: hoveredBeat === beat.id ? 0 : 1 }}>{index + 1}</div>
   );
 };
 
