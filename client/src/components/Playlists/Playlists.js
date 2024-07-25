@@ -15,7 +15,6 @@ const Playlists = ({ isPlaying }) => {
   const { playedPlaylistId, currentPlaylistId } = usePlaylist();
 
   const [playlists, setPlaylists] = useState([]);
-  const [activePlaylist, setActivePlaylist] = useState([]);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
