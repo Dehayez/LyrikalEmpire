@@ -1,28 +1,42 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const PlaylistContext = createContext();
 
 export const usePlaylist = () => useContext(PlaylistContext);
 
 export const PlaylistProvider = ({ children }) => {
-  const [currentPlaylistId, setCurrentPlaylistId] = useState(() => {
-    return localStorage.getItem('currentPlaylistId');
+  const [playedPlaylistId, setPlayedPlaylistId] = useState(() => {
+    return localStorage.getItem('playedPlaylistId');
   });
-
-  const setPlaylistId = (id) => {
-    setCurrentPlaylistId(id);
-  };
+  const [currentPlaylistId, setCurrentPlaylistId] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
-    if (currentPlaylistId) {
-      localStorage.setItem('currentPlaylistId', currentPlaylistId);
+    console.log('playedPlaylistId:', playedPlaylistId);
+    console.log('currentPlaylistId:', currentPlaylistId);
+ }, [playedPlaylistId, currentPlaylistId]);
+
+  function setPlaylistId(id) {
+  setPlayedPlaylistId(id);
+}
+
+  useEffect(() => {
+    if (playedPlaylistId) {
+      localStorage.setItem('playedPlaylistId', playedPlaylistId);
     } else {
-      localStorage.removeItem('currentPlaylistId');
+      localStorage.removeItem('playedPlaylistId');
     }
-  }, [currentPlaylistId]);
+  }, [playedPlaylistId]);
+
+  useEffect(() => {
+    const pathParts = location.pathname.split('/');
+    const playlistId = pathParts[pathParts.length - 1];
+    setCurrentPlaylistId(playlistId ? playlistId : null);
+  }, [location]);
 
   return (
-    <PlaylistContext.Provider value={{ currentPlaylistId, setPlaylistId }}>
+    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId }}>
       {children}
     </PlaylistContext.Provider>
   );

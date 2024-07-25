@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
+import { useLocation } from 'react-router-dom';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
 import { addBeatsToPlaylist, getPlaylists } from '../../services/playlistService';
 import { isMobileOrTablet } from '../../utils';
+import { usePlaylist } from '../../contexts/PlaylistContext';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
@@ -36,6 +38,7 @@ const BeatRow = ({
         : 'Delete this track';
   const [isInputFocused, setInputFocused] = useState();
   const [playlists, setPlaylists] = useState([]);
+  const { playedPlaylistId, currentPlaylistId } = usePlaylist();
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -43,7 +46,7 @@ const BeatRow = ({
     'beat-row--selected-bottom': isSelected && !isMiddle && hasSelectedBefore,
     'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
-    'beat-row--playing': currentBeat && beat.id === currentBeat.id,
+    'beat-row--playing': currentBeat && beat.id === currentBeat.id && playedPlaylistId == currentPlaylistId,
   });
 
   useEffect(() => {
