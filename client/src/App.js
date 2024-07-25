@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { isMobileOrTablet } from './utils';
 import { getBeats, addBeat } from './services';
@@ -40,9 +40,7 @@ function App() {
   const hoverRefRight = useRef(false);
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isLeftPanelVisible') || 'false'));
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isRightPanelVisible') || 'false'));
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const [droppedFiles, setDroppedFiles] = useState([]);
-  const addBeatFormRef = useRef();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [activeUploads, setActiveUploads] = useState(0);
   const { currentPlaylistId } = usePlaylist();
@@ -57,6 +55,7 @@ function App() {
 
   useEffect(() => {
     if (location.pathname === '/' && !currentPlaylistId) {
+      console.log('refreshing');
       setRefresh(prev => !prev);
     }
   }, [location, currentPlaylistId]);

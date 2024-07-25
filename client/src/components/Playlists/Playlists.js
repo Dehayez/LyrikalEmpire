@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus } from '../../utils';
@@ -10,8 +10,9 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp } from "react-icons/io5";
 import './Playlists.scss';
 
-const Playlists = ({isPlaying}) => {
+const Playlists = ({ isPlaying }) => {
   const navigate = useNavigate();
+  const { playedPlaylistId, currentPlaylistId } = usePlaylist();
 
   const [playlists, setPlaylists] = useState([]);
   const [activePlaylist, setActivePlaylist] = useState([]);
@@ -20,20 +21,9 @@ const Playlists = ({isPlaying}) => {
   const [contextMenuY, setContextMenuY] = useState(0);
 
   const [showUpdateForm, setShowUpdateForm] = useState(false);
-  const [currentPlaylist, setCurrentPlaylist] = useState(null);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
-
-  const { currentPlaylistId } = usePlaylist();
-  const location = useLocation();
-
-  useEffect(() => {
-    const pathParts = location.pathname.split('/');
-    const playlistId = pathParts[pathParts.length - 1];
-  
-    setActivePlaylist(playlistId);
-  }, [location]);
 
   useEffect(() => {
     fetchPlaylists();
@@ -102,7 +92,6 @@ const Playlists = ({isPlaying}) => {
   };
 
   const handleOpenUpdateForm = (playlist) => {
-    setCurrentPlaylist(playlist);
     setShowUpdateForm(true);
   };
 
@@ -145,13 +134,13 @@ const Playlists = ({isPlaying}) => {
         {playlists.map((playlist, index) => (
           <li 
             key={index} 
-            className={`playlists__list-item${currentPlaylistId === playlist.id ? ' playlists__list-item--playing' : ''}${playlist.id == activePlaylist ? ' playlists__list-item--active' : ''}`}
+            className={`playlists__list-item${playedPlaylistId === playlist.id ? ' playlists__list-item--playing' : ''}${playlist.id == currentPlaylistId ? ' playlists__list-item--active' : ''}`}
             onClick={() => {handleLeftClick(playlist.id);}}
             onContextMenu={(e) => handleRightClick(e, playlist, index)}
             style={{ textDecoration: 'none' }}
           >
             <div>{playlist.title}</div>
-           {currentPlaylistId === playlist.id && isPlaying && <IoVolumeMediumSharp/>}
+           {playedPlaylistId === playlist.id && isPlaying && <IoVolumeMediumSharp/>}
 
             {activeContextMenu === `${playlist.id}-${index}` && (
               <ContextMenu
@@ -179,9 +168,9 @@ const Playlists = ({isPlaying}) => {
           </li>
         ))}
       </ul>
-      {showUpdateForm && currentPlaylist && ReactDOM.createPortal(
+      {showUpdateForm && currentPlaylistId && ReactDOM.createPortal(
         <UpdatePlaylistForm
-          playlist={currentPlaylist}
+          playlist={currentPlaylistId}
           onClose={() => setShowUpdateForm(false)}
           onUpdated={fetchPlaylists}
         />,
