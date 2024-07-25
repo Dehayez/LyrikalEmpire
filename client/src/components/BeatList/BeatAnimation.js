@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { usePlaylist } from '../../contexts/PlaylistContext';
 import './BeatAnimation.scss';
 
 const BeatAnimation = ({ beat, currentBeat, isPlaying, hoveredBeat, index }) => {
   
   const [delays, setDelays] = useState([0, 0, 0, 0]);
   const [durations, setDurations] = useState([0, 0, 0, 0]);
+  const { isSamePlaylist } = usePlaylist();
 
   useEffect(() => {
     setDelays([Math.random(), Math.random(), Math.random(), Math.random()]);
@@ -12,7 +14,7 @@ const BeatAnimation = ({ beat, currentBeat, isPlaying, hoveredBeat, index }) => 
   }, []);
 
   return (
-    currentBeat && currentBeat.id === beat.id && isPlaying ? 
+    currentBeat && currentBeat.id === beat.id && isPlaying && isSamePlaylist ? 
     <div className="animation-container" style={{ animation: `barAnimation ${170 / beat.bpm}s infinite`, opacity: hoveredBeat === beat.id ? 0 : 1 }}>
         <div className="bar" style={{ animationDelay: `-${delays[0]}s`, animationDuration: `${durations[0]}s` }}></div>
         <div className="bar" style={{ animationDelay: `-${delays[1]}s`, animationDuration: `${durations[1]}s` }}></div>
