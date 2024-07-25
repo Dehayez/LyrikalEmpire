@@ -18,7 +18,7 @@ export const PlaylistProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    setIsSamePlaylist(playedPlaylistId === currentPlaylistId);
+    setIsSamePlaylist(playedPlaylistId == currentPlaylistId);
   }, [playedPlaylistId, currentPlaylistId]);
 
   useEffect(() => {
