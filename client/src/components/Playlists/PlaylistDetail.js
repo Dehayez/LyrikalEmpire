@@ -39,6 +39,16 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     };
   }, [playlist]);
 
+  const sortBeats = (beats, sortConfig) => {
+    if (!sortConfig || !sortConfig.key) return beats;
+  
+    return [...beats].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'ascending' ? -1 : 1;
+      if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'ascending' ? 1 : -1;
+      return 0;
+    });
+  };
+
   const handleHeaderClick = () => {
     setShowUpdateForm(true);
   };
@@ -67,7 +77,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
           <div className='playlist__beats'>
               <BeatList
                 key={beats.length}
-                externalBeats={beats}
+                externalBeats={sortBeats(beats, sortConfig)}
                 shouldFetchBeats={false}
                 onPlay={onPlay}
                 selectedBeat={selectedBeat}
