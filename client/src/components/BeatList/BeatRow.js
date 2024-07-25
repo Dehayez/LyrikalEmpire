@@ -38,7 +38,7 @@ const BeatRow = ({
         : 'Delete this track';
   const [isInputFocused, setInputFocused] = useState();
   const [playlists, setPlaylists] = useState([]);
-  const { playedPlaylistId, currentPlaylistId } = usePlaylist();
+  const { isSamePlaylist } = usePlaylist();
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -46,7 +46,7 @@ const BeatRow = ({
     'beat-row--selected-bottom': isSelected && !isMiddle && hasSelectedBefore,
     'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
-    'beat-row--playing': currentBeat && beat.id === currentBeat.id && playedPlaylistId == currentPlaylistId,
+    'beat-row--playing': currentBeat && beat.id === currentBeat.id && isSamePlaylist,
   });
 
   useEffect(() => {
