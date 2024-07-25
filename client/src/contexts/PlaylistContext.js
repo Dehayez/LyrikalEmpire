@@ -10,16 +10,16 @@ export const PlaylistProvider = ({ children }) => {
     return localStorage.getItem('playedPlaylistId');
   });
   const [currentPlaylistId, setCurrentPlaylistId] = useState(null);
+  const [isSamePlaylist, setIsSamePlaylist] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    console.log('playedPlaylistId:', playedPlaylistId);
-    console.log('currentPlaylistId:', currentPlaylistId);
- }, [playedPlaylistId, currentPlaylistId]);
-
   function setPlaylistId(id) {
-  setPlayedPlaylistId(id);
-}
+    setPlayedPlaylistId(id);
+  }
+
+  useEffect(() => {
+    setIsSamePlaylist(playedPlaylistId === currentPlaylistId);
+  }, [playedPlaylistId, currentPlaylistId]);
 
   useEffect(() => {
     if (playedPlaylistId) {
@@ -36,7 +36,7 @@ export const PlaylistProvider = ({ children }) => {
   }, [location]);
 
   return (
-    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId }}>
+    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId, isSamePlaylist }}>
       {children}
     </PlaylistContext.Provider>
   );
