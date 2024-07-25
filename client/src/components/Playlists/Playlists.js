@@ -146,10 +146,7 @@ const Playlists = ({isPlaying}) => {
           <li 
             key={index} 
             className={`playlists__list-item${currentPlaylistId === playlist.id ? ' playlists__list-item--playing' : ''}${playlist.id == activePlaylist ? ' playlists__list-item--active' : ''}`}
-            onClick={() => {
-              console.log(playlist.id);
-              handleLeftClick(playlist.id);
-            }}
+            onClick={() => {handleLeftClick(playlist.id);}}
             onContextMenu={(e) => handleRightClick(e, playlist, index)}
             style={{ textDecoration: 'none' }}
           >

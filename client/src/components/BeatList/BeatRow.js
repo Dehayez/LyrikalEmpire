@@ -11,7 +11,6 @@ import { ContextMenu } from '../ContextMenu';
 import { Highlight } from '../Highlight';
 import { SelectableInput } from '../Inputs';
 import './BeatRow.scss';
-import { useFetcher } from 'react-router-dom';
 
 const BeatRow = ({
   beat, index, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
@@ -46,10 +45,6 @@ const BeatRow = ({
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
     'beat-row--playing': currentBeat && beat.id === currentBeat.id,
   });
-
-  useEffect(() => {
-    console.log(isInputFocused);
-  }, [isInputFocused]);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
