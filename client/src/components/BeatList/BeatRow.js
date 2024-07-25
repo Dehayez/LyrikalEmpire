@@ -85,20 +85,9 @@ const BeatRow = ({
     return () => manageContextMenuVisibility(false);
   }, [activeContextMenu, beat.id]);
 
-  const handleInputChange = (property, value) => {
-    onUpdateBeat(beat.id, { [property]: value });
-  };
-
-  const handleTierlistChange = (e) => {
-    const newTierlist = e.target.value;
-    setTierlist(newTierlist);
-    handleUpdate(beat.id, 'tierlist', newTierlist);
-  };
-
   const handleAddToCustomQueueClick = () => {
     addToCustomQueue(selectedBeats);
   };
-
 
   const {
     selectedItem: selectedGenre,
@@ -147,6 +136,28 @@ const BeatRow = ({
       onUpdate(beat.id, 'keywords', selectedKeyword);
     }
   }, [selectedKeyword]);
+
+  const handleInputChange = (property, value) => {
+    onUpdateBeat(beat.id, { [property]: value });
+  };
+  
+  const handleTierlistChange = (e) => {
+    const newTierlist = e.target.value;
+    setTierlist(newTierlist);
+    handleUpdate(beat.id, 'tierlist', newTierlist);
+  };
+  
+  useEffect(() => {
+    if (selectedGenre) {
+      onUpdate(beat.id, 'genre', selectedGenre);
+    }
+  }, [selectedGenre]);
+  
+  useEffect(() => {
+    if (selectedMood) {
+      onUpdate(beat.id, 'mood', selectedMood);
+    }
+  }, [selectedMood]);
 
     const handleFocus = () => setInputFocused(true);
 
