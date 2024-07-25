@@ -101,6 +101,7 @@ const BeatRow = ({
 
   useEffect(() => {
     if (selectedGenre) {
+      handleUpdate(beat.id, 'genre', selectedGenre);
       onUpdate(beat.id, 'genre', selectedGenre);
     }
   }, [selectedGenre]);
@@ -117,6 +118,7 @@ const BeatRow = ({
 
   useEffect(() => {
     if (selectedMood) {
+      handleUpdate(beat.id, 'mood', selectedMood);
       onUpdate(beat.id, 'mood', selectedMood);
     }
   }, [selectedMood]);
@@ -133,6 +135,7 @@ const BeatRow = ({
 
   useEffect(() => {
     if (selectedKeyword) {
+      handleUpdate(beat.id, 'keywords', selectedKeyword);
       onUpdate(beat.id, 'keywords', selectedKeyword);
     }
   }, [selectedKeyword]);
