@@ -8,7 +8,7 @@ import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 import classNames from 'classnames';
 import './PlaylistDetail.scss';
 
-const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick }) => {
+const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, onUpdateBeat, onUpdate }) => {
   const { id } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [beats, setBeats] = useState([]);
@@ -93,6 +93,8 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                 playlistName={playlist.title}
                 playlistId={playlist.id}
                 onDeleteFromPlaylist={handleDeleteBeats}
+                onUpdateBeat={onUpdateBeat}
+                onUpdate={onUpdate}
                 headerContent={
                   <div className='playlist__text' onClick={handleHeaderClick}>
                     <h2 className='playlist__title'>{playlist.title}</h2>
