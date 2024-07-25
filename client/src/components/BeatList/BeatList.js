@@ -11,11 +11,6 @@ import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedShar
 import { toast, Slide } from 'react-toastify';
 import './BeatList.scss';
 
-/* const fetchBeats = async (handleUpdateAll) => {
-  const fetchedBeats = await getBeats();
-  handleUpdateAll(fetchedBeats);
-}; */
-
 const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -63,7 +58,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   
     fetchAndSetBeats();
   }, [shouldFetchBeats, isExternalBeats, externalBeats, handleUpdateAll]);
-  
 
   useEffect(() => {
     const handleScroll = () => {
