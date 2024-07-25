@@ -474,6 +474,8 @@ useEffect(() => {
                 sortConfig={sortConfig}
                 addToCustomQueue={addToCustomQueue}
                 onBeatClick={handleBeatClick}  
+                onUpdateBeat={updateBeat}
+                onUpdate={onUpdate}
                 />} 
                 />
               </Routes>
