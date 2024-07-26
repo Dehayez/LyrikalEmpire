@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { usePlaylist } from '../../contexts/PlaylistContext';
+import { useBeat } from '../../contexts/BeatContext';
 import './BeatAnimation.scss';
 
-const BeatAnimation = ({ beat, currentBeat, isPlaying, hoveredBeat, index }) => {
-  
+const BeatAnimation = ({ beat, currentBeat, isPlaying, index }) => {
   const [delays, setDelays] = useState([0, 0, 0, 0]);
   const [durations, setDurations] = useState([0, 0, 0, 0]);
   const { isSamePlaylist } = usePlaylist();
+  const { hoveredBeat } = useBeat();
 
   useEffect(() => {
     setDelays([Math.random(), Math.random(), Math.random(), Math.random()]);
