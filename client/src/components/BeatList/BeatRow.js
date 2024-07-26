@@ -241,17 +241,9 @@ const BeatRow = ({
     <tr
       className={`${beatRowClasses} ${isInputFocused ? 'beat-row--focused' : ''}`}
       key={beatRowClasses}
-      {...(isMobileOrTablet() ? {
-        onClick: handleClick,
-      } : {
-        onMouseEnter: (e) => {
-          setHoveredBeat(beat.id);
-        },
-        onMouseLeave: (e) => {
-          setHoveredBeat(null);
-        },
-        onClick: (e) => handleBeatClick(beat, e),
-      })}
+      onClick={isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)}
+      onMouseEnter={!isMobileOrTablet() ? () => setHoveredBeat(beat.id) : undefined}
+      onMouseLeave={!isMobileOrTablet() ? () => setHoveredBeat(null) : undefined}
       onContextMenu={(e) => {
         e.preventDefault();
         handleRightClick(e, beat);
