@@ -21,7 +21,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
       const beatsData = await getBeatsByPlaylistId(id);
       setBeats(beatsData);
     };
-
+  
     fetchPlaylistDetails();
   }, [id]);
 
@@ -48,7 +48,9 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
   }, [playlist]);
 
   const sortBeats = (beats, sortConfig) => {
-    if (!sortConfig || !sortConfig.key) return beats;
+    if (!sortConfig || !sortConfig.key) {
+      return [...beats].sort((a, b) => a.beat_order - b.beat_order);
+    }
   
     return [...beats].sort((a, b) => {
       if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'ascending' ? -1 : 1;
