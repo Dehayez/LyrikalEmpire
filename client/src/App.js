@@ -113,7 +113,7 @@ function App() {
 
   useEffect(() => {
     logQueue(sortedBeats, shuffle, currentBeat);
-  }, [sortedBeats, shuffle, currentBeat]);
+  }, [shuffle, currentBeat]);
 
   useEffect(() => {
     localStorage.setItem('shuffle', shuffle);
