@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { isMobileOrTablet } from './utils';
-import { addBeat } from './services';
+import { addBeat, getBeats } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
 import { handlePlay, handlePrev } from './hooks';
 import { ToastContainer, toast } from 'react-toastify';
@@ -45,6 +45,19 @@ function App() {
     const savedSortConfig = localStorage.getItem('sortConfig');
     return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };
   });
+
+  useEffect(() => {
+    const fetchBeats = async () => {
+      try {
+        const fetchedBeats = await getBeats();
+        setBeats(fetchedBeats);
+      } catch (error) {
+        console.error('Error fetching beats:', error);
+      }
+    };
+
+    fetchBeats();
+  }, []);
 
   const sortedBeats = useMemo(() => {
     let sortableBeats = [...beats];
