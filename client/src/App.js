@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { isMobileOrTablet } from './utils';
-import { getBeats, addBeat } from './services';
+import { addBeat } from './services';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
 import { handlePlay, handlePrev } from './hooks';
-import { usePlaylist } from './contexts/PlaylistContext';
 import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
 function App() {
-  const location = useLocation();
   const [refresh, setRefresh] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [beats, setBeats] = useState([]);
@@ -43,55 +41,10 @@ function App() {
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [activeUploads, setActiveUploads] = useState(0);
-  const { currentPlaylistId } = usePlaylist();
   const [sortConfig, setSortConfig] = useState(() => {
     const savedSortConfig = localStorage.getItem('sortConfig');
     return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };
   });
-
-  useEffect(() => {
-    localStorage.setItem('sortConfig', JSON.stringify(sortConfig));
-  }, [sortConfig]);
-
-  useEffect(() => {
-    if (location.pathname === '/' && !currentPlaylistId) {
-      console.log('refreshing');
-      setRefresh(prev => !prev);
-    }
-  }, [location, currentPlaylistId]);
-
-  const updateBeat = (id, newData) => {
-    setBeats(currentBeats =>
-      currentBeats.map(beat => beat.id === id ? { ...beat, ...newData } : beat)
-    );
-  };
-
-  const onUpdate = (id, field, value) => {
-    setBeats(prevBeats =>
-      prevBeats.map(beat =>
-        beat.id === id ? { ...beat, [field]: value } : beat
-      )
-    );
-  };
-
-  function logQueue(beats, shuffle, currentBeat) {
-    let queue = [...beats];
-    if (shuffle) {
-      for (let i = queue.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [queue[i], queue[j]] = [queue[j], queue[i]];
-      }
-    }
-    if (currentBeat) {
-      const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
-  
-      if (currentBeatIndex > 0) {
-        const currentAndNext = queue.splice(currentBeatIndex);
-        queue = [...currentAndNext, ...queue];
-      }
-    }
-    setQueue(queue);
-  }
 
   const sortedBeats = useMemo(() => {
     let sortableBeats = [...beats];
@@ -126,6 +79,29 @@ function App() {
     return sortableBeats;
   }, [beats, sortConfig]);
 
+  function logQueue(beats, shuffle, currentBeat) {
+    let queue = [...beats];
+    if (shuffle) {
+      for (let i = queue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [queue[i], queue[j]] = [queue[j], queue[i]];
+      }
+    }
+    if (currentBeat) {
+      const currentBeatIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+  
+      if (currentBeatIndex > 0) {
+        const currentAndNext = queue.splice(currentBeatIndex);
+        queue = [...currentAndNext, ...queue];
+      }
+    }
+    setQueue(queue);
+  }
+
+  useEffect(() => {
+    logQueue(sortedBeats, shuffle, currentBeat);
+  }, [sortedBeats, shuffle, currentBeat]);
+
   useEffect(() => {
     localStorage.setItem('shuffle', shuffle);
     localStorage.setItem('repeat', repeat);
@@ -135,26 +111,8 @@ function App() {
     localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
     localStorage.setItem('lastView', viewState);
     localStorage.setItem('customQueue', JSON.stringify(customQueue));
-  }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue]);
-
-  useEffect(() => {
-    const fetchBeats = async () => {
-      const fetchedBeats = await getBeats();
-      setBeats(fetchedBeats);
-      if (fetchedBeats.length > 0 && !selectedBeat) {
-        setSelectedBeat(fetchedBeats[0]);
-      }
-    };
-  
-    setTimeout(() => {
-      fetchBeats();
-    }, 200);
-  }, [refresh]);
-
-  useEffect(() => {
-    logQueue(sortedBeats, shuffle, currentBeat);
-  }, [sortedBeats, shuffle, currentBeat]);
-
+    localStorage.setItem('sortConfig', JSON.stringify(sortConfig));
+  }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig]);
 
   useEffect(() => {
     window.addEventListener('dragover', handleDragOver);
@@ -175,6 +133,20 @@ function App() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const updateBeat = (id, newData) => {
+    setBeats(currentBeats =>
+      currentBeats.map(beat => beat.id === id ? { ...beat, ...newData } : beat)
+    );
+  };
+
+  const onUpdate = (id, field, value) => {
+    setBeats(prevBeats =>
+      prevBeats.map(beat =>
+        beat.id === id ? { ...beat, [field]: value } : beat
+      )
+    );
+  };
 
   const handleDragOver = (e) => {
     e.preventDefault();
