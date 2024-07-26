@@ -26,7 +26,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const containerRef = useRef(null);
   const [headerOpacity, setHeaderOpacity] = useState(1);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
-  const beatsToFilter = isExternalBeats ? externalBeats : sortedBeats;
+  const beatsToFilter = isExternalBeats ? externalBeats : beats;
   const { setPlaylistId } = usePlaylist();
 
   const filteredAndSortedBeats = beatsToFilter.filter(beat => {
