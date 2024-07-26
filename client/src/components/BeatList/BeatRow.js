@@ -287,6 +287,7 @@ const BeatRow = ({
       <td className="beat-row__data">
         {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
         <input 
+          id={`beat-title-input-${beat.id}`}
           className='beat-row__input beat-row__input--title'
           type="text"
           defaultValue={beat.title} 
@@ -306,6 +307,7 @@ const BeatRow = ({
       <td className="beat-row__data">
         {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
         <SelectableInput
+            id={`beat-genre-select-${beat.id}`}
             value={selectedGenre}
             onChange={handleGenreChange}
             onFocus={handleGenreInputFocus}
@@ -322,6 +324,7 @@ const BeatRow = ({
       </td>
         <td className="beat-row__data">
           <input 
+            id={`beat-bpm-input-${beat.id}`}
             className='beat-row__input beat-row__input--bpm' 
             type="text" 
             defaultValue={beat.bpm} 
@@ -339,6 +342,7 @@ const BeatRow = ({
           <div className="form-group">
           <div className="select-wrapper">
               <select 
+                id={`beat-tierlist-select-${beat.id}`}
                 className="select-wrapper__select" 
                 value={tierlist}
                 onChange={(e) => {
@@ -367,6 +371,7 @@ const BeatRow = ({
         <td className="beat-row__data">
           {!isInputFocused && <Highlight text={beat.mood || ''} highlight={searchText || ''} />}
           <SelectableInput
+            id={`beat-mood-select-${beat.id}`}
             value={selectedMood}
             onChange={handleMoodChange}
             onFocus={handleMoodInputFocus}
@@ -384,6 +389,7 @@ const BeatRow = ({
         <td className="beat-row__data">
           {!isInputFocused && <Highlight text={beat.keywords || ''} highlight={searchText || ''} />}
           <SelectableInput
+            id={`beat-keyword-select-${beat.id}`}
             value={selectedKeyword}
             onChange={handleKeywordChange}
             onFocus={handleKeywordInputFocus}
