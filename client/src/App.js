@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { isMobileOrTablet } from './utils';
 import { addBeat, getBeats } from './services';
@@ -59,11 +59,16 @@ function App() {
     fetchBeats();
   }, []);
 
-  const sortedBeats = useMemo(() => {
-    let sortableBeats = [...beats];
+  const [sortedBeats, setSortedBeats] = useState([]);
+  useEffect(() => {
+    setSortedBeats(getSortedBeats(beats, sortConfig));
+  }, [beats, sortConfig]);
+
+  const getSortedBeats = (beats, sortConfig) => {
+    let sortedBeats = [...beats];
     const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
     if (sortConfig.key !== null) {
-      sortableBeats.sort((a, b) => {
+      sortedBeats.sort((a, b) => {
         const valueA = a[sortConfig.key];
         const valueB = b[sortConfig.key];
         const isEmptyA = valueA === '' || valueA === null;
@@ -89,8 +94,8 @@ function App() {
         return 0;
       });
     }
-    return sortableBeats;
-  }, [beats, sortConfig]);
+    return sortedBeats;
+  };
 
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
@@ -112,8 +117,8 @@ function App() {
   }
 
   useEffect(() => {
-    logQueue(sortedBeats, shuffle, currentBeat);
-  }, [shuffle, currentBeat]);
+    logQueue(getSortedBeats(beats, sortConfig), shuffle, currentBeat);
+  }, [beats, sortConfig, shuffle, currentBeat]);
 
   useEffect(() => {
     localStorage.setItem('shuffle', shuffle);
