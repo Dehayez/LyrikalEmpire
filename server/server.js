@@ -90,8 +90,10 @@ app.put('/api/beats/:id', (req, res) => {
   let queryParams = [];
 
   for (let key in updatedBeat) {
-    updateQuery += `${key} = ?, `;
-    queryParams.push(updatedBeat[key]);
+    if (key !== 'beat_order') {
+      updateQuery += `${key} = ?, `;
+      queryParams.push(updatedBeat[key]);
+    }
   }
 
   updateQuery = updateQuery.slice(0, -2);
@@ -290,14 +292,18 @@ app.delete('/api/playlists/:playlist_id/beats/:beat_id', (req, res) => {
 // Get Beats in Playlist
 app.get('/api/playlists/:playlist_id/beats', (req, res) => {
   const { playlist_id } = req.params;
-  db.query('SELECT b.* FROM beats b INNER JOIN playlist_beats pb ON b.id = pb.beat_id WHERE pb.playlist_id = ?', [playlist_id], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'An error occurred while fetching beats in the playlist' });
-    } else {
-      res.json(results);
+  db.query(
+    'SELECT b.*, pb.beat_order FROM beats b INNER JOIN playlist_beats pb ON b.id = pb.beat_id WHERE pb.playlist_id = ? ORDER BY pb.beat_order',
+    [playlist_id],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'An error occurred while fetching beats in the playlist' });
+      } else {
+        res.json(results);
+      }
     }
-  });
+  );
 });
 
 app.post('/api/playlists/:playlist_id/beats', (req, res) => {
