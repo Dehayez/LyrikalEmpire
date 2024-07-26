@@ -29,9 +29,17 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
   const beatsToFilter = isExternalBeats ? externalBeats : beats;
   const { setPlaylistId } = usePlaylist();
 
-  const filteredAndSortedBeats = beatsToFilter.filter(beat => {
+  const filteredAndSortedBeats = beatsToFilter
+  .filter(beat => {
     const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
     return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+  })
+  .sort((a, b) => {
+    if (!sortConfig) return 0;
+    const { key, direction } = sortConfig;
+    if (a[key] < b[key]) return direction === 'ascending' ? -1 : 1;
+    if (a[key] > b[key]) return direction === 'ascending' ? 1 : -1;
+    return 0;
   });
 
   const handlePlayPause = (beat) => {
