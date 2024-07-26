@@ -245,15 +245,9 @@ const BeatRow = ({
         onClick: handleClick,
       } : {
         onMouseEnter: (e) => {
-          e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
-            button.style.opacity = 1;
-          });
           setHoveredBeat(beat.id);
         },
         onMouseLeave: (e) => {
-          e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
-            button.style.opacity = 0;
-          });
           setHoveredBeat(null);
         },
         onClick: (e) => handleBeatClick(beat, e),
