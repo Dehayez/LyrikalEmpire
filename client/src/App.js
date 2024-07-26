@@ -92,6 +92,10 @@ function App() {
     return sortableBeats;
   }, [beats, sortConfig]);
 
+  useEffect(() => { 
+    console.log('sortedBeats:', sortedBeats);
+  }, [sortedBeats]);
+
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
     if (shuffle) {
