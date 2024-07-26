@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.scss';
 import App from './App';
 import { PlaylistProvider } from './contexts/PlaylistContext'; 
+import { BeatProvider } from './contexts/BeatContext';
 import reportWebVitals from './reportWebVitals';
 
 const rootElement = document.getElementById('root');
@@ -13,7 +14,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <PlaylistProvider> 
-        <App />
+        <BeatProvider>
+          <App />
+        </BeatProvider>
       </PlaylistProvider>
     </BrowserRouter>
   </React.StrictMode>

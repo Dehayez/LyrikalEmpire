@@ -6,6 +6,7 @@ import { getGenres, getKeywords, getMoods } from '../../services';
 import { addBeatsToPlaylist, getPlaylists } from '../../services/playlistService';
 import { isMobileOrTablet } from '../../utils';
 import { usePlaylist } from '../../contexts/PlaylistContext';
+import { useBeat } from '../../contexts/BeatContext';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
@@ -22,7 +23,6 @@ const BeatRow = ({
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
   const hasSelectedBefore = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1);
   const hasSelectedAfter = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] + 1);
-  const [hoveredBeat, setHoveredBeat] = useState(null);
   const isMiddle = hasSelectedBefore && hasSelectedAfter;
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
@@ -38,6 +38,7 @@ const BeatRow = ({
   const [isInputFocused, setInputFocused] = useState();
   const [playlists, setPlaylists] = useState([]);
   const { isSamePlaylist } = usePlaylist();
+  const { hoveredBeat, setHoveredBeat } = useBeat();
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -272,7 +273,6 @@ const BeatRow = ({
               beat={beat} 
               currentBeat={currentBeat} 
               isPlaying={isPlaying} 
-              hoveredBeat={hoveredBeat} 
               index={index} 
             />
             <PlayPauseButton 
