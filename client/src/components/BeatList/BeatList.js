@@ -236,6 +236,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelet
               <IoSearchSharp />
             </div>
             <input
+              id='search-input'
               ref={searchInputRef}
               type="text"
               placeholder={isSearchVisible ? "Search tracks" : ""}
