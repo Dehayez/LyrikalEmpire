@@ -18,7 +18,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, moveBeat, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats
+  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats, isExternalBeats
 }) => {
   const ref = useRef(null);
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
@@ -121,11 +121,13 @@ const BeatRow = ({
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
+    canDrag: () => isExternalBeats,
   });
 
   const [, drop] = useDrop({
     accept: 'BEAT',
     hover(item, monitor) {
+      if (!isExternalBeats) return;
       if (!ref.current) {
         return;
       }
@@ -153,11 +155,14 @@ const BeatRow = ({
       item.index = hoverIndex;
     },
     drop: () => {
-      fetchBeats(playlistId, setBeats); // Call fetchBeats after dropping
+      if (!isExternalBeats) return;
+      fetchBeats(playlistId, setBeats);
     },
   });
 
-  drag(drop(ref));
+  if (isExternalBeats) {
+    drag(drop(ref));
+  }
 
   useEffect(() => {
     const contextMenuElement = document.getElementById('context-menu');
