@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
 import classNames from 'classnames';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
@@ -15,10 +16,11 @@ import { SelectableInput } from '../Inputs';
 import './BeatRow.scss';
 
 const BeatRow = ({
-  beat, index, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
+  beat, index, moveBeat, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   selectedBeats = [], handleBeatClick, 
   openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate
 }) => {
+  const ref = React.useRef(null);
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
   const hasSelectedBefore = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1);
@@ -61,6 +63,51 @@ const BeatRow = ({
 
     fetchPlaylists();
   }, []);
+
+  const [{ isDragging }, drag] = useDrag({
+    type: 'BEAT',
+    item: { type: 'BEAT', id: beat.id, index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [, drop] = useDrop({
+    accept: 'BEAT',
+    hover(item, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const clientOffset = monitor.getClientOffset();
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+
+      moveBeat(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  });
+
+  drag(drop(ref));
+
+  useEffect(() => {
+    console.log(isDragging);
+  }, [isDragging]);
 
   useEffect(() => {
     const contextMenuElement = document.getElementById('context-menu');
@@ -239,6 +286,8 @@ const BeatRow = ({
 
   return (
     <tr
+      ref={ref} 
+      style={{ opacity: isDragging ? 0.5 : 1 }}
       className={`${beatRowClasses} ${isInputFocused ? 'beat-row--focused' : ''}`}
       key={beatRowClasses}
       onClick={isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)}

@@ -360,6 +360,29 @@ app.post('/api/playlists/:playlist_id/beats', (req, res) => {
   });
 });
 
+app.put('/api/playlists/:playlist_id/beats/order', (req, res) => {
+  const { playlist_id } = req.params;
+  const { beatOrders } = req.body;
+
+  const queries = beatOrders.map(({ id, order }) => {
+    return new Promise((resolve, reject) => {
+      db.query('UPDATE playlist_beats SET beat_order = ? WHERE playlist_id = ? AND beat_id = ?', [order, playlist_id, id], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(results);
+      });
+    });
+  });
+
+  Promise.all(queries)
+    .then(() => res.json({ message: 'Beat order updated successfully' }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while updating the beat order' });
+    });
+});
+
 app.delete('/api/playlists/:id/beats', (req, res) => {
   const { id } = req.params;
   const deleteQuery = 'DELETE FROM playlist_beats WHERE playlist_id = ?';

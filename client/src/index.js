@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import './index.scss';
 import App from './App';
 import { PlaylistProvider } from './contexts/PlaylistContext'; 
@@ -15,7 +17,9 @@ root.render(
     <BrowserRouter>
       <PlaylistProvider> 
         <BeatProvider>
-          <App />
+          <DndProvider backend={HTML5Backend}>
+            <App />
+          </DndProvider>
         </BeatProvider>
       </PlaylistProvider>
     </BrowserRouter>
