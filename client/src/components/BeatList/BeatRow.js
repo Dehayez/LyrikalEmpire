@@ -376,7 +376,7 @@ const BeatRow = ({
                 spellCheck="false"
               />
             : 
-              <div className='beat-row__input beat-row__input--static'>{beat.bpm}</div> 
+              <div className='beat-row__input beat-row__input--static beat-row__input--right'>{beat.bpm}</div> 
             }
           </td>
           <td className="beat-row__data">

@@ -28,6 +28,10 @@
       text-align: left;
     }
 
+    &--right {
+      text-align: right;
+    }
+
     &--title, &--bpm {
       color: $color-white;
     }
