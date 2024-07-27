@@ -198,7 +198,7 @@ app.post('/api/playlists', (req, res) => {
 
 // Get Playlists
 app.get('/api/playlists', (req, res) => {
-  db.query('SELECT * FROM playlists', (err, results) => {
+  db.query('SELECT * FROM playlists ORDER BY created_at DESC', (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'An error occurred while fetching playlists' });

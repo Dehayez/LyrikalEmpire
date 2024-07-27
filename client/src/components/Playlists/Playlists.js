@@ -64,8 +64,7 @@ const Playlists = ({ isPlaying }) => {
   const fetchPlaylists = async () => {
     try {
       const data = await getPlaylists();
-      const sortedData = data.sort((a, b) => b.id - a.id);
-      setPlaylists(sortedData);
+      setPlaylists(data);
     } catch (error) {
       console.error('Error fetching playlists:', error);
     }
