@@ -166,41 +166,49 @@ function App() {
     );
   };
 
-  const handleDragOver = (e) => {
+  function handleDragOver(e) {
     e.preventDefault();
-    setIsDraggingOver(true);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDraggingOver(false);
-    const files = Array.from(e.dataTransfer.files);
-    const audioFiles = files.filter(file => file.type.startsWith('audio/'));
-    const nonAudioFiles = files.filter(file => !file.type.startsWith('audio/'));
-  
-    autoSubmitFiles(audioFiles);
-  
-    if (nonAudioFiles.length > 0) {
-      setShowToast(true);
-      const message = nonAudioFiles.length === 1
-      ? `<strong>${nonAudioFiles[0].name} is not uploaded</strong><br /> Only audio files are accepted`
-      : `<strong>${nonAudioFiles.length} files are not uploaded</strong><br /> Only audio files are accepted`;
-    
-      toast.dark(
-        <div dangerouslySetInnerHTML={{ __html: message }} />, {
-          autoClose: 3000,
-          pauseOnFocusLoss: false,
-          icon: <IoCloseSharp size={24} />,
-          className: "Toastify__toast--warning",
-        }
-      );
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      const isFileDrag = Array.from(e.dataTransfer.items).some(item => item.kind === 'file');
+      if (isFileDrag) {
+        setIsDraggingOver(true);
+      }
     }
-  };
+  }
 
-  const handleDragLeave = (e) => {
+  function handleDrop(e) {
     e.preventDefault();
     setIsDraggingOver(false);
-  };
+  
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      const files = Array.from(e.dataTransfer.files);
+      const audioFiles = files.filter(file => file.type.startsWith('audio/'));
+      const nonAudioFiles = files.filter(file => !file.type.startsWith('audio/'));
+  
+      autoSubmitFiles(audioFiles);
+  
+      if (nonAudioFiles.length > 0) {
+        setShowToast(true);
+        const message = nonAudioFiles.length === 1
+          ? `<strong>${nonAudioFiles[0].name} is not uploaded</strong><br /> Only audio files are accepted`
+          : `<strong>${nonAudioFiles.length} files are not uploaded</strong><br /> Only audio files are accepted`;
+  
+        toast.dark(
+          <div dangerouslySetInnerHTML={{ __html: message }} />, {
+            autoClose: 3000,
+            pauseOnFocusLoss: false,
+            icon: <IoCloseSharp size={24} />,
+            className: "Toastify__toast--warning",
+          }
+        );
+      }
+    }
+  }
+
+  function handleDragLeave(e) {
+    e.preventDefault();
+    setIsDraggingOver(false);
+  }
 
   const clearDroppedFiles = () => {
     setDroppedFiles([]);
