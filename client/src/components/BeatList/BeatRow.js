@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
-import { addBeatsToPlaylist, getPlaylists } from '../../services/playlistService';
+import { addBeatsToPlaylist, getPlaylists, getBeatsByPlaylistId } from '../../services/playlistService';
 import { isMobileOrTablet, eventBus } from '../../utils';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { useBeat } from '../../contexts/BeatContext';
@@ -18,7 +18,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, moveBeat, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate
+  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats
 }) => {
   const ref = useRef(null);
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
@@ -50,6 +50,16 @@ const BeatRow = ({
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
     'beat-row--playing': currentBeat && beat.id === currentBeat.id && isSamePlaylist,
   });
+
+  const fetchBeats = async (playlistId, setBeats) => {
+    try {
+      const beatsData = await getBeatsByPlaylistId(playlistId);
+      const sortedBeats = beatsData.sort((a, b) => a.beat_order - b.beat_order);
+      setBeats(sortedBeats);
+    } catch (error) {
+      console.error('Error fetching beats:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -121,26 +131,29 @@ const BeatRow = ({
       }
       const dragIndex = item.index;
       const hoverIndex = index;
-
+  
       if (dragIndex === hoverIndex) {
         return;
       }
-
+  
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
+  
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
-
+  
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return;
       }
-
+  
       moveBeat(dragIndex, hoverIndex);
       item.index = hoverIndex;
+    },
+    drop: () => {
+      fetchBeats(playlistId, setBeats); // Call fetchBeats after dropping
     },
   });
 
