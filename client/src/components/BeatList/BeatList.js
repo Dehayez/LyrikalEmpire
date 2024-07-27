@@ -270,8 +270,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
             <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
             <tbody>
               {filteredAndSortedBeats.map((beat, index) => (
-                 <React.Fragment key={beat.id}>
-                {hoverIndex === index && <div className="drop-line" />}
+                <React.Fragment key={beat.id}>
+                {hoverIndex === index && <tr className="drop-line" />}
                 <BeatRow
                   key={`${beat.id}-${index}`}
                   beat={beat}

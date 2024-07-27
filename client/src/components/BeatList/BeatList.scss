@@ -192,3 +192,11 @@
     }
   }
 }
+
+.drop-line {
+  position: absolute;
+  display: flex;
+  height: 2px;
+  width: 100%;
+  background-color: $color-yellow;
+}
