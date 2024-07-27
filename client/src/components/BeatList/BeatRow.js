@@ -18,7 +18,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, moveBeat, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats, isExternalBeats, setHoverIndex
+  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats, setHoverIndex
 }) => {
   const ref = useRef(null);
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
@@ -29,6 +29,7 @@ const BeatRow = ({
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
+  const isLock = mode === 'lock';
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
   const deleteText = selectedBeats.length > 1
     ? deleteMode === 'playlist'
@@ -121,13 +122,13 @@ const BeatRow = ({
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-    canDrag: () => isExternalBeats,
+    canDrag: () => isLock,
   });
 
   const [, drop] = useDrop({
     accept: 'BEAT',
     hover(item, monitor) {
-      if (!isExternalBeats) return;
+      if (!isLock) return;
       if (!ref.current) {
         return;
       }
@@ -160,13 +161,13 @@ const BeatRow = ({
       }
     },
     drop: () => {
-      if (!isExternalBeats) return;
+      if (!isLock) return;
       fetchBeats(playlistId, setBeats);
       setHoverIndex(null);
     },
   });
 
-  if (isExternalBeats) {
+  if (isLock) {
     drag(drop(ref));
   }
 
