@@ -86,6 +86,7 @@ const Playlists = ({ isPlaying }) => {
       await deletePlaylist(playlistId);
       await fetchPlaylists();
       setShowConfirmModal(false);
+      eventBus.emit('playlistDeleted', playlistId);
     } catch (error) {
       console.error(`Error deleting playlist with ID ${playlistId}:`, error);
     }

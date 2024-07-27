@@ -74,16 +74,34 @@ const BeatRow = ({
       }
     };
   
-    fetchPlaylists(); // Initial fetch
+    fetchPlaylists();
   
     const handlePlaylistAdded = () => {
-      fetchPlaylists(); // Re-fetch playlists when a new playlist is added
+      fetchPlaylists();
+    };
+  
+    const handlePlaylistDeleted = () => {
+      fetchPlaylists();
+    };
+  
+    const handlePlaylistUpdated = (updatedPlaylist) => {
+      setPlaylists((currentPlaylists) =>
+        currentPlaylists.map((playlist) =>
+          playlist.id === updatedPlaylist.id
+            ? { ...playlist, title: updatedPlaylist.title, description: updatedPlaylist.description }
+            : playlist
+        )
+      );
     };
   
     eventBus.on('playlistAdded', handlePlaylistAdded);
+    eventBus.on('playlistDeleted', handlePlaylistDeleted);
+    eventBus.on('playlistUpdated', handlePlaylistUpdated);
   
     return () => {
       eventBus.off('playlistAdded', handlePlaylistAdded);
+      eventBus.off('playlistDeleted', handlePlaylistDeleted);
+      eventBus.off('playlistUpdated', handlePlaylistUpdated);
     };
   }, []);
 
