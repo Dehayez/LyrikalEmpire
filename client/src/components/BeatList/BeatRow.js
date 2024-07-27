@@ -333,7 +333,7 @@ const BeatRow = ({
             spellCheck="false"
           />
         : 
-          <div className='beat-row__input beat-row__input--static'>{beat.title}</div> 
+          <div className='beat-row__input beat-row__input--title beat-row__input--static'>{beat.title}</div> 
         }
       </td>
       {mode !== 'lock' && (
