@@ -20,6 +20,7 @@ const Playlists = ({ isPlaying }) => {
   const [contextMenuY, setContextMenuY] = useState(0);
 
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [playlistToUpdate, setPlaylistToUpdate] = useState(null);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
@@ -59,7 +60,6 @@ const Playlists = ({ isPlaying }) => {
       eventBus.off('playlistUpdated', updatePlaylistDetails);
     };
   }, [playlists]);
-  
 
   const fetchPlaylists = async () => {
     try {
@@ -93,6 +93,7 @@ const Playlists = ({ isPlaying }) => {
   };
 
   const handleOpenUpdateForm = (playlist) => {
+    setPlaylistToUpdate(playlist);
     setShowUpdateForm(true);
   };
 
@@ -169,9 +170,9 @@ const Playlists = ({ isPlaying }) => {
           </li>
         ))}
       </ul>
-      {showUpdateForm && currentPlaylistId && ReactDOM.createPortal(
+      {showUpdateForm && playlistToUpdate && ReactDOM.createPortal(
         <UpdatePlaylistForm
-          playlist={currentPlaylistId}
+          playlist={playlistToUpdate}
           onClose={() => setShowUpdateForm(false)}
           onUpdated={fetchPlaylists}
         />,
