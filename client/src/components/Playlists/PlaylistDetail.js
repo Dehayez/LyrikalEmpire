@@ -126,6 +126,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                   onUpdateBeat={handleUpdateBeat}
                   onUpdate={onUpdate}
                   moveBeat={moveBeat}
+                  setBeats={setBeats}
                   headerContent={
                     <div className='playlist__text' onClick={handleHeaderClick}>
                       <h2 className='playlist__title'>{playlist.title}</h2>
