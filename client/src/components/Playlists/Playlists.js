@@ -75,6 +75,7 @@ const Playlists = ({ isPlaying }) => {
     try {
       await createPlaylist({ title: newPlaylistTitle, description: null });
       await fetchPlaylists();
+      eventBus.emit('playlistAdded');
     } catch (error) {
       console.error('Error adding new playlist:', error);
     }

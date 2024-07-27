@@ -5,7 +5,7 @@ import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, I
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { getGenres, getKeywords, getMoods } from '../../services';
 import { addBeatsToPlaylist, getPlaylists } from '../../services/playlistService';
-import { isMobileOrTablet } from '../../utils';
+import { isMobileOrTablet, eventBus } from '../../utils';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { useBeat } from '../../contexts/BeatContext';
 import BeatAnimation from './BeatAnimation';
@@ -62,6 +62,29 @@ const BeatRow = ({
     };
 
     fetchPlaylists();
+  }, []);
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const data = await getPlaylists();
+        setPlaylists(data);
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
+    };
+  
+    fetchPlaylists(); // Initial fetch
+  
+    const handlePlaylistAdded = () => {
+      fetchPlaylists(); // Re-fetch playlists when a new playlist is added
+    };
+  
+    eventBus.on('playlistAdded', handlePlaylistAdded);
+  
+    return () => {
+      eventBus.off('playlistAdded', handlePlaylistAdded);
+    };
   }, []);
 
   const [{ isDragging }, drag] = useDrag({
