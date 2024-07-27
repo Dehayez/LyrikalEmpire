@@ -35,21 +35,28 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
 
   useEffect(() => {
     const fetchPlaylistDetails = async () => {
-      const playlistData = await getPlaylistById(id);
-      setPlaylist(playlistData);
-      const beatsData = await getBeatsByPlaylistId(id);
-      setBeats(beatsData);
+      try {
+        const playlistData = await getPlaylistById(id);
+        setPlaylist(playlistData);
+        
+        const beatsData = await getBeatsByPlaylistId(id);
+        const sortedBeats = beatsData.sort((a, b) => a.beat_order - b.beat_order);
+        setBeats(sortedBeats);
+      } catch (error) {
+        console.error('Error fetching playlist details:', error);
+      }
     };
   
     fetchPlaylistDetails();
   }, [id]);
 
   const handleUpdateBeat = (beatId, updatedFields) => {
-    setBeats((prevBeats) =>
-      prevBeats.map((beat) =>
+    setBeats((prevBeats) => {
+      const updatedBeats = prevBeats.map((beat) =>
         beat.id === beatId ? { ...beat, ...updatedFields } : beat
-      )
-    );
+      );
+      return updatedBeats.sort((a, b) => a.beat_order - b.beat_order);
+    });
   };
 
   useEffect(() => {
