@@ -26,9 +26,13 @@
     &--static {
       padding: 10px;
       text-align: left;
+      &-select {
+        padding: 10px 8px;
+        text-align: left;
+      }
     }
 
-    &--right {
+    &--bpm {
       text-align: right;
     }
 

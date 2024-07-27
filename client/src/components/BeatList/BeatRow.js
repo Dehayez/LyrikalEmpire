@@ -357,7 +357,7 @@ const BeatRow = ({
                 spellCheck="false"
               />
             : 
-              <div className='beat-row__input beat-row__input--static'>{beat.genre}</div> 
+              <div className='beat-row__input beat-row__input--static-select'>{beat.genre}</div> 
             }
           </td>
           <td className="beat-row__data">
@@ -376,7 +376,7 @@ const BeatRow = ({
                 spellCheck="false"
               />
             : 
-              <div className='beat-row__input beat-row__input--static beat-row__input--right'>{beat.bpm}</div> 
+              <div className='beat-row__input beat-row__input--static beat-row__input--bpm'>{beat.bpm}</div> 
             }
           </td>
           <td className="beat-row__data">
@@ -430,7 +430,7 @@ const BeatRow = ({
                 spellCheck="false"
               />
             : 
-              <div className='beat-row__input beat-row__input--static'>{beat.mood}</div> 
+              <div className='beat-row__input beat-row__input--static-select'>{beat.mood}</div> 
             }
           </td>
           <td className="beat-row__data">
@@ -451,7 +451,7 @@ const BeatRow = ({
                 spellCheck="false"
               />
             : 
-              <div className='beat-row__input beat-row__input--static'>{beat.keywords}</div> 
+              <div className='beat-row__input beat-row__input--static-select'>{beat.keywords}</div> 
             }
           </td> 
         </>
