@@ -298,7 +298,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
                   moveBeat={moveBeat}
                   playlistId={playlistId}
                   setBeats={setBeats}
-                  isExternalBeats={isExternalBeats}
                   setHoverIndex={setHoverIndex}
                 />
                  </React.Fragment>
