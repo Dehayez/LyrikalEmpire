@@ -197,6 +197,6 @@
   position: absolute;
   display: flex;
   height: 1px;
-  width: 100%;
+  width: calc(100% - 32px);
   background-color: $color-yellow;
 }
