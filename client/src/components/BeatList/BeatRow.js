@@ -133,33 +133,26 @@ const BeatRow = ({
       }
       const dragIndex = item.index;
       const hoverIndex = index;
-  
+    
       if (dragIndex === hoverIndex) {
         return;
       }
-  
+    
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      console.log('hoverBoundingRect:', hoverBoundingRect);
-  
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      console.log('hoverMiddleY:', hoverMiddleY);
-  
       const clientOffset = monitor.getClientOffset();
-      console.log('clientOffset:', clientOffset);
-  
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-      console.log('hoverClientY:', hoverClientY);
-  
+    
       if (dragIndex < hoverIndex && hoverClientY > hoverMiddleY) {
-        console.log('Moving beat down');
+        console.log(`Dragging over midpoint of beat row at index ${hoverIndex}`);
         moveBeat(dragIndex, hoverIndex);
         item.index = hoverIndex;
         setHoverIndex(hoverIndex);
         return;
       }
-  
+    
       if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
-        console.log('Moving beat up');
+        console.log(`Dragging over midpoint of beat row at index ${hoverIndex}`);
         moveBeat(dragIndex, hoverIndex);
         item.index = hoverIndex;
         setHoverIndex(hoverIndex);
@@ -532,32 +525,32 @@ const BeatRow = ({
         <td className='beat-row__data'>{formatDuration(beat.duration)}</td>
       )}
       <td className="beat-row__data">
-      <button 
-        className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
-        onClick={(e) => {
-          e.stopPropagation();
-          handleMenuButtonClick(e, beat);
-          if (isMobileOrTablet()) {
-            setActiveContextMenu(beat.id);
-          } else {
-            if (activeContextMenu === beat.id) {
-              setActiveContextMenu(null);
-            } else {
+        <button 
+          className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
+          onClick={(e) => {
+            e.stopPropagation();
+            handleMenuButtonClick(e, beat);
+            if (isMobileOrTablet()) {
               setActiveContextMenu(beat.id);
-              const contextMenuWidth = -640;
-              let calculatedX = window.innerWidth - e.clientX - contextMenuWidth;
-              let calculatedY = e.clientY;
-              if (calculatedX < 0) {
-                calculatedX = 0;
+            } else {
+              if (activeContextMenu === beat.id) {
+                setActiveContextMenu(null);
+              } else {
+                setActiveContextMenu(beat.id);
+                const contextMenuWidth = -640;
+                let calculatedX = window.innerWidth - e.clientX - contextMenuWidth;
+                let calculatedY = e.clientY;
+                if (calculatedX < 0) {
+                  calculatedX = 0;
+                }
+                setContextMenuX(calculatedX);
+                setContextMenuY(calculatedY);
               }
-              setContextMenuX(calculatedX);
-              setContextMenuY(calculatedY);
             }
-          }
-        }}
-      >
-    <IoEllipsisHorizontal fontSize={24} />
-    </button>
+          }}
+        >
+          <IoEllipsisHorizontal fontSize={24} />
+        </button>
       </td>
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">
