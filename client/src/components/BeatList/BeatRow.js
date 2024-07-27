@@ -18,7 +18,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, moveBeat, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats, isExternalBeats
+  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats, isExternalBeats, setHoverIndex
 }) => {
   const ref = useRef(null);
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
@@ -139,24 +139,37 @@ const BeatRow = ({
       }
   
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      console.log('hoverBoundingRect:', hoverBoundingRect);
+  
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      console.log('hoverMiddleY:', hoverMiddleY);
+  
       const clientOffset = monitor.getClientOffset();
+      console.log('clientOffset:', clientOffset);
+  
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      console.log('hoverClientY:', hoverClientY);
   
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+      if (dragIndex < hoverIndex && hoverClientY > hoverMiddleY) {
+        console.log('Moving beat down');
+        moveBeat(dragIndex, hoverIndex);
+        item.index = hoverIndex;
+        setHoverIndex(hoverIndex);
         return;
       }
   
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+      if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
+        console.log('Moving beat up');
+        moveBeat(dragIndex, hoverIndex);
+        item.index = hoverIndex;
+        setHoverIndex(hoverIndex);
         return;
       }
-  
-      moveBeat(dragIndex, hoverIndex);
-      item.index = hoverIndex;
     },
     drop: () => {
       if (!isExternalBeats) return;
       fetchBeats(playlistId, setBeats);
+      setHoverIndex(null);
     },
   });
 
