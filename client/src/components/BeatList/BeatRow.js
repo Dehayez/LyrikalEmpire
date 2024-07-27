@@ -355,8 +355,7 @@ const BeatRow = ({
   return (
     <tr
       ref={ref} 
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-      className={`${beatRowClasses} ${isInputFocused ? 'beat-row--focused' : ''}`}
+      className={`${beatRowClasses} ${isInputFocused ? 'beat-row--focused' : ''}, ${isDragging ? 'beat-row--selected' : ''}`}
       key={beatRowClasses}
       onClick={isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)}
       onMouseEnter={!isMobileOrTablet() ? () => setHoveredBeat(beat.id) : undefined}
