@@ -321,21 +321,26 @@ const BeatRow = ({
       )}
       <td className="beat-row__data">
         {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
-        <input 
-          id={`beat-title-input-${beat.id}`}
-          className='beat-row__input beat-row__input--title'
-          type="text"
-          defaultValue={beat.title} 
-          onFocus={handleFocus}
-          onBlur={(e) => {
-            handleInputChange('title', e.target.value);
-            handleBlur(beat.id, 'title', e.target.value);
-          }}
-          onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-          onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-          onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
-          spellCheck="false"
-        />
+
+        {mode === 'edit' ? 
+          <input 
+            id={`beat-title-input-${beat.id}`}
+            className='beat-row__input beat-row__input--title'
+            type="text"
+            defaultValue={beat.title} 
+            onFocus={handleFocus}
+            onBlur={(e) => {
+              handleInputChange('title', e.target.value);
+              handleBlur(beat.id, 'title', e.target.value);
+            }}
+            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+            spellCheck="false"
+          />
+        : 
+          <div className='beat-row__input beat-row__input--static beat-row__input--title'>{beat.title}</div> 
+        }
       </td>
       {mode !== 'lock' && (
       <>
