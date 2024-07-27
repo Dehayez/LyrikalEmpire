@@ -24,6 +24,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
   const [isHovering, setIsHovering] = useState(false);
   const [hoverIndex, setHoverIndex] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState(null);
   const containerRef = useRef(null);
   const [headerOpacity, setHeaderOpacity] = useState(1);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
@@ -271,7 +272,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
             <tbody>
               {filteredAndSortedBeats.map((beat, index) => (
                 <React.Fragment key={beat.id}>
-                {hoverIndex === index && <tr className="drop-line" />}
+                {hoverIndex === index && hoverPosition === 'top' && <tr className="drop-line" />}
                 <BeatRow
                   key={`${beat.id}-${index}`}
                   beat={beat}
@@ -299,7 +300,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
                   playlistId={playlistId}
                   setBeats={setBeats}
                   setHoverIndex={setHoverIndex}
+                  setHoverPosition={setHoverPosition}
                 />
+                {hoverIndex === index && hoverPosition === 'bottom' && <tr className="drop-line" />}
                  </React.Fragment>
               ))}
             </tbody>

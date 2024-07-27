@@ -18,7 +18,7 @@ import './BeatRow.scss';
 const BeatRow = ({
   beat, index, moveBeat, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
   selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats, setHoverIndex
+  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats, setHoverIndex, setHoverPosition
 }) => {
   const ref = useRef(null);
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
@@ -135,17 +135,24 @@ const BeatRow = ({
       const dragIndex = item.index;
       const hoverIndex = index;
     
+      const clientOffset = monitor.getClientOffset();
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+    
+      if (hoverClientY < hoverMiddleY) {
+        setHoverPosition('top');
+        setHoverIndex(hoverIndex);
+      } else {
+        setHoverPosition('bottom');
+        setHoverIndex(hoverIndex);
+      }
+    
       if (dragIndex === hoverIndex) {
         return;
       }
     
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-    
       if (dragIndex < hoverIndex && hoverClientY > hoverMiddleY) {
-        console.log(`Dragging over midpoint of beat row at index ${hoverIndex}`);
         moveBeat(dragIndex, hoverIndex);
         item.index = hoverIndex;
         setHoverIndex(hoverIndex);
@@ -153,7 +160,6 @@ const BeatRow = ({
       }
     
       if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
-        console.log(`Dragging over midpoint of beat row at index ${hoverIndex}`);
         moveBeat(dragIndex, hoverIndex);
         item.index = hoverIndex;
         setHoverIndex(hoverIndex);
