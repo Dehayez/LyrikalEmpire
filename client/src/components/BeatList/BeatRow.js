@@ -317,7 +317,6 @@ const BeatRow = ({
       )}
       <td className="beat-row__data">
         {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
-
         {mode === 'edit' ? 
           <input 
             id={`beat-title-input-${beat.id}`}
@@ -330,8 +329,7 @@ const BeatRow = ({
               handleBlur(beat.id, 'title', e.target.value);
             }}
             onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+            onClick={(e) => e.stopPropagation()}
             spellCheck="false"
           />
         : 
@@ -355,8 +353,7 @@ const BeatRow = ({
                 handleItemToggle={handleGenreToggle}
                 className='beat-row__input' 
                 onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-                onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-                onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+                onClick={(e) => e.stopPropagation()}
                 spellCheck="false"
               />
             : 
@@ -375,8 +372,7 @@ const BeatRow = ({
                   handleInputChange('bpm', e.target.value);
                   handleBpmBlur(e);
                 }}
-                onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-                onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+                onClick={(e) => e.stopPropagation()}
                 spellCheck="false"
               />
             : 
@@ -397,8 +393,7 @@ const BeatRow = ({
                       }}
                       onFocus={(e) => e.target.style.color = 'white'}
                       onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
-                      onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-                      onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+                      onClick={(e) => e.stopPropagation()}
                       style={{color: tierlist ? 'white' : 'grey'}}
                     >
                       <option value=""></option>
@@ -431,8 +426,7 @@ const BeatRow = ({
                 handleItemToggle={handleMoodToggle}
                 className='beat-row__input' 
                 onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-                onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-                onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+                onClick={(e) => e.stopPropagation()}
                 spellCheck="false"
               />
             : 
@@ -453,8 +447,7 @@ const BeatRow = ({
                 handleItemToggle={handleKeywordToggle}
                 className='beat-row__input' 
                 onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-                onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-                onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+                onClick={(e) => e.stopPropagation()}
                 spellCheck="false"
               />
             : 
