@@ -106,10 +106,6 @@ const BeatRow = ({
   drag(drop(ref));
 
   useEffect(() => {
-    console.log(isDragging);
-  }, [isDragging]);
-
-  useEffect(() => {
     const contextMenuElement = document.getElementById('context-menu');
     let hideTimeoutId;
   
@@ -339,111 +335,132 @@ const BeatRow = ({
             spellCheck="false"
           />
         : 
-          <div className='beat-row__input beat-row__input--static beat-row__input--title'>{beat.title}</div> 
+          <div className='beat-row__input beat-row__input--static'>{beat.title}</div> 
         }
       </td>
       {mode !== 'lock' && (
-      <>
-      <td className="beat-row__data">
-        {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
-        <SelectableInput
-            id={`beat-genre-select-${beat.id}`}
-            value={selectedGenre}
-            onChange={handleGenreChange}
-            onFocus={handleGenreInputFocus}
-            onBlur={handleGenreInputBlur}
-            showItems={showGenres}
-            filteredItems={filteredGenres}
-            handleItemToggle={handleGenreToggle}
-            className='beat-row__input' 
-            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
-            spellCheck="false"
-          />
-      </td>
-        <td className="beat-row__data">
-          <input 
-            id={`beat-bpm-input-${beat.id}`}
-            className='beat-row__input beat-row__input--bpm' 
-            type="text" 
-            defaultValue={beat.bpm} 
-            onKeyDown={handleOnKeyDown}
-            onBlur={(e) => {
-              handleInputChange('bpm', e.target.value);
-              handleBpmBlur(e);
-            }}
-            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
-            spellCheck="false"
-          />
-        </td>
-        <td className="beat-row__data">
-          <div className="form-group">
-          <div className="select-wrapper">
-              <select 
-                id={`beat-tierlist-select-${beat.id}`}
-                className="select-wrapper__select" 
-                value={tierlist}
-                onChange={(e) => {
-                  handleInputChange('tierlist', e.target.value);
-                  handleTierlistChange(e);
-                }}
-                onFocus={(e) => e.target.style.color = 'white'}
-                onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
+        <>
+          <td className="beat-row__data">
+            {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
+
+            {mode === 'edit' ? 
+            <SelectableInput
+                id={`beat-genre-select-${beat.id}`}
+                value={selectedGenre}
+                onChange={handleGenreChange}
+                onFocus={handleGenreInputFocus}
+                onBlur={handleGenreInputBlur}
+                showItems={showGenres}
+                filteredItems={filteredGenres}
+                handleItemToggle={handleGenreToggle}
+                className='beat-row__input' 
+                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
                 onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
                 onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
-                style={{color: tierlist ? 'white' : 'grey'}}
-              >
-                <option value=""></option>
-                <option value="G">G</option>
-                <option value="S">S</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-                <option value="E">E</option>
-                <option value="F">F</option>
-              </select>
+                spellCheck="false"
+              />
+            : 
+              <div className='beat-row__input beat-row__input--static'>{beat.genre}</div> 
+            }
+          </td>
+          <td className="beat-row__data">
+            {mode === 'edit' ? 
+              <input 
+                id={`beat-bpm-input-${beat.id}`}
+                className='beat-row__input beat-row__input--bpm' 
+                type="text" 
+                defaultValue={beat.bpm} 
+                onKeyDown={handleOnKeyDown}
+                onBlur={(e) => {
+                  handleInputChange('bpm', e.target.value);
+                  handleBpmBlur(e);
+                }}
+                onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+                onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+                spellCheck="false"
+              />
+            : 
+              <div className='beat-row__input beat-row__input--static'>{beat.bpm}</div> 
+            }
+          </td>
+          <td className="beat-row__data">
+            {mode === 'edit' ? 
+              <div className="form-group">
+                <div className="select-wrapper">
+                    <select 
+                      id={`beat-tierlist-select-${beat.id}`}
+                      className="select-wrapper__select" 
+                      value={tierlist}
+                      onChange={(e) => {
+                        handleInputChange('tierlist', e.target.value);
+                        handleTierlistChange(e);
+                      }}
+                      onFocus={(e) => e.target.style.color = 'white'}
+                      onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
+                      onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+                      onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+                      style={{color: tierlist ? 'white' : 'grey'}}
+                    >
+                      <option value=""></option>
+                      <option value="G">G</option>
+                      <option value="S">S</option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
+                    </select>
+                  </div>
               </div>
-          </div>
-        </td>
-        <td className="beat-row__data">
-          {!isInputFocused && <Highlight text={beat.mood || ''} highlight={searchText || ''} />}
-          <SelectableInput
-            id={`beat-mood-select-${beat.id}`}
-            value={selectedMood}
-            onChange={handleMoodChange}
-            onFocus={handleMoodInputFocus}
-            onBlur={handleMoodInputBlur}
-            showItems={showMoods}
-            filteredItems={filteredMoods}
-            handleItemToggle={handleMoodToggle}
-            className='beat-row__input' 
-            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
-            spellCheck="false"
-          />
-        </td>
-        <td className="beat-row__data">
-          {!isInputFocused && <Highlight text={beat.keywords || ''} highlight={searchText || ''} />}
-          <SelectableInput
-            id={`beat-keyword-select-${beat.id}`}
-            value={selectedKeyword}
-            onChange={handleKeywordChange}
-            onFocus={handleKeywordInputFocus}
-            onBlur={handleKeywordInputBlur}
-            showItems={showKeywords}
-            filteredItems={filteredKeywords}
-            handleItemToggle={handleKeywordToggle}
-            className='beat-row__input' 
-            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
-            onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
-            spellCheck="false"
-          />
-        </td> 
+            : 
+              <div className='beat-row__input beat-row__input--static'>{beat.tierlist}</div> 
+            }
+          </td>
+          <td className="beat-row__data">
+            {!isInputFocused && <Highlight text={beat.mood || ''} highlight={searchText || ''} />}
+            {mode === 'edit' ? 
+              <SelectableInput
+                id={`beat-mood-select-${beat.id}`}
+                value={selectedMood}
+                onChange={handleMoodChange}
+                onFocus={handleMoodInputFocus}
+                onBlur={handleMoodInputBlur}
+                showItems={showMoods}
+                filteredItems={filteredMoods}
+                handleItemToggle={handleMoodToggle}
+                className='beat-row__input' 
+                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+                onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+                onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+                spellCheck="false"
+              />
+            : 
+              <div className='beat-row__input beat-row__input--static'>{beat.mood}</div> 
+            }
+          </td>
+          <td className="beat-row__data">
+            {!isInputFocused && <Highlight text={beat.keywords || ''} highlight={searchText || ''} />}
+            {mode === 'edit' ? 
+              <SelectableInput
+                id={`beat-keyword-select-${beat.id}`}
+                value={selectedKeyword}
+                onChange={handleKeywordChange}
+                onFocus={handleKeywordInputFocus}
+                onBlur={handleKeywordInputBlur}
+                showItems={showKeywords}
+                filteredItems={filteredKeywords}
+                handleItemToggle={handleKeywordToggle}
+                className='beat-row__input' 
+                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+                onClick={mode !== 'edit' ? undefined : (e) => e.stopPropagation()}
+                onMouseDown={mode !== 'edit' ? (e) => e.preventDefault() : undefined}
+                spellCheck="false"
+              />
+            : 
+              <div className='beat-row__input beat-row__input--static'>{beat.keywords}</div> 
+            }
+          </td> 
         </>
       )}
       {!(isMobileOrTablet() && mode === 'lock') && (
