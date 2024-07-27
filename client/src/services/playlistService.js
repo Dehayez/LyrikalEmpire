@@ -104,6 +104,16 @@ const getPlaylistById = async (id) => {
   }
 };
 
+const updateBeatOrder = async (playlistId, beatOrders) => {
+  try {
+    const response = await axios.put(`${API_URL}/${playlistId}/beats/order`, { beatOrders });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update beat order:', error);
+    throw error;
+  }
+};
+
 export {
   deleteBeat,
   createPlaylist,
@@ -114,5 +124,6 @@ export {
   getBeatsByPlaylistId,
   removeBeatFromPlaylist,
   getPlaylistById,
-  removeAllBeatsFromPlaylist
+  removeAllBeatsFromPlaylist,
+  updateBeatOrder
 };
