@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
@@ -21,6 +22,7 @@ const BeatRow = ({
   openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats, setHoverIndex, setHoverPosition
 }) => {
   const ref = useRef(null);
+  const location = useLocation();
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
   const hasSelectedBefore = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1);
@@ -29,7 +31,7 @@ const BeatRow = ({
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
-  const isLock = mode === 'lock';
+  const toDragAndDrop = location.pathname !== '/' && mode === 'lock';
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
   const deleteText = selectedBeats.length > 1
     ? deleteMode === 'playlist'
@@ -122,13 +124,13 @@ const BeatRow = ({
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-    canDrag: () => isLock,
+    canDrag: () => toDragAndDrop,
   });
 
   const [, drop] = useDrop({
     accept: 'BEAT',
     hover(item, monitor) {
-      if (!isLock) return;
+      if (!toDragAndDrop) return;
       if (!ref.current) {
         return;
       }
@@ -167,13 +169,13 @@ const BeatRow = ({
       }
     },
     drop: () => {
-      if (!isLock) return;
+      if (!toDragAndDrop) return;
       fetchBeats(playlistId, setBeats);
       setHoverIndex(null);
     },
   });
 
-  if (isLock) {
+  if (toDragAndDrop) {
     drag(drop(ref));
   }
 
