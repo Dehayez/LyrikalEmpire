@@ -8,14 +8,6 @@ export const SelectableInput = ({
   const [selectedValues, setSelectedValues] = useState(value.split(',').map(item => item.trim()));
   const [focusedItemIndex, setFocusedItemIndex] = useState(-1);
   const [isListVisible, setIsListVisible] = useState(false);
-
-  const addItem = async (newItem) => {
-    if (newItem && !filteredItems.some(item => item.name === newItem)) {
-      const sentenceCaseItem = newItem.charAt(0).toUpperCase() + newItem.slice(1).toLowerCase();
-      await addNewItem(itemType, sentenceCaseItem); // Add new item to the database
-      onChange({ target: { value: [...selectedValues, sentenceCaseItem].join(', ') } });
-    }
-  };
   
   const handleKeyDown = async (e) => {
     if (onKeyDown) {
