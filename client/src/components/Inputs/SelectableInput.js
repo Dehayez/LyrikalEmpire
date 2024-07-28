@@ -11,8 +11,9 @@ export const SelectableInput = ({
 
   const addItem = async (newItem) => {
     if (newItem && !filteredItems.some(item => item.name === newItem)) {
-      await addNewItem(itemType, newItem); // Add new item to the database
-      onChange({ target: { value: [...selectedValues, newItem].join(', ') } });
+      const sentenceCaseItem = newItem.charAt(0).toUpperCase() + newItem.slice(1).toLowerCase();
+      await addNewItem(itemType, sentenceCaseItem); // Add new item to the database
+      onChange({ target: { value: [...selectedValues, sentenceCaseItem].join(', ') } });
     }
   };
   
@@ -44,10 +45,11 @@ export const SelectableInput = ({
         const inputValue = e.target.value.trim();
         const lastCommaIndex = inputValue.lastIndexOf(',');
         const newItem = lastCommaIndex !== -1 ? inputValue.slice(lastCommaIndex + 1).trim() : inputValue;
+        const sentenceCaseItem = newItem.charAt(0).toUpperCase() + newItem.slice(1).toLowerCase();
   
         if (newItem && !filteredItems.some(item => item.name === newItem) && !selectedValues.includes(newItem)) {
-          await addNewItem(itemType, newItem); // Add new item to the database
-          onChange({ target: { value: [...selectedValues, newItem].join(', ') } });
+          await addNewItem(itemType, sentenceCaseItem); // Add new item to the database
+          onChange({ target: { value: [...selectedValues, sentenceCaseItem].join(', ') } });
           e.target.value = ''; // Clear the input value
         }
       }
@@ -58,10 +60,11 @@ export const SelectableInput = ({
     const inputValue = e.target.value.trim();
     const lastCommaIndex = inputValue.lastIndexOf(',');
     const newItem = lastCommaIndex !== -1 ? inputValue.slice(lastCommaIndex + 1).trim() : inputValue;
+    const sentenceCaseItem = newItem.charAt(0).toUpperCase() + newItem.slice(1).toLowerCase();
   
     if (newItem && !filteredItems.some(item => item.name === newItem)) {
-      await addNewItem(itemType, newItem); // Add new item to the database
-      onChange({ target: { value: [...selectedValues, newItem].join(', ') } });
+      await addNewItem(itemType, sentenceCaseItem); // Add new item to the database
+      onChange({ target: { value: [...selectedValues, sentenceCaseItem].join(', ') } });
       e.target.value = ''; // Clear the input value
     }
     if (onBlur) {
