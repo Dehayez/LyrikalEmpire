@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
+import NotFound from './components/NotFound'; // Import the NotFound component
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -475,6 +476,7 @@ useEffect(() => {
                 onUpdate={onUpdate}
                 />} 
                 />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
             <div className={`container__content__right ${isMobileOrTablet() && isRightPanelVisible ? 'container__content__right--mobile' : ''} ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
