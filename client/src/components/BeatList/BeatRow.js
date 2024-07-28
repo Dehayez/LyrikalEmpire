@@ -272,8 +272,8 @@ const BeatRow = ({
 
   useEffect(() => {
       if (selectedFeature) {
-          handleUpdate(beat.id, 'features', selectedFeature);
-          onUpdate(beat.id, 'features', selectedFeature);
+          handleUpdate(beat.id, 'feature', selectedFeature);
+          onUpdate(beat.id, 'feature', selectedFeature);
       }
   }, [selectedFeature]);
 
@@ -555,7 +555,7 @@ const BeatRow = ({
             }
           </td> 
           <td className="beat-row__data">
-            {!isInputFocused && <Highlight text={beat.features || ''} highlight={searchText || ''} />}
+            {!isInputFocused && <Highlight text={beat.feature || ''} highlight={searchText || ''} />}
             {mode === 'edit' ? 
               <SelectableInput
                 id={`beat-feature-select-${beat.id}`}
