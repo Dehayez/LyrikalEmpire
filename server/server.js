@@ -52,9 +52,9 @@ app.get('/api/beats', (req, res) => {
 });
 
 app.post('/api/beats', upload.single('audio'), (req, res) => {
-  const { title, bpm, genre, tierlist, mood, keywords, filePath, duration } = req.body;
+  const { title, bpm, genre, tierlist, mood, keywords, feature, filePath, duration } = req.body;
   const createdAt = new Date();
-  db.query('INSERT INTO beats (title, audio, bpm, genre, tierlist, mood, keywords, feature, created_at, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+  db.query('INSERT INTO beats (title, audio, bpm, genre, tierlist, mood, keywords, feature, created_at, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
   [title, filePath, bpm, genre, tierlist, mood, keywords, feature, createdAt, duration], (err, results) => {
     if (err) {
       console.error(err);
