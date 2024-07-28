@@ -3,6 +3,7 @@ import { isMobileOrTablet } from '../../utils';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import { usePlaylist } from '../../contexts/PlaylistContext';
+import { useBeat } from '../../contexts/BeatContext';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
@@ -30,6 +31,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const beatsToFilter = isExternalBeats ? externalBeats : beats;
   const { setPlaylistId } = usePlaylist();
+  const { isInputFocused, setInputFocused } = useBeat();
 
   const filteredAndSortedBeats = beatsToFilter
   .filter(beat => {
@@ -102,7 +104,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
       if (event.key === 'Enter' && selectedBeats.length > 0) {
         handlePlayPause(selectedBeats[0]);
       }
-      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
+      if (!isInputFocused && (event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
         setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
       }
     };

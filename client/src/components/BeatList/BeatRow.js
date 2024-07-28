@@ -40,7 +40,7 @@ const BeatRow = ({
     : deleteMode === 'playlist'
         ? 'Remove this track from playlist'
         : 'Delete this track';
-  const [isInputFocused, setInputFocused] = useState();
+  const { isInputFocused, setInputFocused } = useBeat();
   const [playlists, setPlaylists] = useState([]);
   const { isSamePlaylist } = usePlaylist();
   const { hoveredBeat, setHoveredBeat } = useBeat();
