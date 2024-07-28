@@ -4,7 +4,7 @@ import { IoAlertCircleOutline, IoCheckmarkSharp } from "react-icons/io5";
 import Modal from 'react-modal';
 import Draggable from 'react-draggable';
 import { toast } from 'react-toastify';
-import { addBeat, getGenres, getMoods, getKeywords } from '../../services';
+import { addBeat, getGenres, getMoods, getKeywords, getFeatures } from '../../services';
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
@@ -30,6 +30,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const { items: genres, selectedItem: genre, filteredItems: filteredGenres, showItems: showGenres, selectedItems: selectedGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(getGenres);
     const { items: keywords, selectedItem: keyword, filteredItems: filteredKeywords, showItems: showKeywords, selectedItems: selectedKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(getKeywords);
     const { items: moods, selectedItem: mood, filteredItems: filteredMoods, showItems: showMoods, selectedItems: selectedMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableList(getMoods);
+    const { items: features, selectedItem: feature, filteredItems: filteredFeatures, showItems: showFeatures, selectedItems: selectedFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur } = useSelectableList(getFeatures);
 
     const resetForm = () => {
         setTitle('');
@@ -38,6 +39,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
         handleGenreChange({ target: { value: '' } });
         handleMoodChange({ target: { value: '' } });
         handleKeywordChange({ target: { value: '' } });
+        handleFeatureChange({ target: { value: '' } });
         setTierlist('');
         setFileName('No file chosen');
         setWarningMessage(''); 
@@ -70,7 +72,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             setWarningMessage('');
         }
     
-        const newBeat = { title, bpm: bpmValue, genre, mood, keyword, duration, ...(tierlist && { tierlist }) };
+        const newBeat = { title, bpm: bpmValue, genre, mood, keyword, feature, duration, ...(tierlist && { tierlist }) };
         try {
             const { id } = await addBeat(newBeat, audio);
             onAdd({ ...newBeat, id });
@@ -175,6 +177,17 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                         />
                         <SelectableInput label="Moods" placeholder="Enter moods" value={mood} onChange={handleMoodChange} onFocus={handleMoodFocus} onBlur={handleMoodBlur} showItems={showMoods} filteredItems={filteredMoods.map(mood => ({ name: mood.name, selected: selectedMoods.includes(mood.name) }))} handleItemToggle={handleMoodToggle}/>
                         <SelectableInput label="Keywords" placeholder="Enter keywords" value={keyword} onChange={handleKeywordChange} onFocus={handleKeywordFocus} onBlur={handleKeywordBlur} showItems={showKeywords} filteredItems={filteredKeywords.map(keyword => ({ name: keyword.name, selected: selectedKeywords.includes(keyword.name) }))} handleItemToggle={handleKeywordToggle}/>
+                        <SelectableInput
+                            label="Features"
+                            items={features}
+                            selectedItem={feature}
+                            filteredItems={filteredFeatures}
+                            showItems={showFeatures}
+                            handleItemChange={handleFeatureChange}
+                            handleItemToggle={handleFeatureToggle}
+                            handleItemFocus={handleFeatureFocus}
+                            handleItemBlur={handleFeatureBlur}
+                        />
                         <div className='modal__buttons'>
                             <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                             <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
