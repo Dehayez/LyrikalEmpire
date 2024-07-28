@@ -7,6 +7,7 @@ import { eventBus } from '../../utils';
 import { ContextMenu } from '../ContextMenu';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import Button from '../Buttons';
 import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp } from "react-icons/io5";
 import './Playlists.scss';
 
@@ -128,10 +129,17 @@ const Playlists = ({ isPlaying }) => {
       <div className="playlists__header">
         <h2 className="playlists__title">Playlists</h2>
         <button className='icon-button' onClick={handleAddPlaylist}>
+       
         <span className="tooltip tooltip--left">Add playlist</span>
           <IoAddSharp />
         </button>
       </div>
+      {playlists.length === 0 ? (
+        <div className="playlists__empty-message">
+          <p>Your playlist is empty. Create a new playlist to get started!</p>
+          <Button text="Create New Playlist" onClick={handleAddPlaylist} />
+        </div>
+      ) : (
       <ul className='playlists__list'>
         {playlists.map((playlist, index) => (
           <li 
@@ -169,7 +177,7 @@ const Playlists = ({ isPlaying }) => {
             )}
           </li>
         ))}
-      </ul>
+      </ul>)}
       {showUpdateForm && playlistToUpdate && ReactDOM.createPortal(
         <UpdatePlaylistForm
           playlist={playlistToUpdate}
