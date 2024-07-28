@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
-import NotFound from './components/NotFound'; // Import the NotFound component
+import NotFound from './components/NotFound';
 
 function App() {
   const [refresh, setRefresh] = useState(false);

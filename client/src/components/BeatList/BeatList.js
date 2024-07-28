@@ -9,6 +9,7 @@ import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import { IconButton } from '../Buttons';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp } from "react-icons/io5";
+import Button from '../Buttons';
 import { toast, Slide } from 'react-toastify';
 import './BeatList.scss';
 
@@ -32,7 +33,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const beatsToFilter = isExternalBeats ? externalBeats : beats;
   const { setPlaylistId } = usePlaylist();
   const { isInputFocused, setInputFocused } = useBeat();
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 28; 
   const filteredAndSortedBeats = useMemo(() => {
     return beatsToFilter
       .filter(beat => {
@@ -47,6 +49,25 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
         return 0;
       });
   }, [beatsToFilter, searchText, sortConfig]);
+
+  const totalPages = Math.ceil(filteredAndSortedBeats.length / itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const currentBeats = filteredAndSortedBeats.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handlePlayPause = useCallback((beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
@@ -274,7 +295,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
           <table className={`beat-list__table ${mode === 'lock' ? 'beat-list__table--lock' : ''}`} ref={tableRef}>
             <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
             <tbody>
-              {filteredAndSortedBeats.map((beat, index) => (
+              {currentBeats.map((beat, index) => (
                 <React.Fragment key={beat.id}>
                 {hoverIndex === index && hoverPosition === 'top' && <tr className="drop-line" />}
                 <BeatRow
@@ -311,6 +332,11 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
               ))}
             </tbody>
           </table>
+          <div className="pagination-controls">
+            <Button onClick={handlePreviousPage} text={'Previous'} disabled={currentPage === 1}/>
+              <span className="pagination-controls__text">Page {currentPage} of {totalPages}</span>
+            <Button onClick={handleNextPage} text={'Next'} disabled={currentPage === totalPages}/>
+          </div>
         </div>
       )}
      

@@ -200,3 +200,14 @@
   width: calc(100% - 32px);
   background-color: $color-yellow;
 }
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 24px 0;
+
+  &__text {
+    margin: 0 16px;
+  }
+}
