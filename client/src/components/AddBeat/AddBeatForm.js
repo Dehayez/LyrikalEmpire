@@ -157,7 +157,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             isWarning={isTitleEmpty}
                         />
                         <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChangeExtended} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
-                        <SelectableInput label="Genre" placeholder="Enter genre" value={genre} onChange={handleGenreChange} onFocus={handleGenreFocus} onBlur={handleGenreBlur} showItems={showGenres} filteredItems={filteredGenres.map(genre => ({ name: genre.name, selected: selectedGenres.includes(genre.name) }))} handleItemToggle={handleGenreToggle}/>
+                        <SelectableInput label="Genre" placeholder="Enter genre" itemType="genres" value={genre} onChange={handleGenreChange} onFocus={handleGenreFocus} onBlur={handleGenreBlur} showItems={showGenres} filteredItems={filteredGenres.map(genre => ({ name: genre.name, selected: selectedGenres.includes(genre.name) }))} handleItemToggle={handleGenreToggle}/>
                         <SelectInput 
                             label="Tierlist"
                             selectedValue={tierlist} 
@@ -173,8 +173,8 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                                 { value: 'F', label: 'F' },
                             ]}
                         />
-                        <SelectableInput label="Moods" placeholder="Enter moods" value={mood} onChange={handleMoodChange} onFocus={handleMoodFocus} onBlur={handleMoodBlur} showItems={showMoods} filteredItems={filteredMoods.map(mood => ({ name: mood.name, selected: selectedMoods.includes(mood.name) }))} handleItemToggle={handleMoodToggle}/>
-                        <SelectableInput label="Keywords" placeholder="Enter keywords" value={keyword} onChange={handleKeywordChange} onFocus={handleKeywordFocus} onBlur={handleKeywordBlur} showItems={showKeywords} filteredItems={filteredKeywords.map(keyword => ({ name: keyword.name, selected: selectedKeywords.includes(keyword.name) }))} handleItemToggle={handleKeywordToggle}/>
+                        <SelectableInput label="Moods" placeholder="Enter moods" itemType="moods" value={mood} onChange={handleMoodChange} onFocus={handleMoodFocus} onBlur={handleMoodBlur} showItems={showMoods} filteredItems={filteredMoods.map(mood => ({ name: mood.name, selected: selectedMoods.includes(mood.name) }))} handleItemToggle={handleMoodToggle}/>
+                        <SelectableInput label="Keywords" placeholder="Enter keywords" itemType="keywords" value={keyword} onChange={handleKeywordChange} onFocus={handleKeywordFocus} onBlur={handleKeywordBlur} showItems={showKeywords} filteredItems={filteredKeywords.map(keyword => ({ name: keyword.name, selected: selectedKeywords.includes(keyword.name) }))} handleItemToggle={handleKeywordToggle}/>
                         <div className='modal__buttons'>
                             <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                             <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
