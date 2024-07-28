@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { isMobileOrTablet } from '../../utils';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
@@ -33,24 +33,26 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const { setPlaylistId } = usePlaylist();
   const { isInputFocused, setInputFocused } = useBeat();
 
-  const filteredAndSortedBeats = beatsToFilter
-  .filter(beat => {
-    const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
-    return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
-  })
-  .sort((a, b) => {
-    if (!sortConfig) return 0;
-    const { key, direction } = sortConfig;
-    if (a[key] < b[key]) return direction === 'ascending' ? -1 : 1;
-    if (a[key] > b[key]) return direction === 'ascending' ? 1 : -1;
-    return 0;
-  });
+  const filteredAndSortedBeats = useMemo(() => {
+    return beatsToFilter
+      .filter(beat => {
+        const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
+        return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+      })
+      .sort((a, b) => {
+        if (!sortConfig) return 0;
+        const { key, direction } = sortConfig;
+        if (a[key] < b[key]) return direction === 'ascending' ? -1 : 1;
+        if (a[key] > b[key]) return direction === 'ascending' ? 1 : -1;
+        return 0;
+      });
+  }, [beatsToFilter, searchText, sortConfig]);
 
-  const handlePlayPause = (beat) => {
+  const handlePlayPause = useCallback((beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
     setPlaylistId(playlistId);
-  };
+  }, [selectedBeat, isPlaying, onPlay, beats, playlistId, setPlaylistId]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
