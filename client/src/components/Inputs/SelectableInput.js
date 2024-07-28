@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './Inputs.scss';
-import { addNewItem } from '../../services/addNewItem'; // Import the function to add new items
 
 export const SelectableInput = ({
-  label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onClick, spellCheck, onMouseDown, onKeyDown, itemType
+  label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onClick, spellCheck, onMouseDown, onKeyDown
 }) => {
   const [selectedValues, setSelectedValues] = useState(value.split(',').map(item => item.trim()));
   const [focusedItemIndex, setFocusedItemIndex] = useState(-1);
   const [isListVisible, setIsListVisible] = useState(false);
-  
-  const handleKeyDown = async (e) => {
+
+  const handleKeyDown = (e) => {
     if (onKeyDown) {
       onKeyDown(e);
     }
@@ -33,34 +32,7 @@ export const SelectableInput = ({
         onChange({ target: { value: newSelectedValues.join(', ') } });
         setFocusedItemIndex(-1);
         setIsListVisible(false);
-      } else if (e.key === 'Enter' && focusedItemIndex === -1) {
-        const inputValue = e.target.value.trim();
-        const lastCommaIndex = inputValue.lastIndexOf(',');
-        const newItem = lastCommaIndex !== -1 ? inputValue.slice(lastCommaIndex + 1).trim() : inputValue;
-        const sentenceCaseItem = newItem.charAt(0).toUpperCase() + newItem.slice(1).toLowerCase();
-  
-        if (newItem && !filteredItems.some(item => item.name === newItem) && !selectedValues.includes(newItem)) {
-          await addNewItem(itemType, sentenceCaseItem); // Add new item to the database
-          onChange({ target: { value: [...selectedValues, sentenceCaseItem].join(', ') } });
-          e.target.value = ''; // Clear the input value
-        }
       }
-    }
-  };
-
-  const handleBlur = async (e) => {
-    const inputValue = e.target.value.trim();
-    const lastCommaIndex = inputValue.lastIndexOf(',');
-    const newItem = lastCommaIndex !== -1 ? inputValue.slice(lastCommaIndex + 1).trim() : inputValue;
-    const sentenceCaseItem = newItem.charAt(0).toUpperCase() + newItem.slice(1).toLowerCase();
-  
-    if (newItem && !filteredItems.some(item => item.name === newItem)) {
-      await addNewItem(itemType, sentenceCaseItem); // Add new item to the database
-      onChange({ target: { value: [...selectedValues, sentenceCaseItem].join(', ') } });
-      e.target.value = ''; // Clear the input value
-    }
-    if (onBlur) {
-      onBlur(e);
     }
   };
 
@@ -80,7 +52,7 @@ export const SelectableInput = ({
         setIsListVisible(false);
       }
     };
-
+  
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isListVisible]);
@@ -98,7 +70,7 @@ export const SelectableInput = ({
         value={value}
         onChange={onChange}
         onFocus={onFocus}
-        onBlur={handleBlur}
+        onBlur={onBlur}
         placeholder={placeholder}
         className={className}
         onKeyDown={handleKeyDown}
