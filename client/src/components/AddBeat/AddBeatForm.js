@@ -158,8 +158,8 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             spellCheck="false" 
                             isWarning={isTitleEmpty}
                         />
-                        <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChangeExtended} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
                         <SelectableInput label="Genre" placeholder="Enter genre" value={genre} onChange={handleGenreChange} onFocus={handleGenreFocus} onBlur={handleGenreBlur} showItems={showGenres} filteredItems={filteredGenres.map(genre => ({ name: genre.name, selected: selectedGenres.includes(genre.name) }))} handleItemToggle={handleGenreToggle}/>
+                        <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChangeExtended} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
                         <SelectInput 
                             label="Tierlist"
                             selectedValue={tierlist} 
