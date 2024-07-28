@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import './Inputs.scss';
+import { addNewItem } from '../../services/addNewItem'; // Import the function to add new items
 
 export const SelectableInput = ({
-  label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onClick, spellCheck, onMouseDown, onKeyDown
+  label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onClick, spellCheck, onMouseDown, onKeyDown, itemType
 }) => {
   const [selectedValues, setSelectedValues] = useState(value.split(',').map(item => item.trim()));
   const [focusedItemIndex, setFocusedItemIndex] = useState(-1);
   const [isListVisible, setIsListVisible] = useState(false);
 
-  const handleKeyDown = (e) => {
+  const addItem = async (newItem) => {
+    if (newItem && !filteredItems.some(item => item.name === newItem)) {
+      await addNewItem(itemType, newItem); // Add new item to the database
+      onChange({ target: { value: [...selectedValues, newItem].join(', ') } });
+    }
+  };
+  
+  const handleKeyDown = async (e) => {
     if (onKeyDown) {
       onKeyDown(e);
     }
@@ -20,19 +28,39 @@ export const SelectableInput = ({
         setFocusedItemIndex(prevIndex => (prevIndex + 1) % filteredItems.length);
       } else if (e.key === 'ArrowUp') {
         setFocusedItemIndex(prevIndex => (prevIndex - 1 + filteredItems.length) % filteredItems.length);
-      } else if (e.key === 'Enter' && focusedItemIndex !== -1) {
-        const newItem = filteredItems[focusedItemIndex].name;
-        const isAlreadySelected = selectedValues.includes(newItem);
-        let newSelectedValues;
-        if (isAlreadySelected) {
-          newSelectedValues = selectedValues.filter(item => item !== newItem);
+      } else if (e.key === 'Enter') {
+        if (focusedItemIndex !== -1) {
+          const newItem = filteredItems[focusedItemIndex].name;
+          const isAlreadySelected = selectedValues.includes(newItem);
+          let newSelectedValues;
+          if (isAlreadySelected) {
+            newSelectedValues = selectedValues.filter(item => item !== newItem);
+          } else {
+            newSelectedValues = [...selectedValues, newItem];
+          }
+          onChange({ target: { value: newSelectedValues.join(', ') } });
+          setFocusedItemIndex(-1);
+          setIsListVisible(false);
         } else {
-          newSelectedValues = [...selectedValues, newItem];
+          const inputValue = e.target.value.trim();
+          const lastCommaIndex = inputValue.lastIndexOf(',');
+          const newItem = lastCommaIndex !== -1 ? inputValue.slice(lastCommaIndex + 1).trim() : inputValue;
+  
+          await addItem(newItem);
         }
-        onChange({ target: { value: newSelectedValues.join(', ') } });
-        setFocusedItemIndex(-1);
-        setIsListVisible(false);
       }
+    }
+  };
+  
+  const handleBlur = async (e) => {
+    const inputValue = e.target.value.trim();
+    const lastCommaIndex = inputValue.lastIndexOf(',');
+    const newItem = lastCommaIndex !== -1 ? inputValue.slice(lastCommaIndex + 1).trim() : inputValue;
+  
+    await addItem(newItem);
+  
+    if (onBlur) {
+      onBlur(e);
     }
   };
 
@@ -52,7 +80,7 @@ export const SelectableInput = ({
         setIsListVisible(false);
       }
     };
-  
+
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isListVisible]);
@@ -70,7 +98,7 @@ export const SelectableInput = ({
         value={value}
         onChange={onChange}
         onFocus={onFocus}
-        onBlur={onBlur}
+        onBlur={handleBlur}
         placeholder={placeholder}
         className={className}
         onKeyDown={handleKeyDown}

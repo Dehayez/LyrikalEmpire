@@ -428,6 +428,7 @@ const BeatRow = ({
                 onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
                 onClick={(e) => e.stopPropagation()}
                 spellCheck="false"
+  itemType="genres" // Specify the item type
               />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.genre}</div> 
@@ -501,6 +502,7 @@ const BeatRow = ({
                 onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
                 onClick={(e) => e.stopPropagation()}
                 spellCheck="false"
+  itemType="moods" // Specify the item type
               />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.mood}</div> 
@@ -522,6 +524,7 @@ const BeatRow = ({
                 onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
                 onClick={(e) => e.stopPropagation()}
                 spellCheck="false"
+  itemType="keywords" // Specify the item type
               />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.keywords}</div> 
