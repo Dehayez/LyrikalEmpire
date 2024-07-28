@@ -150,6 +150,7 @@ app.delete('/api/beats/:id', (req, res) => {
   });
 });
 
+// Get Genres
 app.get('/api/genres', (req, res) => {
   db.query('SELECT * FROM genres', (err, results) => {
     if (err) {
@@ -161,6 +162,47 @@ app.get('/api/genres', (req, res) => {
   });
 });
 
+// Add Genre
+app.post('/api/genres', (req, res) => {
+  const { name } = req.body;
+  db.query('INSERT INTO genres (name) VALUES (?)', [name], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while adding the genre' });
+    } else {
+      res.status(201).json({ message: 'Genre added successfully', genreId: results.insertId });
+    }
+  });
+});
+
+// Update Genre
+app.put('/api/genres/:id', (req, res) => {
+  const { name } = req.body;
+  const { id } = req.params;
+  db.query('UPDATE genres SET name = ? WHERE id = ?', [name, id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while updating the genre' });
+    } else {
+      res.json({ message: 'Genre updated successfully' });
+    }
+  });
+});
+
+// Delete Genre
+app.delete('/api/genres/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM genres WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while deleting the genre' });
+    } else {
+      res.json({ message: 'Genre deleted successfully' });
+    }
+  });
+});
+
+// Get Keywords
 app.get('/api/keywords', (req, res) => {
   db.query('SELECT * FROM keywords', (err, results) => {
     if (err) {
@@ -172,6 +214,48 @@ app.get('/api/keywords', (req, res) => {
   });
 });
 
+
+// Add Keyword
+app.post('/api/keywords', (req, res) => {
+  const { name } = req.body;
+  db.query('INSERT INTO keywords (name) VALUES (?)', [name], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while adding the keyword' });
+    } else {
+      res.status(201).json({ message: 'Keyword added successfully', keywordId: results.insertId });
+    }
+  });
+});
+
+// Update Keyword
+app.put('/api/keywords/:id', (req, res) => {
+  const { name } = req.body;
+  const { id } = req.params;
+  db.query('UPDATE keywords SET name = ? WHERE id = ?', [name, id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while updating the keyword' });
+    } else {
+      res.json({ message: 'Keyword updated successfully' });
+    }
+  });
+});
+
+// Delete Keyword
+app.delete('/api/keywords/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM keywords WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while deleting the keyword' });
+    } else {
+      res.json({ message: 'Keyword deleted successfully' });
+    }
+  });
+});
+
+// Get Moods
 app.get('/api/moods', (req, res) => {
   db.query('SELECT * FROM moods', (err, results) => {
     if (err) {
@@ -179,6 +263,45 @@ app.get('/api/moods', (req, res) => {
       res.status(500).json({ error: 'An error occurred while fetching moods' });
     } else {
       res.json(results);
+    }
+  });
+});
+// Add Mood
+app.post('/api/moods', (req, res) => {
+  const { name } = req.body;
+  db.query('INSERT INTO moods (name) VALUES (?)', [name], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while adding the mood' });
+    } else {
+      res.status(201).json({ message: 'Mood added successfully', moodId: results.insertId });
+    }
+  });
+});
+
+// Update Mood
+app.put('/api/moods/:id', (req, res) => {
+  const { name } = req.body;
+  const { id } = req.params;
+  db.query('UPDATE moods SET name = ? WHERE id = ?', [name, id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while updating the mood' });
+    } else {
+      res.json({ message: 'Mood updated successfully' });
+    }
+  });
+});
+
+// Delete Mood
+app.delete('/api/moods/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM moods WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while deleting the mood' });
+    } else {
+      res.json({ message: 'Mood deleted successfully' });
     }
   });
 });
