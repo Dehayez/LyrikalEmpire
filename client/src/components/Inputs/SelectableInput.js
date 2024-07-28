@@ -28,37 +28,42 @@ export const SelectableInput = ({
         setFocusedItemIndex(prevIndex => (prevIndex + 1) % filteredItems.length);
       } else if (e.key === 'ArrowUp') {
         setFocusedItemIndex(prevIndex => (prevIndex - 1 + filteredItems.length) % filteredItems.length);
-      } else if (e.key === 'Enter') {
-        if (focusedItemIndex !== -1) {
-          const newItem = filteredItems[focusedItemIndex].name;
-          const isAlreadySelected = selectedValues.includes(newItem);
-          let newSelectedValues;
-          if (isAlreadySelected) {
-            newSelectedValues = selectedValues.filter(item => item !== newItem);
-          } else {
-            newSelectedValues = [...selectedValues, newItem];
-          }
-          onChange({ target: { value: newSelectedValues.join(', ') } });
-          setFocusedItemIndex(-1);
-          setIsListVisible(false);
+      } else if (e.key === 'Enter' && focusedItemIndex !== -1) {
+        const newItem = filteredItems[focusedItemIndex].name;
+        const isAlreadySelected = selectedValues.includes(newItem);
+        let newSelectedValues;
+        if (isAlreadySelected) {
+          newSelectedValues = selectedValues.filter(item => item !== newItem);
         } else {
-          const inputValue = e.target.value.trim();
-          const lastCommaIndex = inputValue.lastIndexOf(',');
-          const newItem = lastCommaIndex !== -1 ? inputValue.slice(lastCommaIndex + 1).trim() : inputValue;
+          newSelectedValues = [...selectedValues, newItem];
+        }
+        onChange({ target: { value: newSelectedValues.join(', ') } });
+        setFocusedItemIndex(-1);
+        setIsListVisible(false);
+      } else if (e.key === 'Enter' && focusedItemIndex === -1) {
+        const inputValue = e.target.value.trim();
+        const lastCommaIndex = inputValue.lastIndexOf(',');
+        const newItem = lastCommaIndex !== -1 ? inputValue.slice(lastCommaIndex + 1).trim() : inputValue;
   
-          await addItem(newItem);
+        if (newItem && !filteredItems.some(item => item.name === newItem) && !selectedValues.includes(newItem)) {
+          await addNewItem(itemType, newItem); // Add new item to the database
+          onChange({ target: { value: [...selectedValues, newItem].join(', ') } });
+          e.target.value = ''; // Clear the input value
         }
       }
     }
   };
-  
+
   const handleBlur = async (e) => {
     const inputValue = e.target.value.trim();
     const lastCommaIndex = inputValue.lastIndexOf(',');
     const newItem = lastCommaIndex !== -1 ? inputValue.slice(lastCommaIndex + 1).trim() : inputValue;
   
-    await addItem(newItem);
-  
+    if (newItem && !filteredItems.some(item => item.name === newItem)) {
+      await addNewItem(itemType, newItem); // Add new item to the database
+      onChange({ target: { value: [...selectedValues, newItem].join(', ') } });
+      e.target.value = ''; // Clear the input value
+    }
     if (onBlur) {
       onBlur(e);
     }
