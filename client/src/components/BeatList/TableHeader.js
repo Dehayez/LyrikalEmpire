@@ -28,7 +28,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
     }
   };
 
-  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keywords'];
+  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keywords', 'features'];
 
   return (
     <thead className="table-header" ref={tableRef}>

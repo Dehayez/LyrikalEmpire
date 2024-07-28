@@ -306,6 +306,58 @@ app.delete('/api/moods/:id', (req, res) => {
   });
 });
 
+// Get Features
+app.get('/api/features', (req, res) => {
+  db.query('SELECT * FROM features', (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching features' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// Add Feature
+app.post('/api/features', (req, res) => {
+  const { name } = req.body;
+  db.query('INSERT INTO features (name) VALUES (?)', [name], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while adding the feature' });
+    } else {
+      res.status(201).json({ message: 'Feature added successfully', featureId: results.insertId });
+    }
+  });
+});
+
+// Update Feature
+app.put('/api/features/:id', (req, res) => {
+  const { name } = req.body;
+  const { id } = req.params;
+  db.query('UPDATE features SET name = ? WHERE id = ?', [name, id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while updating the feature' });
+    } else {
+      res.json({ message: 'Feature updated successfully' });
+    }
+  });
+});
+
+// Delete Feature
+app.delete('/api/features/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM features WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while deleting the feature' });
+    } else {
+      res.json({ message: 'Feature deleted successfully' });
+    }
+  });
+});
+
 // Create Playlist
 app.post('/api/playlists', (req, res) => {
   const { title, description } = req.body;

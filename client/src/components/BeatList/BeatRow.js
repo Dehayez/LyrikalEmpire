@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
-import { getGenres, getKeywords, getMoods } from '../../services';
+import { getGenres, getKeywords, getMoods, getFeatures } from '../../services';
 import { addBeatsToPlaylist, getPlaylists, getBeatsByPlaylistId } from '../../services/playlistService';
 import { isMobileOrTablet, eventBus } from '../../utils';
 import { usePlaylist } from '../../contexts/PlaylistContext';
@@ -259,6 +259,33 @@ const BeatRow = ({
       onUpdate(beat.id, 'keywords', selectedKeyword);
     }
   }, [selectedKeyword]);
+
+    const {
+      selectedItem: selectedFeature,
+      filteredItems: filteredFeatures,
+      showItems: showFeatures,
+      handleItemChange: handleFeatureChange,
+      handleItemToggle: handleFeatureToggle,
+      handleItemFocus: handleFeatureFocus,
+      handleItemBlur: handleFeatureBlur
+  } = useSelectableList(getFeatures, beat.features);
+
+  useEffect(() => {
+      if (selectedFeature) {
+          handleUpdate(beat.id, 'features', selectedFeature);
+          onUpdate(beat.id, 'features', selectedFeature);
+      }
+  }, [selectedFeature]);
+
+  const handleFeatureInputFocus = (e) => {
+      handleFocus();
+      handleFeatureFocus(e);
+  };
+
+  const handleFeatureInputBlur = (e) => {
+      setInputFocused(false);
+      handleFeatureBlur(e);
+  };
 
   const handleInputChange = (property, value) => {
     onUpdateBeat(beat.id, { [property]: value });
@@ -527,6 +554,27 @@ const BeatRow = ({
               <div className='beat-row__input beat-row__input--static-select'>{beat.keywords}</div> 
             }
           </td> 
+          <td className="beat-row__data">
+            {!isInputFocused && <Highlight text={beat.features || ''} highlight={searchText || ''} />}
+            {mode === 'edit' ? 
+              <SelectableInput
+                id={`beat-feature-select-${beat.id}`}
+                value={selectedFeature}
+                onChange={handleFeatureChange}
+                onFocus={handleFeatureInputFocus}
+                onBlur={handleFeatureInputBlur}
+                showItems={showFeatures}
+                filteredItems={filteredFeatures}
+                handleItemToggle={handleFeatureToggle}
+                className='beat-row__input' 
+                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+                onClick={(e) => e.stopPropagation()}
+                spellCheck="false"
+              />
+            : 
+              <div className='beat-row__input beat-row__input--static-select'>{beat.features}</div> 
+            }
+          </td>
         </>
       )}
       {!(isMobileOrTablet() && mode === 'lock') && (
