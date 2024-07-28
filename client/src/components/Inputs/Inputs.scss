@@ -139,7 +139,9 @@ input[type="number"] {
     left: 0;
     width: 100%;
     z-index: 10; 
-    padding-top: 1px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: $box-shadow;
 
     &__item {
         padding: 10px;
