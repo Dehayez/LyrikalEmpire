@@ -11,8 +11,6 @@ import './TableHeader.scss';
 const TableHeader = ({ onSort, sortConfig, mode }) => {
   const tableRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [pressTimer, setPressTimer] = useState(null);
-  const [exceededThreshold, setExceededThreshold] = useState(false);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
   const [showForm, setShowForm] = useState(false);
@@ -21,18 +19,8 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
   useResizableColumns(tableRef, mode, setIsDragging);
 
   const handleMouseEvents = (eventName, columnName) => {
-    if (eventName === 'down') {
-      setExceededThreshold(false);
-      const timer = setTimeout(() => {
-        setExceededThreshold(true);
-        clearTimeout(pressTimer);
-      }, 300);
-      setPressTimer(timer);
-    } else if (eventName === 'up') {
-      clearTimeout(pressTimer);
-      if (!exceededThreshold) {
-        onSort && onSort(columnName);
-      }
+    if (eventName === 'click') {
+      onSort && onSort(columnName);
     }
   };
 
@@ -61,8 +49,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
           }
           return (
             <th key={column}
-                onMouseDown={() => handleMouseEvents('down', column)}
-                onMouseUp={() => handleMouseEvents('up', column)}
+                onClick={() => handleMouseEvents('click', column)}
                 onContextMenu={(e) => handleRightClick(e, column)}
                 className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
               {column === 'bpm' ? 'BPM' : column.charAt(0).toUpperCase() + column.slice(1)}
