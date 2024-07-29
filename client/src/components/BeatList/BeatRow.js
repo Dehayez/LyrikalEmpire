@@ -64,59 +64,46 @@ const BeatRow = ({
     }
   };
 
-  useEffect(() => {
-    const fetchPlaylists = async () => {
-      try {
-        const data = await getPlaylists();
-        setPlaylists(data);
-      } catch (error) {
-        console.error('Error fetching playlists:', error);
-      }
-    };
+useEffect(() => {
+  const fetchPlaylists = async () => {
+    try {
+      const data = await getPlaylists();
+      setPlaylists(data);
+    } catch (error) {
+      console.error('Error fetching playlists:', error);
+    }
+  };
 
-    fetchPlaylists();
-  }, []);
+  fetchPlaylists();
 
-  useEffect(() => {
-    const fetchPlaylists = async () => {
-      try {
-        const data = await getPlaylists();
-        setPlaylists(data);
-      } catch (error) {
-        console.error('Error fetching playlists:', error);
-      }
-    };
-  
+  const handlePlaylistAdded = () => {
     fetchPlaylists();
-  
-    const handlePlaylistAdded = () => {
-      fetchPlaylists();
-    };
-  
-    const handlePlaylistDeleted = () => {
-      fetchPlaylists();
-    };
-  
-    const handlePlaylistUpdated = (updatedPlaylist) => {
-      setPlaylists((currentPlaylists) =>
-        currentPlaylists.map((playlist) =>
-          playlist.id === updatedPlaylist.id
-            ? { ...playlist, title: updatedPlaylist.title, description: updatedPlaylist.description }
-            : playlist
-        )
-      );
-    };
-  
-    eventBus.on('playlistAdded', handlePlaylistAdded);
-    eventBus.on('playlistDeleted', handlePlaylistDeleted);
-    eventBus.on('playlistUpdated', handlePlaylistUpdated);
-  
-    return () => {
-      eventBus.off('playlistAdded', handlePlaylistAdded);
-      eventBus.off('playlistDeleted', handlePlaylistDeleted);
-      eventBus.off('playlistUpdated', handlePlaylistUpdated);
-    };
-  }, []);
+  };
+
+  const handlePlaylistDeleted = () => {
+    fetchPlaylists();
+  };
+
+  const handlePlaylistUpdated = (updatedPlaylist) => {
+    setPlaylists((currentPlaylists) =>
+      currentPlaylists.map((playlist) =>
+        playlist.id === updatedPlaylist.id
+          ? { ...playlist, title: updatedPlaylist.title, description: updatedPlaylist.description }
+          : playlist
+      )
+    );
+  };
+
+  eventBus.on('playlistAdded', handlePlaylistAdded);
+  eventBus.on('playlistDeleted', handlePlaylistDeleted);
+  eventBus.on('playlistUpdated', handlePlaylistUpdated);
+
+  return () => {
+    eventBus.off('playlistAdded', handlePlaylistAdded);
+    eventBus.off('playlistDeleted', handlePlaylistDeleted);
+    eventBus.off('playlistUpdated', handlePlaylistUpdated);
+  };
+}, []);
 
   const [{ isDragging }, drag] = useDrag({
     type: 'BEAT',
