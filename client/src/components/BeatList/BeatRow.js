@@ -51,7 +51,7 @@ const BeatRow = ({
 
   const { selectedItem: selectedMood, filteredItems: filteredMoods, showItems: showMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur, handleKeyDown: handleMoodKeyDown } = useSelectableListWithUpdate(moods, beat.mood, beat, handleUpdate, onUpdate, 'mood');
   
-  const { selectedItem: selectedKeyword, filteredItems: filteredKeywords, showItems: showKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur, handleKeyDown: handleKeywordKeyDown } = useSelectableListWithUpdate(keywords, beat.keywords, beat, handleUpdate, onUpdate, 'keywords');
+  const { selectedItem: selectedKeyword, filteredItems: filteredKeywords, showItems: showKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur, handleKeyDown: handleKeywordKeyDown } = useSelectableListWithUpdate(keywords, beat.keyword, beat, handleUpdate, onUpdate, 'keyword');
 
   const { selectedItem: selectedFeature, filteredItems: filteredFeatures, showItems: showFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur, handleKeyDown: handleFeatureKeyDown } = useSelectableListWithUpdate(features, beat.feature, beat, handleUpdate, onUpdate, 'feature');
 
@@ -463,7 +463,7 @@ useEffect(() => {
             }
           </td>
           <td className="beat-row__data">
-            {!isInputFocused && <Highlight text={beat.keywords || ''} highlight={searchText || ''} />}
+            {!isInputFocused && <Highlight text={beat.keyword || ''} highlight={searchText || ''} />}
             {mode === 'edit' ? 
               <SelectableInput
                 id={`beat-keyword-select-${beat.id}`}
@@ -480,7 +480,7 @@ useEffect(() => {
                 spellCheck="false"
               />
             : 
-              <div className='beat-row__input beat-row__input--static-select'>{beat.keywords}</div> 
+              <div className='beat-row__input beat-row__input--static-select'>{beat.keyword}</div> 
             }
           </td> 
           <td className="beat-row__data">

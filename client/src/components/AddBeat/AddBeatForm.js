@@ -4,7 +4,7 @@ import { IoCheckmarkSharp } from "react-icons/io5";
 import Modal from 'react-modal';
 import Draggable from 'react-draggable';
 import { toast } from 'react-toastify';
-import { addBeat, getGenres, getMoods, getKeywords, getFeatures } from '../../services';
+import { addBeat } from '../../services';
 import { useData } from '../../contexts/DataContext';
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
