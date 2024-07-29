@@ -9,6 +9,7 @@ import { isMobileOrTablet, eventBus } from '../../utils';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { useBeat } from '../../contexts/BeatContext';
 import { useData } from '../../contexts/DataContext';
+import { useSelectableListWithUpdate } from '../../hooks/useSelectableListWithUpdate';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
@@ -45,11 +46,14 @@ const BeatRow = ({
   const { isSamePlaylist } = usePlaylist();
   const { hoveredBeat, setHoveredBeat } = useBeat();
   const { genres, moods, keywords, features } = useData();
-  const { selectedItem: selectedGenre, filteredItems: filteredGenres, showItems: showGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(genres, beat.genre);
-  const { selectedItem: selectedMood, filteredItems: filteredMoods, showItems: showMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableList(moods, beat.mood);
-  const { selectedItem: selectedKeyword, filteredItems: filteredKeywords, showItems: showKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(keywords, beat.keywords);
-  const { selectedItem: selectedFeature, filteredItems: filteredFeatures, showItems: showFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur } = useSelectableList(features, beat.features);
 
+  const { selectedItem: selectedGenre, filteredItems: filteredGenres, showItems: showGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableListWithUpdate(genres, beat.genre, beat, handleUpdate, onUpdate, 'genre');
+
+  const { selectedItem: selectedMood, filteredItems: filteredMoods, showItems: showMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableListWithUpdate(moods, beat.mood, beat, handleUpdate, onUpdate, 'mood');
+  
+  const { selectedItem: selectedKeyword, filteredItems: filteredKeywords, showItems: showKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableListWithUpdate(keywords, beat.keywords, beat, handleUpdate, onUpdate, 'keywords');
+  
+  const { selectedItem: selectedFeature, filteredItems: filteredFeatures, showItems: showFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur } = useSelectableListWithUpdate(features, beat.features, beat, handleUpdate, onUpdate, 'feature');
 
   const beatRowClasses = classNames({
     'beat-row': true,
