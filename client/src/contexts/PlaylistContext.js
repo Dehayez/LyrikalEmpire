@@ -8,12 +8,11 @@ const PlaylistContext = createContext();
 export const usePlaylist = () => useContext(PlaylistContext);
 
 export const PlaylistProvider = ({ children }) => {
-  const [playedPlaylistId, setPlayedPlaylistId] = useState(() => {
-    return localStorage.getItem('playedPlaylistId');
-  });
+  const [playlists, setPlaylists] = useState([]);
+  const [playedPlaylistId, setPlayedPlaylistId] = useState(() => {return localStorage.getItem('playedPlaylistId');
+});
   const [currentPlaylistId, setCurrentPlaylistId] = useState(null);
   const [isSamePlaylist, setIsSamePlaylist] = useState(false);
-  const [playlists, setPlaylists] = useState([]);
   const location = useLocation();
 
   const setPlaylistId = (id) => {
