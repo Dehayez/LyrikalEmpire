@@ -53,7 +53,7 @@ const BeatRow = ({
   
   const { selectedItem: selectedKeyword, filteredItems: filteredKeywords, showItems: showKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur, handleKeyDown: handleKeywordKeyDown } = useSelectableListWithUpdate(keywords, beat.keywords, beat, handleUpdate, onUpdate, 'keywords');
 
-  const { selectedItem: selectedFeature, filteredItems: filteredFeatures, showItems: showFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur, handleKeyDown: handleFeatureKeyDown } = useSelectableListWithUpdate(features, beat.features, beat, handleUpdate, onUpdate, 'feature');
+  const { selectedItem: selectedFeature, filteredItems: filteredFeatures, showItems: showFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur, handleKeyDown: handleFeatureKeyDown } = useSelectableListWithUpdate(features, beat.feature, beat, handleUpdate, onUpdate, 'feature');
 
   const beatRowClasses = classNames({
     'beat-row': true,
