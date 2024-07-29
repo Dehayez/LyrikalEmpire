@@ -3,7 +3,7 @@ import './UpdatePlaylistForm.scss';
 import Draggable from 'react-draggable';
 import { FormInput, FormTextarea } from '../Inputs';
 import { Warning } from '../Warning';
-import { updatePlaylist } from '../../services/playlistService';
+import { updatePlaylist } from '../../services';
 import { eventBus } from '../../utils';
 
 export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
