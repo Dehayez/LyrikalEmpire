@@ -3,9 +3,9 @@ import { useDrag, useDrop } from 'react-dnd';
 import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
-import { useBpmHandlers, useSelectableList } from '../../hooks';
-import { addBeatsToPlaylist, getPlaylists, getBeatsByPlaylistId } from '../../services/playlistService';
-import { isMobileOrTablet, eventBus } from '../../utils';
+import { useBpmHandlers } from '../../hooks';
+import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services/playlistService';
+import { isMobileOrTablet } from '../../utils';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { useBeat } from '../../contexts/BeatContext';
 import { useData } from '../../contexts/DataContext';
@@ -42,8 +42,7 @@ const BeatRow = ({
         ? 'Remove this track from playlist'
         : 'Delete this track';
   const { isInputFocused, setInputFocused } = useBeat();
-  const [playlists, setPlaylists] = useState([]);
-  const { isSamePlaylist } = usePlaylist();
+  const { playlists,isSamePlaylist } = usePlaylist();
   const { hoveredBeat, setHoveredBeat } = useBeat();
   const { genres, moods, keywords, features } = useData();
 
@@ -73,47 +72,6 @@ const BeatRow = ({
       console.error('Error fetching beats:', error);
     }
   };
-
-useEffect(() => {
-  const fetchPlaylists = async () => {
-    try {
-      const data = await getPlaylists();
-      setPlaylists(data);
-    } catch (error) {
-      console.error('Error fetching playlists:', error);
-    }
-  };
-
-  fetchPlaylists();
-
-  const handlePlaylistAdded = () => {
-    fetchPlaylists();
-  };
-
-  const handlePlaylistDeleted = () => {
-    fetchPlaylists();
-  };
-
-  const handlePlaylistUpdated = (updatedPlaylist) => {
-    setPlaylists((currentPlaylists) =>
-      currentPlaylists.map((playlist) =>
-        playlist.id === updatedPlaylist.id
-          ? { ...playlist, title: updatedPlaylist.title, description: updatedPlaylist.description }
-          : playlist
-      )
-    );
-  };
-
-  eventBus.on('playlistAdded', handlePlaylistAdded);
-  eventBus.on('playlistDeleted', handlePlaylistDeleted);
-  eventBus.on('playlistUpdated', handlePlaylistUpdated);
-
-  return () => {
-    eventBus.off('playlistAdded', handlePlaylistAdded);
-    eventBus.off('playlistDeleted', handlePlaylistDeleted);
-    eventBus.off('playlistUpdated', handlePlaylistUpdated);
-  };
-}, []);
 
   const [{ isDragging }, drag] = useDrag({
     type: 'BEAT',
@@ -226,7 +184,7 @@ useEffect(() => {
     handleUpdate(beat.id, 'tierlist', newTierlist);
   };
   
-  useEffect(() => {
+/*   useEffect(() => {
     if (selectedGenre) {
       onUpdate(beat.id, 'genre', selectedGenre);
     }
@@ -236,7 +194,7 @@ useEffect(() => {
     if (selectedMood) {
       onUpdate(beat.id, 'mood', selectedMood);
     }
-  }, [selectedMood]);
+  }, [selectedMood]); */
 
     const handleFocus = () => setInputFocused(true);
 

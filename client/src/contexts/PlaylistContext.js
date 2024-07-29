@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { eventBus } from '../utils';
+import { getPlaylists } from '../services/playlistService';
 import { useLocation } from 'react-router-dom';
 
 const PlaylistContext = createContext();
@@ -11,11 +13,12 @@ export const PlaylistProvider = ({ children }) => {
   });
   const [currentPlaylistId, setCurrentPlaylistId] = useState(null);
   const [isSamePlaylist, setIsSamePlaylist] = useState(false);
+  const [playlists, setPlaylists] = useState([]);
   const location = useLocation();
 
-  function setPlaylistId(id) {
+  const setPlaylistId = (id) => {
     setPlayedPlaylistId(id);
-  }
+  };
 
   useEffect(() => {
     setIsSamePlaylist(playedPlaylistId == currentPlaylistId);
@@ -35,8 +38,49 @@ export const PlaylistProvider = ({ children }) => {
     setCurrentPlaylistId(playlistId ? playlistId : null);
   }, [location]);
 
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const data = await getPlaylists();
+        setPlaylists(data);
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
+    };
+
+    fetchPlaylists();
+
+    const handlePlaylistAdded = () => {
+      fetchPlaylists();
+    };
+
+    const handlePlaylistDeleted = () => {
+      fetchPlaylists();
+    };
+
+    const handlePlaylistUpdated = (updatedPlaylist) => {
+      setPlaylists((currentPlaylists) =>
+        currentPlaylists.map((playlist) =>
+          playlist.id === updatedPlaylist.id
+            ? { ...playlist, title: updatedPlaylist.title, description: updatedPlaylist.description }
+            : playlist
+        )
+      );
+    };
+
+    eventBus.on('playlistAdded', handlePlaylistAdded);
+    eventBus.on('playlistDeleted', handlePlaylistDeleted);
+    eventBus.on('playlistUpdated', handlePlaylistUpdated);
+
+    return () => {
+      eventBus.off('playlistAdded', handlePlaylistAdded);
+      eventBus.off('playlistDeleted', handlePlaylistDeleted);
+      eventBus.off('playlistUpdated', handlePlaylistUpdated);
+    };
+  }, []);
+
   return (
-    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId, isSamePlaylist }}>
+    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId, isSamePlaylist, playlists }}>
       {children}
     </PlaylistContext.Provider>
   );
