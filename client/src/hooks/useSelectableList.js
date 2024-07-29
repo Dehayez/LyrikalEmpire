@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const useSelectableList = (fetchDataFunction, initialValue = '') => {
+export const useSelectableList = (fetchedItems, initialValue = '') => {
   initialValue = initialValue || '';
 
   const [items, setItems] = useState([]);
@@ -12,7 +12,6 @@ export const useSelectableList = (fetchDataFunction, initialValue = '') => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const fetchedItems = await fetchDataFunction();
       setItems(fetchedItems);
       if (initialValue) {
         setFilteredItems(fetchedItems.filter(item => initialValue.split(',').map(i => i.trim()).includes(item.name)));
@@ -21,7 +20,7 @@ export const useSelectableList = (fetchDataFunction, initialValue = '') => {
       }
     };
     fetchData();
-  }, [fetchDataFunction, initialValue]);
+  }, [fetchedItems, initialValue]);
 
   useEffect(() => {
     const itemsArray = (selectedItem || '').split(',').map(item => item.trim()).filter(Boolean);

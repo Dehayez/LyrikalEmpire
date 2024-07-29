@@ -4,11 +4,11 @@ import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import { useBpmHandlers, useSelectableList } from '../../hooks';
-import { getGenres, getKeywords, getMoods, getFeatures } from '../../services';
 import { addBeatsToPlaylist, getPlaylists, getBeatsByPlaylistId } from '../../services/playlistService';
 import { isMobileOrTablet, eventBus } from '../../utils';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { useBeat } from '../../contexts/BeatContext';
+import { useData } from '../../contexts/DataContext';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
@@ -44,6 +44,12 @@ const BeatRow = ({
   const [playlists, setPlaylists] = useState([]);
   const { isSamePlaylist } = usePlaylist();
   const { hoveredBeat, setHoveredBeat } = useBeat();
+  const { genres, moods, keywords, features } = useData();
+  const { selectedItem: selectedGenre, filteredItems: filteredGenres, showItems: showGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(genres, beat.genre);
+  const { selectedItem: selectedMood, filteredItems: filteredMoods, showItems: showMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableList(moods, beat.mood);
+  const { selectedItem: selectedKeyword, filteredItems: filteredKeywords, showItems: showKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(keywords, beat.keywords);
+  const { selectedItem: selectedFeature, filteredItems: filteredFeatures, showItems: showFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur } = useSelectableList(features, beat.features);
+
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -195,74 +201,6 @@ useEffect(() => {
   const handleAddToCustomQueueClick = () => {
     addToCustomQueue(selectedBeats);
   };
-
-  const {
-    selectedItem: selectedGenre,
-    filteredItems: filteredGenres,
-    showItems: showGenres,
-    handleItemChange: handleGenreChange,
-    handleItemToggle: handleGenreToggle,
-    handleItemFocus: handleGenreFocus,
-    handleItemBlur: handleGenreBlur
-  } = useSelectableList(getGenres, beat.genre);
-
-  useEffect(() => {
-    if (selectedGenre) {
-      handleUpdate(beat.id, 'genre', selectedGenre);
-      onUpdate(beat.id, 'genre', selectedGenre);
-    }
-  }, [selectedGenre]);
-
-  const {
-    selectedItem: selectedMood,
-    filteredItems: filteredMoods,
-    showItems: showMoods,
-    handleItemChange: handleMoodChange,
-    handleItemToggle: handleMoodToggle,
-    handleItemFocus: handleMoodFocus,
-    handleItemBlur: handleMoodBlur
-  } = useSelectableList(getMoods, beat.mood);
-
-  useEffect(() => {
-    if (selectedMood) {
-      handleUpdate(beat.id, 'mood', selectedMood);
-      onUpdate(beat.id, 'mood', selectedMood);
-    }
-  }, [selectedMood]);
-
-  const {
-    selectedItem: selectedKeyword,
-    filteredItems: filteredKeywords,
-    showItems: showKeywords,
-    handleItemChange: handleKeywordChange,
-    handleItemToggle: handleKeywordToggle,
-    handleItemFocus: handleKeywordFocus,
-    handleItemBlur: handleKeywordBlur
-  } = useSelectableList(getKeywords, beat.keywords);
-
-  useEffect(() => {
-    if (selectedKeyword) {
-      handleUpdate(beat.id, 'keywords', selectedKeyword);
-      onUpdate(beat.id, 'keywords', selectedKeyword);
-    }
-  }, [selectedKeyword]);
-
-    const {
-      selectedItem: selectedFeature,
-      filteredItems: filteredFeatures,
-      showItems: showFeatures,
-      handleItemChange: handleFeatureChange,
-      handleItemToggle: handleFeatureToggle,
-      handleItemFocus: handleFeatureFocus,
-      handleItemBlur: handleFeatureBlur
-  } = useSelectableList(getFeatures, beat.features);
-
-  useEffect(() => {
-      if (selectedFeature) {
-          handleUpdate(beat.id, 'feature', selectedFeature);
-          onUpdate(beat.id, 'feature', selectedFeature);
-      }
-  }, [selectedFeature]);
 
   const handleFeatureInputFocus = (e) => {
       handleFocus();

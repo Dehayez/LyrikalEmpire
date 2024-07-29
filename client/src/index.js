@@ -7,6 +7,7 @@ import './index.scss';
 import App from './App';
 import { PlaylistProvider } from './contexts/PlaylistContext'; 
 import { BeatProvider } from './contexts/BeatContext';
+import { DataProvider } from './contexts/DataContext';
 import reportWebVitals from './reportWebVitals';
 
 const rootElement = document.getElementById('root');
@@ -17,9 +18,11 @@ root.render(
     <BrowserRouter>
       <PlaylistProvider> 
         <BeatProvider>
-          <DndProvider backend={HTML5Backend}>
-            <App />
-          </DndProvider>
+          <DataProvider>
+            <DndProvider backend={HTML5Backend}>
+              <App />
+            </DndProvider>
+          </DataProvider>
         </BeatProvider>
       </PlaylistProvider>
     </BrowserRouter>
