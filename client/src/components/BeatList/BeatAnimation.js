@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { usePlaylist } from '../../contexts/PlaylistContext';
-import { useBeat } from '../../contexts/BeatContext';
+import { usePlaylist, useBeat } from '../../contexts';
 import './BeatAnimation.scss';
 
 const BeatAnimation = ({ beat, currentBeat, isPlaying, index }) => {
