@@ -8,27 +8,27 @@ export const getKeywords = async () => {
   return data;
 };
 
-export const addKeyword = async (keyword) => {
+export const addKeyword = async (data) => {
   const formData = new FormData();
 
-  for (const key in keyword) {
-    if (keyword[key] !== null) {
-        formData.append(key, keyword[key]);
+  for (const key in data) {
+    if (data[key] !== null) {
+        formData.append(key, data[key]);
     }
   }
 
-  const { data } = await axios.post(API_URL, formData, {
+  const response = await axios.post(API_URL, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   });
 
-  return data;
+  return response.data;
 };
 
-export const updateKeyword = async (id, updatedKeyword) => {
-  const { data } = await axios.put(`${API_URL}/${id}`, updatedKeyword);
-  return data;
+export const updateKeyword = async (id, data) => {
+  const response = await axios.put(`${API_URL}/${id}`, data);
+  return response.data;
 };
 
 export const deleteKeyword = (id) => axios.delete(`${API_URL}/${id}`);

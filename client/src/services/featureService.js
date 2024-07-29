@@ -8,31 +8,27 @@ export const getFeatures = async () => {
   return data;
 };
 
-export const addFeature = async (feature, audioFile) => {
+export const addFeature = async (data) => {
   const formData = new FormData();
 
-  for (const key in feature) {
-    if (feature[key] !== null) {
-        formData.append(key, feature[key]);
+  for (const key in data) {
+    if (data[key] !== null) {
+        formData.append(key, data[key]);
     }
   }
 
-  if (audioFile) {
-    formData.append('audio', audioFile, audioFile.name);
-  }
-
-  const { data } = await axios.post(API_URL, formData, {
+  const response = await axios.post(API_URL, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   });
 
-  return data;
+  return response.data;
 };
 
-export const updateFeature = async (id, updatedFeature) => {
-  const { data } = await axios.put(`${API_URL}/${id}`, updatedFeature);
-  return data;
+export const updateFeature = async (id, data) => {
+  const response = await axios.put(`${API_URL}/${id}`, data);
+  return response.data;
 };
 
 export const deleteFeature = (id) => axios.delete(`${API_URL}/${id}`);

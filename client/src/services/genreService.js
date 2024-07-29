@@ -8,27 +8,27 @@ export const getGenres = async () => {
   return data;
 };
 
-export const addGenre = async (genre) => {
+export const addGenre = async (data) => {
   const formData = new FormData();
 
-  for (const key in genre) {
-    if (genre[key] !== null) {
-        formData.append(key, genre[key]);
+  for (const key in data) {
+    if (data[key] !== null) {
+        formData.append(key, data[key]);
     }
   }
 
-  const { data } = await axios.post(API_URL, formData, {
+  const response = await axios.post(API_URL, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   });
 
-  return data;
+  return response.data;
 };
 
-export const updateGenre = async (id, updatedGenre) => {
-  const { data } = await axios.put(`${API_URL}/${id}`, updatedGenre);
-  return data;
+export const updateGenre = async (id, data) => {
+  const response = await axios.put(`${API_URL}/${id}`, data);
+  return response.data;
 };
 
 export const deleteGenre = (id) => axios.delete(`${API_URL}/${id}`);

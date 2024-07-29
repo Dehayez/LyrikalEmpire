@@ -165,6 +165,11 @@ app.get('/api/genres', (req, res) => {
 // Add Genre
 app.post('/api/genres', (req, res) => {
   const { name } = req.body;
+  
+  if (!name) {
+    return res.status(400).json({ error: 'Name is required' });
+  }
+
   db.query('INSERT INTO genres (name) VALUES (?)', [name], (err, results) => {
     if (err) {
       console.error(err);
@@ -218,6 +223,11 @@ app.get('/api/keywords', (req, res) => {
 // Add Keyword
 app.post('/api/keywords', (req, res) => {
   const { name } = req.body;
+  
+  if (!name) {
+    return res.status(400).json({ error: 'Name is required' });
+  }
+
   db.query('INSERT INTO keywords (name) VALUES (?)', [name], (err, results) => {
     if (err) {
       console.error(err);
@@ -266,9 +276,15 @@ app.get('/api/moods', (req, res) => {
     }
   });
 });
+
 // Add Mood
 app.post('/api/moods', (req, res) => {
   const { name } = req.body;
+  
+  if (!name) {
+    return res.status(400).json({ error: 'Name is required' });
+  }
+
   db.query('INSERT INTO moods (name) VALUES (?)', [name], (err, results) => {
     if (err) {
       console.error(err);
@@ -321,6 +337,11 @@ app.get('/api/features', (req, res) => {
 // Add Feature
 app.post('/api/features', (req, res) => {
   const { name } = req.body;
+  
+  if (!name) {
+    return res.status(400).json({ error: 'Name is required' });
+  }
+
   db.query('INSERT INTO features (name) VALUES (?)', [name], (err, results) => {
     if (err) {
       console.error(err);
