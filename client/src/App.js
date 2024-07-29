@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 
 import { isMobileOrTablet, sortBeats } from './utils';
-import { addBeat, getBeats } from './services';
+import { addBeat } from './services';
 import { handlePlay, handlePrev } from './hooks';
 import { useBeat } from './contexts';
 
@@ -15,42 +15,42 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
 function App() {
+  const { beats, setBeats } = useBeat();
+
   const [refresh, setRefresh] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sortedBeats, setSortedBeats] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [volume, setVolume] = useState(1.0);
-  const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [queue, setQueue] = useState([]);
-  const [customQueue, setCustomQueue] = useState(() => {
-    const savedQueue = localStorage.getItem('customQueue');
-    return savedQueue ? JSON.parse(savedQueue) : [];
-  });
-  const [allowHover, setAllowHover] = useState(true);
   const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
+  
   const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
-  const [selectedBeat, setSelectedBeat] = useState(() => {
-    const item = localStorage.getItem('selectedBeat');
-    return item && item !== "undefined" ? JSON.parse(item) : null;
-  });
-  const [shuffle, setShuffle] = useState(() => JSON.parse(localStorage.getItem('shuffle') || 'false'));
-  const [repeat, setRepeat] = useState(() => localStorage.getItem('repeat') || 'Disabled Repeat');
+  const [selectedBeat, setSelectedBeat] = useState(() => {const item = localStorage.getItem('selectedBeat');return item && item !== "undefined" ? JSON.parse(item) : null;});
+  const [sortedBeats, setSortedBeats] = useState([]);
+  const [queue, setQueue] = useState([]);
+  const [customQueue, setCustomQueue] = useState(() => {const savedQueue = localStorage.getItem('customQueue');return savedQueue ? JSON.parse(savedQueue) : [];});
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
+  const [sortConfig, setSortConfig] = useState(() => {const savedSortConfig = localStorage.getItem('sortConfig'); return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };});
+  
+  const [isOpen, setIsOpen] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [allowHover, setAllowHover] = useState(true);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+  const hoverRefLeft = useRef(false);
+  const hoverRefRight = useRef(false);
   const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
-  const hoverRefLeft = useRef(false);
-  const hoverRefRight = useRef(false);
   const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isLeftPanelVisible') || 'false'));
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isRightPanelVisible') || 'false'));
+  
+  const [volume, setVolume] = useState(1.0);
+  const [shuffle, setShuffle] = useState(() => JSON.parse(localStorage.getItem('shuffle') || 'false'));
+  const [repeat, setRepeat] = useState(() => localStorage.getItem('repeat') || 'Disabled Repeat');
+  
   const [droppedFiles, setDroppedFiles] = useState([]);
-  const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [activeUploads, setActiveUploads] = useState(0);
-  const [sortConfig, setSortConfig] = useState(() => {
-    const savedSortConfig = localStorage.getItem('sortConfig');
-    return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };
-  });
-  const { beats, setBeats } = useBeat();
+
+
 
   useEffect(() => {
     setSortedBeats(sortBeats(beats, sortConfig));
