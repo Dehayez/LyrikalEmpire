@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 import Draggable from 'react-draggable';
 import { toast } from 'react-toastify';
 import { addBeat, getGenres, getMoods, getKeywords, getFeatures } from '../../services';
+import { useData } from '../../contexts/DataContext';
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
@@ -23,14 +24,15 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const [isBpmInvalid, setIsBpmInvalid] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const { bpm, handleBpmChange: originalHandleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
+    const { genres, moods, keywords, features } = useData();
 
     const draggableRef = useRef(null);
     const labelRef = useRef(null);
 
-    const { items: genres, selectedItem: genre, filteredItems: filteredGenres, showItems: showGenres, selectedItems: selectedGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(getGenres);
-    const { items: keywords, selectedItem: keyword, filteredItems: filteredKeywords, showItems: showKeywords, selectedItems: selectedKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(getKeywords);
-    const { items: moods, selectedItem: mood, filteredItems: filteredMoods, showItems: showMoods, selectedItems: selectedMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableList(getMoods);
-    const { items: features, selectedItem: feature, filteredItems: filteredFeatures, showItems: showFeatures, selectedItems: selectedFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur } = useSelectableList(getFeatures);
+    const { selectedItem: genre, filteredItems: filteredGenres, showItems: showGenres, selectedItems: selectedGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(genres);
+    const { selectedItem: keyword, filteredItems: filteredKeywords, showItems: showKeywords, selectedItems: selectedKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(keywords);
+    const { selectedItem: mood, filteredItems: filteredMoods, showItems: showMoods, selectedItems: selectedMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableList(moods);
+    const { selectedItem: feature, filteredItems: filteredFeatures, showItems: showFeatures, selectedItems: selectedFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur } = useSelectableList(features);
 
     const resetForm = () => {
         setTitle('');
