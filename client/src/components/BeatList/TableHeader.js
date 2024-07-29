@@ -36,7 +36,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
     }
   };
 
-  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keywords', 'features'];
+  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keyword', 'feature'];
 
   const handleRightClick = (e, column) => {
     e.preventDefault();
@@ -50,76 +50,78 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
   };
 
   return (
-      <thead className="table-header" ref={tableRef}>
-        <tr>
-          {!(mode === 'lock' && isMobileOrTablet()) && (
-            <th className={`table-header__cell table-header__cell--center non-draggable`}>#</th>
-          )}
-          {columns.map(column => {
-            if (mode === 'lock' && column !== 'title') {
-              return null; 
+    <thead className="table-header" ref={tableRef}>
+      <tr>
+        {!(mode === 'lock' && isMobileOrTablet()) && (
+          <th className={`table-header__cell table-header__cell--center non-draggable`}>#</th>
+        )}
+        {columns.map(column => {
+          if (mode === 'lock' && column !== 'title') {
+            return null; 
+          }
+          return (
+            <th key={column}
+                onMouseDown={() => handleMouseEvents('down', column)}
+                onMouseUp={() => handleMouseEvents('up', column)}
+                onContextMenu={(e) => handleRightClick(e, column)}
+                className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
+              {column === 'bpm' ? 'BPM' : column.charAt(0).toUpperCase() + column.slice(1)}
+              {sortConfig.key === column && (
+                <span className="table-header__sort-icon">
+                  {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
+                </span>
+              )}
+              {(column === 'genre' || column === 'mood' || column === 'keyword' || column === 'feature') && (
+                activeContextMenu === column && (
+                  <ContextMenu
+                    items={[
+                      { 
+                        icon: IoAddSharp,
+                        text: `Add ${activeContextMenu}`, 
+                        onClick: () => handleOpenForm(activeContextMenu) 
+                      }
+                    ]}
+                    position={contextMenuPosition}
+                    setActiveContextMenu={setActiveContextMenu}
+                  />
+                )
+              )}
+            </th>
+          );
+        })}
+        {!(isMobileOrTablet() && mode === 'lock') && (
+          <th className={`table-header__cell table-header__cell--center non-draggable`}><IoTimeOutline/></th>
+        )}
+        <th className={`table-header__cell table-header__cell--center non-draggable`}></th>
+      </tr>
+      {showForm && ReactDOM.createPortal (
+        <Form
+          title={`Add ${formType}`}
+          item={formType}
+          onClose={() => setShowForm(false)}
+          onSubmit={(data) => {
+            switch (formType) {
+              case 'genre':
+                addGenre(data);
+                break;
+              case 'mood':
+                addMood(data);
+                break;
+              case 'keywords':
+                addKeyword(data);
+                break;
+              case 'features':
+                addFeature(data);
+                break;
+              default:
+                break;
             }
-            return (
-              <th key={column}
-                  onMouseDown={() => handleMouseEvents('down', column)}
-                  onMouseUp={() => handleMouseEvents('up', column)}
-                  onContextMenu={(e) => handleRightClick(e, column)}
-                  className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}>
-                {column === 'bpm' ? 'BPM' : column.charAt(0).toUpperCase() + column.slice(1)}
-                {sortConfig.key === column && (
-                  <span className="table-header__sort-icon">
-                    {sortConfig.direction === 'ascending' ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
-                  </span>
-                )}
-              </th>
-            );
-          })}
-          {!(isMobileOrTablet() && mode === 'lock') && (
-            <th className={`table-header__cell table-header__cell--center non-draggable`}><IoTimeOutline/></th>
-          )}
-          <th className={`table-header__cell table-header__cell--center non-draggable`}></th>
-
-        <td>
-          {activeContextMenu && (
-          <ContextMenu
-            items={[
-              { text: `Add ${activeContextMenu}`, onClick: () => handleOpenForm(activeContextMenu) }
-            ]}
-            icon={IoAddSharp}
-            position={contextMenuPosition}
-            setActiveContextMenu={setActiveContextMenu}
-          />
-        )}
-        {showForm && ReactDOM.createPortal (
-          <Form
-            title={`Add ${formType}`}
-            item={formType}
-            onClose={() => setShowForm(false)}
-            onSubmit={(data) => {
-              switch (formType) {
-                case 'genre':
-                  addGenre(data);
-                  break;
-                case 'mood':
-                  addMood(data);
-                  break;
-                case 'keywords':
-                  addKeyword(data);
-                  break;
-                case 'features':
-                  addFeature(data);
-                  break;
-                default:
-                  break;
-              }
-              setShowForm(false);
-            }}
-          />,
-          document.getElementById('modal-root')
-        )}
-        </td>
-        </tr>
-      </thead>
+            setShowForm(false);
+          }}
+        />,
+        document.getElementById('modal-root')
+      )}
+    </thead>
   );
 };
 
