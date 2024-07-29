@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { getPlaylists, createPlaylist, deletePlaylist } from '../../services/playlistService';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus } from '../../utils';
+import { createPlaylist, deletePlaylist, getPlaylists } from '../../services';
 import { ContextMenu } from '../ContextMenu';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
@@ -13,9 +13,8 @@ import './Playlists.scss';
 
 const Playlists = ({ isPlaying }) => {
   const navigate = useNavigate();
-  const { playedPlaylistId, currentPlaylistId } = usePlaylist();
+  const { playlists, playedPlaylistId, currentPlaylistId } = usePlaylist();
 
-  const [playlists, setPlaylists] = useState([]);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
@@ -26,56 +25,10 @@ const Playlists = ({ isPlaying }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
 
-  useEffect(() => {
-    fetchPlaylists();
-  }, []);
-
-  useEffect(() => {
-    const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
-    const hideContextMenu = () => setActiveContextMenu(null);
-
-    const manageContextMenuVisibility = (show) => {
-      window[`${show ? 'add' : 'remove'}EventListener`]('click', hideContextMenu);
-      toggleScroll(show);
-    };
-
-    manageContextMenuVisibility(!!activeContextMenu);
-
-    return () => manageContextMenuVisibility(false);
-  }, [activeContextMenu]);
-
-  useEffect(() => {
-    const updatePlaylistDetails = (updatedPlaylist) => {
-      setPlaylists(currentPlaylists =>
-        currentPlaylists.map(playlist =>
-          playlist.id === updatedPlaylist.id
-            ? { ...playlist, title: updatedPlaylist.title, description: updatedPlaylist.description }
-            : playlist
-        )
-      );
-    };
-  
-    eventBus.on('playlistUpdated', updatePlaylistDetails);
-  
-    return () => {
-      eventBus.off('playlistUpdated', updatePlaylistDetails);
-    };
-  }, [playlists]);
-
-  const fetchPlaylists = async () => {
-    try {
-      const data = await getPlaylists();
-      setPlaylists(data);
-    } catch (error) {
-      console.error('Error fetching playlists:', error);
-    }
-  };
-
   const handleAddPlaylist = async () => {
     const newPlaylistTitle = `Playlist #${playlists.length + 1}`;
     try {
       await createPlaylist({ title: newPlaylistTitle, description: null });
-      await fetchPlaylists();
       eventBus.emit('playlistAdded');
     } catch (error) {
       console.error('Error adding new playlist:', error);
@@ -85,7 +38,6 @@ const Playlists = ({ isPlaying }) => {
   const handleDeletePlaylist = async (playlistId) => {
     try {
       await deletePlaylist(playlistId);
-      await fetchPlaylists();
       setShowConfirmModal(false);
       eventBus.emit('playlistDeleted', playlistId);
     } catch (error) {
@@ -123,6 +75,20 @@ const Playlists = ({ isPlaying }) => {
     setPlaylistToDelete(playlist);
     setShowConfirmModal(true);
   };
+
+  useEffect(() => {
+    const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
+    const hideContextMenu = () => setActiveContextMenu(null);
+
+    const manageContextMenuVisibility = (show) => {
+      window[`${show ? 'add' : 'remove'}EventListener`]('click', hideContextMenu);
+      toggleScroll(show);
+    };
+
+    manageContextMenuVisibility(!!activeContextMenu);
+
+    return () => manageContextMenuVisibility(false);
+  }, [activeContextMenu]);
 
   return (
     <div className="playlists">
@@ -182,7 +148,7 @@ const Playlists = ({ isPlaying }) => {
         <UpdatePlaylistForm
           playlist={playlistToUpdate}
           onClose={() => setShowUpdateForm(false)}
-          onUpdated={fetchPlaylists}
+          onUpdated={() => setShowUpdateForm(false)}
         />,
         document.getElementById('modal-root')
       )}
