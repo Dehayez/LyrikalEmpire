@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getBeats } from '../services';
 
 const BeatContext = createContext();
 
@@ -7,9 +8,23 @@ export const useBeat = () => useContext(BeatContext);
 export const BeatProvider = ({ children }) => {
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [isInputFocused, setInputFocused] = useState(false);
+  const [beats, setBeats] = useState([]);
+
+  useEffect(() => {
+    const fetchBeats = async () => {
+      try {
+        const data = await getBeats();
+        setBeats(data);
+      } catch (error) {
+        console.error('Failed to fetch beats:', error);
+      }
+    };
+
+    fetchBeats();
+  }, []);
 
   return (
-    <BeatContext.Provider value={{ hoveredBeat, setHoveredBeat, isInputFocused, setInputFocused }}>
+    <BeatContext.Provider value={{ hoveredBeat, setHoveredBeat, isInputFocused, setInputFocused, beats }}>
       {children}
     </BeatContext.Provider>
   );
