@@ -8,21 +8,8 @@ export const getGenres = async () => {
   return data;
 };
 
-export const addGenre = async (data) => {
-  const formData = new FormData();
-
-  for (const key in data) {
-    if (data[key] !== null) {
-        formData.append(key, data[key]);
-    }
-  }
-
-  const response = await axios.post(API_URL, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
-
+export const addGenre = async (name) => {
+  const response = await axios.post(API_URL, { name });
   return response.data;
 };
 
