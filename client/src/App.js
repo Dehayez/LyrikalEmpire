@@ -6,6 +6,7 @@ import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { isMobileOrTablet, sortBeats } from './utils';
 import { addBeat, getBeats } from './services';
 import { handlePlay, handlePrev } from './hooks';
+import { useBeat } from './contexts';
 
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
 import NotFound from './components/NotFound';
@@ -16,7 +17,7 @@ import './App.scss';
 function App() {
   const [refresh, setRefresh] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [beats, setBeats] = useState([]);
+  const [sortedBeats, setSortedBeats] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [volume, setVolume] = useState(1.0);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
@@ -49,21 +50,7 @@ function App() {
     const savedSortConfig = localStorage.getItem('sortConfig');
     return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };
   });
-
-  useEffect(() => {
-    const fetchBeats = async () => {
-      try {
-        const fetchedBeats = await getBeats();
-        setBeats(fetchedBeats);
-      } catch (error) {
-        console.error('Error fetching beats:', error);
-      }
-    };
-
-    fetchBeats();
-  }, []);
-
-  const [sortedBeats, setSortedBeats] = useState([]);
+  const { beats, setBeats } = useBeat();
 
   useEffect(() => {
     setSortedBeats(sortBeats(beats, sortConfig));

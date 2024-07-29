@@ -6,9 +6,9 @@ const BeatContext = createContext();
 export const useBeat = () => useContext(BeatContext);
 
 export const BeatProvider = ({ children }) => {
+  const [beats, setBeats] = useState([]);
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [isInputFocused, setInputFocused] = useState(false);
-  const [beats, setBeats] = useState([]);
 
   useEffect(() => {
     const fetchBeats = async () => {
