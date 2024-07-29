@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { isMobileOrTablet } from './utils';
-import { addBeat, getBeats } from './services';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
-import { handlePlay, handlePrev } from './hooks';
 import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
+
+import { isMobileOrTablet } from './utils';
+import { addBeat, getBeats } from './services';
+import { handlePlay, handlePrev } from './hooks';
+
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
+import NotFound from './components/NotFound';
+
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
-import NotFound from './components/NotFound';
 
 function App() {
   const [refresh, setRefresh] = useState(false);

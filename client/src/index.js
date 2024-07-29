@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+
 import './index.scss';
 import App from './App';
+import reportWebVitals from './reportWebVitals';
+
 import { PlaylistProvider } from './contexts/PlaylistContext'; 
 import { BeatProvider } from './contexts/BeatContext';
 import { DataProvider } from './contexts/DataContext';
-import reportWebVitals from './reportWebVitals';
 
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
