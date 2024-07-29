@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 
-import { isMobileOrTablet } from './utils';
+import { isMobileOrTablet, sortBeats } from './utils';
 import { addBeat, getBeats } from './services';
 import { handlePlay, handlePrev } from './hooks';
 
@@ -64,42 +64,10 @@ function App() {
   }, []);
 
   const [sortedBeats, setSortedBeats] = useState([]);
+
   useEffect(() => {
-    setSortedBeats(getSortedBeats(beats, sortConfig));
+    setSortedBeats(sortBeats(beats, sortConfig));
   }, [beats, sortConfig]);
-
-  const getSortedBeats = (beats, sortConfig) => {
-    let sortedBeats = [...beats];
-    const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
-    if (sortConfig.key !== null) {
-      sortedBeats.sort((a, b) => {
-        const valueA = a[sortConfig.key];
-        const valueB = b[sortConfig.key];
-        const isEmptyA = valueA === '' || valueA === null;
-        const isEmptyB = valueB === '' || valueB === null;
-
-        if (isEmptyA && isEmptyB) return 0;
-        if (isEmptyA) return 1;
-        if (isEmptyB) return -1;
-
-        if (sortConfig.key === 'tierlist') {
-          let indexA = tierOrder.indexOf(valueA);
-          let indexB = tierOrder.indexOf(valueB);
-          indexA = indexA === -1 ? tierOrder.length : indexA;
-          indexB = indexB === -1 ? tierOrder.length : indexB;
-          return sortConfig.direction === 'ascending' ? indexA - indexB : indexB - indexA;
-        }
-        if (valueA < valueB) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
-        }
-        if (valueA > valueB) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
-        }
-        return 0;
-      });
-    }
-    return sortedBeats;
-  };
 
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
@@ -121,7 +89,7 @@ function App() {
   }
 
   useEffect(() => {
-    logQueue(getSortedBeats(beats, sortConfig), shuffle, currentBeat);
+    logQueue(sortBeats(beats, sortConfig), shuffle, currentBeat);
   }, [beats, sortConfig, shuffle, currentBeat]);
 
   useEffect(() => {
