@@ -183,25 +183,13 @@ const BeatRow = ({
     setTierlist(newTierlist);
     handleUpdate(beat.id, 'tierlist', newTierlist);
   };
-  
-/*   useEffect(() => {
-    if (selectedGenre) {
-      onUpdate(beat.id, 'genre', selectedGenre);
-    }
-  }, [selectedGenre]);
-  
-  useEffect(() => {
-    if (selectedMood) {
-      onUpdate(beat.id, 'mood', selectedMood);
-    }
-  }, [selectedMood]); */
 
-    const handleFocus = () => setInputFocused(true);
+  const handleFocus = () => setInputFocused(true);
 
-    const handleBlur = (id, field, value) => {
-      setInputFocused(false);
-      handleUpdate(id, field, value);
-    };
+  const handleBlur = (id, field, value) => {
+    setInputFocused(false);
+    handleUpdate(id, field, value);
+  };
 
   const handleGenreInputFocus = (e) => {
     handleFocus();
