@@ -72,13 +72,13 @@ export const useSelectableList = (fetchedItems, initialValue = '') => {
   const handleItemBlur = () => {
     setTimeout(() => {
       setShowItems(false);
-      setIsBlurOrEnter(true); // Set to true on blur
+      setIsBlurOrEnter(true);
     }, 100);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      setIsBlurOrEnter(true); // Set to true on Enter
+      setIsBlurOrEnter(true);
     }
   };
 
@@ -93,6 +93,6 @@ export const useSelectableList = (fetchedItems, initialValue = '') => {
     handleItemFocus,
     handleItemBlur,
     handleKeyDown,
-    isBlurOrEnter, // Return the new state
+    isBlurOrEnter,
   };
 };
