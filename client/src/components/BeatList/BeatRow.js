@@ -1,17 +1,20 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useLocation } from 'react-router-dom';
-import classNames from 'classnames';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
+import classNames from 'classnames';
+
 import { useBpmHandlers, useSelectableListWithUpdate } from '../../hooks';
 import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services';
 import { isMobileOrTablet } from '../../utils';
 import { usePlaylist, useBeat, useData } from '../../contexts';
+
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
 import { Highlight } from '../Highlight';
 import { SelectableInput } from '../Inputs';
+
 import './BeatRow.scss';
 
 const BeatRow = ({

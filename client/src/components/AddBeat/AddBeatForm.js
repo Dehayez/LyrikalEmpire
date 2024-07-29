@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './AddBeatForm.scss';
-import { IoCheckmarkSharp } from "react-icons/io5";
 import Modal from 'react-modal';
 import Draggable from 'react-draggable';
+import { IoCheckmarkSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
+
 import { addBeat } from '../../services';
 import { useData } from '../../contexts';
 import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
+
+import './AddBeatForm.scss';
 
 Modal.setAppElement('#root');
 

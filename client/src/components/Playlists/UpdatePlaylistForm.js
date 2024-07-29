@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './UpdatePlaylistForm.scss';
 import Draggable from 'react-draggable';
+
 import { FormInput, FormTextarea } from '../Inputs';
 import { Warning } from '../Warning';
 import { updatePlaylist } from '../../services';
 import { eventBus } from '../../utils';
+
+import './UpdatePlaylistForm.scss';
 
 export const UpdatePlaylistForm = ({ playlist, onClose, onUpdated }) => {
     const [title, setTitle] = useState(playlist.title);
