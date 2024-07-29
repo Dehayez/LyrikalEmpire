@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useParams } from 'react-router-dom';
 import ReactDOM from 'react-dom';
-import { getPlaylistById, getBeatsByPlaylistId, removeBeatFromPlaylist, updateBeatOrder } from '../../services/playlistService';
+import { getPlaylistById, getBeatsByPlaylistId, removeBeatFromPlaylist, updateBeatOrder } from '../../services';
 import { eventBus } from '../../utils';
 import { BeatList } from '../BeatList';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm'; 
