@@ -33,8 +33,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const beatsToFilter = isExternalBeats ? externalBeats : beats;
   const { setPlaylistId } = usePlaylist();
   const { isInputFocused, setInputFocused } = useBeat();
+  const [hasFetched, setHasFetched] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 28; 
+  const itemsPerPage = 10; 
   const filteredAndSortedBeats = useMemo(() => {
     return beatsToFilter
       .filter(beat => {
@@ -85,14 +86,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
 
   useEffect(() => {
     const fetchAndSetBeats = async () => {
-      if (shouldFetchBeats && !isExternalBeats) {
+      if (shouldFetchBeats && !isExternalBeats && !hasFetched) {
         const fetchedBeats = await getBeats();
         handleUpdateAll(fetchedBeats);
+        setHasFetched(true);
       }
     };
   
     fetchAndSetBeats();
-  }, [shouldFetchBeats, isExternalBeats, externalBeats, handleUpdateAll]);
+  }, [shouldFetchBeats, isExternalBeats, handleUpdateAll, hasFetched]);
 
   useEffect(() => {
     const handleScroll = () => {
