@@ -6,7 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import classNames from 'classnames';
 
 import { getPlaylistById, getBeatsByPlaylistId, removeBeatFromPlaylist, updateBeatOrder } from '../../services';
-import { eventBus } from '../../utils';
+import { eventBus, sortBeats } from '../../utils';
 import { BeatList } from '../BeatList';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm'; 
 
@@ -74,18 +74,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
       eventBus.off('playlistUpdated', updatePlaylistDetails);
     };
   }, [playlist]);
-
-  const sortBeats = (beats, sortConfig) => {
-    if (!sortConfig || !sortConfig.key) {
-      return [...beats].sort((a, b) => a.beat_order - b.beat_order);
-    }
-  
-    return [...beats].sort((a, b) => {
-      if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'ascending' ? -1 : 1;
-      if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'ascending' ? 1 : -1;
-      return 0;
-    });
-  };
 
   const handleHeaderClick = () => {
     setShowUpdateForm(true);
