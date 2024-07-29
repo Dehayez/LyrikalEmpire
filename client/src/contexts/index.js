@@ -1,3 +1,3 @@
-export { PlaylistContext } from './PlaylistContext';
-export { BeatContext } from './BeatContext';
-export { DataContext } from './DataContext';
+export { PlaylistProvider, usePlaylist } from './PlaylistContext';
+export { BeatProvider, useBeat } from './BeatContext';
+export { DataProvider, useData } from './DataContext';
