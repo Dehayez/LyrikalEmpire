@@ -8,31 +8,27 @@ export const getMoods = async () => {
   return data;
 };
 
-export const addMood = async (mood, audioFile) => {
+export const addMood = async (data) => {
   const formData = new FormData();
 
-  for (const key in mood) {
-    if (mood[key] !== null) {
-        formData.append(key, mood[key]);
+  for (const key in data) {
+    if (data[key] !== null) {
+        formData.append(key, data[key]);
     }
   }
 
-  if (audioFile) {
-    formData.append('audio', audioFile, audioFile.name);
-  }
-
-  const { data } = await axios.post(API_URL, formData, {
+  const response = await axios.post(API_URL, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   });
 
-  return data;
+  return response.data;
 };
 
-export const updateMood = async (id, updatedMood) => {
-  const { data } = await axios.put(`${API_URL}/${id}`, updatedMood);
-  return data;
+export const updateMood = async (id, data) => {
+  const response = await axios.put(`${API_URL}/${id}`, data);
+  return response.data;
 };
 
 export const deleteMood = (id) => axios.delete(`${API_URL}/${id}`);
