@@ -7,8 +7,8 @@ export const useSelectableList = (fetchedItems, initialValue = '') => {
   const [selectedItem, setSelectedItem] = useState(initialValue);
   const [filteredItems, setFilteredItems] = useState([]);
   const [showItems, setShowItems] = useState(false);
-  // Ensure selectedItems is derived from a string
   const [selectedItems, setSelectedItems] = useState(initialValue.split(',').map(item => item.trim()).filter(Boolean));
+  const [isBlurOrEnter, setIsBlurOrEnter] = useState(false); // New state
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,7 +70,16 @@ export const useSelectableList = (fetchedItems, initialValue = '') => {
   };
 
   const handleItemBlur = () => {
-    setTimeout(() => setShowItems(false), 100);
+    setTimeout(() => {
+      setShowItems(false);
+      setIsBlurOrEnter(true); // Set to true on blur
+    }, 100);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      setIsBlurOrEnter(true); // Set to true on Enter
+    }
   };
 
   return {
@@ -82,6 +91,8 @@ export const useSelectableList = (fetchedItems, initialValue = '') => {
     handleItemChange,
     handleItemToggle,
     handleItemFocus,
-    handleItemBlur
+    handleItemBlur,
+    handleKeyDown,
+    isBlurOrEnter, // Return the new state
   };
-}
+};

@@ -5,11 +5,11 @@ export const useSelectableListWithUpdate = (items, selectedItem, beat, handleUpd
   const selectableList = useSelectableList(items, selectedItem);
 
   useEffect(() => {
-    if (selectableList.selectedItem) {
+    if (selectableList.isBlurOrEnter && selectableList.selectedItem) {
       handleUpdate(beat.id, field, selectableList.selectedItem);
       onUpdate(beat.id, field, selectableList.selectedItem);
     }
-  }, [selectableList.selectedItem]);
+  }, [selectableList.isBlurOrEnter, selectableList.selectedItem]);
 
   return selectableList;
 };
