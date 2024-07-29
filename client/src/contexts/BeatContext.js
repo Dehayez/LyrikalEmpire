@@ -24,7 +24,7 @@ export const BeatProvider = ({ children }) => {
   }, []);
 
   return (
-    <BeatContext.Provider value={{ hoveredBeat, setHoveredBeat, isInputFocused, setInputFocused, beats }}>
+    <BeatContext.Provider value={{ beats, setBeats, hoveredBeat, setHoveredBeat, isInputFocused, setInputFocused }}>
       {children}
     </BeatContext.Provider>
   );

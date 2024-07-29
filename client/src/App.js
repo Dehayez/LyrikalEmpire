@@ -50,11 +50,63 @@ function App() {
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [activeUploads, setActiveUploads] = useState(0);
 
-
+  useEffect(() => {
+    const sortedBeats = sortBeats(beats, sortConfig);
+    setSortedBeats(sortedBeats);
+    logQueue(sortedBeats, shuffle, currentBeat);
+  }, [beats, sortConfig, shuffle, currentBeat]);
 
   useEffect(() => {
-    setSortedBeats(sortBeats(beats, sortConfig));
-  }, [beats, sortConfig]);
+    localStorage.setItem('shuffle', shuffle);
+    localStorage.setItem('repeat', repeat);
+    localStorage.setItem('currentBeat', JSON.stringify(currentBeat));
+    localStorage.setItem('selectedBeat', JSON.stringify(selectedBeat));
+    localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
+    localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
+    localStorage.setItem('lastView', viewState);
+    localStorage.setItem('customQueue', JSON.stringify(customQueue));
+    localStorage.setItem('sortConfig', JSON.stringify(sortConfig));
+  }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig]);
+  
+  useEffect(() => {
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('drop', handleDrop);
+    window.addEventListener('dragleave', handleDragLeave);
+    
+    return () => {
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('drop', handleDrop);
+      window.removeEventListener('dragleave', handleDragLeave);
+    };
+  }, []);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      document.querySelector('.app').classList.remove('app--hidden');
+    }, 400); 
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  useEffect(() => {
+    if (activeUploads === 0 && showToast) {
+      setRefresh(!refresh); 
+    }
+  }, [activeUploads, showToast]); 
+
+  const updateBeat = (id, newData) => {
+    setBeats(currentBeats =>
+      currentBeats.map(beat => beat.id === id ? { ...beat, ...newData } : beat)
+    );
+  };
+
+  const onUpdate = (id, field, value) => {
+    setBeats(prevBeats =>
+      prevBeats.map(beat =>
+        beat.id === id ? { ...beat, [field]: value } : beat
+      )
+    );
+  };
 
   function logQueue(beats, shuffle, currentBeat) {
     let queue = [...beats];
@@ -74,56 +126,6 @@ function App() {
     }
     setQueue(queue);
   }
-
-  useEffect(() => {
-    logQueue(sortBeats(beats, sortConfig), shuffle, currentBeat);
-  }, [beats, sortConfig, shuffle, currentBeat]);
-
-  useEffect(() => {
-    localStorage.setItem('shuffle', shuffle);
-    localStorage.setItem('repeat', repeat);
-    localStorage.setItem('currentBeat', JSON.stringify(currentBeat));
-    localStorage.setItem('selectedBeat', JSON.stringify(selectedBeat));
-    localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
-    localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
-    localStorage.setItem('lastView', viewState);
-    localStorage.setItem('customQueue', JSON.stringify(customQueue));
-    localStorage.setItem('sortConfig', JSON.stringify(sortConfig));
-  }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig]);
-
-  useEffect(() => {
-    window.addEventListener('dragover', handleDragOver);
-    window.addEventListener('drop', handleDrop);
-    window.addEventListener('dragleave', handleDragLeave);
-  
-    return () => {
-      window.removeEventListener('dragover', handleDragOver);
-      window.removeEventListener('drop', handleDrop);
-      window.removeEventListener('dragleave', handleDragLeave);
-    };
-  }, []);
-  
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      document.querySelector('.app').classList.remove('app--hidden');
-    }, 400); 
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const updateBeat = (id, newData) => {
-    setBeats(currentBeats =>
-      currentBeats.map(beat => beat.id === id ? { ...beat, ...newData } : beat)
-    );
-  };
-
-  const onUpdate = (id, field, value) => {
-    setBeats(prevBeats =>
-      prevBeats.map(beat =>
-        beat.id === id ? { ...beat, [field]: value } : beat
-      )
-    );
-  };
 
   function handleDragOver(e) {
     e.preventDefault();
@@ -216,12 +218,6 @@ function App() {
       }
     });
   };
-
-useEffect(() => {
-  if (activeUploads === 0 && showToast) {
-    setRefresh(!refresh); 
-  }
-}, [activeUploads, showToast]); 
 
   const updateHistory = (playedBeat) => {
     const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');
