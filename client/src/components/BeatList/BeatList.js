@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { isMobileOrTablet } from '../../utils';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
@@ -34,8 +35,16 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const { setPlaylistId } = usePlaylist();
   const { isInputFocused, setInputFocused } = useBeat();
   const [hasFetched, setHasFetched] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; 
+  const location = useLocation();
+  const urlKey = `currentPage_${location.pathname}`;
+  
+  const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    localStorage.setItem(urlKey, currentPage);
+  }, [currentPage, urlKey]);
+
   const filteredAndSortedBeats = useMemo(() => {
     return beatsToFilter
       .filter(beat => {
@@ -52,23 +61,20 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   }, [beatsToFilter, searchText, sortConfig]);
 
   const totalPages = Math.ceil(filteredAndSortedBeats.length / itemsPerPage);
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
+  
   const currentBeats = filteredAndSortedBeats.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+  
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => prevPage + 1);
+  };
+  
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+  };
+
 
   const handlePlayPause = useCallback((beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
