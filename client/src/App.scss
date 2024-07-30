@@ -115,9 +115,9 @@
   position: fixed;
   top: 0;
   bottom: 0;
-  width: 4px;
-  z-index: 3;
-  opacity: 0;
+  width: 16px;
+  z-index: 10;
+  opacity: 1;
 
   &--left {
     left: 0;
