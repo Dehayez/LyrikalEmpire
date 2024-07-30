@@ -297,11 +297,9 @@ function App() {
   
   const handleMouseLeaveLeft = () => {
     hoverRefLeft.current = false;
-    setTimeout(() => {
       if (!hoverRefLeft.current) {
         setIsLeftDivVisible(false);
       }
-    }, 200);
   };
   
   const handleMouseEnterRight = () => {
@@ -312,11 +310,9 @@ function App() {
   
   const handleMouseLeaveRight = () => {
     hoverRefRight.current = false;
-    setTimeout(() => {
       if (!hoverRefRight.current) {
         setIsRightDivVisible(false);
       }
-    }, 200);
   };
   
   const toggleSidePanel = (panel) => {
