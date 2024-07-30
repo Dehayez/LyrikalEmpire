@@ -6,16 +6,36 @@ const PaginationControls = ({ currentPage, totalPages, handlePreviousPage, handl
   const [maxVisiblePages, setMaxVisiblePages] = useState(7);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 700px)');
-    const handleMediaQueryChange = (e) => {
-      setMaxVisiblePages(e.matches ? 5 : 7);
+    const mediaQueries = [
+      { query: '(max-width: 600px)', pages: 3 },
+      { query: '(min-width: 601px) and (max-width: 900px)', pages: 5 },
+      { query: '(min-width: 901px) and (max-width: 1200px)', pages: 7 },
+      { query: '(min-width: 1201px) and (max-width: 1500px)', pages: 11 },
+      { query: '(min-width: 1501px) and (max-width: 1800px)', pages: 13 },
+      { query: '(min-width: 1801px)', pages: 18 },
+    ];
+  
+    const handleMediaQueryChange = () => {
+      for (const { query, pages } of mediaQueries) {
+        if (window.matchMedia(query).matches) {
+          setMaxVisiblePages(pages);
+          break;
+        }
+      }
     };
-
-    handleMediaQueryChange(mediaQuery); // Set initial value
-    mediaQuery.addEventListener('change', handleMediaQueryChange);
-
+  
+    handleMediaQueryChange();
+  
+    mediaQueries.forEach(({ query }) => {
+      const mediaQueryList = window.matchMedia(query);
+      mediaQueryList.addEventListener('change', handleMediaQueryChange);
+    });
+  
     return () => {
-      mediaQuery.removeEventListener('change', handleMediaQueryChange);
+      mediaQueries.forEach(({ query }) => {
+        const mediaQueryList = window.matchMedia(query);
+        mediaQueryList.removeEventListener('change', handleMediaQueryChange);
+      });
     };
   }, []);
 
