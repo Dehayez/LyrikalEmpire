@@ -271,8 +271,22 @@ const BeatRow = ({
       className={`${beatRowClasses} ${isInputFocused ? 'beat-row--focused' : ''}, ${isDragging ? 'beat-row--selected' : ''}`}
       key={beatRowClasses}
       onClick={isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)}
-      onMouseEnter={!isMobileOrTablet() ? () => setHoveredBeat(beat.id) : undefined}
-      onMouseLeave={!isMobileOrTablet() ? () => setHoveredBeat(null) : undefined}
+      onMouseEnter={(e) => { 
+        if (!isMobileOrTablet()) { 
+          e.currentTarget.querySelectorAll('.interactive-button').forEach(button => { 
+            button.style.opacity = 1; 
+          }); 
+          setHoveredBeat(beat.id); 
+        } 
+      }}
+      onMouseLeave={(e) => { 
+        if (!isMobileOrTablet()) { 
+          e.currentTarget.querySelectorAll('.interactive-button').forEach(button => { 
+            button.style.opacity = 0; 
+          }); 
+          setHoveredBeat(null); 
+        } 
+      }}
       onContextMenu={(e) => {
         e.preventDefault();
         handleRightClick(e, beat);
