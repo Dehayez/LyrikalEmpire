@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
@@ -232,21 +232,9 @@ function App() {
     setSortConfig({ key: direction ? key : null, direction });
   };
 
-  const handleAdd = (newBeat) => {
-    setRefresh(!refresh);
-    const updatedBeats = [...beats, newBeat];
-    setBeats(updatedBeats);
-    if (shuffle) {
-      const shuffledQueue = [...queue, newBeat];
-      for (let i = shuffledQueue.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledQueue[i], shuffledQueue[j]] = [shuffledQueue[j], shuffledQueue[i]];
-      }
-      setQueue(shuffledQueue);
-    } else {
-      setQueue([...queue, newBeat]);
-    }
-  };
+  const handleAdd = useCallback((newBeat) => {
+    setBeats((prevBeats) => [...prevBeats, newBeat]);
+  }, []);
 
   const handlePlayWrapper = (beat, play, beats) => {
     handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
