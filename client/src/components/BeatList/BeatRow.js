@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import classNames from 'classnames';
 
-import { useBpmHandlers, useSelectableListWithUpdate } from '../../hooks';
+import { useBpmHandlers, useSelectableList } from '../../hooks';
 import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services';
 import { isMobileOrTablet } from '../../utils';
 import { usePlaylist, useBeat, useData } from '../../contexts';
@@ -51,13 +51,13 @@ const BeatRow = ({
   const { hoveredBeat, setHoveredBeat } = useBeat();
   const { genres, moods, keywords, features } = useData();
 
-  const { selectedItem: selectedGenre, filteredItems: filteredGenres, showItems: showGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur, handleKeyDown: handleGenreKeyDown } = useSelectableListWithUpdate(genres, beat.genre, beat, handleUpdate, onUpdate, 'genre');
+  const { selectedItem: selectedGenre, filteredItems: filteredGenres, showItems: showGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur, handleKeyDown: handleGenreKeyDown } = useSelectableList(genres, beat.genre, beat, handleUpdate, onUpdate, 'genre');
 
-  const { selectedItem: selectedMood, filteredItems: filteredMoods, showItems: showMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur, handleKeyDown: handleMoodKeyDown } = useSelectableListWithUpdate(moods, beat.mood, beat, handleUpdate, onUpdate, 'mood');
+  const { selectedItem: selectedMood, filteredItems: filteredMoods, showItems: showMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur, handleKeyDown: handleMoodKeyDown } = useSelectableList(moods, beat.mood, beat, handleUpdate, onUpdate, 'mood');
   
-  const { selectedItem: selectedKeyword, filteredItems: filteredKeywords, showItems: showKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur, handleKeyDown: handleKeywordKeyDown } = useSelectableListWithUpdate(keywords, beat.keyword, beat, handleUpdate, onUpdate, 'keyword');
+  const { selectedItem: selectedKeyword, filteredItems: filteredKeywords, showItems: showKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur, handleKeyDown: handleKeywordKeyDown } = useSelectableList(keywords, beat.keyword, beat, handleUpdate, onUpdate, 'keyword');
 
-  const { selectedItem: selectedFeature, filteredItems: filteredFeatures, showItems: showFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur, handleKeyDown: handleFeatureKeyDown } = useSelectableListWithUpdate(features, beat.feature, beat, handleUpdate, onUpdate, 'feature');
+  const { selectedItem: selectedFeature, filteredItems: filteredFeatures, showItems: showFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur, handleKeyDown: handleFeatureKeyDown } = useSelectableList(features, beat.feature, beat, handleUpdate, onUpdate, 'feature');
 
   const beatRowClasses = classNames({
     'beat-row': true,

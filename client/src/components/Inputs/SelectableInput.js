@@ -62,7 +62,6 @@ export const SelectableInput = ({
     setIsListVisible(true);
   };
 
-  // Sort the filteredItems alphabetically by name
   const sortedItems = [...filteredItems].sort((a, b) => a.name.localeCompare(b.name));
 
   return (

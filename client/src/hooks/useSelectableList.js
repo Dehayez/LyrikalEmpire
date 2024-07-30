@@ -8,7 +8,7 @@ export const useSelectableList = (fetchedItems, initialValue = '') => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [showItems, setShowItems] = useState(false);
   const [selectedItems, setSelectedItems] = useState(initialValue.split(',').map(item => item.trim()).filter(Boolean));
-  const [isBlurOrEnter, setIsBlurOrEnter] = useState(false); // New state
+  const [isBlurOrEnter, setIsBlurOrEnter] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,8 +31,8 @@ export const useSelectableList = (fetchedItems, initialValue = '') => {
   const handleItemChange = (e) => {
     const input = e.target.value || ''; 
     const itemsArray = input.split(',').map(item => item.trim()).filter(Boolean);
-
-    if (input.endsWith(', ') || input.endsWith(',')) {
+  
+    if (input.endsWith(', ')) {
       setSelectedItem(input);
       setSelectedItems(itemsArray);
       setFilteredItems(items);
