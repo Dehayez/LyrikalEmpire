@@ -13,18 +13,18 @@ const PaginationControls = ({ items, currentBeat }) => {
   const [maxVisiblePages, setMaxVisiblePages] = useState(7);
   const itemsPerPage = 7;
   const totalPages = Math.ceil(items.length / itemsPerPage);
-  const currentBeats = items.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
 
   useEffect(() => {
     localStorage.setItem(urlKey, currentPage);
   }, [currentPage, urlKey]);
 
   useEffect(() => {
+    const currentBeats = items.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
     setPaginatedBeats(currentBeats);
-  }, [currentBeats]);
+  }, [currentPage]);
 
   const handleNextPage = () => {
     setCurrentPage(prevPage => prevPage + 1);
