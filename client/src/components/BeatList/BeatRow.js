@@ -34,6 +34,11 @@ const BeatRow = ({
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const toDragAndDrop = location.pathname !== '/' && mode === 'lock';
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
+  
+  const urlKey = `currentPage_${location.pathname}`;
+  const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
+  const itemsPerPage = 7;
+
   const deleteText = selectedBeats.length > 1
     ? deleteMode === 'playlist'
         ? `Remove ${selectedBeats.length} tracks from playlist`
@@ -71,6 +76,10 @@ const BeatRow = ({
     } catch (error) {
       console.error('Error fetching beats:', error);
     }
+  };
+
+  const calculateActualIndex = (index) => {
+    return (currentPage - 1) * itemsPerPage + index;
   };
 
   const [{ isDragging }, drag] = useDrag({
@@ -279,7 +288,7 @@ const BeatRow = ({
               beat={beat} 
               currentBeat={currentBeat} 
               isPlaying={isPlaying} 
-              index={index} 
+              index={calculateActualIndex(index)}
             />
             <PlayPauseButton 
               beat={beat} 
