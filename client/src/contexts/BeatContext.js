@@ -1,3 +1,4 @@
+// client/src/contexts/BeatContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getBeats } from '../services';
 
@@ -7,6 +8,7 @@ export const useBeat = () => useContext(BeatContext);
 
 export const BeatProvider = ({ children }) => {
   const [beats, setBeats] = useState([]);
+  const [paginatedBeats, setPaginatedBeats] = useState([]);
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [isInputFocused, setInputFocused] = useState(false);
 
@@ -24,7 +26,7 @@ export const BeatProvider = ({ children }) => {
   }, []);
 
   return (
-    <BeatContext.Provider value={{ beats, setBeats, hoveredBeat, setHoveredBeat, isInputFocused, setInputFocused }}>
+    <BeatContext.Provider value={{ beats, setBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat, isInputFocused, setInputFocused }}>
       {children}
     </BeatContext.Provider>
   );

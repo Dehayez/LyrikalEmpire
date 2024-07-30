@@ -1,9 +1,43 @@
-import React, { useState, useEffect } from 'react';
+// client/src/components/BeatList/PaginationControls.js
+import React, { useState, useEffect, useContext } from 'react';
 import { IoChevronBackSharp, IoChevronForwardSharp } from "react-icons/io5";
+import { useLocation } from 'react-router-dom';
+import { useBeat } from '../../contexts/BeatContext';
 import './PaginationControls.scss';
 
-const PaginationControls = ({ currentPage, totalPages, handlePreviousPage, handleNextPage, handlePageClick }) => {
+const PaginationControls = ({ items }) => {
+  const location = useLocation();
+  const urlKey = `currentPage_${location.pathname}`;
+  const { setPaginatedBeats } = useBeat();
+
   const [maxVisiblePages, setMaxVisiblePages] = useState(7);
+  const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
+  const itemsPerPage = 7;
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const currentBeats = items.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  useEffect(() => {
+    localStorage.setItem(urlKey, currentPage);
+  }, [currentPage, urlKey]);
+
+  useEffect(() => {
+    setPaginatedBeats(currentBeats);
+  }, [currentBeats, setPaginatedBeats]);
+
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => prevPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+  };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   useEffect(() => {
     const mediaQueries = [
@@ -14,7 +48,7 @@ const PaginationControls = ({ currentPage, totalPages, handlePreviousPage, handl
       { query: '(min-width: 1501px) and (max-width: 1800px)', pages: 13 },
       { query: '(min-width: 1801px)', pages: 18 },
     ];
-  
+
     const handleMediaQueryChange = () => {
       for (const { query, pages } of mediaQueries) {
         if (window.matchMedia(query).matches) {
@@ -23,14 +57,14 @@ const PaginationControls = ({ currentPage, totalPages, handlePreviousPage, handl
         }
       }
     };
-  
+
     handleMediaQueryChange();
-  
+
     mediaQueries.forEach(({ query }) => {
       const mediaQueryList = window.matchMedia(query);
       mediaQueryList.addEventListener('change', handleMediaQueryChange);
     });
-  
+
     return () => {
       mediaQueries.forEach(({ query }) => {
         const mediaQueryList = window.matchMedia(query);
