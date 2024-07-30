@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp } from "react-icons/io5";
+import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoChevronBackSharp, IoChevronForwardSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
 import { isMobileOrTablet, sortBeats } from '../../utils';
@@ -338,9 +338,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
             </tbody>
           </table>
           <div className="pagination-controls">
-            <Button onClick={handlePreviousPage} text={'Previous'} disabled={currentPage === 1}/>
+            <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+              <IoChevronBackSharp fontSize={20}/>
+            </Button>
               <span className="pagination-controls__text">Page {currentPage} of {totalPages}</span>
-            <Button onClick={handleNextPage} text={'Next'} disabled={currentPage === totalPages}/>
+            <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+              <IoChevronForwardSharp fontSize={20}/>  
+            </Button>
           </div>
         </div>
       )}
