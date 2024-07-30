@@ -22,6 +22,7 @@ export const DataProvider = ({ children }) => {
         setMoods(moodsData);
         setKeywords(keywordsData);
         setFeatures(featuresData);
+        console.log('Data fetched successfully');
       } catch (error) {
         console.error('Error fetching data:', error);
       }

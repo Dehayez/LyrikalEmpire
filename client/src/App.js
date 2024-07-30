@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
@@ -22,13 +22,16 @@ function App() {
   
   const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
   const [selectedBeat, setSelectedBeat] = useState(() => {const item = localStorage.getItem('selectedBeat');return item && item !== "undefined" ? JSON.parse(item) : null;});
-  const [sortedBeats, setSortedBeats] = useState([]);
+  const [sortConfig, setSortConfig] = useState(() => {const savedSortConfig = localStorage.getItem('sortConfig'); return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };});
+  const sortedBeats = useMemo(() => {
+    return sortBeats(beats, sortConfig);
+  }, [beats, sortConfig]);
+  
   const [queue, setQueue] = useState([]);
   const [customQueue, setCustomQueue] = useState(() => {const savedQueue = localStorage.getItem('customQueue');return savedQueue ? JSON.parse(savedQueue) : [];});
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
-  const [sortConfig, setSortConfig] = useState(() => {const savedSortConfig = localStorage.getItem('sortConfig'); return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };});
   
   const [isOpen, setIsOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -50,7 +53,6 @@ function App() {
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [activeUploads, setActiveUploads] = useState(0);
 
-  useEffect(() => { setSortedBeats(sortBeats(beats, sortConfig)); }, [beats, sortConfig]);
   useEffect(() => { logQueue(sortBeats(beats, sortConfig), shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
   useEffect(() => {
