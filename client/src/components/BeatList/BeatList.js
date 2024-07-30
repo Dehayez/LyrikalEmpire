@@ -14,7 +14,7 @@ import PaginationControls from './PaginationControls';
 
 import './BeatList.scss';
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdateAfterDelete, currentBeat, onSort, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const containerRef = useRef(null);

@@ -12,7 +12,7 @@ import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 
 import './PlaylistDetail.scss';
 
-const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, onUpdateBeat, onUpdate }) => {
+const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, onUpdate }) => {
   const { id } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [beats, setBeats] = useState([]);
