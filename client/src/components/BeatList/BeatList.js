@@ -13,6 +13,7 @@ import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import { IconButton } from '../Buttons';
 import Button from '../Buttons';
+import PaginationControls from './PaginationControls';
 
 import './BeatList.scss';
 
@@ -83,6 +84,11 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const handlePreviousPage = () => {
     setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
   };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -337,15 +343,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
               ))}
             </tbody>
           </table>
-          <div className="pagination-controls">
-            <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-              <IoChevronBackSharp fontSize={20}/>
-            </Button>
-              <span className="pagination-controls__text">Page {currentPage} of {totalPages}</span>
-            <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-              <IoChevronForwardSharp fontSize={20}/>  
-            </Button>
-          </div>
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePreviousPage={handlePreviousPage}
+            handleNextPage={handleNextPage}
+            handlePageClick={handlePageClick}
+          />
         </div>
       )}
      
