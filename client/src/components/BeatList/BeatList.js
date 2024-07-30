@@ -17,35 +17,37 @@ import Button from '../Buttons';
 import './BeatList.scss';
 
 const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
-  const tableRef = useRef(null);
-  const searchInputRef = useRef(null);
-  const isExternalBeats = externalBeats.length > 0;
-  const initialBeats = isExternalBeats ? externalBeats : [];
-  const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions(initialBeats, handleQueueUpdateAfterDelete);
-  const [showMessage, setShowMessage] = useState(false);
-  const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
-  const [activeContextMenu, setActiveContextMenu] = useState(null);
-  const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
-  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
-  const [isHovering, setIsHovering] = useState(false);
-  const [hoverIndex, setHoverIndex] = useState(null);
-  const [hoverPosition, setHoverPosition] = useState(null);
-  const containerRef = useRef(null);
-  const [headerOpacity, setHeaderOpacity] = useState(1);
-  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
-  const beatsToFilter = isExternalBeats ? externalBeats : beats;
   const { setPlaylistId } = usePlaylist();
   const { isInputFocused, setInputFocused } = useBeat();
-  const [hasFetched, setHasFetched] = useState(false);
+
   const location = useLocation();
   const urlKey = `currentPage_${location.pathname}`;
-  
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
   const itemsPerPage = 7;
 
-  useEffect(() => {
-    localStorage.setItem(urlKey, currentPage);
-  }, [currentPage, urlKey]);
+  const tableRef = useRef(null);
+  const searchInputRef = useRef(null);
+  const containerRef = useRef(null);
+
+  const [hasFetched, setHasFetched] = useState(false);
+  const isExternalBeats = externalBeats.length > 0;
+  const initialBeats = isExternalBeats ? externalBeats : [];
+  const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions(initialBeats, handleQueueUpdateAfterDelete);
+  const beatsToFilter = isExternalBeats ? externalBeats : beats;
+
+  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
+  const [hoverIndex, setHoverIndex] = useState(null);
+  
+  const [mode, setMode] = useState(() => {const saved = localStorage.getItem('mode');return saved || 'edit';});
+  const [showMessage, setShowMessage] = useState(false);
+  const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
+  const [activeContextMenu, setActiveContextMenu] = useState(null);
+  const [isHovering, setIsHovering] = useState(false);
+  const [headerOpacity, setHeaderOpacity] = useState(1);
+  const [hoverPosition, setHoverPosition] = useState(null);
+
+  const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
+  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
 
   const filteredAndSortedBeats = useMemo(() => {
     const filteredBeats = beatsToFilter.filter(beat => {
@@ -62,6 +64,17 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const handlePlayPause = useCallback((beat) => {
+    const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
+    onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
+    setPlaylistId(playlistId);
+  }, [selectedBeat, isPlaying, onPlay, beats, playlistId, setPlaylistId]);
+
+  useEffect(() => {
+    localStorage.setItem(urlKey, currentPage);
+  }, [currentPage, urlKey]);
+
   
   const handleNextPage = () => {
     setCurrentPage(prevPage => prevPage + 1);
@@ -70,12 +83,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const handlePreviousPage = () => {
     setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
   };
-
-  const handlePlayPause = useCallback((beat) => {
-    const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
-    onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
-    setPlaylistId(playlistId);
-  }, [selectedBeat, isPlaying, onPlay, beats, playlistId, setPlaylistId]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -137,6 +144,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats, handlePlayPause]);
+  
+  useEffect(() => {
+    localStorage.setItem('mode', mode);
+  }, [mode]);
 
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
@@ -184,15 +195,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   };
 
   const openConfirmModal = () => setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
-
-  const [mode, setMode] = useState(() => {
-    const saved = localStorage.getItem('mode');
-    return saved || 'edit';
-  });
-  
-  useEffect(() => {
-    localStorage.setItem('mode', mode);
-  }, [mode]);
   
   const toggleEdit = () => {
     const newState = mode === 'edit' ? 'listen' : mode === 'listen' ? 'lock' : 'edit';
