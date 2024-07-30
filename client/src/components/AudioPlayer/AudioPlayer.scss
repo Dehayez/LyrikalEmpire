@@ -114,3 +114,13 @@ $indicator-half-size: math.div($indicator-size, 2);
   width: fit-content;
   margin: auto;
 }
+
+
+@media (max-width: 580px) {
+  .audio-player__title {
+    display: none;
+  }
+  .volume-slider {
+    display: none;
+  }
+}

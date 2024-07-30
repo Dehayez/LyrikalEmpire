@@ -150,7 +150,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     </div>
   ) : (
     <div className="audio-player" id="audio-player">
-      <div style={{ flex: '1' }}>
+      <div className='audio-player__title' style={{ flex: '1' }}>
         {currentBeat && <p>{currentBeat.title}</p>}
       </div>
       <div style={{ flex: '2' }}>
