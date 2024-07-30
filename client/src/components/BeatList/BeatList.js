@@ -22,8 +22,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
 
   const location = useLocation();
   const urlKey = `currentPage_${location.pathname}`;
-  const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
-  const itemsPerPage = 7;
 
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -35,10 +33,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const { beats, handleUpdate, handleDelete, handleUpdateAll } = useBeatActions(initialBeats, handleQueueUpdateAfterDelete);
   const beatsToFilter = isExternalBeats ? externalBeats : beats;
 
-  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const [hoverIndex, setHoverIndex] = useState(null);
-  
-  const [mode, setMode] = useState(() => {const saved = localStorage.getItem('mode');return saved || 'edit';});
+  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
+
   const [showMessage, setShowMessage] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [activeContextMenu, setActiveContextMenu] = useState(null);
@@ -48,18 +45,21 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
 
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
-
+  
+  const [mode, setMode] = useState(() => {const saved = localStorage.getItem('mode');return saved || 'edit';});
+  
   const filteredAndSortedBeats = useMemo(() => {
     const filteredBeats = beatsToFilter.filter(beat => {
       const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
       return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
     });
-  
+    
     return sortBeats(filteredBeats, sortConfig);
   }, [beatsToFilter, searchText, sortConfig]);
-
-  const totalPages = Math.ceil(filteredAndSortedBeats.length / itemsPerPage);
   
+  const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
+  const itemsPerPage = 7;
+  const totalPages = Math.ceil(filteredAndSortedBeats.length / itemsPerPage);
   const currentBeats = filteredAndSortedBeats.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
