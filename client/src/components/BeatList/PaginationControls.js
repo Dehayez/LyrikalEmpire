@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoChevronBackSharp, IoChevronForwardSharp } from "react-icons/io5";
 import './PaginationControls.scss';
 
 const PaginationControls = ({ currentPage, totalPages, handlePreviousPage, handleNextPage, handlePageClick }) => {
-  const maxVisiblePages = 7;
+  const [maxVisiblePages, setMaxVisiblePages] = useState(7);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 700px)');
+    const handleMediaQueryChange = (e) => {
+      setMaxVisiblePages(e.matches ? 5 : 7);
+    };
+
+    handleMediaQueryChange(mediaQuery); // Set initial value
+    mediaQuery.addEventListener('change', handleMediaQueryChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleMediaQueryChange);
+    };
+  }, []);
+
   const halfVisiblePages = Math.floor(maxVisiblePages / 2);
 
   let startPage = Math.max(currentPage - halfVisiblePages, 1);
