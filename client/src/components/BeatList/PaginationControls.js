@@ -1,4 +1,3 @@
-// client/src/components/BeatList/PaginationControls.js
 import React, { useState, useEffect, useContext } from 'react';
 import { IoChevronBackSharp, IoChevronForwardSharp } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
