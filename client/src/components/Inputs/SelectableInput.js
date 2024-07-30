@@ -62,6 +62,9 @@ export const SelectableInput = ({
     setIsListVisible(true);
   };
 
+  // Sort the filteredItems alphabetically by name
+  const sortedItems = [...filteredItems].sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <div className="form-group">
       <label>{label}</label>
@@ -84,7 +87,7 @@ export const SelectableInput = ({
         <div className="options-list"
              onMouseEnter={() => setIsListVisible(true)}
              onMouseLeave={() => setIsListVisible(false)}>
-          {filteredItems.map((item, index) => {
+          {sortedItems.map((item, index) => {
             const isSelected = selectedValues.includes(item.name);
             const isFocused = index === focusedItemIndex;
             return (
