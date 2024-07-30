@@ -1,4 +1,3 @@
-// client/src/contexts/BeatContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getBeats } from '../services';
 

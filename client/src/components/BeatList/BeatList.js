@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoChevronBackSharp, IoChevronForwardSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
@@ -12,7 +11,6 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import { IconButton } from '../Buttons';
-import Button from '../Buttons';
 import PaginationControls from './PaginationControls';
 
 import './BeatList.scss';

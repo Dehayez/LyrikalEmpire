@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoChevronBackSharp, IoChevronForwardSharp } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
 import { useBeat } from '../../contexts/BeatContext';
@@ -6,11 +6,11 @@ import './PaginationControls.scss';
 
 const PaginationControls = ({ items, currentBeat }) => {
   const location = useLocation();
-  const urlKey = `currentPage_${location.pathname}`;
   const { setPaginatedBeats } = useBeat();
-
-  const [maxVisiblePages, setMaxVisiblePages] = useState(7);
+  
+  const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
+  const [maxVisiblePages, setMaxVisiblePages] = useState(7);
   const itemsPerPage = 7;
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const currentBeats = items.slice(
