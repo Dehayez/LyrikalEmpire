@@ -53,7 +53,7 @@ function App() {
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [activeUploads, setActiveUploads] = useState(0);
 
-  useEffect(() => { logQueue(sortBeats(beats, sortConfig), shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
+  useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
   useEffect(() => {
     localStorage.setItem('shuffle', shuffle);
