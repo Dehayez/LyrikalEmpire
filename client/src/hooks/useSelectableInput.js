@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelectableList } from './useSelectableList';
 
-export const useSelectableListWithUpdate = (items, selectedItem, beat, handleUpdate, onUpdate, field) => {
+export const useSelectableInput = (items, selectedItem, beat, handleUpdate, onUpdate, field) => {
   const selectableList = useSelectableList(items, selectedItem);
 
   useEffect(() => {
