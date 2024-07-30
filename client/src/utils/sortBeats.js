@@ -1,7 +1,7 @@
 const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
 
-export const sortBeats = (beats, sortConfig) => {
-  if (!sortConfig) return beats;
+export const sortBeats = (beats, sortConfig, originalOrder) => {
+  if (!sortConfig) return originalOrder;
 
   return beats.sort((a, b) => {
     const { key, direction } = sortConfig;
