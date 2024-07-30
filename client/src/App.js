@@ -385,7 +385,6 @@ function App() {
                 isPlaying={isPlaying} 
                 handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
                 currentBeat={currentBeat} 
-                sortedBeats={sortedBeats} 
                 onSort={onSort} 
                 sortConfig={sortConfig}
                 addToCustomQueue={addToCustomQueue}
@@ -409,7 +408,6 @@ function App() {
                 sortConfig={sortConfig}
                 addToCustomQueue={addToCustomQueue}
                 onBeatClick={handleBeatClick}  
-                onUpdateBeat={updateBeat}
                 onUpdate={onUpdate}
                 />} 
                 />
