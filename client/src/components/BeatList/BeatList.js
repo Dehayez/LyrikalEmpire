@@ -19,10 +19,7 @@ import './BeatList.scss';
 
 const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], shouldFetchBeats = true, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
   const { setPlaylistId } = usePlaylist();
-  const { isInputFocused, setInputFocused } = useBeat();
-
-  const location = useLocation();
-  const urlKey = `currentPage_${location.pathname}`;
+  const { isInputFocused, paginatedBeats } = useBeat();
 
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -58,37 +55,11 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     return sortBeats(filteredBeats, sortConfig);
   }, [beatsToFilter, searchText, sortConfig]);
   
-  const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
-  const itemsPerPage = 7;
-  const totalPages = Math.ceil(filteredAndSortedBeats.length / itemsPerPage);
-  const currentBeats = filteredAndSortedBeats.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   const handlePlayPause = useCallback((beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
     setPlaylistId(playlistId);
   }, [selectedBeat, isPlaying, onPlay, beats, playlistId, setPlaylistId]);
-
-  useEffect(() => {
-    localStorage.setItem(urlKey, currentPage);
-  }, [currentPage, urlKey]);
-
-  
-  const handleNextPage = () => {
-    setCurrentPage(prevPage => prevPage + 1);
-  };
-  
-  const handlePreviousPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
-  };
-
-  const handlePageClick = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -306,7 +277,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
           <table className={`beat-list__table ${mode === 'lock' ? 'beat-list__table--lock' : ''}`} ref={tableRef}>
             <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
             <tbody>
-              {currentBeats.map((beat, index) => (
+              {paginatedBeats.map((beat, index) => (
                 <React.Fragment key={beat.id}>
                 {hoverIndex === index && hoverPosition === 'top' && <tr className="drop-line" />}
                 <BeatRow
@@ -344,11 +315,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
             </tbody>
           </table>
           <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            handlePreviousPage={handlePreviousPage}
-            handleNextPage={handleNextPage}
-            handlePageClick={handlePageClick}
+            items={filteredAndSortedBeats}
           />
         </div>
       )}
