@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
-import { isMobileOrTablet } from '../../utils';
+import { isMobileOrTablet, sortBeats } from '../../utils';
 import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import { usePlaylist, useBeat } from '../../contexts';
@@ -47,20 +47,14 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     localStorage.setItem(urlKey, currentPage);
   }, [currentPage, urlKey]);
 
-const filteredAndSortedBeats = useMemo(() => {
-  const filteredBeats = beatsToFilter.filter(beat => {
-    const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
-    return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
-  });
-
-  return filteredBeats.sort((a, b) => {
-    if (!sortConfig) return 0;
-    const { key, direction } = sortConfig;
-    if (a[key] < b[key]) return direction === 'ascending' ? -1 : 1;
-    if (a[key] > b[key]) return direction === 'ascending' ? 1 : -1;
-    return 0;
-  });
-}, [beatsToFilter, searchText, sortConfig]);
+  const filteredAndSortedBeats = useMemo(() => {
+    const filteredBeats = beatsToFilter.filter(beat => {
+      const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
+      return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+    });
+  
+    return sortBeats(filteredBeats, sortConfig);
+  }, [beatsToFilter, searchText, sortConfig]);
 
   const totalPages = Math.ceil(filteredAndSortedBeats.length / itemsPerPage);
   
