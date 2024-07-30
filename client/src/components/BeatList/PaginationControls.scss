@@ -1,13 +1,41 @@
 @import '../../globals/variables';
 
 .pagination-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+
+  &-top {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
+  }
+
+  &-bottom { 
+    margin-top: 30px;
+
+    &__link {
+      color: $color-gray-light;
+      &:hover {
+        color: $color-white;
+        cursor: pointer;
+        transform: scale(1.04);
+      }
+
+      &--ghost {
+        color: transparent;
+        pointer-events: none;
+        &:hover {
+          color: transparent;
+        }
+      }
+    }
+  }
     
     .icon-button,
     &__link {
@@ -26,6 +54,11 @@
         }
         &.active {
           color: $color-white;
+          font-weight: bold;
+        }
+
+        &.highlight {
+          color: $color-yellow;
           font-weight: bold;
         }
     }

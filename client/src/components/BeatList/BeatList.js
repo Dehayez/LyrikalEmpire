@@ -316,6 +316,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
           </table>
           <PaginationControls
             items={filteredAndSortedBeats}
+            currentBeat={currentBeat}
           />
         </div>
       )}

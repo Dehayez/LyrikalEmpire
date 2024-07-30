@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useBeat } from '../../contexts/BeatContext';
 import './PaginationControls.scss';
 
-const PaginationControls = ({ items }) => {
+const PaginationControls = ({ items, currentBeat }) => {
   const location = useLocation();
   const urlKey = `currentPage_${location.pathname}`;
   const { setPaginatedBeats } = useBeat();
@@ -36,6 +36,12 @@ const PaginationControls = ({ items }) => {
 
   const handlePageClick = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleGoToCurrentBeatPage = () => {
+    if (currentBeatPage) {
+      setCurrentPage(currentBeatPage);
+    }
   };
 
   useEffect(() => {
@@ -85,52 +91,71 @@ const PaginationControls = ({ items }) => {
 
   const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 
+  // Determine the page number where the current beat is playing
+  const currentBeatPage = currentBeat ? Math.ceil((items.findIndex(item => item.id === currentBeat.id) + 1) / itemsPerPage) : null;
+
   return (
     <div className="pagination-controls">
-      <button className='icon-button' onClick={handlePreviousPage} disabled={currentPage === 1}>
-        <IoChevronBackSharp fontSize={20} />
-      </button>
-      {startPage > 1 ? (
-        <>
+      <div className="pagination-controls-top">
+        <button className='icon-button' onClick={handlePreviousPage} disabled={currentPage === 1}>
+          <IoChevronBackSharp fontSize={20} />
+        </button>
+        {startPage > 1 ? (
+          <>
+            <a
+              onClick={() => handlePageClick(1)}
+              className='pagination-controls__link'
+              style={{ cursor: 'pointer' }}
+            >
+              1
+            </a>
+            <span className='pagination-controls__ellipsis' style={{cursor: 'default'}}>...</span>
+          </>
+        ) : (
+          <span className='pagination-controls__placeholder'></span>
+        )}
+        {pageNumbers.map((pageNumber, index) => (
           <a
-            onClick={() => handlePageClick(1)}
-            className='pagination-controls__link'
+            key={index}
+            onClick={() => handlePageClick(pageNumber)}
+            className={[
+              'pagination-controls__link',
+              pageNumber === currentPage ? 'active' : '',
+              pageNumber === currentBeatPage ? 'highlight' : ''
+            ].join(' ')}
             style={{ cursor: 'pointer' }}
           >
-            1
+            {pageNumber}
           </a>
-          <span className='pagination-controls__ellipsis' style={{cursor: 'default'}}>...</span>
-        </>
-      ) : (
-        <span className='pagination-controls__placeholder'></span>
-      )}
-      {pageNumbers.map((pageNumber, index) => (
-        <a
-          key={index}
-          onClick={() => handlePageClick(pageNumber)}
-          className={['pagination-controls__link', pageNumber === currentPage ? 'active' : ''].join(' ')}
-          style={{ cursor: 'pointer' }}
-        >
-          {pageNumber}
+        ))}
+        {endPage < totalPages ? (
+          <>
+            <span className='pagination-controls__ellipsis' style={{cursor: 'default'}}>...</span>
+            <a
+              onClick={() => handlePageClick(totalPages)}
+              className='pagination-controls__link'
+              style={{ cursor: 'pointer' }}
+            >
+              {totalPages}
+            </a>
+          </>
+        ) : (
+          <span className='pagination-controls__placeholder'></span>
+        )}
+        <button className='icon-button' onClick={handleNextPage} disabled={currentPage === totalPages}>
+          <IoChevronForwardSharp fontSize={20} />
+        </button>
+      </div>
+      <div className="pagination-controls-bottom">
+        {currentBeatPage && (
+         <a 
+         className={`pagination-controls-bottom__link ${currentPage === currentBeatPage ? 'pagination-controls-bottom__link--ghost' : ''}`} 
+         onClick={handleGoToCurrentBeatPage}
+         >
+          Go to Current Track
         </a>
-      ))}
-      {endPage < totalPages ? (
-        <>
-          <span className='pagination-controls__ellipsis' style={{cursor: 'default'}}>...</span>
-          <a
-            onClick={() => handlePageClick(totalPages)}
-            className='pagination-controls__link'
-            style={{ cursor: 'pointer' }}
-          >
-            {totalPages}
-          </a>
-        </>
-      ) : (
-        <span className='pagination-controls__placeholder'></span>
-      )}
-      <button className='icon-button' onClick={handleNextPage} disabled={currentPage === totalPages}>
-        <IoChevronForwardSharp fontSize={20} />
-      </button>
+        )}
+      </div>
     </div>
   );
 };
