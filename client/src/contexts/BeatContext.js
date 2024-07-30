@@ -24,10 +24,6 @@ export const BeatProvider = ({ children }) => {
     fetchBeats();
   }, []);
 
-  useEffect(() => {
-    console.log('beats:', paginatedBeats);
-  }, [paginatedBeats]);
-
   return (
     <BeatContext.Provider value={{ beats, setBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat, isInputFocused, setInputFocused }}>
       {children}

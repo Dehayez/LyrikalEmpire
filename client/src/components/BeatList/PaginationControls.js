@@ -24,7 +24,7 @@ const PaginationControls = ({ items, currentBeat }) => {
       currentPage * itemsPerPage
     );
     setPaginatedBeats(currentBeats);
-  }, [currentPage]);
+  }, [currentPage, items]);
 
   const handleNextPage = () => {
     setCurrentPage(prevPage => prevPage + 1);

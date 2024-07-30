@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoChevronBackSharp, IoChevronForwardSharp } from "react-icons/io5";
+import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
 import { isMobileOrTablet, sortBeats } from '../../utils';
-import { getBeats } from '../../services';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import { usePlaylist, useBeat } from '../../contexts';
 
@@ -20,97 +19,37 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const searchInputRef = useRef(null);
   const containerRef = useRef(null);
 
-  
-  const { beats, paginatedBeats, isInputFocused } = useBeat();
   const { setPlaylistId } = usePlaylist();
+  const { beats, paginatedBeats, isInputFocused } = useBeat();
+  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
+  const { handleUpdate, handleDelete } = useBeatActions(beats, handleQueueUpdateAfterDelete);
+  const isExternalBeats = externalBeats.length > 0;
+  const beatsToFilter = isExternalBeats ? externalBeats : beats;
   
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
-  const isExternalBeats = externalBeats.length > 0;
-
-  const beatsToFilter = isExternalBeats ? externalBeats : beats;
-  const filteredAndSortedBeats = useMemo(() => {
-    const filteredBeats = beatsToFilter.filter(beat => {
-      const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
-      return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
-    });
-    
-    return sortBeats(filteredBeats, sortConfig);
-  }, [beatsToFilter, searchText, sortConfig]);
-  
-  const { handleUpdate, handleDelete, handleUpdateAll } = useBeatActions(beats, handleQueueUpdateAfterDelete);
-
   const [hoverIndex, setHoverIndex] = useState(null);
-  const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
-
   const [showMessage, setShowMessage] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [isHovering, setIsHovering] = useState(false);
   const [headerOpacity, setHeaderOpacity] = useState(1);
   const [hoverPosition, setHoverPosition] = useState(null);
-
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
-  
-  const [mode, setMode] = useState(() => {const saved = localStorage.getItem('mode');return saved || 'edit';});
+  const [mode, setMode] = useState(() => localStorage.getItem('mode') || 'edit');
+
+  const filteredAndSortedBeats = useMemo(() => {
+    const filteredBeats = beatsToFilter.filter(beat => {
+      const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
+      return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+    });
+    return sortBeats(filteredBeats, sortConfig);
+  }, [beatsToFilter, searchText, sortConfig]);
   
   const handlePlayPause = useCallback((beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
     setPlaylistId(playlistId);
   }, [selectedBeat, isPlaying, onPlay, beats, playlistId, setPlaylistId]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowMessage(true);
-    }, 100); 
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const maxScroll = 50; 
-      const scrollPosition = containerRef.current.scrollTop;
-      const opacity = Math.max(1 - scrollPosition / maxScroll, 0);
-      setHeaderOpacity(opacity);
-    };
-
-    const container = containerRef.current;
-    container.addEventListener('scroll', handleScroll);
-
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchInputRef.current && !searchInputRef.current.contains(event.target) && isSearchVisible && !searchText) {
-        setIsSearchVisible(false);
-      }
-    };
-  
-    document.addEventListener('mousedown', handleClickOutside);
-  
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSearchVisible, searchText]);
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'Enter' && selectedBeats.length > 0) {
-        handlePlayPause(selectedBeats[0]);
-      }
-      if (!isInputFocused && (event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
-        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBeats, handlePlayPause]);
-  
-  useEffect(() => {
-    localStorage.setItem('mode', mode);
-  }, [mode]);
 
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
@@ -194,6 +133,59 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
       });
     }, 250);
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowMessage(true);
+    }, 100); 
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const maxScroll = 50; 
+      const scrollPosition = containerRef.current.scrollTop;
+      const opacity = Math.max(1 - scrollPosition / maxScroll, 0);
+      setHeaderOpacity(opacity);
+    };
+
+    const container = containerRef.current;
+    container.addEventListener('scroll', handleScroll);
+
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchInputRef.current && !searchInputRef.current.contains(event.target) && isSearchVisible && !searchText) {
+        setIsSearchVisible(false);
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+  
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchVisible, searchText]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter' && selectedBeats.length > 0) {
+        handlePlayPause(selectedBeats[0]);
+      }
+      if (!isInputFocused && (event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
+        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedBeats, handlePlayPause]);
+  
+  useEffect(() => {
+    localStorage.setItem('mode', mode);
+  }, [mode]);
 
   return (
     <div ref={containerRef} className="beat-list">
