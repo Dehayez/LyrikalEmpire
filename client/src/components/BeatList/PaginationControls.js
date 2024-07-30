@@ -22,7 +22,7 @@ const PaginationControls = ({ currentPage, totalPages, handlePreviousPage, handl
       <button className='icon-button' onClick={handlePreviousPage} disabled={currentPage === 1}>
         <IoChevronBackSharp fontSize={20} />
       </button>
-      {startPage > 1 && (
+      {startPage > 1 ? (
         <>
           <a
             onClick={() => handlePageClick(1)}
@@ -31,8 +31,10 @@ const PaginationControls = ({ currentPage, totalPages, handlePreviousPage, handl
           >
             1
           </a>
-          <span className='pagination-controls__ellipsis'>...</span>
+          <span className='pagination-controls__ellipsis' style={{cursor: 'default'}}>...</span>
         </>
+      ) : (
+        <span className='pagination-controls__placeholder'></span>
       )}
       {pageNumbers.map((pageNumber, index) => (
         <a
@@ -44,9 +46,9 @@ const PaginationControls = ({ currentPage, totalPages, handlePreviousPage, handl
           {pageNumber}
         </a>
       ))}
-      {endPage < totalPages && (
+      {endPage < totalPages ? (
         <>
-          <span className='pagination-controls__ellipsis'>...</span>
+          <span className='pagination-controls__ellipsis' style={{cursor: 'default'}}>...</span>
           <a
             onClick={() => handlePageClick(totalPages)}
             className='pagination-controls__link'
@@ -55,6 +57,8 @@ const PaginationControls = ({ currentPage, totalPages, handlePreviousPage, handl
             {totalPages}
           </a>
         </>
+      ) : (
+        <span className='pagination-controls__placeholder'></span>
       )}
       <button className='icon-button' onClick={handleNextPage} disabled={currentPage === totalPages}>
         <IoChevronForwardSharp fontSize={20} />

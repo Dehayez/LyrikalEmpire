@@ -13,13 +13,10 @@
     &__link {
         flex: 1;
         text-align: center;
-        margin: 0 4px;
         max-width: 40px;
         min-width: 40px;
     }
-    &__text {
-        margin: 0 16px;
-    }
+
     &__link {
         color: $color-gray-light;
         &:hover {
@@ -29,7 +26,16 @@
         }
         &.active {
           color: $color-white;
-            font-weight: bold;
+          font-weight: bold;
         }
+    }
+    &__ellipsis {
+        width: 40px;
+        text-align: center;
+    }
+
+    &__placeholder {
+        width: 80px;
+        text-align: center;
     }
 }
