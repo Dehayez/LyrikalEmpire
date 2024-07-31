@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
+import { addBeatAssociation, removeBeatAssociation } from '../services';
 
-export const useSelectableList = (fetchedItems, initialValue = '') => {
+export const useSelectableList = (beatId, fetchedItems, initialValue = '') => {
   initialValue = initialValue || '';
 
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(initialValue);
   const [filteredItems, setFilteredItems] = useState([]);
   const [showItems, setShowItems] = useState(false);
-  const [selectedItems, setSelectedItems] = useState(initialValue.split(',').map(item => item.trim()).filter(Boolean));
-  const [isBlurOrEnter, setIsBlurOrEnter] = useState(false); // New state
+  const [selectedItems, setSelectedItems] = useState([initialValue]);
+  const [isBlurOrEnter, setIsBlurOrEnter] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setItems(fetchedItems);
       if (initialValue) {
-        setFilteredItems(fetchedItems.filter(item => initialValue.split(',').map(i => i.trim()).includes(item.name)));
+        setFilteredItems(fetchedItems.filter(item => initialValue === item.name));
       } else {
         setFilteredItems(fetchedItems);
       }
@@ -23,45 +24,39 @@ export const useSelectableList = (fetchedItems, initialValue = '') => {
   }, [fetchedItems, initialValue]);
 
   useEffect(() => {
-    const itemsArray = (selectedItem || '').split(',').map(item => item.trim()).filter(Boolean);
+    const itemsArray = [selectedItem];
     setSelectedItems(itemsArray);
-    setFilteredItems(items.filter(item => item.name.toLowerCase().includes(itemsArray[itemsArray.length - 1]?.toLowerCase() || '')));
+    setFilteredItems(items.filter(item => item.name.toLowerCase().includes(itemsArray[0]?.toLowerCase() || '')));
   }, [selectedItem, items]);
 
   const handleItemChange = (e) => {
     const input = e.target.value || ''; 
-    const itemsArray = input.split(',').map(item => item.trim()).filter(Boolean);
+    const itemsArray = [input];
 
-    if (input.endsWith(', ') || input.endsWith(',')) {
-      setSelectedItem(input);
-      setSelectedItems(itemsArray);
-      setFilteredItems(items);
-    } else {
-      let newItemsArray = itemsArray;
-      const newInput = newItemsArray.join(', ');
-      setSelectedItem(newInput);
-      setSelectedItems(newItemsArray);
-      const lastTypedWord = newItemsArray[newItemsArray.length - 1] || '';
-      setFilteredItems(items.filter(item => item.name.toLowerCase().includes(lastTypedWord.toLowerCase())));
-    }
+    setSelectedItem(input);
+    setSelectedItems(itemsArray);
+    const lastTypedWord = itemsArray[0] || '';
+    setFilteredItems(items.filter(item => item.name.toLowerCase().includes(lastTypedWord.toLowerCase())));
   };
 
-  const handleItemToggle = (itemName) => {
+  const handleItemToggle = async (itemName) => {
     let updatedSelectedItems;
     if (selectedItems.includes(itemName)) {
       updatedSelectedItems = selectedItems.filter(g => g !== itemName);
-    } else {
-      const itemParts = selectedItem.split(',').map(part => part.trim());
-      const lastPart = itemParts[itemParts.length - 1];
-      if (itemName.toLowerCase().includes(lastPart.toLowerCase())) {
-        itemParts[itemParts.length - 1] = itemName;
-      } else {
-        itemParts.push(itemName);
+      try {
+        await removeBeatAssociation(beatId, 'associationType', itemName);
+      } catch (error) {
+        console.error('Failed to remove association:', error);
       }
-      updatedSelectedItems = itemParts;
+    } else {
+      updatedSelectedItems = [itemName];
+      try {
+        await addBeatAssociation(beatId, 'associationType', itemName);
+      } catch (error) {
+        console.error('Failed to add association:', error);
+      }
     }
     setSelectedItems(updatedSelectedItems);
-    setSelectedItem(updatedSelectedItems.join(', '));
   };
 
   const handleItemFocus = () => {

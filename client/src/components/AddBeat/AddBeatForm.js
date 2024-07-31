@@ -31,19 +31,10 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
     const draggableRef = useRef(null);
     const labelRef = useRef(null);
 
-    const { selectedItem: genre, filteredItems: filteredGenres, showItems: showGenres, selectedItems: selectedGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur } = useSelectableList(genres);
-    const { selectedItem: keyword, filteredItems: filteredKeywords, showItems: showKeywords, selectedItems: selectedKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur } = useSelectableList(keywords);
-    const { selectedItem: mood, filteredItems: filteredMoods, showItems: showMoods, selectedItems: selectedMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur } = useSelectableList(moods);
-    const { selectedItem: feature, filteredItems: filteredFeatures, showItems: showFeatures, selectedItems: selectedFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur } = useSelectableList(features);
-
     const resetForm = () => {
         setTitle('');
         setAudio(null);
         resetBpm();
-        handleGenreChange({ target: { value: '' } });
-        handleMoodChange({ target: { value: '' } });
-        handleKeywordChange({ target: { value: '' } });
-        handleFeatureChange({ target: { value: '' } });
         setTierlist('');
         setFileName('No file chosen');
         setWarningMessage(''); 
@@ -76,10 +67,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
             setWarningMessage('');
         }
     
-        const newBeat = { title, bpm: bpmValue, genre, mood, keyword, feature, duration, ...(tierlist && { tierlist }) };
         try {
-            const { id } = await addBeat(newBeat, audio);
-            onAdd({ ...newBeat, id });
             resetForm();
             setIsOpen(false);
             toast.dark(<div><strong>{title}</strong> has been added!</div>, {
@@ -162,7 +150,7 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                             spellCheck="false" 
                             isWarning={isTitleEmpty}
                         />
-                        <SelectableInput label="Genre" placeholder="Enter genre" value={genre} onChange={handleGenreChange} onFocus={handleGenreFocus} onBlur={handleGenreBlur} showItems={showGenres} filteredItems={filteredGenres.map(genre => ({ name: genre.name, selected: selectedGenres.includes(genre.name) }))} handleItemToggle={handleGenreToggle}/>
+                        <SelectableInput label="Genre" placeholder="Enter genre"/>
                         <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChangeExtended} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
                         <SelectInput 
                             label="Tierlist"
@@ -179,9 +167,9 @@ const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
                                 { value: 'F', label: 'F' },
                             ]}
                         />
-                        <SelectableInput label="Moods" placeholder="Enter moods" value={mood} onChange={handleMoodChange} onFocus={handleMoodFocus} onBlur={handleMoodBlur} showItems={showMoods} filteredItems={filteredMoods.map(mood => ({ name: mood.name, selected: selectedMoods.includes(mood.name) }))} handleItemToggle={handleMoodToggle}/>
-                        <SelectableInput label="Keywords" placeholder="Enter keywords" value={keyword} onChange={handleKeywordChange} onFocus={handleKeywordFocus} onBlur={handleKeywordBlur} showItems={showKeywords} filteredItems={filteredKeywords.map(keyword => ({ name: keyword.name, selected: selectedKeywords.includes(keyword.name) }))} handleItemToggle={handleKeywordToggle}/>
-                        <SelectableInput label="Features" placeholder="Enter features" value={feature} onChange={handleFeatureChange} onFocus={handleFeatureFocus} onBlur={handleFeatureBlur} showItems={showFeatures} filteredItems={filteredFeatures.map(feature => ({ name: feature.name, selected: selectedFeatures.includes(feature.name) }))} handleItemToggle={handleFeatureToggle} />
+                        <SelectableInput label="Moods" placeholder="Enter moods"/>
+                        <SelectableInput label="Keywords" placeholder="Enter keywords" />
+                        <SelectableInput label="Features" placeholder="Enter features" />
                         <div className='modal__buttons'>
                             <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                             <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>

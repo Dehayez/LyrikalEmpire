@@ -5,7 +5,7 @@ import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, I
 import classNames from 'classnames';
 
 import { useBpmHandlers, useSelectableListWithUpdate } from '../../hooks';
-import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services';
+import { addBeatsToPlaylist, getBeatsByPlaylistId, addBeatAssociation } from '../../services';
 import { isMobileOrTablet } from '../../utils';
 import { usePlaylist, useBeat, useData } from '../../contexts';
 
@@ -51,13 +51,6 @@ const BeatRow = ({
   const { hoveredBeat, setHoveredBeat } = useBeat();
   const { genres, moods, keywords, features } = useData();
 
-  const { selectedItem: selectedGenre, filteredItems: filteredGenres, showItems: showGenres, handleItemChange: handleGenreChange, handleItemToggle: handleGenreToggle, handleItemFocus: handleGenreFocus, handleItemBlur: handleGenreBlur, handleKeyDown: handleGenreKeyDown } = useSelectableListWithUpdate(genres, beat.genre, beat, handleUpdate, onUpdate, 'genre');
-
-  const { selectedItem: selectedMood, filteredItems: filteredMoods, showItems: showMoods, handleItemChange: handleMoodChange, handleItemToggle: handleMoodToggle, handleItemFocus: handleMoodFocus, handleItemBlur: handleMoodBlur, handleKeyDown: handleMoodKeyDown } = useSelectableListWithUpdate(moods, beat.mood, beat, handleUpdate, onUpdate, 'mood');
-  
-  const { selectedItem: selectedKeyword, filteredItems: filteredKeywords, showItems: showKeywords, handleItemChange: handleKeywordChange, handleItemToggle: handleKeywordToggle, handleItemFocus: handleKeywordFocus, handleItemBlur: handleKeywordBlur, handleKeyDown: handleKeywordKeyDown } = useSelectableListWithUpdate(keywords, beat.keyword, beat, handleUpdate, onUpdate, 'keyword');
-
-  const { selectedItem: selectedFeature, filteredItems: filteredFeatures, showItems: showFeatures, handleItemChange: handleFeatureChange, handleItemToggle: handleFeatureToggle, handleItemFocus: handleFeatureFocus, handleItemBlur: handleFeatureBlur, handleKeyDown: handleFeatureKeyDown } = useSelectableListWithUpdate(features, beat.feature, beat, handleUpdate, onUpdate, 'feature');
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -173,16 +166,6 @@ const BeatRow = ({
     addToCustomQueue(selectedBeats);
   };
 
-  const handleFeatureInputFocus = (e) => {
-      handleFocus();
-      handleFeatureFocus(e);
-  };
-
-  const handleFeatureInputBlur = (e) => {
-      setInputFocused(false);
-      handleFeatureBlur(e);
-  };
-
   const handleInputChange = (property, value) => {
     onUpdateBeat(beat.id, { [property]: value });
   };
@@ -198,36 +181,6 @@ const BeatRow = ({
   const handleBlur = (id, field, value) => {
     setInputFocused(false);
     handleUpdate(id, field, value);
-  };
-
-  const handleGenreInputFocus = (e) => {
-    handleFocus();
-    handleGenreFocus(e);
-  };
-
-  const handleGenreInputBlur = (e) => {
-    setInputFocused(false);
-    handleGenreBlur(e);
-  };
-
-  const handleMoodInputFocus = (e) => {
-    handleFocus();
-    handleMoodFocus(e);
-  };
-
-  const handleMoodInputBlur = (e) => {
-    setInputFocused(false);
-    handleMoodBlur(e);
-  };
-
-  const handleKeywordInputFocus = (e) => {
-    handleFocus();
-    handleKeywordFocus(e);
-  };
-
-  const handleKeywordInputBlur = (e) => {
-    setInputFocused(false);
-    handleKeywordBlur(e);
   };
 
   const handleClick = () => {
@@ -340,20 +293,7 @@ const BeatRow = ({
             {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
 
             {mode === 'edit' ? 
-            <SelectableInput
-                id={`beat-genre-select-${beat.id}`}
-                value={selectedGenre}
-                onChange={handleGenreChange}
-                onFocus={handleGenreInputFocus}
-                onBlur={handleGenreInputBlur}
-                showItems={showGenres}
-                filteredItems={filteredGenres}
-                handleItemToggle={handleGenreToggle}
-                className='beat-row__input' 
-                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-                onClick={(e) => e.stopPropagation()}
-                spellCheck="false"
-              />
+              <SelectableInput />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.genre}</div> 
             }
@@ -413,20 +353,7 @@ const BeatRow = ({
           <td className="beat-row__data">
             {!isInputFocused && <Highlight text={beat.mood || ''} highlight={searchText || ''} />}
             {mode === 'edit' ? 
-              <SelectableInput
-                id={`beat-mood-select-${beat.id}`}
-                value={selectedMood}
-                onChange={handleMoodChange}
-                onFocus={handleMoodInputFocus}
-                onBlur={handleMoodInputBlur}
-                showItems={showMoods}
-                filteredItems={filteredMoods}
-                handleItemToggle={handleMoodToggle}
-                className='beat-row__input' 
-                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-                onClick={(e) => e.stopPropagation()}
-                spellCheck="false"
-              />
+               <SelectableInput/>
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.mood}</div> 
             }
@@ -434,20 +361,7 @@ const BeatRow = ({
           <td className="beat-row__data">
             {!isInputFocused && <Highlight text={beat.keyword || ''} highlight={searchText || ''} />}
             {mode === 'edit' ? 
-              <SelectableInput
-                id={`beat-keyword-select-${beat.id}`}
-                value={selectedKeyword}
-                onChange={handleKeywordChange}
-                onFocus={handleKeywordInputFocus}
-                onBlur={handleKeywordInputBlur}
-                showItems={showKeywords}
-                filteredItems={filteredKeywords}
-                handleItemToggle={handleKeywordToggle}
-                className='beat-row__input' 
-                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-                onClick={(e) => e.stopPropagation()}
-                spellCheck="false"
-              />
+             <SelectableInput/>
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.keyword}</div> 
             }
@@ -455,20 +369,7 @@ const BeatRow = ({
           <td className="beat-row__data">
             {!isInputFocused && <Highlight text={beat.feature || ''} highlight={searchText || ''} />}
             {mode === 'edit' ? 
-              <SelectableInput
-                id={`beat-feature-select-${beat.id}`}
-                value={selectedFeature}
-                onChange={handleFeatureChange}
-                onFocus={handleFeatureInputFocus}
-                onBlur={handleFeatureInputBlur}
-                showItems={showFeatures}
-                filteredItems={filteredFeatures}
-                handleItemToggle={handleFeatureToggle}
-                className='beat-row__input' 
-                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-                onClick={(e) => e.stopPropagation()}
-                spellCheck="false"
-              />
+             <SelectableInput/>
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.features}</div> 
             }

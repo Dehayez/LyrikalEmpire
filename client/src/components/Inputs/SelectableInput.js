@@ -1,106 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useData } from '../../contexts';
 import './Inputs.scss';
 
-export const SelectableInput = ({
-  label, placeholder, value, onChange, onFocus, onBlur, showItems, filteredItems, handleItemToggle, className, onClick, spellCheck, onMouseDown, onKeyDown
-}) => {
-  const [selectedValues, setSelectedValues] = useState(value.split(',').map(item => item.trim()));
-  const [focusedItemIndex, setFocusedItemIndex] = useState(-1);
-  const [isListVisible, setIsListVisible] = useState(false);
+export const SelectableInput = ({ value, onChange }) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const inputRef = useRef(null);
+  const { genres, moods, keywords, features } = useData();
 
-  const handleKeyDown = (e) => {
-    if (onKeyDown) {
-      onKeyDown(e);
+  const allItems = [...genres, ...moods, ...keywords, ...features];
+
+  useEffect(() => {
+    if (isFocused) {
+      setFilteredItems(allItems);
     }
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
-      e.preventDefault();
-      e.stopPropagation();
-  
-      if (e.key === 'ArrowDown') {
-        setFocusedItemIndex(prevIndex => (prevIndex + 1) % filteredItems.length);
-      } else if (e.key === 'ArrowUp') {
-        setFocusedItemIndex(prevIndex => (prevIndex - 1 + filteredItems.length) % filteredItems.length);
-      } else if (e.key === 'Enter' && focusedItemIndex !== -1) {
-        const newItem = filteredItems[focusedItemIndex].name;
-        const isAlreadySelected = selectedValues.includes(newItem);
-        let newSelectedValues;
-        if (isAlreadySelected) {
-          newSelectedValues = selectedValues.filter(item => item !== newItem);
-        } else {
-          newSelectedValues = [...selectedValues, newItem];
-        }
-        onChange({ target: { value: newSelectedValues.join(', ') } });
-        setFocusedItemIndex(-1);
-        setIsListVisible(false);
-      }
-    }
+  }, [isFocused, allItems]);
+
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value;
+    onChange(inputValue);
+    setFilteredItems(allItems.filter(item => item.toLowerCase().includes(inputValue.toLowerCase())));
   };
 
-  useEffect(() => {
-    setSelectedValues(value.split(',').map(item => item.trim()));
-  }, [value]);
-
-  useEffect(() => {
-    if (!showItems) {
-      setFocusedItemIndex(-1);
-    }
-  }, [showItems]);
-
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape' && isListVisible) {
-        setIsListVisible(false);
-      }
-    };
-  
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isListVisible]);
-
-  const handleInputClick = (e) => {
-    onClick && onClick(e);
-    setIsListVisible(true);
+  const handleItemClick = (item) => {
+    onChange(item);
   };
 
-  // Sort the filteredItems alphabetically by name
-  const sortedItems = [...filteredItems].sort((a, b) => a.name.localeCompare(b.name));
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => setIsFocused(false), 100);
+  };
 
   return (
-    <div className="form-group">
-      <label>{label}</label>
+    <div className="selectable-input">
       <input
+        ref={inputRef}
         type="text"
         value={value}
-        onChange={onChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        className={className}
-        onKeyDown={handleKeyDown}
-        onClick={handleInputClick}
-        onMouseEnter={() => setIsListVisible(true)}
-        onMouseLeave={() => setIsListVisible(false)}
-        spellCheck={spellCheck}
-        onMouseDown={onMouseDown}
+        onChange={handleInputChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        className="selectable-input__field"
       />
-      {showItems && isListVisible && (
-        <div className="options-list"
-             onMouseEnter={() => setIsListVisible(true)}
-             onMouseLeave={() => setIsListVisible(false)}>
-          {sortedItems.map((item, index) => {
-            const isSelected = selectedValues.includes(item.name);
-            const isFocused = index === focusedItemIndex;
-            return (
-              <div
-                key={index}
-                className={`options-list__item ${isSelected ? 'options-list__item--selected' : ''} ${isFocused ? 'options-list__item--focused' : ''}`}
-                onClick={() => handleItemToggle(item.name)}
-              >
-                {item.name}
-              </div>
-            );
-          })}
-        </div>
+      {isFocused && (
+        <ul className="selectable-input__list">
+          {filteredItems.map((item, index) => (
+            <li key={index} onClick={() => handleItemClick(item)} className="selectable-input__item">
+              {item}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
