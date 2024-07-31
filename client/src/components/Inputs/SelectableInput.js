@@ -62,10 +62,7 @@ export const SelectableInput = ({
     setIsListVisible(true);
   };
 
-  const handleItemMouseDown = (e) => {
-    e.preventDefault(); // Prevent the input from losing focus
-  };
-
+  // Sort the filteredItems alphabetically by name
   const sortedItems = [...filteredItems].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
@@ -97,7 +94,6 @@ export const SelectableInput = ({
               <div
                 key={index}
                 className={`options-list__item ${isSelected ? 'options-list__item--selected' : ''} ${isFocused ? 'options-list__item--focused' : ''}`}
-                onMouseDown={handleItemMouseDown}
                 onClick={() => handleItemToggle(item.name)}
               >
                 {item.name}
