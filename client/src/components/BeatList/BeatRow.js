@@ -4,8 +4,8 @@ import { useLocation } from 'react-router-dom';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
 import classNames from 'classnames';
 
-import { useBpmHandlers, useSelectableListWithUpdate } from '../../hooks';
-import { addBeatsToPlaylist, getBeatsByPlaylistId, addBeatAssociation } from '../../services';
+import { useBpmHandlers } from '../../hooks';
+import { addBeatsToPlaylist, getBeatsByPlaylistId, addBeatAssociation, removeBeatAssociation } from '../../services';
 import { isMobileOrTablet } from '../../utils';
 import { usePlaylist, useBeat, useData } from '../../contexts';
 
@@ -38,6 +38,18 @@ const BeatRow = ({
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
   const itemsPerPage = 7;
+
+  const [selectedAssociations, setSelectedAssociations] = useState(associations);
+
+  const handleAssociationChange = async (associationId, isSelected) => {
+    if (isSelected) {
+      await removeBeatAssociation(beat.id, associationType, associationId);
+      setSelectedAssociations(selectedAssociations.filter(id => id !== associationId));
+    } else {
+      await addBeatAssociation(beat.id, associationType, [associationId]);
+      setSelectedAssociations([...selectedAssociations, associationId]);
+    }
+  };
 
   const deleteText = selectedBeats.length > 1
     ? deleteMode === 'playlist'
