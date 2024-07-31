@@ -84,6 +84,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
       {showForm && ReactDOM.createPortal (
         <Form
           title={`Add ${formType}`}
+          placeholder={`Enter ${formType}`}
           item={formType}
           onClose={() => setShowForm(false)}
           onSubmit={(data) => {

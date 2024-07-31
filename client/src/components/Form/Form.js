@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 
+import { FormInput } from '../Inputs';
 import Button from '../Buttons';
 import './Form.scss';
 
-const Form = ({ title, item, onClose, onSubmit }) => {
+const Form = ({ title, onClose, onSubmit, placeholder }) => {
     const [inputValue, setInputValue] = useState('');
     const draggableRef = useRef(null);
 
@@ -35,8 +36,7 @@ const Form = ({ title, item, onClose, onSubmit }) => {
                 <div className="form__form" onClick={(e) => e.stopPropagation()} ref={draggableRef}>
                     <h2 className='form__title'>{title}</h2>
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="input">{`Enter ${item}`}</label>
-                        <input type="text" id="input" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+                        <FormInput type="text" id="input" placeholder={placeholder} min={2} maxLength={30} value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
                         <div className="form__actions">
                             <Button type="submit" text='Submit'/>
                             <Button onClick={onClose} text='Cancel'/>
