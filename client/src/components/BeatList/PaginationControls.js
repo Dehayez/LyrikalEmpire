@@ -146,16 +146,16 @@ const PaginationControls = ({ items, currentBeat }) => {
           <IoChevronForwardSharp fontSize={20} />
         </button>
       </div>
-      <div className="pagination-controls-bottom">
-        {currentBeatPage && (
-         <a 
-         className={`pagination-controls-bottom__link ${currentPage === currentBeatPage ? 'pagination-controls-bottom__link--ghost' : ''}`} 
-         onClick={handleGoToCurrentBeatPage}
-         >
-          Go to Current Track
-        </a>
-        )}
-      </div>
+      {currentBeatPage && (
+        <div className="pagination-controls-bottom">
+          <a 
+          className={`pagination-controls-bottom__link ${currentPage === currentBeatPage ? 'pagination-controls-bottom__link--ghost' : ''}`} 
+          onClick={handleGoToCurrentBeatPage}
+          >
+            Go to Current Track
+          </a>
+        </div>
+      )}
     </div>
   );
 };
