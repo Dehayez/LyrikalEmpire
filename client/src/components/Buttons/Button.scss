@@ -10,15 +10,16 @@
     cursor: pointer !important;
     transition: all 0.2s ease;
 
+    &:hover {
+        background-color: $color-black;
+    }
+
     &--submit {
+        color: $color-black;
         background-color: $color-yellow;
 
         &:hover {
             background-color: $color-yellow-dark;
         }
-    }
-
-    &:hover {
-        background-color: $color-black;
     }
 }
