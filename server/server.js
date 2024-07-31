@@ -366,6 +366,178 @@ app.put('/api/features/:id', (req, res) => {
   });
 });
 
+// CRUD for beat_keywords
+app.post('/api/beats/:beat_id/keywords', (req, res) => {
+  const { beat_id } = req.params;
+  const { keywordIds } = req.body;
+
+  const insertValues = keywordIds.map(keywordId => [beat_id, keywordId]);
+
+  db.query('INSERT INTO beat_keywords (beat_id, keyword_id) VALUES ?', [insertValues], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while adding keywords to the beat' });
+    } else {
+      res.status(201).json({ message: 'Keywords added to beat successfully' });
+    }
+  });
+});
+
+app.get('/api/beats/:beat_id/keywords', (req, res) => {
+  const { beat_id } = req.params;
+
+  db.query('SELECT * FROM keywords WHERE id IN (SELECT keyword_id FROM beat_keywords WHERE beat_id = ?)', [beat_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching keywords for the beat' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.delete('/api/beats/:beat_id/keywords/:keyword_id', (req, res) => {
+  const { beat_id, keyword_id } = req.params;
+
+  db.query('DELETE FROM beat_keywords WHERE beat_id = ? AND keyword_id = ?', [beat_id, keyword_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while removing the keyword from the beat' });
+    } else {
+      res.json({ message: 'Keyword removed from beat successfully' });
+    }
+  });
+});
+
+// CRUD for beat_genres
+app.post('/api/beats/:beat_id/genres', (req, res) => {
+  const { beat_id } = req.params;
+  const { genreIds } = req.body;
+
+  const insertValues = genreIds.map(genreId => [beat_id, genreId]);
+
+  db.query('INSERT INTO beat_genres (beat_id, genre_id) VALUES ?', [insertValues], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while adding genres to the beat' });
+    } else {
+      res.status(201).json({ message: 'Genres added to beat successfully' });
+    }
+  });
+});
+
+app.get('/api/beats/:beat_id/genres', (req, res) => {
+  const { beat_id } = req.params;
+
+  db.query('SELECT * FROM genres WHERE id IN (SELECT genre_id FROM beat_genres WHERE beat_id = ?)', [beat_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching genres for the beat' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.delete('/api/beats/:beat_id/genres/:genre_id', (req, res) => {
+  const { beat_id, genre_id } = req.params;
+
+  db.query('DELETE FROM beat_genres WHERE beat_id = ? AND genre_id = ?', [beat_id, genre_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while removing the genre from the beat' });
+    } else {
+      res.json({ message: 'Genre removed from beat successfully' });
+    }
+  });
+});
+
+// CRUD for beat_moods
+app.post('/api/beats/:beat_id/moods', (req, res) => {
+  const { beat_id } = req.params;
+  const { moodIds } = req.body;
+
+  const insertValues = moodIds.map(moodId => [beat_id, moodId]);
+
+  db.query('INSERT INTO beat_moods (beat_id, mood_id) VALUES ?', [insertValues], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while adding moods to the beat' });
+    } else {
+      res.status(201).json({ message: 'Moods added to beat successfully' });
+    }
+  });
+});
+
+app.get('/api/beats/:beat_id/moods', (req, res) => {
+  const { beat_id } = req.params;
+
+  db.query('SELECT * FROM moods WHERE id IN (SELECT mood_id FROM beat_moods WHERE beat_id = ?)', [beat_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching moods for the beat' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.delete('/api/beats/:beat_id/moods/:mood_id', (req, res) => {
+  const { beat_id, mood_id } = req.params;
+
+  db.query('DELETE FROM beat_moods WHERE beat_id = ? AND mood_id = ?', [beat_id, mood_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while removing the mood from the beat' });
+    } else {
+      res.json({ message: 'Mood removed from beat successfully' });
+    }
+  });
+});
+
+// CRUD for beat_features
+app.post('/api/beats/:beat_id/features', (req, res) => {
+  const { beat_id } = req.params;
+  const { featureIds } = req.body;
+
+  const insertValues = featureIds.map(featureId => [beat_id, featureId]);
+
+  db.query('INSERT INTO beat_features (beat_id, feature_id) VALUES ?', [insertValues], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while adding features to the beat' });
+    } else {
+      res.status(201).json({ message: 'Features added to beat successfully' });
+    }
+  });
+});
+
+app.get('/api/beats/:beat_id/features', (req, res) => {
+  const { beat_id } = req.params;
+
+  db.query('SELECT * FROM features WHERE id IN (SELECT feature_id FROM beat_features WHERE beat_id = ?)', [beat_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while fetching features for the beat' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.delete('/api/beats/:beat_id/features/:feature_id', (req, res) => {
+  const { beat_id, feature_id } = req.params;
+
+  db.query('DELETE FROM beat_features WHERE beat_id = ? AND feature_id = ?', [beat_id, feature_id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while removing the feature from the beat' });
+    } else {
+      res.json({ message: 'Feature removed from beat successfully' });
+    }
+  });
+});
+
 // Delete Feature
 app.delete('/api/features/:id', (req, res) => {
   const { id } = req.params;
