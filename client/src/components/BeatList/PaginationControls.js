@@ -13,6 +13,20 @@ const PaginationControls = ({ items, currentBeat }) => {
   const [maxVisiblePages, setMaxVisiblePages] = useState(7);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(items.length / itemsPerPage);
+  const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+  
+  let startPage = Math.max(currentPage - halfVisiblePages, 1);
+  let endPage = Math.min(currentPage + halfVisiblePages, totalPages);
+  
+  if (currentPage <= halfVisiblePages) {
+    endPage = Math.min(maxVisiblePages, totalPages);
+  } else if (currentPage + halfVisiblePages >= totalPages) {
+    startPage = Math.max(totalPages - maxVisiblePages + 1, 1);
+  }
+  
+  const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  const currentBeatPage = currentBeat ? Math.ceil((items.findIndex(item => item.id === currentBeat.id) + 1) / itemsPerPage) : null;
+
 
   useEffect(() => {
     localStorage.setItem(urlKey, currentPage);
@@ -77,22 +91,6 @@ const PaginationControls = ({ items, currentBeat }) => {
       });
     };
   }, []);
-
-  const halfVisiblePages = Math.floor(maxVisiblePages / 2);
-
-  let startPage = Math.max(currentPage - halfVisiblePages, 1);
-  let endPage = Math.min(currentPage + halfVisiblePages, totalPages);
-
-  if (currentPage <= halfVisiblePages) {
-    endPage = Math.min(maxVisiblePages, totalPages);
-  } else if (currentPage + halfVisiblePages >= totalPages) {
-    startPage = Math.max(totalPages - maxVisiblePages + 1, 1);
-  }
-
-  const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-
-  // Determine the page number where the current beat is playing
-  const currentBeatPage = currentBeat ? Math.ceil((items.findIndex(item => item.id === currentBeat.id) + 1) / itemsPerPage) : null;
 
   return (
     <div className="pagination-controls">
