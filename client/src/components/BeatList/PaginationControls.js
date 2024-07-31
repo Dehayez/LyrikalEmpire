@@ -27,7 +27,6 @@ const PaginationControls = ({ items, currentBeat }) => {
   const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   const currentBeatPage = currentBeat ? Math.ceil((items.findIndex(item => item.id === currentBeat.id) + 1) / itemsPerPage) : null;
 
-
   useEffect(() => {
     localStorage.setItem(urlKey, currentPage);
   }, [currentPage, urlKey]);
@@ -144,7 +143,7 @@ const PaginationControls = ({ items, currentBeat }) => {
           <IoChevronForwardSharp fontSize={20} />
         </button>
       </div>
-      {currentBeatPage && (
+      {currentBeatPage !== 0 && (
         <div className="pagination-controls-bottom">
           <a 
           className={`pagination-controls-bottom__link ${currentPage === currentBeatPage ? 'pagination-controls-bottom__link--ghost' : ''}`} 
