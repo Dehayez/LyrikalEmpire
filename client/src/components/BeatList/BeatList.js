@@ -14,19 +14,25 @@ import PaginationControls from './PaginationControls';
 
 import './BeatList.scss';
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdateAfterDelete, currentBeat, onSort, sortConfig, addToCustomQueue, onBeatClick, externalBeats = [], headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdateAfterDelete, currentBeat, onSort, sortConfig, addToCustomQueue, onBeatClick, externalBeats, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const containerRef = useRef(null);
+  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
 
   const { setPlaylistId } = usePlaylist();
-  const { beats, paginatedBeats, isInputFocused } = useBeat();
+  const { beats: internalBeats, paginatedBeats, isInputFocused } = useBeat();
+  const beats = externalBeats || internalBeats;
+  const filteredAndSortedBeats = useMemo(() => {
+    const filteredBeats = beats.filter(beat => {
+      const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
+      return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+    });
+    return sortBeats(filteredBeats, sortConfig);
+  }, [beats, searchText, sortConfig]);
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const { handleUpdate, handleDelete } = useBeatActions(beats, handleQueueUpdateAfterDelete);
-  const isExternalBeats = externalBeats.length > 0;
-  const beatsToFilter = isExternalBeats ? externalBeats : beats;
   
-  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
   const [hoverIndex, setHoverIndex] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
   const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
@@ -36,14 +42,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const [hoverPosition, setHoverPosition] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [mode, setMode] = useState(() => localStorage.getItem('mode') || 'edit');
-
-  const filteredAndSortedBeats = useMemo(() => {
-    const filteredBeats = beatsToFilter.filter(beat => {
-      const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
-      return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
-    });
-    return sortBeats(filteredBeats, sortConfig);
-  }, [beatsToFilter, searchText, sortConfig]);
     
   const handlePlayPause = useCallback((beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
