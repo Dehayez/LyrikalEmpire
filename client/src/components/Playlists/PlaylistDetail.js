@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { useParams } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
@@ -16,6 +16,8 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
   const { id } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [beats, setBeats] = useState([]);
+  const sortedBeatsFromPlaylist = useMemo(() => sortBeats(beats, sortConfig), [beats, sortConfig]);
+
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   const refreshPlaylist = async () => {
@@ -97,7 +99,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
             <DndProvider backend={HTML5Backend}>
                 <BeatList
                   key={beats.length}
-                  externalBeats={sortBeats(beats, sortConfig)}
+                  externalBeats={sortedBeatsFromPlaylist}
                   shouldFetchBeats={false}
                   onPlay={onPlay}
                   selectedBeat={selectedBeat}
