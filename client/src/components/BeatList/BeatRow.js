@@ -5,7 +5,7 @@ import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, I
 import classNames from 'classnames';
 
 import { useBpmHandlers } from '../../hooks';
-import { addBeatsToPlaylist, getBeatsByPlaylistId, addBeatAssociation, removeBeatAssociation } from '../../services';
+import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services';
 import { isMobileOrTablet } from '../../utils';
 import { usePlaylist, useBeat, useData } from '../../contexts';
 
@@ -24,6 +24,8 @@ const BeatRow = ({
 }) => {
   const ref = useRef(null);
   const location = useLocation();
+  const { genres, moods, keywords, features } = useData();
+
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
   const hasSelectedBefore = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1);
@@ -34,22 +36,14 @@ const BeatRow = ({
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const toDragAndDrop = location.pathname !== '/' && mode === 'lock';
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
+
+  const { isInputFocused, setInputFocused } = useBeat();
+  const { playlists,isSamePlaylist } = usePlaylist();
+  const { hoveredBeat, setHoveredBeat } = useBeat();
   
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
   const itemsPerPage = 7;
-
-  const [selectedAssociations, setSelectedAssociations] = useState(associations);
-
-  const handleAssociationChange = async (associationId, isSelected) => {
-    if (isSelected) {
-      await removeBeatAssociation(beat.id, associationType, associationId);
-      setSelectedAssociations(selectedAssociations.filter(id => id !== associationId));
-    } else {
-      await addBeatAssociation(beat.id, associationType, [associationId]);
-      setSelectedAssociations([...selectedAssociations, associationId]);
-    }
-  };
 
   const deleteText = selectedBeats.length > 1
     ? deleteMode === 'playlist'
@@ -58,11 +52,6 @@ const BeatRow = ({
     : deleteMode === 'playlist'
         ? 'Remove this track from playlist'
         : 'Delete this track';
-  const { isInputFocused, setInputFocused } = useBeat();
-  const { playlists,isSamePlaylist } = usePlaylist();
-  const { hoveredBeat, setHoveredBeat } = useBeat();
-  const { genres, moods, keywords, features } = useData();
-
 
   const beatRowClasses = classNames({
     'beat-row': true,
@@ -303,9 +292,12 @@ const BeatRow = ({
         <>
           <td className="beat-row__data">
             {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
-
             {mode === 'edit' ? 
-              <SelectableInput />
+             <SelectableInput
+              associationType="genres"
+              items={genres}
+              beatId={beat.id}
+            />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.genre}</div> 
             }
@@ -365,7 +357,11 @@ const BeatRow = ({
           <td className="beat-row__data">
             {!isInputFocused && <Highlight text={beat.mood || ''} highlight={searchText || ''} />}
             {mode === 'edit' ? 
-               <SelectableInput/>
+              <SelectableInput
+                associationType="moods"
+                items={moods}
+                beatId={beat.id}
+              />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.mood}</div> 
             }
@@ -373,7 +369,11 @@ const BeatRow = ({
           <td className="beat-row__data">
             {!isInputFocused && <Highlight text={beat.keyword || ''} highlight={searchText || ''} />}
             {mode === 'edit' ? 
-             <SelectableInput/>
+              <SelectableInput
+                associationType="keywords"
+                items={keywords}
+                beatId={beat.id}
+              />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.keyword}</div> 
             }
@@ -381,7 +381,11 @@ const BeatRow = ({
           <td className="beat-row__data">
             {!isInputFocused && <Highlight text={beat.feature || ''} highlight={searchText || ''} />}
             {mode === 'edit' ? 
-             <SelectableInput/>
+              <SelectableInput
+                associationType="features"
+                items={features}
+                beatId={beat.id}
+              />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.features}</div> 
             }

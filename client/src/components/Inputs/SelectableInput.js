@@ -1,55 +1,84 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useData } from '../../contexts';
-import './Inputs.scss';
+import React, { useState, useEffect } from 'react';
+import { addBeatAssociation, removeBeatAssociation, getBeatAssociations } from '../../services';
 
-export const SelectableInput = ({ value, onChange }) => {
+export const SelectableInput = ({ items, beatId, associationType }) => {
+  const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const [filteredItems, setFilteredItems] = useState([]);
-  const inputRef = useRef(null);
-  const { genres, moods, keywords, features } = useData();
-
-  const allItems = [...genres, ...moods, ...keywords, ...features];
+  const [currentSelectedItems, setCurrentSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
-    if (isFocused) {
-      setFilteredItems(allItems);
-    }
-  }, [isFocused, allItems]);
+    const fetchAssociations = async () => {
+      try {
+        const associations = await getBeatAssociations(beatId, associationType);
+        setCurrentSelectedItems(associations);
+        setSelectedItems(associations);
+      } catch (error) {
+        console.error('Error fetching associations:', error);
+      }
+    };
 
-  const handleInputChange = (e) => {
-    const inputValue = e.target.value;
-    onChange(inputValue);
-    setFilteredItems(allItems.filter(item => item.toLowerCase().includes(inputValue.toLowerCase())));
-  };
-
-  const handleItemClick = (item) => {
-    onChange(item);
-  };
+    fetchAssociations();
+  }, [beatId, associationType]);
 
   const handleFocus = () => {
     setIsFocused(true);
   };
 
   const handleBlur = () => {
-    setTimeout(() => setIsFocused(false), 100);
+    setIsFocused(false);
+    updateDatabase();
+  };
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleItemSelect = (item) => {
+    const isSelected = currentSelectedItems.includes(item);
+    const updatedItems = isSelected
+      ? currentSelectedItems.filter(i => i !== item)
+      : [...currentSelectedItems, item];
+
+    setCurrentSelectedItems(updatedItems);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      updateDatabase();
+    }
+  };
+
+  const updateDatabase = async () => {
+    const itemsToAdd = currentSelectedItems.filter(item => !selectedItems.includes(item));
+    const itemsToRemove = selectedItems.filter(item => !currentSelectedItems.includes(item));
+
+    try {
+      await Promise.all([
+        ...itemsToAdd.map(item => addBeatAssociation(beatId, associationType, item)),
+        ...itemsToRemove.map(item => removeBeatAssociation(beatId, associationType, item))
+      ]);
+      setSelectedItems(currentSelectedItems);
+    } catch (error) {
+      console.error('Error updating associations:', error);
+    }
   };
 
   return (
-    <div className="selectable-input">
+    <div>
       <input
-        ref={inputRef}
         type="text"
-        value={value}
-        onChange={handleInputChange}
+        value={inputValue}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className="selectable-input__field"
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
       />
       {isFocused && (
-        <ul className="selectable-input__list">
-          {filteredItems.map((item, index) => (
-            <li key={index} onClick={() => handleItemClick(item)} className="selectable-input__item">
-              {item}
+        <ul>
+          {items.map(item => (
+            <li key={item.id} onClick={() => handleItemSelect(item)}>
+              {item.name}
             </li>
           ))}
         </ul>
