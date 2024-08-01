@@ -45,13 +45,16 @@ export const deleteBeat = async (id) => {
   }
 };
 
-// Generic function to add associations
+export const getBeatAssociations = async (beatId, associationType) => {
+  const { data } = await axios.get(`${API_URL}/${beatId}/${associationType}`);
+  return data;
+};
+
 export const addBeatAssociation = async (beatId, associationType, associationIds) => {
   const { data } = await axios.post(`${API_URL}/${beatId}/${associationType}`, { [`${associationType}Ids`]: associationIds });
   return data;
 };
 
-// Generic function to remove associations
 export const removeBeatAssociation = async (beatId, associationType, associationId) => {
   const { data } = await axios.delete(`${API_URL}/${beatId}/${associationType}/${associationId}`);
   return data;
