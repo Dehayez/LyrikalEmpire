@@ -79,6 +79,7 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
         onBlur={handleBlur}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
+        onClick={(e) => e.stopPropagation()}
       />
       {isFocused && (
         <ul className="selectable-input__list">
