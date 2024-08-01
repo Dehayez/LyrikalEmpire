@@ -225,7 +225,7 @@ const BeatRow = ({
       ref={ref} 
       className={`${beatRowClasses} ${isInputFocused ? 'beat-row--focused' : ''}${isDragging ? 'beat-row--selected' : ''}`}
       key={beatRowClasses}
-      onClick={isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)}
+      onClick={mode !== "edit" ? (isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)) : undefined}
       onMouseEnter={(e) => { 
         if (!isMobileOrTablet()) { 
           e.currentTarget.querySelectorAll('.interactive-button').forEach(button => { 

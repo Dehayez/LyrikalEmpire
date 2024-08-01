@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { addBeatAssociation, removeBeatAssociation, getBeatAssociations } from '../../services';
 import './SelectableInput.scss';
 
@@ -7,6 +7,7 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [currentSelectedItems, setCurrentSelectedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const fetchAssociations = async () => {
@@ -22,9 +23,6 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
     fetchAssociations();
   }, [beatId, associationType]);
 
-  useEffect(() => {
-    console.log(selectedItems);
-  }, [selectedItems]);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -33,6 +31,7 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
   const handleBlur = (e) => {
     e.preventDefault(); 
     updateDatabase();
+    inputRef.current.focus();
   };
 
   const handleInputChange = (e) => {
@@ -83,6 +82,7 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
             </span>
           ))}
           <input
+            ref={inputRef}
             className="selectable-input__field input"
             type="text"
             value={inputValue}
