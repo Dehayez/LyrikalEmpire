@@ -23,15 +23,15 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
   }, [beatId, associationType]);
 
   useEffect(() => {
-    console.log(isFocused);
-  }, [isFocused]);
+    console.log(selectedItems);
+  }, [selectedItems]);
 
   const handleFocus = () => {
     setIsFocused(true);
   };
 
-  const handleBlur = () => {
-    setIsFocused(false);
+  const handleBlur = (e) => {
+    e.preventDefault(); 
     updateDatabase();
   };
 
@@ -75,16 +75,25 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
 
   return (
     <div className="selectable-input">
-      <input
-        className="selectable-input__field input"
-        type="text"
-        value={inputValue}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        onClick={(e) => e.stopPropagation()}
-      />
+      <div className="selectable-input__selected-items">
+        <div className="selectable-input__selected-items-current">
+          {currentSelectedItems.map(item => (
+            <span key={item.id} className="selectable-input__selected-item">
+              {item.name}
+            </span>
+          ))}
+          <input
+            className="selectable-input__field input"
+            type="text"
+            value={inputValue}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      </div>
       {isFocused && (
         <ul className="selectable-input__list">
           {filteredItems.map(item => (
