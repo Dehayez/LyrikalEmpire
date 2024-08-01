@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { addBeatAssociation, removeBeatAssociation, getBeatAssociations } from '../../services';
+import { IconButton } from '../Buttons';
+import { IoCloseSharp } from "react-icons/io5";
 import './SelectableInput.scss';
 
 export const SelectableInput = ({ items, beatId, associationType }) => {
@@ -80,16 +82,23 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
 
   return (
     <div className="selectable-input" ref={containerRef}>
-      <div className="selectable-input__selected-items">
-        <div className="selectable-input__selected-items-current">
+    <div 
+      className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''}`}
+      onClick={() => inputRef.current.focus()}
+    >
+        <div className="selectable-input__selected-list">
           {currentSelectedItems.map(item => (
-            <span key={item.id} className="selectable-input__selected-item">
+            <span key={item.id} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
               {item.name}
+                {isFocused ? 
+                <IconButton className="selectable-input__selected-list__item__icon">
+                  <IoCloseSharp fontSize={16} />
+                </IconButton> : null}
             </span>
           ))}
           <input
             ref={inputRef}
-            className="selectable-input__field input"
+            className="selectable-input__input input"
             type="text"
             value={inputValue}
             onFocus={handleFocus}
@@ -102,15 +111,18 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
       </div>
       {isFocused && (
         <ul className="selectable-input__list">
-          {filteredItems.map(item => (
-            <li
-              key={item.id}
-              className="selectable-input__list-item"
-              onClick={() => handleItemSelect(item)}
-            >
-              {item.name}
-            </li>
-          ))}
+          {filteredItems.map(item => {
+            const isSelected = selectedItems.includes(item) || currentSelectedItems.includes(item);
+            return (
+              <li
+                key={item.id}
+                className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
+                onClick={() => handleItemSelect(item)}
+              >
+                {item.name}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

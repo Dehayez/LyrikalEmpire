@@ -3,7 +3,43 @@
 .selectable-input {
     position: relative;
 
-    &__field {
+    &__input-container {
+        display: flex;
+        border-radius: 4px;
+        &--focused {
+            background-color: $color-gray-dark;
+            box-shadow: 0 0 0 1px $color-gray;
+        }
+    }
+
+    &__selected-list {
+        display: flex;
+        &__item {
+            display: flex;
+            align-items: center;
+            border-radius: 4px;
+            padding-left: 8px;
+            margin: 4px;
+
+            &--focused {
+                background-color: $color-gray-dark-active;
+            }
+            &__icon {
+                margin: 0 8px;
+            }
+        }
+    }
+    
+    &__input {
+        background-color: transparent;
+        border: none;
+
+        &:focus {
+          outline: none;
+        }
+    }
+
+    /* &__field {
         box-sizing: border-box;
         background-color: transparent;
         border: none;
@@ -17,7 +53,7 @@
           box-shadow: 0 0 0 1px $color-gray;
           cursor: text;
         }
-    }
+    } */
 
     &__list {
         position: absolute;
@@ -35,7 +71,7 @@
         border-radius: 4px;
 
         &-item {
-            padding: 10px;
+            padding: 12px;
             text-align: left;
             background-color: $color-gray-dark; 
     
