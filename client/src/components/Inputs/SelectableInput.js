@@ -69,6 +69,10 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
     }
   };
 
+  const filteredItems = items.filter(item => 
+    item.name.toLowerCase().includes(inputValue.toLowerCase())
+  );
+
   return (
     <div className="selectable-input">
       <input
@@ -83,7 +87,7 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
       />
       {isFocused && (
         <ul className="selectable-input__list">
-          {items.map(item => (
+          {filteredItems.map(item => (
             <li
               key={item.id}
               className="selectable-input__list-item"
