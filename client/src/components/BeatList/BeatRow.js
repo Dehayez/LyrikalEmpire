@@ -25,21 +25,22 @@ const BeatRow = ({
   const ref = useRef(null);
   const location = useLocation();
   const { genres, moods, keywords, features } = useData();
+  const { setHoveredBeat } = useBeat();
+  const { playlists,isSamePlaylist } = usePlaylist();
 
   const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
   const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
   const hasSelectedBefore = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1);
   const hasSelectedAfter = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] + 1);
   const isMiddle = hasSelectedBefore && hasSelectedAfter;
+
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const toDragAndDrop = location.pathname !== '/' && mode === 'lock';
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
+  const [isInputFocused, setInputFocused] = useState(false);
 
-  const { isInputFocused, setInputFocused } = useBeat();
-  const { playlists,isSamePlaylist } = usePlaylist();
-  const { hoveredBeat, setHoveredBeat } = useBeat();
   
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);

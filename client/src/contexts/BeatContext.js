@@ -9,7 +9,6 @@ export const BeatProvider = ({ children }) => {
   const [beats, setBeats] = useState([]);
   const [paginatedBeats, setPaginatedBeats] = useState([]);
   const [hoveredBeat, setHoveredBeat] = useState(null);
-  const [isInputFocused, setInputFocused] = useState(false);
 
   useEffect(() => {
     const fetchBeats = async () => {
@@ -25,7 +24,7 @@ export const BeatProvider = ({ children }) => {
   }, []);
 
   return (
-    <BeatContext.Provider value={{ beats, setBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat, isInputFocused, setInputFocused }}>
+    <BeatContext.Provider value={{ beats, setBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat }}>
       {children}
     </BeatContext.Provider>
   );
