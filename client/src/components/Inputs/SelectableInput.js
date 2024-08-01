@@ -22,6 +22,10 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
     fetchAssociations();
   }, [beatId, associationType]);
 
+  useEffect(() => {
+    console.log(isFocused);
+  }, [isFocused]);
+
   const handleFocus = () => {
     setIsFocused(true);
   };
