@@ -8,6 +8,7 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
   const [currentSelectedItems, setCurrentSelectedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const inputRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const fetchAssociations = async () => {
@@ -23,24 +24,31 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
     fetchAssociations();
   }, [beatId, associationType]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsFocused(false);
+      }
+    };
 
-  const handleFocus = () => {
-    setIsFocused(true);
-  };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleFocus = () => setIsFocused(true);
 
   const handleBlur = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     updateDatabase();
-    inputRef.current.focus();
   };
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
+  const handleInputChange = (e) => setInputValue(e.target.value);
 
   const handleItemSelect = (item) => {
-    const isSelected = currentSelectedItems.includes(item);
-    const updatedItems = isSelected
+    inputRef.current.focus();
+    const updatedItems = currentSelectedItems.includes(item)
       ? currentSelectedItems.filter(i => i !== item)
       : [...currentSelectedItems, item];
 
@@ -48,9 +56,7 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      updateDatabase();
-    }
+    if (e.key === 'Enter') updateDatabase();
   };
 
   const updateDatabase = async () => {
@@ -73,7 +79,7 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
   );
 
   return (
-    <div className="selectable-input">
+    <div className="selectable-input" ref={containerRef}>
       <div className="selectable-input__selected-items">
         <div className="selectable-input__selected-items-current">
           {currentSelectedItems.map(item => (
