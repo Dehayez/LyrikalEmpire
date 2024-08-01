@@ -1,0 +1,26 @@
+@import '../../globals/variables';
+
+.selectable-input {
+    &__field {
+        box-sizing: border-box;
+        background-color: transparent;
+        border: none;
+        width: 100%;
+        font-size: 16px;
+        cursor: default;
+
+        &:focus {
+          background-color: $color-gray-dark;
+          outline: none;
+          box-shadow: 0 0 0 1px $color-gray;
+          cursor: text;
+        }
+    }
+
+    &__list {
+
+    }
+    &__list-item {
+
+    }
+}

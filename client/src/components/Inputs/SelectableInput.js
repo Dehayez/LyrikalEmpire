@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addBeatAssociation, removeBeatAssociation, getBeatAssociations } from '../../services';
+import './SelectableInput.scss';
 
 export const SelectableInput = ({ items, beatId, associationType }) => {
   const [inputValue, setInputValue] = useState('');
@@ -65,8 +66,9 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
   };
 
   return (
-    <div>
+    <div className="selectable-input">
       <input
+        className="selectable-input__field input"
         type="text"
         value={inputValue}
         onFocus={handleFocus}
@@ -75,9 +77,13 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
         onKeyDown={handleKeyDown}
       />
       {isFocused && (
-        <ul>
+        <ul className="selectable-input__list">
           {items.map(item => (
-            <li key={item.id} onClick={() => handleItemSelect(item)}>
+            <li
+              key={item.id}
+              className="selectable-input__list-item"
+              onClick={() => handleItemSelect(item)}
+            >
               {item.name}
             </li>
           ))}
