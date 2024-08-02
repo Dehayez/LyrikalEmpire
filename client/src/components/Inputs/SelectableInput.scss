@@ -24,10 +24,10 @@
             align-items: center;
             border-radius: 4px;
             padding-left: 8px;
-            margin: 4px;
 
             &--focused {
                 background-color: $color-gray-dark-active;
+                margin: 4px;
             }
             &__icon {
                 margin: 0 8px;
