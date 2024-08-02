@@ -51,8 +51,15 @@ export const getBeatAssociations = async (beatId, associationType) => {
 };
 
 export const addBeatAssociation = async (beatId, associationType, associationIds) => {
-  const { data } = await axios.post(`${API_URL}/${beatId}/${associationType}`, { [`${associationType}Ids`]: associationIds });
-  return data;
+  try {
+    const payload = { [`${associationType}Ids`]: associationIds };
+    console.log('Sending payload:', payload); // Add this line for debugging
+    const { data } = await axios.post(`${API_URL}/${beatId}/${associationType}`, payload);
+    return data;
+  } catch (error) {
+    console.error('Error updating associations:', error);
+    throw error;
+  }
 };
 
 export const removeBeatAssociation = async (beatId, associationType, associationId) => {

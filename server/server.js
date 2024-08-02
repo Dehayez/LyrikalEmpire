@@ -414,12 +414,19 @@ app.post('/api/beats/:beat_id/genres', (req, res) => {
   const { beat_id } = req.params;
   const { genreIds } = req.body;
 
+  if (!Array.isArray(genreIds) || genreIds.length === 0) {
+    console.error('Invalid genreIds:', genreIds); // Add this line for debugging
+    return res.status(400).json({ error: 'genreIds must be a non-empty array' });
+  }
+
   const insertValues = genreIds.map(genreId => [beat_id, genreId]);
+
+  console.log('Inserting values:', insertValues);
 
   db.query('INSERT INTO beat_genres (beat_id, genre_id) VALUES ?', [insertValues], (err, results) => {
     if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'An error occurred while adding genres to the beat' });
+      console.error('Error inserting genres:', err);
+      return res.status(500).json({ error: 'An error occurred while adding genres to the beat' });
     } else {
       res.status(201).json({ message: 'Genres added to beat successfully' });
     }
@@ -631,6 +638,7 @@ app.delete('/api/playlists/:id', (req, res) => {
   });
 });
 
+// CRUD for playlist_beats
 // Add Beat to Playlist
 app.post('/api/playlists/:playlist_id/beats/:beat_id', (req, res) => {
   const { playlist_id, beat_id } = req.params;
@@ -674,6 +682,7 @@ app.get('/api/playlists/:playlist_id/beats', (req, res) => {
   );
 });
 
+// Add Beats to Playlist
 app.post('/api/playlists/:playlist_id/beats', (req, res) => {
   const { playlist_id } = req.params;
   const { beatIds } = req.body;
