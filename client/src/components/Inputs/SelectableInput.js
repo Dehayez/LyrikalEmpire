@@ -51,6 +51,9 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
 
   const handleBlur = (e) => {
     e.preventDefault();
+    if (inputContainerRef.current && !isFocused) {
+      inputContainerRef.current.scrollLeft = 0;
+    }
     updateDatabase();
   };
 
