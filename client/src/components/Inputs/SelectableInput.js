@@ -42,8 +42,6 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
 
   useEffect(() => {
     const maxWidth = localStorage.getItem(`headerWidth${headerIndex}`);
-    console.log('headerWidth:', maxWidth);
-    console.log(headerIndex)
     if (maxWidth && inputContainerRef.current) {
       inputContainerRef.current.style.maxWidth = `${maxWidth}px`;
     }
