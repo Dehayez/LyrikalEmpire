@@ -90,11 +90,11 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
 
   return (
     <div className="selectable-input" ref={containerRef}>
-    <div 
-      className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''}`}
-      onClick={() => inputRef.current.focus()}
-      ref={inputContainerRef}
-    >
+      <div 
+        className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''}`}
+        onClick={() => inputRef.current.focus()}
+        ref={inputContainerRef}
+      >
         <div className="selectable-input__selected-list">
           {currentSelectedItems.map(item => (
             <span key={item.id} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>

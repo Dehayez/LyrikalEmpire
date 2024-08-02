@@ -8,6 +8,7 @@
         border-radius: 4px;
         cursor: pointer;
         overflow-x: auto; 
+        @include hide-scrollbar; 
 
         &--focused {
             background-color: $color-gray-dark;
