@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { addBeatAssociation, removeBeatAssociation } from '../services';
+import { addAssociationsToBeat, removeAssociationFromBeat } from '../services';
 
 export const useSelectableList = (beatId, fetchedItems, initialValue = '') => {
   initialValue = initialValue || '';
@@ -44,14 +44,14 @@ export const useSelectableList = (beatId, fetchedItems, initialValue = '') => {
     if (selectedItems.includes(itemName)) {
       updatedSelectedItems = selectedItems.filter(g => g !== itemName);
       try {
-        await removeBeatAssociation(beatId, 'associationType', itemName);
+        await removeAssociationFromBeat(beatId, 'associationType', itemName);
       } catch (error) {
         console.error('Failed to remove association:', error);
       }
     } else {
       updatedSelectedItems = [itemName];
       try {
-        await addBeatAssociation(beatId, 'associationType', itemName);
+        await addAssociationsToBeat(beatId, 'associationType', itemName);
       } catch (error) {
         console.error('Failed to add association:', error);
       }
