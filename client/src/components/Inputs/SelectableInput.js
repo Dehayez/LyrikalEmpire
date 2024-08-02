@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { addBeatAssociation, removeBeatAssociation, getBeatAssociations } from '../../services';
+import { addAssociationsToBeat, removeAssociationFromBeat, getAssociationsByBeatId } from '../../services';
 import { IconButton } from '../Buttons';
 import { IoCloseSharp } from "react-icons/io5";
 import './SelectableInput.scss';
@@ -16,7 +16,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
   useEffect(() => {
     const fetchAssociations = async () => {
       try {
-        const associations = await getBeatAssociations(beatId, associationType);
+        const associations = await getAssociationsByBeatId(beatId, associationType);
         setCurrentSelectedItems(associations);
         setSelectedItems(associations);
       } catch (error) {
@@ -76,11 +76,14 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
     const itemsToAdd = currentSelectedItems.filter(item => !selectedItems.includes(item));
     const itemsToRemove = selectedItems.filter(item => !currentSelectedItems.includes(item));
 
+    console.log('itemsToAdd:', itemsToAdd);
+    console.log('itemsToRemove:', itemsToRemove);
+
     try {
-      await Promise.all([
-        ...itemsToAdd.map(item => addBeatAssociation(beatId, associationType, item)),
-        ...itemsToRemove.map(item => removeBeatAssociation(beatId, associationType, item))
-      ]);
+      if (itemsToAdd.length > 0) {
+        await addAssociationsToBeat(beatId, associationType, itemsToAdd.map(item => item.id));
+      }
+      await Promise.all(itemsToRemove.map(item => removeAssociationFromBeat(beatId, associationType, item.id)));
       setSelectedItems(currentSelectedItems);
     } catch (error) {
       console.error('Error updating associations:', error);

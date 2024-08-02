@@ -45,24 +45,42 @@ export const deleteBeat = async (id) => {
   }
 };
 
-export const getBeatAssociations = async (beatId, associationType) => {
-  const { data } = await axios.get(`${API_URL}/${beatId}/${associationType}`);
-  return data;
-};
-
-export const addBeatAssociation = async (beatId, associationType, associationIds) => {
+export const addAssociationsToBeat = async (beatId, associationType, associationIds) => {
   try {
-    const payload = { [`${associationType}Ids`]: associationIds };
-    console.log('Sending payload:', payload); // Add this line for debugging
-    const { data } = await axios.post(`${API_URL}/${beatId}/${associationType}`, payload);
-    return data;
+    const response = await axios.post(`${API_URL}/${beatId}/${associationType}`, { associationIds });
+    return response.data;
   } catch (error) {
-    console.error('Error updating associations:', error);
+    console.error(`Failed to add ${associationType} to beat:`, error);
     throw error;
   }
 };
 
-export const removeBeatAssociation = async (beatId, associationType, associationId) => {
-  const { data } = await axios.delete(`${API_URL}/${beatId}/${associationType}/${associationId}`);
-  return data;
+export const removeAssociationFromBeat = async (beatId, associationType, associationId) => {
+try {
+    const response = await axios.delete(`${API_URL}/${beatId}/${associationType}/${associationId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to remove ${associationType} from beat:`, error);
+    throw error;
+  }
+};
+
+export const getAssociationsByBeatId = async (beatId, associationType) => {
+  try {
+    const response = await axios.get(`${API_URL}/${beatId}/${associationType}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch ${associationType} for beat:`, error);
+    throw error;
+  }
+};
+
+export const removeAllAssociationsFromBeat = async (beatId, associationType) => {
+  try {
+    const response = await axios.delete(`${API_URL}/${beatId}/${associationType}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to remove all ${associationType} from beat:`, error);
+    throw error;
+  }
 };
