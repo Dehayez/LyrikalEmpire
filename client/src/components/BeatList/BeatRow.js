@@ -298,6 +298,7 @@ const BeatRow = ({
               associationType="genres"
               items={genres}
               beatId={beat.id}
+              headerIndex='2'
             />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.genre}</div> 
@@ -362,6 +363,7 @@ const BeatRow = ({
                 associationType="moods"
                 items={moods}
                 beatId={beat.id}
+                headerIndex='5'
               />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.mood}</div> 
@@ -374,6 +376,7 @@ const BeatRow = ({
                 associationType="keywords"
                 items={keywords}
                 beatId={beat.id}
+                headerIndex='6'
               />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.keyword}</div> 
@@ -386,6 +389,7 @@ const BeatRow = ({
                 associationType="features"
                 items={features}
                 beatId={beat.id}
+                headerIndex='7'
               />
             : 
               <div className='beat-row__input beat-row__input--static-select'>{beat.features}</div> 

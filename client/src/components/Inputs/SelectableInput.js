@@ -4,13 +4,14 @@ import { IconButton } from '../Buttons';
 import { IoCloseSharp } from "react-icons/io5";
 import './SelectableInput.scss';
 
-export const SelectableInput = ({ items, beatId, associationType }) => {
+export const SelectableInput = ({ items, beatId, associationType, headerIndex }) => {
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [currentSelectedItems, setCurrentSelectedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
+  const inputContainerRef = useRef(null);
 
   useEffect(() => {
     const fetchAssociations = async () => {
@@ -37,6 +38,15 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, []);
+
+  useEffect(() => {
+    const maxWidth = localStorage.getItem(`headerWidth${headerIndex}`);
+    console.log('headerWidth:', maxWidth);
+    console.log(headerIndex)
+    if (maxWidth && inputContainerRef.current) {
+      inputContainerRef.current.style.maxWidth = `${maxWidth}px`;
+    }
   }, []);
 
   const handleFocus = () => setIsFocused(true);
@@ -85,6 +95,7 @@ export const SelectableInput = ({ items, beatId, associationType }) => {
     <div 
       className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''}`}
       onClick={() => inputRef.current.focus()}
+      ref={inputContainerRef}
     >
         <div className="selectable-input__selected-list">
           {currentSelectedItems.map(item => (
