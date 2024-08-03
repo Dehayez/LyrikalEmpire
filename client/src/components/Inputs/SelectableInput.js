@@ -116,9 +116,8 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
   const handleRemoveAssociation = async (item) => {
     const associationId = item[`${singularAssociationType}_id`];
     try {
-      console.log('Removing association:', { beatId, associationType, associationId });
       await removeAssociationFromBeat(beatId, associationType, associationId);
-      setSelectedItems(prevItems => prevItems.filter(item => item.id !== associationId));
+      setSelectedItems(prevItems => prevItems.filter(item => item[`${singularAssociationType}_id`] !== associationId));
     } catch (error) {
       console.error('Failed to remove association:', error);
     }
