@@ -38,7 +38,6 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
     const fetchAssociations = async () => {
       try {
         const associations = await getAssociationsByBeatId(beatId, associationType);
-        console.log('associations:', associations);
         setSelectedItems(associations);
       } catch (error) {
         console.error('Error fetching associations:', error);
