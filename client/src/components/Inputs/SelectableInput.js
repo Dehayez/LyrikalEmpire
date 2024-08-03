@@ -141,20 +141,20 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
       </div>
       </div>
       {isFocused && (
-        <ul className="selectable-input__list">
-          {filteredItems.map(item => {
-            const isSelected = selectedItems.includes(item);
-            return (
-              <li
-                key={item.id}
-                className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
-                onClick={() => handleItemSelect(item)}
-              >
-                {item.name}
-              </li>
-            );
-          })}
-        </ul>
+       <ul className="selectable-input__list">
+       {filteredItems.map(item => {
+         const isSelected = selectedItems.some(selectedItem => selectedItem.genre_id === item.id);
+         return (
+           <li
+             key={item.id}
+             className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
+             onClick={() => handleItemSelect(item)}
+           >
+             {item.name}
+           </li>
+         );
+       })}
+     </ul>
       )}
     </div>
   );
