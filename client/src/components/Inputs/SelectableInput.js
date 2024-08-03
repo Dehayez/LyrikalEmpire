@@ -16,7 +16,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
   const [isFocused, setIsFocused] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const filteredItems = items.filter(item => 
+  const associationItems = items.filter(item => 
     item.name.toLowerCase().includes(inputValue.toLowerCase())
   );
 
@@ -161,7 +161,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
       </div>
       {isFocused && (
        <ul className="selectable-input__list">
-       {filteredItems.map(item => {
+       {associationItems.map(item => {
         const isSelected = selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === item.id);
         return (
           <li
