@@ -20,7 +20,9 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
   };
 
   const renderName = (item) => {
-    if (item.genre_id) {
+    if (item.name) {
+      return item.name;
+    } else if (item.genre_id) {
       return findNameById(item.genre_id, genres);
     } else if (item.mood_id) {
       return findNameById(item.mood_id, moods);
@@ -58,10 +60,6 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  useEffect(() => {
-    console.log(selectedItems);
-  }, [selectedItems]);
 
   useEffect(() => {
     const maxWidth = localStorage.getItem(`headerWidth${headerIndex}`);
