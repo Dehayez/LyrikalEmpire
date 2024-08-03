@@ -49,6 +49,10 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
     return 'Unknown';
   };
 
+  const isItemSelected = (item) => {
+    return selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === item.id);
+  };
+
   useEffect(() => {
     const fetchAssociations = async () => {
       try {
@@ -95,7 +99,8 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
 
   const handleItemSelect = async (item) => {
     inputRef.current.focus();
-    const isSelected = selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === item.id);
+    const isSelected = isItemSelected(item);
+    console.log('isSelected:', isSelected);
     const updatedItems = isSelected
       ? selectedItems.filter(i => i[`${singularAssociationType}_id`] !== item.id)
       : [...selectedItems, item];
@@ -162,7 +167,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
       {isFocused && (
        <ul className="selectable-input__list">
        {associationItems.map(item => {
-        const isSelected = selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === item.id);
+        const isSelected = isItemSelected(item);
         return (
           <li
             key={item.id}
