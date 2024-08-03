@@ -113,6 +113,17 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
     }
   };
 
+  const handleRemoveAssociation = async (item) => {
+    const associationId = item[`${singularAssociationType}_id`];
+    try {
+      console.log('Removing association:', { beatId, associationType, associationId });
+      await removeAssociationFromBeat(beatId, associationType, associationId);
+      setSelectedItems(prevItems => prevItems.filter(item => item.id !== associationId));
+    } catch (error) {
+      console.error('Failed to remove association:', error);
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       inputRef.current.blur();
@@ -131,7 +142,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
           <span key={index} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
             {renderName(item)}
             {isFocused ? 
-            <IconButton className="selectable-input__selected-list__item__icon" onClick={() => handleItemSelect(item)}>
+            <IconButton className="selectable-input__selected-list__item__icon" onClick={() => handleRemoveAssociation(item)}>
               <IoCloseSharp fontSize={16} />
             </IconButton> : null}
           </span>
