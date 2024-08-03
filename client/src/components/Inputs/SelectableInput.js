@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { addAssociationsToBeat, removeAssociationFromBeat, getAssociationsByBeatId } from '../../services';
+import { useData } from '../../contexts/DataContext';
 import { IconButton } from '../Buttons';
 import { IoCloseSharp } from "react-icons/io5";
 import './SelectableInput.scss';
 
 export const SelectableInput = ({ items, beatId, associationType, headerIndex }) => {
+  const { genres, moods, keywords, features } = useData();
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const [currentSelectedItems, setCurrentSelectedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
@@ -17,7 +18,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
     const fetchAssociations = async () => {
       try {
         const associations = await getAssociationsByBeatId(beatId, associationType);
-        setCurrentSelectedItems(associations);
+        console.log('associations:', associations);
         setSelectedItems(associations);
       } catch (error) {
         console.error('Error fetching associations:', error);
@@ -41,6 +42,10 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
   }, []);
 
   useEffect(() => {
+    console.log(selectedItems);
+  }, [selectedItems]);
+
+  useEffect(() => {
     const maxWidth = localStorage.getItem(`headerWidth${headerIndex}`);
     if (maxWidth && inputContainerRef.current) {
       inputContainerRef.current.style.maxWidth = `${maxWidth}px`;
@@ -54,39 +59,33 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
     if (inputContainerRef.current && !isFocused) {
       inputContainerRef.current.scrollLeft = 0;
     }
-    updateDatabase();
   };
 
   const handleInputChange = (e) => setInputValue(e.target.value);
 
-  const handleItemSelect = (item) => {
+  const handleItemSelect = async (item) => {
     inputRef.current.focus();
-    const updatedItems = currentSelectedItems.includes(item)
-      ? currentSelectedItems.filter(i => i !== item)
-      : [...currentSelectedItems, item];
+    const isSelected = selectedItems.includes(item);
+    const updatedItems = isSelected
+      ? selectedItems.filter(i => i !== item)
+      : [...selectedItems, item];
 
-    setCurrentSelectedItems(updatedItems);
+    setSelectedItems(updatedItems);
+
+    try {
+      if (isSelected) {
+        await removeAssociationFromBeat(beatId, associationType, item.id);
+      } else {
+        await addAssociationsToBeat(beatId, associationType, [item.id]);
+      }
+    } catch (error) {
+      console.error('Error updating associations:', error);
+    }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') updateDatabase();
-  };
-
-  const updateDatabase = async () => {
-    const itemsToAdd = currentSelectedItems.filter(item => !selectedItems.includes(item));
-    const itemsToRemove = selectedItems.filter(item => !currentSelectedItems.includes(item));
-
-    console.log('itemsToAdd:', itemsToAdd);
-    console.log('itemsToRemove:', itemsToRemove);
-
-    try {
-      if (itemsToAdd.length > 0) {
-        await addAssociationsToBeat(beatId, associationType, itemsToAdd.map(item => item.id));
-      }
-      await Promise.all(itemsToRemove.map(item => removeAssociationFromBeat(beatId, associationType, item.id)));
-      setSelectedItems(currentSelectedItems);
-    } catch (error) {
-      console.error('Error updating associations:', error);
+    if (e.key === 'Enter') {
+      inputRef.current.blur();
     }
   };
 
@@ -101,33 +100,33 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
         onClick={() => inputRef.current.focus()}
         ref={inputContainerRef}
       >
-        <div className="selectable-input__selected-list">
-          {currentSelectedItems.map(item => (
-            <span key={item.id} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
-              {item.name}
-                {isFocused ? 
-                <IconButton className="selectable-input__selected-list__item__icon">
-                  <IoCloseSharp fontSize={16} />
-                </IconButton> : null}
-            </span>
-          ))}
-          <input
-            ref={inputRef}
-            className="selectable-input__input input"
-            type="text"
-            value={inputValue}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+      <div className="selectable-input__selected-list">
+        {selectedItems.map(item => (
+          <span key={item.id} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
+            {item.name}
+            {isFocused ? 
+              <IconButton className="selectable-input__selected-list__item__icon" onClick={() => handleItemSelect(item)}>
+                <IoCloseSharp fontSize={16} />
+              </IconButton> : null}
+          </span>
+        ))}
+        <input
+          ref={inputRef}
+          className="selectable-input__input input"
+          type="text"
+          value={inputValue}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          onClick={(e) => e.stopPropagation()}
+        />
+      </div>
       </div>
       {isFocused && (
         <ul className="selectable-input__list">
           {filteredItems.map(item => {
-            const isSelected = selectedItems.includes(item) || currentSelectedItems.includes(item);
+            const isSelected = selectedItems.includes(item);
             return (
               <li
                 key={item.id}
