@@ -14,6 +14,24 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
   const containerRef = useRef(null);
   const inputContainerRef = useRef(null);
 
+  const findNameById = (id, items) => {
+    const item = items.find(item => item.id === id);
+    return item ? item.name : 'Unknown';
+  };
+
+  const renderName = (item) => {
+    if (item.genre_id) {
+      return findNameById(item.genre_id, genres);
+    } else if (item.mood_id) {
+      return findNameById(item.mood_id, moods);
+    } else if (item.keyword_id) {
+      return findNameById(item.keyword_id, keywords);
+    } else if (item.feature_id) {
+      return findNameById(item.feature_id, features);
+    }
+    return 'Unknown';
+  };
+
   useEffect(() => {
     const fetchAssociations = async () => {
       try {
@@ -101,9 +119,9 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
         ref={inputContainerRef}
       >
       <div className="selectable-input__selected-list">
-        {selectedItems.map(item => (
-          <span key={item.id} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
-            {item.name}
+        {selectedItems.map((item, index) => (
+          <span key={index} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
+            {renderName(item)}
             {isFocused ? 
               <IconButton className="selectable-input__selected-list__item__icon" onClick={() => handleItemSelect(item)}>
                 <IoCloseSharp fontSize={16} />
