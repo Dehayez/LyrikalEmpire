@@ -19,6 +19,15 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
   const filteredItems = items.filter(item => 
     item.name.toLowerCase().includes(inputValue.toLowerCase())
   );
+
+  const toSingular = (plural) => {
+    if (plural.endsWith('s')) {
+      return plural.slice(0, -1);
+    }
+    return plural;
+  };
+
+  const singularAssociationType = toSingular(associationType);
   
   const findNameById = (id, items) => {
     const item = items.find(item => item.id === id);
@@ -143,17 +152,17 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
       {isFocused && (
        <ul className="selectable-input__list">
        {filteredItems.map(item => {
-         const isSelected = selectedItems.some(selectedItem => selectedItem.genre_id === item.id);
-         return (
-           <li
-             key={item.id}
-             className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
-             onClick={() => handleItemSelect(item)}
-           >
-             {item.name}
-           </li>
-         );
-       })}
+        const isSelected = selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === item.id);
+        return (
+          <li
+            key={item.id}
+            className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
+            onClick={() => handleItemSelect(item)}
+          >
+            {item.name}
+          </li>
+        );
+      })}
      </ul>
       )}
     </div>
