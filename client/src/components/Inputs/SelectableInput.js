@@ -7,13 +7,19 @@ import './SelectableInput.scss';
 
 export const SelectableInput = ({ items, beatId, associationType, headerIndex }) => {
   const { genres, moods, keywords, features } = useData();
-  const [inputValue, setInputValue] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
+
   const inputRef = useRef(null);
   const containerRef = useRef(null);
   const inputContainerRef = useRef(null);
 
+  const [inputValue, setInputValue] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const filteredItems = items.filter(item => 
+    item.name.toLowerCase().includes(inputValue.toLowerCase())
+  );
+  
   const findNameById = (id, items) => {
     const item = items.find(item => item.id === id);
     return item ? item.name : 'Unknown';
@@ -103,10 +109,6 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
       inputRef.current.blur();
     }
   };
-
-  const filteredItems = items.filter(item => 
-    item.name.toLowerCase().includes(inputValue.toLowerCase())
-  );
 
   return (
     <div className="selectable-input" ref={containerRef}>
