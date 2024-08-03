@@ -56,11 +56,11 @@ export const addAssociationsToBeat = async (beatId, associationType, association
 };
 
 export const removeAssociationFromBeat = async (beatId, associationType, associationId) => {
-try {
+  try {
     const response = await axios.delete(`${API_URL}/${beatId}/${associationType}/${associationId}`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to remove ${associationType} from beat:`, error);
+    console.error(`Failed to remove ${associationType} association from beat:`, error);
     throw error;
   }
 };
