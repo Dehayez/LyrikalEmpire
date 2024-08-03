@@ -99,9 +99,9 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
     const updatedItems = isSelected
       ? selectedItems.filter(i => i !== item)
       : [...selectedItems, item];
-
+  
     setSelectedItems(updatedItems);
-
+  
     try {
       if (isSelected) {
         await removeAssociationFromBeat(beatId, associationType, item.id);
@@ -131,9 +131,9 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
           <span key={index} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
             {renderName(item)}
             {isFocused ? 
-              <IconButton className="selectable-input__selected-list__item__icon" onClick={() => handleItemSelect(item)}>
-                <IoCloseSharp fontSize={16} />
-              </IconButton> : null}
+  <IconButton className="selectable-input__selected-list__item__icon" onClick={() => handleItemSelect(item)}>
+    <IoCloseSharp fontSize={16} />
+  </IconButton> : null}
           </span>
         ))}
         <input
