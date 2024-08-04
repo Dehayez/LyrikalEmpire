@@ -98,23 +98,23 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
   const handleInputChange = (e) => setInputValue(e.target.value);
 
   const handleItemSelect = async (item) => {
-    inputRef.current.focus();
-    const isSelected = isItemSelected(item);
-    console.log('isSelected:', isSelected);
-    const updatedItems = isSelected
-      ? selectedItems.filter(i => i[`${singularAssociationType}_id`] !== item.id)
-      : [...selectedItems, item];
+    const associationId = item.id;
+    const newAssociation = {
+      beat_id: beatId,
+      [`${singularAssociationType}_id`]: associationId
+    };
   
-    setSelectedItems(updatedItems);
+    const isSelected = selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === associationId);
   
-    try {
-      if (isSelected) {
-        await removeAssociationFromBeat(beatId, associationType, item.id);
-      } else {
-        await addAssociationsToBeat(beatId, associationType, [item.id]);
+    if (isSelected) {
+      await handleRemoveAssociation(newAssociation);
+    } else {
+      try {
+        await addAssociationsToBeat(beatId, associationType, [associationId]);
+        setSelectedItems(prevItems => [...prevItems, newAssociation]);
+      } catch (error) {
+        console.error('Failed to add association:', error);
       }
-    } catch (error) {
-      console.error('Error updating associations:', error);
     }
   };
 
