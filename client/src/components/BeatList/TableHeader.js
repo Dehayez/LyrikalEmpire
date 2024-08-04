@@ -37,6 +37,26 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
     setShowForm(true);
   };
 
+  const handleSubmit = (data) => {
+    switch (formType) {
+      case 'genre':
+        addGenre(data);
+        break;
+      case 'mood':
+        addMood(data);
+        break;
+      case 'keywords':
+        addKeyword(data);
+        break;
+      case 'features':
+        addFeature(data);
+        break;
+      default:
+        break;
+    }
+    setShowForm(false);
+  };
+
   return (
     <thead className="table-header" ref={tableRef}>
       <tr>
@@ -87,25 +107,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
           placeholder={`Enter ${formType}`}
           item={formType}
           onClose={() => setShowForm(false)}
-          onSubmit={(data) => {
-            switch (formType) {
-              case 'genre':
-                addGenre(data);
-                break;
-              case 'mood':
-                addMood(data);
-                break;
-              case 'keywords':
-                addKeyword(data);
-                break;
-              case 'features':
-                addFeature(data);
-                break;
-              default:
-                break;
-            }
-            setShowForm(false);
-          }}
+          onSubmit={handleSubmit}
         />,
         document.getElementById('modal-root')
       )}
