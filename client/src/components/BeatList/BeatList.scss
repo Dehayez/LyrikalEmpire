@@ -53,15 +53,23 @@
       height: 100%;
       border-radius: 4px;
       padding: 0 6px;
+      
+      & .tooltip {
+        display: none;
+      }
 
       &--closed {
+      
+        & .tooltip {
+          display: block;
+        }
         &:hover {
           background-color: $color-gray-dark;
         }
       }
 
       &--active {
-        color: $color-yellow;
+        color: $color-white;
       }
 
     }
@@ -89,6 +97,11 @@
     visibility: hidden;
     opacity: 0;
     transition: width 0.3s ease, opacity 0.2s, visibility 0.2s;
+  
+    &:hover {
+      outline: none;
+      box-shadow: 0 0 0 1px $color-gray-dark-hover;
+    }
   
     &:focus {
       outline: none;
