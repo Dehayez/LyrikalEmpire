@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { isMobileOrTablet } from '../../utils';
 import { useResizableColumns } from '../../hooks';
 import { addGenre, addMood, addKeyword, addFeature } from '../../services';
+import { useData } from '../../contexts';
 import { Form } from '../Form';
 import { IoChevronUpSharp, IoChevronDownSharp, IoTimeOutline, IoAddSharp } from 'react-icons/io5';
 import ContextMenu from '../ContextMenu/ContextMenu';
@@ -15,6 +16,8 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
   const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
   const [showForm, setShowForm] = useState(false);
   const [formType, setFormType] = useState('');
+
+  const { fetchGenres, fetchMoods, fetchKeywords, fetchFeatures } = useData();
 
   useResizableColumns(tableRef, mode, setIsDragging);
 
@@ -37,22 +40,30 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
     setShowForm(true);
   };
 
-  const handleSubmit = (data) => {
-    switch (formType) {
-      case 'genre':
-        addGenre(data);
-        break;
-      case 'mood':
-        addMood(data);
-        break;
-      case 'keywords':
-        addKeyword(data);
-        break;
-      case 'features':
-        addFeature(data);
-        break;
-      default:
-        break;
+  const handleSubmit = async (data) => {
+    try {
+      switch (formType) {
+        case 'genre':
+          await addGenre(data);
+          fetchGenres();
+          break;
+        case 'mood':
+          await addMood(data);
+          fetchMoods();
+          break;
+        case 'keywords':
+          await addKeyword(data);
+          fetchKeywords();
+          break;
+        case 'features':
+          await addFeature(data);
+          fetchFeatures();
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error('Error adding item:', error);
     }
     setShowForm(false);
   };
