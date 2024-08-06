@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
+import { useHeaderWidths } from '../contexts';
 
 export const useResizableColumns = (tableRef, mode) => {
+  const { setHeaderWidths } = useHeaderWidths();
+
   useEffect(() => {
     if (!tableRef.current) return;
 
@@ -46,6 +49,10 @@ export const useResizableColumns = (tableRef, mode) => {
           const newWidth = initialWidth + e.clientX - initialMouseX;
           header.style.width = `${newWidth}px`;
           localStorage.setItem(`headerWidth${index}`, newWidth);
+          setHeaderWidths((prevWidths) => ({
+            ...prevWidths,
+            [`headerWidth${index}`]: newWidth,
+          }));
         };
 
         const handleMouseUp = () => {
