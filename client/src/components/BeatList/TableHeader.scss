@@ -7,14 +7,14 @@
     text-align: left;
     z-index: 3;
 
-    &::after {
+/*     &::after {
         content: '';
         position: absolute;
         left: 0;
         right: 0;
         bottom: 0;
         border-bottom: $border-bottom-dark;
-    }
+    } */
   
     &__cell {
       position: relative;
@@ -27,7 +27,15 @@
       padding-right: 36px;
       cursor: default;
 
+      &-text {
+        color: $color-gray;
+        &:hover {
+          color: $color-white;
+        }
+      }
+
       &.resizable-header {
+        position: relative;
         &::after {
           content: '';
           position: absolute;
@@ -38,6 +46,9 @@
           cursor: col-resize;
           background-color: transparent;
           transition: background-color .2s ease-in-out;
+        }
+        &:hover::after {
+          background-color: $color-gray-dark-hover;
         }
       }
 
@@ -52,15 +63,8 @@
         text-align: center;
         width: 50px;
         padding: 0;
-
-        &:hover, &.table-header__cell:hover {
-          background-color: $color-black;
-        }
       }
 
-      &:hover {
-        background-color: $color-gray-dark;
-      }
 
       &.no-transition {
           transition: none;
@@ -69,7 +73,7 @@
 
     &__sort-icon {
       color: $color-yellow;
-      font-size: 18px;
+      font-size: 20px;
       padding: 8px;
       position: absolute;
       right: 0;
