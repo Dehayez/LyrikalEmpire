@@ -89,7 +89,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
               </span>
               
               {sortConfig.key === column && (
-                <span className="table-header__sort-icon">
+                <span className="table-header__sort-icon" onClick={() => handleMouseEvents('click', column)}>
                   {sortConfig.direction === 'ascending' ? <IoChevronUpSharp/> : <IoChevronDownSharp/>}
                 </span>
               )}
