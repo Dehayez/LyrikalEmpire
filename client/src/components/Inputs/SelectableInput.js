@@ -116,6 +116,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
         console.error('Failed to add association:', error);
       }
     }
+    setInputValue('');
   };
 
   const handleRemoveAssociation = async (item) => {
