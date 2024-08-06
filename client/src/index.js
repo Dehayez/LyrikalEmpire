@@ -11,6 +11,7 @@ import reportWebVitals from './reportWebVitals';
 import { PlaylistProvider } from './contexts/PlaylistContext'; 
 import { BeatProvider } from './contexts/BeatContext';
 import { DataProvider } from './contexts/DataContext';
+import { HeaderWidthProvider } from './contexts/HeaderWidthContext';
 
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
@@ -21,9 +22,11 @@ root.render(
       <PlaylistProvider> 
         <BeatProvider>
           <DataProvider>
-            <DndProvider backend={HTML5Backend}>
-              <App />
-            </DndProvider>
+            <HeaderWidthProvider>
+              <DndProvider backend={HTML5Backend}>
+                <App />
+              </DndProvider>
+            </HeaderWidthProvider>
           </DataProvider>
         </BeatProvider>
       </PlaylistProvider>
