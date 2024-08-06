@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { addAssociationsToBeat, removeAssociationFromBeat, getAssociationsByBeatId } from '../../services';
-import { useData } from '../../contexts/DataContext';
+import { useData, useHeaderWidths } from '../../contexts';
 import { IconButton } from '../Buttons';
 import { IoCloseSharp } from "react-icons/io5";
 import './SelectableInput.scss';
 
 export const SelectableInput = ({ items, beatId, associationType, headerIndex }) => {
   const { genres, moods, keywords, features } = useData();
+  const { headerWidths } = useHeaderWidths();
 
   const inputRef = useRef(null);
   const containerRef = useRef(null);
@@ -84,7 +85,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
     if (maxWidth && inputContainerRef.current) {
       inputContainerRef.current.style.maxWidth = `${maxWidth}px`;
     }
-  }, []);
+  }, [headerWidths]);
 
   const handleFocus = () => setIsFocused(true);
 
