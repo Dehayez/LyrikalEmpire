@@ -5,7 +5,7 @@ import { IconButton } from '../Buttons';
 import { IoCloseSharp } from "react-icons/io5";
 import './SelectableInput.scss';
 
-export const SelectableInput = ({ items, beatId, associationType, headerIndex }) => {
+export const SelectableInput = ({ items, beatId, associationType, headerIndex, label, placeholder }) => {
   const { genres, moods, keywords, features } = useData();
   const { headerWidths } = useHeaderWidths();
 
@@ -137,51 +137,56 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex })
   };
 
   return (
-    <div className="selectable-input" ref={containerRef}>
-      <div 
-        className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''}`}
-        onClick={() => inputRef.current.focus()}
-        ref={inputContainerRef}
-      >
-      <div className="selectable-input__selected-list">
-        {selectedItems.map((item, index) => (
-          <span key={index} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
-            {renderName(item)}
-            {isFocused ? 
-            <IconButton className="selectable-input__selected-list__item__icon" onClick={() => handleRemoveAssociation(item)}>
-              <IoCloseSharp fontSize={16} />
-            </IconButton> : null}
-          </span>
-        ))}
-        <input
-          ref={inputRef}
-          className="selectable-input__input input"
-          type="text"
-          value={inputValue}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          onClick={(e) => e.stopPropagation()}
-        />
+    <div className='selectable-input-container'>
+      {label && <label className="selectable-input__label">{label}</label>}
+      <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
+      
+        <div 
+          className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''}`}
+          onClick={() => inputRef.current.focus()}
+          ref={inputContainerRef}
+        >
+        <div className="selectable-input__selected-list">
+          {selectedItems.map((item, index) => (
+            <span key={index} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
+              {renderName(item)}
+              {isFocused ? 
+              <IconButton className="selectable-input__selected-list__item__icon" onClick={() => handleRemoveAssociation(item)}>
+                <IoCloseSharp fontSize={16} />
+              </IconButton> : null}
+            </span>
+          ))}
+          <input
+            ref={inputRef}
+            className="selectable-input__input input"
+            placeholder={placeholder}
+            type="text"
+            value={inputValue}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+        </div>
+        {isFocused && (
+        <ul className="selectable-input__list">
+        {associationItems.map(item => {
+          const isSelected = isItemSelected(item);
+          return (
+            <li
+              key={item.id}
+              className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
+              onClick={() => handleItemSelect(item)}
+            >
+              {item.name}
+            </li>
+          );
+        })}
+      </ul>
+        )}
       </div>
-      </div>
-      {isFocused && (
-       <ul className="selectable-input__list">
-       {associationItems.map(item => {
-        const isSelected = isItemSelected(item);
-        return (
-          <li
-            key={item.id}
-            className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
-            onClick={() => handleItemSelect(item)}
-          >
-            {item.name}
-          </li>
-        );
-      })}
-     </ul>
-      )}
     </div>
   );
 };
