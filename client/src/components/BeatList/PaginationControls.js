@@ -123,6 +123,7 @@ const PaginationControls = ({ items, currentBeat }) => {
             style={{ cursor: 'pointer' }}
           >
             {pageNumber}
+            {pageNumber === currentBeatPage && <div className="indicator"></div>}
           </a>
         ))}
         {endPage < totalPages ? (

@@ -67,6 +67,17 @@
         text-align: center;
     }
 }
+  
+.indicator {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: #FFCC44;
+  border-radius: 50%;
+}
 
 @media (max-width: 700px) {
     .pagination-controls__ellipsis,

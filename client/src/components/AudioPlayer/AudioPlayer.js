@@ -18,7 +18,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const handleVolumeChange = e => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    console.log(newVolume);
     localStorage.setItem('volume', newVolume.toString());
   };
 
