@@ -4,9 +4,8 @@ import Draggable from 'react-draggable';
 import { IoCheckmarkSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
 
-import { addBeat } from '../../services';
 import { useData } from '../../contexts';
-import { useBpmHandlers, useSelectableList } from '../../hooks';
+import { useBpmHandlers } from '../../hooks';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
 
@@ -14,7 +13,7 @@ import './AddBeatForm.scss';
 
 Modal.setAppElement('#root');
 
-const AddBeatForm = ({ onAdd, isOpen, setIsOpen }) => {
+const AddBeatForm = ({ isOpen, setIsOpen }) => {
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
     const [duration, setDuration] = useState(0);
