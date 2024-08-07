@@ -53,6 +53,10 @@ function App() {
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [activeUploads, setActiveUploads] = useState(0);
 
+  const handleAdd = useCallback((newBeat) => {
+    setBeats((prevBeats) => [newBeat, ...prevBeats]);
+  }, [setBeats]);
+
   useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
   useEffect(() => {
@@ -231,10 +235,6 @@ function App() {
     }
     setSortConfig({ key: direction ? key : null, direction });
   };
-
-  const handleAdd = useCallback((newBeat) => {
-    setBeats((prevBeats) => [...prevBeats, newBeat]);
-  }, []);
 
   const handlePlayWrapper = (beat, play, beats) => {
     handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
@@ -450,7 +450,6 @@ function App() {
             </div>
           </div>
           <AddBeatForm 
-            onAdd={handleAdd} 
             isOpen={isOpen} 
             setIsOpen={setIsOpen} 
             droppedFiles={droppedFiles} 
