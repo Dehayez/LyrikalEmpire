@@ -53,10 +53,6 @@ function App() {
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [activeUploads, setActiveUploads] = useState(0);
 
-  const handleAdd = useCallback((newBeat) => {
-    setBeats((prevBeats) => [newBeat, ...prevBeats]);
-  }, [setBeats]);
-
   useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
   useEffect(() => {
