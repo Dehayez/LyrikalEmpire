@@ -149,7 +149,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                             spellCheck="false" 
                             isWarning={isTitleEmpty}
                         />
-                        <SelectableInput label="Genre" placeholder="Enter genre"/>
+                        <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres}/>
                         <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChangeExtended} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
                         <SelectInput 
                             label="Tierlist"
@@ -166,9 +166,9 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                                 { value: 'F', label: 'F' },
                             ]}
                         />
-                        <SelectableInput label="Moods" placeholder="Enter moods"/>
-                        <SelectableInput label="Keywords" placeholder="Enter keywords" />
-                        <SelectableInput label="Features" placeholder="Enter features" />
+                        <SelectableInput label="Moods" placeholder="Enter moods" associationType="moods" items={moods}/>
+                        <SelectableInput label="Keywords" placeholder="Enter keywords" associationType="keywords" items={keywords}/>
+                        <SelectableInput label="Features" placeholder="Enter features" associationType="features" items={features}/>
                         <div className='modal__buttons'>
                             <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                             <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
