@@ -11,7 +11,7 @@ const PaginationControls = ({ items, currentBeat }) => {
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
   const [maxVisiblePages, setMaxVisiblePages] = useState(7);
-  const itemsPerPage = 7;
+  const itemsPerPage = 12;
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const halfVisiblePages = Math.floor(maxVisiblePages / 2);
   
