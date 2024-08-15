@@ -9,7 +9,7 @@ Lyrikal Empire is a full-stack web application designed to manage and play audio
 To install and set up the project, follow these steps:
 #### Clone the repository
 ```
-git clone https://github.com/your-username/lyrikalempire.git
+git clone https://github.com/Dehayez/LyrikalEmpire
 cd lyrikalempire
 ```
 
