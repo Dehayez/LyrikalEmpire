@@ -5,8 +5,9 @@
 Lyrikal Empire is a full-stack web application designed to manage and play audio files. The project is divided into two main parts: the client and the server.
 
 ## Project Structure
-
+```
 client/ .gitignore package.json public/ index.html manifest.json robots.txt site.webmanifest uploads/ README.md src/ App.js App.scss App.test.js components/ AddBeat/ AudioPlayer/ BeatList/ Buttons/ ConfirmModal/ ContextMenu/ Form/ Header/ Highlight/ contexts/ globals/ hooks/ index.js index.scss reportWebVitals.js services/ setupTests.js utils/ package.json README.md server/ .env .gitignore package.json server.js
+```
 
 ## Available Scripts
 
