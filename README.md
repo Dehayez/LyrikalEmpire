@@ -7,19 +7,19 @@ Lyrikal Empire is a full-stack web application designed to manage and play audio
 ## Installation
 
 To install and set up the project, follow these steps:
-### Clone the repository:
+#### Clone the repository
 ```
 git clone https://github.com/your-username/lyrikalempire.git
 cd lyrikalempire
 ```
 
-### Install dependencies for the client:
+#### Install dependencies for the client
 ```
 cd client
 yarn install
 ```
 
-### Install dependencies for the server:
+#### Install dependencies for the server
 ```
 cd ../server
 yarn install
@@ -60,7 +60,7 @@ yarn install
    └─ server.js
 ```
 
-### Explanation:
+#### Explanation
 ```
 📦 lyrikalempire: The current name of the application
 ├─ client: Contains the client-side code of the application.
