@@ -32,11 +32,16 @@ const PaginationControls = ({ items, currentBeat }) => {
   }, [currentPage, urlKey]);
 
   useEffect(() => {
-    const currentBeats = items.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    );
-    setPaginatedBeats(currentBeats);
+    const totalPages = Math.ceil(items.length / itemsPerPage);
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    } else {
+      const currentBeats = items.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
+      setPaginatedBeats(currentBeats);
+    }
   }, [currentPage, items]);
 
   const handleNextPage = () => {
