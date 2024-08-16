@@ -40,7 +40,15 @@ const BeatRow = ({
   const toDragAndDrop = location.pathname !== '/' && mode === 'lock';
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
   const [isInputFocused, setInputFocused] = useState(false);
+  const [disableFocus, setDisableFocus] = useState(false);
 
+  useEffect(() => {
+    if (mode !== 'edit') {
+      setDisableFocus(true);
+    } else {
+      setDisableFocus(false);
+    }
+  }, [mode]);
   
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
@@ -297,6 +305,7 @@ const BeatRow = ({
               items={genres}
               beatId={beat.id}
               headerIndex='2'
+              disableFocus={disableFocus}
             />
           </td>
           <td className="beat-row__data">
@@ -357,6 +366,7 @@ const BeatRow = ({
                 items={moods}
                 beatId={beat.id}
                 headerIndex='5'
+                disableFocus={disableFocus}
               />
           </td>
           <td className="beat-row__data">
@@ -365,6 +375,7 @@ const BeatRow = ({
                 items={keywords}
                 beatId={beat.id}
                 headerIndex='6'
+                disableFocus={disableFocus}
               />
           </td> 
           <td className="beat-row__data">
@@ -373,6 +384,7 @@ const BeatRow = ({
                 items={features}
                 beatId={beat.id}
                 headerIndex='7'
+                disableFocus={disableFocus}
               />
           </td>
         </>
