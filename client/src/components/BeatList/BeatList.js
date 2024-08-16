@@ -25,7 +25,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const beats = externalBeats || internalBeats;
   const filteredAndSortedBeats = useMemo(() => {
     const filteredBeats = beats.filter(beat => {
-      const fieldsToSearch = [beat.title, beat.genre, beat.mood, beat.keywords];
+      const fieldsToSearch = [beat.title];
       return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
     });
     return sortBeats(filteredBeats, sortConfig);
