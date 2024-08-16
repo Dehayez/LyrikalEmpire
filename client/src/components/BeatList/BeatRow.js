@@ -292,17 +292,12 @@ const BeatRow = ({
       {mode !== 'lock' && (
         <>
           <td className="beat-row__data">
-           {/*  {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />} */}
-            {mode === 'edit' ? 
              <SelectableInput
               associationType="genres"
               items={genres}
               beatId={beat.id}
               headerIndex='2'
             />
-            : 
-              <div className='beat-row__input beat-row__input--static-select'>{beat.genre}</div> 
-            }
           </td>
           <td className="beat-row__data">
             {mode === 'edit' ? 
@@ -357,43 +352,28 @@ const BeatRow = ({
             }
           </td>
           <td className="beat-row__data">
-            {/* {!isInputFocused && <Highlight text={beat.mood || ''} highlight={searchText || ''} />} */}
-            {mode === 'edit' ? 
               <SelectableInput
                 associationType="moods"
                 items={moods}
                 beatId={beat.id}
                 headerIndex='5'
               />
-            : 
-              <div className='beat-row__input beat-row__input--static-select'>{beat.mood}</div> 
-            }
           </td>
           <td className="beat-row__data">
-            {/* {!isInputFocused && <Highlight text={beat.keyword || ''} highlight={searchText || ''} />} */}
-            {mode === 'edit' ? 
               <SelectableInput
                 associationType="keywords"
                 items={keywords}
                 beatId={beat.id}
                 headerIndex='6'
               />
-            : 
-              <div className='beat-row__input beat-row__input--static-select'>{beat.keyword}</div> 
-            }
           </td> 
           <td className="beat-row__data">
-           {/*  {!isInputFocused && <Highlight text={beat.feature || ''} highlight={searchText || ''} />} */}
-            {mode === 'edit' ? 
               <SelectableInput
                 associationType="features"
                 items={features}
                 beatId={beat.id}
                 headerIndex='7'
               />
-            : 
-              <div className='beat-row__input beat-row__input--static-select'>{beat.features}</div> 
-            }
           </td>
         </>
       )}
