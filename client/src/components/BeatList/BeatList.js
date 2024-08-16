@@ -21,7 +21,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
 
   const { setPlaylistId } = usePlaylist();
-  const { beats: internalBeats, paginatedBeats, isInputFocused } = useBeat();
+  const { beats: internalBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
   const beats = externalBeats || internalBeats;
   const filteredAndSortedBeats = useMemo(() => {
     const filteredBeats = beats.filter(beat => {
@@ -81,16 +81,18 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
       });
   
       const message = confirmModalState.beatsToDelete.length === 1
-      ? <div><strong>{titlesToDelete[0]}</strong> has been {deleteMode === 'playlist' ? <>removed from <strong>{playlistName}</strong></> : 'deleted'}.</div>
-      : <div><strong>{confirmModalState.beatsToDelete.length} tracks</strong> have been {deleteMode === 'playlist' ? <>removed from <strong>{playlistName}</strong></> : 'deleted'}.</div>;
-    
-    setConfirmModalState({ isOpen: false, beatsToDelete: [] });
-    
-    toast.dark(message, {
-      autoClose: 3000,
-      pauseOnFocusLoss: false,
-      className: "Toastify__toast--warning",
-    });
+        ? <div><strong>{titlesToDelete[0]}</strong> has been {deleteMode === 'playlist' ? <>removed from <strong>{playlistName}</strong></> : 'deleted'}.</div>
+        : <div><strong>{confirmModalState.beatsToDelete.length} tracks</strong> have been {deleteMode === 'playlist' ? <>removed from <strong>{playlistName}</strong></> : 'deleted'}.</div>;
+  
+      setRefreshBeats(prev => !prev);
+  
+      setConfirmModalState({ isOpen: false, beatsToDelete: [] });
+  
+      toast.dark(message, {
+        autoClose: 3000,
+        pauseOnFocusLoss: false,
+        className: "Toastify__toast--warning",
+      });
     }
   };
 
