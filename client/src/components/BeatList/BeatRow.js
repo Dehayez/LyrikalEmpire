@@ -292,7 +292,7 @@ const BeatRow = ({
       {mode !== 'lock' && (
         <>
           <td className="beat-row__data">
-            {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />}
+           {/*  {!isInputFocused && <Highlight text={beat.genre || ''} highlight={searchText || ''} />} */}
             {mode === 'edit' ? 
              <SelectableInput
               associationType="genres"
@@ -357,7 +357,7 @@ const BeatRow = ({
             }
           </td>
           <td className="beat-row__data">
-            {!isInputFocused && <Highlight text={beat.mood || ''} highlight={searchText || ''} />}
+            {/* {!isInputFocused && <Highlight text={beat.mood || ''} highlight={searchText || ''} />} */}
             {mode === 'edit' ? 
               <SelectableInput
                 associationType="moods"
@@ -370,7 +370,7 @@ const BeatRow = ({
             }
           </td>
           <td className="beat-row__data">
-            {!isInputFocused && <Highlight text={beat.keyword || ''} highlight={searchText || ''} />}
+            {/* {!isInputFocused && <Highlight text={beat.keyword || ''} highlight={searchText || ''} />} */}
             {mode === 'edit' ? 
               <SelectableInput
                 associationType="keywords"
@@ -383,7 +383,7 @@ const BeatRow = ({
             }
           </td> 
           <td className="beat-row__data">
-            {!isInputFocused && <Highlight text={beat.feature || ''} highlight={searchText || ''} />}
+           {/*  {!isInputFocused && <Highlight text={beat.feature || ''} highlight={searchText || ''} />} */}
             {mode === 'edit' ? 
               <SelectableInput
                 associationType="features"
