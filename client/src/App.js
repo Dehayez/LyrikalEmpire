@@ -15,7 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
 function App() {
-  const { beats, setBeats } = useBeat();
+  const { beats, setBeats, setRefreshBeats } = useBeat();
 
   const [refresh, setRefresh] = useState(false);
   const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
@@ -203,6 +203,7 @@ function App() {
           icon: <IoCheckmarkSharp size={24} />,
           className: "Toastify__toast--success",
         });
+        setRefreshBeats(prev => !prev);
       } catch (error) {
         toast.dark(
           <div><strong>Error:</strong> {error.message}</div>, {
