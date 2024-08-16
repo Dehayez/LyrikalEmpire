@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { addAssociationsToBeat, removeAssociationFromBeat, getAssociationsByBeatId } from '../../services';
-import { useData, useHeaderWidths } from '../../contexts';
-import { IconButton } from '../Buttons';
-import { IoCloseSharp } from "react-icons/io5";
+import { useHeaderWidths } from '../../contexts';
+import { SelectedList } from './SelectedList';
 import './SelectableInput.scss';
 
 export const SelectableInput = ({ items, beatId, associationType, headerIndex, label, placeholder, disableFocus }) => {
-  const { genres, moods, keywords, features } = useData();
   const { headerWidths } = useHeaderWidths();
 
   const inputRef = useRef(null);
@@ -29,26 +27,6 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
   };
 
   const singularAssociationType = toSingular(associationType);
-  
-  const findNameById = (id, items) => {
-    const item = items.find(item => item.id === id);
-    return item ? item.name : 'Unknown';
-  };
-
-  const renderName = (item) => {
-    if (item.name) {
-      return item.name;
-    } else if (item.genre_id) {
-      return findNameById(item.genre_id, genres);
-    } else if (item.mood_id) {
-      return findNameById(item.mood_id, moods);
-    } else if (item.keyword_id) {
-      return findNameById(item.keyword_id, keywords);
-    } else if (item.feature_id) {
-      return findNameById(item.feature_id, features);
-    }
-    return 'Unknown';
-  };
 
   const isItemSelected = (item) => {
     return selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === item.id);
@@ -138,69 +116,50 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
 
   return (
     <>
-      { disableFocus ? (
-
-            <div className="selectable-input__selected-list">
-              {selectedItems.map((item, index) => (
-                <span key={index} className='selectable-input__selected-list__item'>
-                  {renderName(item)}
-                </span>
-              ))}
-            </div>
-
+      {disableFocus ? (
+        <SelectedList selectedItems={selectedItems} />
       ) : (
-      <div className='selectable-input-container'>
-        {label && <label className="selectable-input__label">{label}</label>}
-        <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
-        
-          <div 
-            className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''}`}
-            onClick={() => inputRef.current.focus()}
-            ref={inputContainerRef}
-          >
-          <div className="selectable-input__selected-list">
-            {selectedItems.map((item, index) => (
-              <span key={index} className={`selectable-input__selected-list__item ${isFocused ? 'selectable-input__selected-list__item--focused' : ''}`}>
-                {renderName(item)}
-                {isFocused ? 
-                <IconButton className="selectable-input__selected-list__item__icon" onClick={() => handleRemoveAssociation(item)}>
-                  <IoCloseSharp fontSize={16} />
-                </IconButton> : null}
-              </span>
-            ))}
-            <input
-              ref={inputRef}
-              className="selectable-input__input input"
-              placeholder={placeholder}
-              type="text"
-              value={inputValue}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              onClick={(e) => e.stopPropagation()}
-            />
+        <div className='selectable-input-container'>
+          {label && <label className="selectable-input__label">{label}</label>}
+          <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
+            <div 
+              className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''}`}
+              onClick={() => inputRef.current.focus()}
+              ref={inputContainerRef}
+            >
+              <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />
+              <input
+                ref={inputRef}
+                className="selectable-input__input input"
+                placeholder={placeholder}
+                type="text"
+                value={inputValue}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+            {isFocused && (
+              <ul className="selectable-input__list">
+                {associationItems.map(item => {
+                  const isSelected = isItemSelected(item);
+                  return (
+                    <li
+                      key={item.id}
+                      className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
+                      onClick={() => handleItemSelect(item)}
+                    >
+                      {item.name}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
-          </div>
-          {isFocused && (
-          <ul className="selectable-input__list">
-          {associationItems.map(item => {
-            const isSelected = isItemSelected(item);
-            return (
-              <li
-                key={item.id}
-                className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
-                onClick={() => handleItemSelect(item)}
-              >
-                {item.name}
-              </li>
-            );
-          })}
-        </ul>
-          )}
         </div>
-      </div>
-    )}
+      )}
     </>
   );
 };
