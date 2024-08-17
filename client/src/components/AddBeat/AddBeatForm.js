@@ -4,7 +4,7 @@ import Draggable from 'react-draggable';
 import { IoCheckmarkSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
 
-import { useData } from '../../contexts';
+import { useData, useBeat } from '../../contexts';
 import { useBpmHandlers } from '../../hooks';
 import { addBeat } from '../../services';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
@@ -15,6 +15,12 @@ import './AddBeatForm.scss';
 Modal.setAppElement('#root');
 
 const AddBeatForm = ({ isOpen, setIsOpen }) => {
+    const { setRefreshBeats } = useBeat();
+    const { genres, moods, keywords, features } = useData();
+    
+    const draggableRef = useRef(null);
+    const labelRef = useRef(null);
+    
     const [title, setTitle] = useState('');
     const [audio, setAudio] = useState(null);
     const [duration, setDuration] = useState(0);
@@ -26,10 +32,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
     const [isBpmInvalid, setIsBpmInvalid] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const { bpm, handleBpmChange: originalHandleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
-    const { genres, moods, keywords, features } = useData();
 
-    const draggableRef = useRef(null);
-    const labelRef = useRef(null);
 
     const resetForm = () => {
         setTitle('');
@@ -81,6 +84,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
             };
     
             await addBeat(beatData);
+            setRefreshBeats(prev => !prev);
     
             resetForm();
             setIsOpen(false);
