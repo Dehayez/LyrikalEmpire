@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 
 import { useData } from '../../contexts';
 import { useBpmHandlers } from '../../hooks';
+import { addBeat } from '../../services';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
 
@@ -67,6 +68,20 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
         }
     
         try {
+            const beatData = {
+                title,
+                bpm: bpmValue,
+                tierlist,
+                duration,
+                genres,
+                moods,
+                keywords,
+                features,
+                audio
+            };
+    
+            await addBeat(beatData);
+    
             resetForm();
             setIsOpen(false);
             toast.dark(<div><strong>{title}</strong> has been added!</div>, {
@@ -77,7 +92,8 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
             });
             setTimeout(() => setShowToast(false), 3000);
         } catch (error) {
-            console.error('An error occurred while uploading the track.');
+            console.error('An error occurred while uploading the track.', error);
+            setWarningMessage('An error occurred while uploading the track.');
         }
     };
 
@@ -149,7 +165,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                             spellCheck="false" 
                             isWarning={isTitleEmpty}
                         />
-                        <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres}/>
+                        <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres} isNewBeat={true}/>
                         <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChangeExtended} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
                         <SelectInput 
                             label="Tierlist"
@@ -166,9 +182,9 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                                 { value: 'F', label: 'F' },
                             ]}
                         />
-                        <SelectableInput label="Moods" placeholder="Enter moods" associationType="moods" items={moods}/>
-                        <SelectableInput label="Keywords" placeholder="Enter keywords" associationType="keywords" items={keywords}/>
-                        <SelectableInput label="Features" placeholder="Enter features" associationType="features" items={features}/>
+                        <SelectableInput label="Moods" placeholder="Enter moods" associationType="moods" items={moods} isNewBeat={true}/>
+                        <SelectableInput label="Keywords" placeholder="Enter keywords" associationType="keywords" items={keywords} isNewBeat={true}/>
+                        <SelectableInput label="Features" placeholder="Enter features" associationType="features" items={features} isNewBeat={true}/>
                         <div className='modal__buttons'>
                             <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                             <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>

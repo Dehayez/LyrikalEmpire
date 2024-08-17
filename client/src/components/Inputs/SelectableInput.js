@@ -4,7 +4,7 @@ import { useHeaderWidths } from '../../contexts';
 import { SelectedList } from './SelectedList';
 import './SelectableInput.scss';
 
-export const SelectableInput = ({ items, beatId, associationType, headerIndex, label, placeholder, disableFocus }) => {
+export const SelectableInput = ({ items, beatId, associationType, headerIndex, label, placeholder, disableFocus, isNewBeat }) => {
   const { headerWidths } = useHeaderWidths();
 
   const inputRef = useRef(null);
@@ -82,17 +82,21 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
       beat_id: beatId,
       [`${singularAssociationType}_id`]: associationId
     };
-  
+
     const isSelected = selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === associationId);
-  
+
     if (isSelected) {
       await handleRemoveAssociation(newAssociation);
     } else {
-      try {
-        await addAssociationsToBeat(beatId, associationType, [associationId]);
+      if (isNewBeat) {
         setSelectedItems(prevItems => [...prevItems, newAssociation]);
-      } catch (error) {
-        console.error('Failed to add association:', error);
+      } else {
+        try {
+          await addAssociationsToBeat(beatId, associationType, [associationId]);
+          setSelectedItems(prevItems => [...prevItems, newAssociation]);
+        } catch (error) {
+          console.error('Failed to add association:', error);
+        }
       }
     }
     setInputValue('');
@@ -100,11 +104,15 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
 
   const handleRemoveAssociation = async (item) => {
     const associationId = item[`${singularAssociationType}_id`];
-    try {
-      await removeAssociationFromBeat(beatId, associationType, associationId);
+    if (isNewBeat) {
       setSelectedItems(prevItems => prevItems.filter(item => item[`${singularAssociationType}_id`] !== associationId));
-    } catch (error) {
-      console.error('Failed to remove association:', error);
+    } else {
+      try {
+        await removeAssociationFromBeat(beatId, associationType, associationId);
+        setSelectedItems(prevItems => prevItems.filter(item => item[`${singularAssociationType}_id`] !== associationId));
+      } catch (error) {
+        console.error('Failed to remove association:', error);
+      }
     }
   };
 
