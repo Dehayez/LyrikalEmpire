@@ -75,6 +75,43 @@ export const useResizableColumns = (tableRef, mode) => {
       cleanupHeaders();
     };
   }, [tableRef, mode]);
+
+  useEffect(() => {
+    const handleMouseEnter = (event) => {
+      const header = event.target.closest('.resizable-header');
+      if (header) {
+        header.classList.add('hovered');
+      }
+    };
+
+    const handleMouseLeave = (event) => {
+      const header = event.target.closest('.resizable-header');
+      if (header) {
+        header.classList.remove('hovered');
+      }
+    };
+
+    const headers = document.querySelectorAll('.resizable-header');
+    headers.forEach(header => {
+      const hoverTarget = document.createElement('div');
+      hoverTarget.classList.add('hover-target');
+      header.appendChild(hoverTarget);
+
+      hoverTarget.addEventListener('mouseenter', handleMouseEnter);
+      hoverTarget.addEventListener('mouseleave', handleMouseLeave);
+    });
+
+    return () => {
+      headers.forEach(header => {
+        const hoverTarget = header.querySelector('.hover-target');
+        if (hoverTarget) {
+          hoverTarget.removeEventListener('mouseenter', handleMouseEnter);
+          hoverTarget.removeEventListener('mouseleave', handleMouseLeave);
+          header.removeChild(hoverTarget);
+        }
+      });
+    };
+  }, []);
 };
 
 export default useResizableColumns;
