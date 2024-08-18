@@ -63,6 +63,7 @@
   }
 
   &__number, &__data, &__button-cell {
+    min-height: 24px;
     padding: 8px 0;
     text-align: center;
     color: $color-white;
