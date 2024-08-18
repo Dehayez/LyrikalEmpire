@@ -22,7 +22,7 @@ export const FileInput = ({ fileName, onChange, fileObject, labelRef }) => {
 
     return (
         <div className="form-group">
-            <label>Audio</label>
+            <label htmlFor='file'>Audio</label>
             <div className="file-input">
                 <div className="file-input__wrapper">
                     <label htmlFor="file" className="file-input__label no-margin" tabIndex="0" ref={labelRef}>

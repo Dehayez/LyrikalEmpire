@@ -129,7 +129,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
         <SelectedList selectedItems={selectedItems} />
       ) : (
         <div className={`selectable-input-container `}>
-          {label && <label className="selectable-input__label">{label}</label>}
+          {label && <label htmlFor={`selectable-input-${associationType}-${beatId}-${headerIndex}`} className="selectable-input__label">{label}</label>}
           <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
             <div 
               className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''} ${isNewBeat ? 'selectable-input__input-container--new-beat' : ''}`}
