@@ -25,6 +25,8 @@ $border-bottom: .5px solid $color-gray-mid;
 $border-bottom-dark: .5px solid $color-gray-dark-hover;
 
 $box-shadow: 0 0 24px 12px rgba(0, 0, 0, .05);
+$box-shadow-hover: 0 0 0 .5px $color-gray-default;
+$box-shadow-focus: 0 0 0 2px $color-gray;
 
 @mixin hide-scrollbar {
     &::-webkit-scrollbar {

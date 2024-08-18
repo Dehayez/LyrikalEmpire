@@ -3,9 +3,11 @@
 .file-input {
     position: relative;
     display: inline-block;
+
     &__input {
         display: none;
     }
+
     &__label {
         display: flex;
         align-items: center;
@@ -17,19 +19,23 @@
         border-radius: 4px;
         transition: background-color 0.3s ease;
         white-space: nowrap;
+
         &:hover {
             background-color: $color-black;
         }
+
         &:focus {
             outline: none;
             box-shadow: 0 0 0 1px $color-gray;
         }
     }
+
     &__wrapper {
         display: flex;
         align-items: center;
         gap: 8px;
     }
+
     &__name {
         margin-left: 8px;
         color: white;
@@ -44,6 +50,7 @@ input[type="number"] {
     -moz-appearance: textfield;
     -webkit-appearance: none;
     appearance: none;
+
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -57,9 +64,11 @@ input[type="number"] {
         display: flex;
         flex-direction: column;
         margin-bottom: 16px;
+
         label {
             margin-bottom: 8px;
         }
+
         input,
         select {
             padding: 8px;
@@ -69,16 +78,19 @@ input[type="number"] {
             box-shadow: none;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
             font-size: 16px;
+
             &:hover {
                 background-color: $color-gray-dark-hover;
-                box-shadow: 0 0 0 1px $color-gray !important;
+                box-shadow: $box-shadow-hover !important;
                 transition: background-color 0.4s ease, box-shadow 0.4s ease;
             }
+
             &:focus {
                 background-color: $color-gray-dark-hover;
-                box-shadow: 0 0 0 1px $color-gray;
+                box-shadow: $box-shadow-focus;
             }
         }
+
         select {
             background-color: $color-gray-dark;
             min-height: 40px;
@@ -89,6 +101,7 @@ input[type="number"] {
         position: relative;
         display: inline-block;
         background: $color-gray-dark;
+
         select {
             appearance: none;
             outline: none;
@@ -122,14 +135,21 @@ input[type="number"] {
         box-shadow: none;
         transition: background-color 0.3s ease, box-shadow 0.3s ease;
         font-size: 16px;
+
         &:hover {
-            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            background-color: $color-gray-dark-hover;
+            box-shadow: $box-shadow-hover !important;
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
         }
+
         &:focus {
-            box-shadow: 0 0 0 1px $color-gray;
+            background-color: $color-gray-dark-hover;
+            box-shadow: $box-shadow-focus;
         }
     }
-    select, textarea {
+
+    select,
+    textarea {
         background-color: $color-gray-dark;
         border: none;
         color: $color-white;
@@ -139,10 +159,10 @@ input[type="number"] {
 
 .options-list {
     position: absolute;
-    top: 100%; 
+    top: 100%;
     left: 0;
     width: 100%;
-    z-index: 10; 
+    z-index: 10;
     max-height: 400px;
     overflow-y: auto;
     box-shadow: $box-shadow;
@@ -150,7 +170,7 @@ input[type="number"] {
     &__item {
         padding: 10px;
         text-align: left;
-        background-color: $color-gray-dark; 
+        background-color: $color-gray-dark;
 
         &:hover {
             background-color: $color-gray-dark-hover;
@@ -171,10 +191,12 @@ input[type="number"] {
 
 .form-textarea {
     position: relative;
+
     &__input {
         overflow: hidden;
         resize: none;
     }
+
     &__remaining-chars {
         position: absolute;
         bottom: 12px;
