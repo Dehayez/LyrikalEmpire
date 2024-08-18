@@ -6,15 +6,6 @@
     color: $color-gray-light;
     text-align: left;
     z-index: 3;
-
-/*     &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-bottom: $border-bottom-dark;
-    } */
   
     &__cell {
       position: relative;
@@ -47,7 +38,17 @@
           background-color: transparent;
           transition: background-color .2s ease-in-out;
         }
-        &:hover::after {
+        .hover-target {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: 4px;
+          cursor: col-resize;
+          background-color: transparent;
+          z-index: 1;
+        }
+        &.hovered::after {
           background-color: $color-gray-dark-hover;
         }
       }
