@@ -394,18 +394,18 @@ function App() {
             } />
               <Route path="/playlists/:id" element={
                 <PlaylistDetail
-                key={refresh} 
-                onPlay={handlePlayWrapper} 
-                selectedBeat={selectedBeat} 
-                isPlaying={isPlaying} 
-                handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
-                currentBeat={currentBeat} 
-                sortedBeats={sortedBeats} 
-                onSort={onSort} 
-                sortConfig={sortConfig}
-                addToCustomQueue={addToCustomQueue}
-                onBeatClick={handleBeatClick}  
-                onUpdate={onUpdate}
+                  key={refresh} 
+                  onPlay={handlePlayWrapper} 
+                  selectedBeat={selectedBeat} 
+                  isPlaying={isPlaying} 
+                  handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
+                  currentBeat={currentBeat} 
+                  sortedBeats={sortedBeats} 
+                  onSort={onSort} 
+                  sortConfig={sortConfig}
+                  addToCustomQueue={addToCustomQueue}
+                  onBeatClick={handleBeatClick}  
+                  onUpdate={onUpdate}
                 />} 
                 />
                 <Route path="*" element={<NotFound />} />
