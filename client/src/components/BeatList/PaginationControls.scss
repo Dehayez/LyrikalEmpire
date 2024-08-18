@@ -16,9 +16,9 @@
     margin-top: 16px;
 
     &__link {
-      color: $color-gray-light;
+      color: $color-gray-default;
       &:hover {
-        color: $color-white;
+        color: $color-gray-light;
         cursor: pointer;
         transform: scale(1.04);
       }
