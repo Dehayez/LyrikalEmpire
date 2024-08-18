@@ -52,22 +52,6 @@ input[type="number"] {
 }
 
 .modal-content {
-    .select-wrapper {
-        position: relative;
-        display: inline-block;
-        background: $color-gray-dark;
-        select {
-            appearance: none;
-            outline: none;
-            box-shadow: none;
-            border: none;
-            width: 100%;
-            padding-right: 28px;
-            background-color: $color-gray-dark;
-            color: $color-white;
-        }
-    }
-
     .form-group {
         position: relative;
         display: flex;
@@ -87,15 +71,33 @@ input[type="number"] {
             font-size: 16px;
             &:hover {
                 background-color: $color-gray-dark-hover;
-                box-shadow: 0 0 0 1px $color-gray-default;
+                box-shadow: 0 0 0 1px $color-gray !important;
+                transition: background-color 0.4s ease, box-shadow 0.4s ease;
             }
             &:focus {
+                background-color: $color-gray-dark-hover;
                 box-shadow: 0 0 0 1px $color-gray;
             }
         }
         select {
             background-color: $color-gray-dark;
             min-height: 40px;
+        }
+    }
+
+    .select-wrapper {
+        position: relative;
+        display: inline-block;
+        background: $color-gray-dark;
+        select {
+            appearance: none;
+            outline: none;
+            box-shadow: none;
+            border: none;
+            width: 100%;
+            padding-right: 28px;
+            background-color: $color-gray-dark;
+            color: $color-white;
         }
     }
 }
