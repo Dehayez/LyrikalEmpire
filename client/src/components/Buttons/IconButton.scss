@@ -36,4 +36,12 @@
     &--addbeat {
         background-color: $color-gray-mid;
     }
+
+    &--disabled {
+        color: $color-gray-dark-hover;
+        &:hover {
+            color: $color-gray-dark-hover;
+            cursor: default;
+        }
+    }
 }

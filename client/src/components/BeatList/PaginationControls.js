@@ -99,7 +99,7 @@ const PaginationControls = ({ items, currentBeat }) => {
   return (
     <div className="pagination-controls">
       <div className="pagination-controls-top">
-        <button className='icon-button' onClick={handlePreviousPage} disabled={currentPage === 1}>
+        <button className={`icon-button ${currentPage === 1 ? 'icon-button--disabled' : ''}`} onClick={handlePreviousPage} disabled={currentPage === 1}>
           <IoChevronBackSharp fontSize={20} />
         </button>
         {startPage > 1 ? (
@@ -145,7 +145,7 @@ const PaginationControls = ({ items, currentBeat }) => {
         ) : (
           <span className='pagination-controls__placeholder'></span>
         )}
-        <button className='icon-button' onClick={handleNextPage} disabled={currentPage === totalPages}>
+        <button className={`icon-button ${currentPage === totalPages ? 'icon-button--disabled' : ''}`} onClick={handleNextPage} disabled={currentPage === totalPages}>
           <IoChevronForwardSharp fontSize={20} />
         </button>
       </div>
