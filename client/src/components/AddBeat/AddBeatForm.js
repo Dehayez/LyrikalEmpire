@@ -142,7 +142,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
 
     return (
         <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={{
-            overlay: { backgroundColor: 'rgba(30, 30, 30, 0.75)', zIndex: 3 },
+            overlay: { backgroundColor: 'rgba(30, 30, 30, 0.75)', zIndex: 5 },
             content: { backgroundColor: 'transparent', color: 'white', border: 'none', height: '100%', width: '100%', margin: 'auto', position: 'absolute', top: '50%', left: '50%', right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)' }
         }}>
             <Draggable handle=".form__title" nodeRef={draggableRef}>
