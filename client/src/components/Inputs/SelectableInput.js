@@ -77,6 +77,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
   const handleInputChange = (e) => setInputValue(e.target.value);
 
   const handleItemSelect = async (item) => {
+    inputRef.current.focus()
     const associationId = item.id;
     const newAssociation = {
       beat_id: beatId,
