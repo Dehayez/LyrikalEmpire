@@ -128,11 +128,11 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
       {disableFocus ? (
         <SelectedList selectedItems={selectedItems} />
       ) : (
-        <div className='selectable-input-container'>
+        <div className={`selectable-input-container `}>
           {label && <label className="selectable-input__label">{label}</label>}
           <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
             <div 
-              className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''}`}
+              className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''} ${isNewBeat ? 'selectable-input__input-container--new-beat' : ''}`}
               onClick={() => inputRef.current.focus()}
               ref={inputContainerRef}
             >
