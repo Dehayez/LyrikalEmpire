@@ -38,6 +38,8 @@
         border-radius: 4px;
         cursor: pointer;
         overflow-x: auto; 
+        overflow: auto;
+        scroll-behavior: smooth;
         @include hide-scrollbar;
 
         &--new-beat {
@@ -81,10 +83,17 @@
         font-size: 16px;
         min-height: 20px;
         cursor: pointer;
+        width: auto;
+        transition: width 0.2s ease, overflow 0.2s ease;
 
         &:focus {
           outline: none;
           cursor: text;
+        }
+
+        &--hidden {
+            width: 0;
+            overflow: hidden;
         }
     }
 
