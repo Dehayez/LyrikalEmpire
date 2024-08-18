@@ -158,6 +158,8 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                         <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} labelRef={labelRef} />
                         <FormInput 
                             label="Title" 
+                            id="title" 
+                            name="title" 
                             type="text" 
                             placeholder='Enter title' 
                             value={title} 
@@ -170,8 +172,22 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                             isWarning={isTitleEmpty}
                         />
                         <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres} isNewBeat={true}/>
-                        <FormInput label="BPM" type="text" placeholder='Enter BPM' value={bpm} onChange={handleBpmChangeExtended} onKeyDown={handleOnKeyDown} onBlur={handleBpmBlur} spellCheck="false" isWarning={isBpmInvalid} />
+                        <FormInput
+                            id="bpm"
+                            name="bpm"
+                            label="BPM"
+                            type="text"
+                            placeholder="Enter BPM"
+                            value={bpm}
+                            onChange={handleBpmChangeExtended}
+                            onKeyDown={handleOnKeyDown}
+                            onBlur={handleBpmBlur}
+                            spellCheck="false"
+                            isWarning={isBpmInvalid}
+                        />
                         <SelectInput 
+                            id="tierlist"
+                            name="tierlist"
                             label="Tierlist"
                             selectedValue={tierlist} 
                             onChange={(e) => setTierlist(e.target.value)} 

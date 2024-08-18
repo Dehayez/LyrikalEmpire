@@ -2,12 +2,13 @@ import React from 'react';
 import { IoChevronDownSharp } from "react-icons/io5";
 import './Inputs.scss';
 
-export const SelectInput = ({ id, label, selectedValue, onChange, options }) => (
+export const SelectInput = ({ id, name, label, selectedValue, onChange, options }) => (
     <div className="form-group">
-        <label>{label}</label>
+        <label htmlFor={id}>{label}</label>
         <div className="select-wrapper">
             <select 
                 id={id}
+                name={name}
                 className="select-wrapper__select" 
                 value={selectedValue} 
                 onChange={onChange}
