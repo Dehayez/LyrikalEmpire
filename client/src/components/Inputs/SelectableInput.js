@@ -32,40 +32,16 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
     return selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === item.id);
   };
 
-  useEffect(() => {
-    const fetchAssociations = async () => {
-      try {
-        const associations = await getAssociationsByBeatId(beatId, associationType);
-        setSelectedItems(associations);
-      } catch (error) {
-        console.error('Error fetching associations:', error);
-      }
-    };
+  const handleFocus = () => {
+    setIsFocused(true);
+    inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
 
-    fetchAssociations();
-  }, [beatId, associationType]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
-        setIsFocused(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    const maxWidth = localStorage.getItem(`headerWidth${headerIndex}`);
-    if (maxWidth && inputContainerRef.current) {
-      inputContainerRef.current.style.maxWidth = `${maxWidth}px`;
-    }
-  }, [headerWidths]);
-
-  const handleFocus = () => setIsFocused(true);
+  const handleContainerClick = () => {
+    inputRef.current.classList.remove('selectable-input__input--hidden');
+    inputRef.current.focus();
+    inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
 
   const handleBlur = (e) => {
     e.preventDefault();
@@ -123,6 +99,39 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
     }
   };
 
+  useEffect(() => {
+    const fetchAssociations = async () => {
+      try {
+        const associations = await getAssociationsByBeatId(beatId, associationType);
+        setSelectedItems(associations);
+      } catch (error) {
+        console.error('Error fetching associations:', error);
+      }
+    };
+
+    fetchAssociations();
+  }, [beatId, associationType]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsFocused(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const maxWidth = localStorage.getItem(`headerWidth${headerIndex}`);
+    if (maxWidth && inputContainerRef.current) {
+      inputContainerRef.current.style.maxWidth = `${maxWidth}px`;
+    }
+  }, [headerWidths]);
+
   return (
     <>
       {disableFocus ? (
@@ -131,16 +140,16 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
         <div className={`selectable-input-container `}>
           {label && <label htmlFor={`selectable-input-${associationType}-${beatId}-${headerIndex}`} className="selectable-input__label">{label}</label>}
           <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
-            <div 
+            <div
               className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''} ${isNewBeat ? 'selectable-input__input-container--new-beat' : ''}`}
-              onClick={() => inputRef.current.focus()}
+              onClick={handleContainerClick}
               ref={inputContainerRef}
             >
               <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />
               <input
                 ref={inputRef}
                 id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
-                className="selectable-input__input input"
+                className={`input selectable-input__input ${!isFocused ? 'selectable-input__input--hidden' : ''}`}
                 placeholder={placeholder}
                 type="text"
                 value={inputValue}
