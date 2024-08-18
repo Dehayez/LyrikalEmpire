@@ -139,6 +139,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
               <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />
               <input
                 ref={inputRef}
+                id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
                 className="selectable-input__input input"
                 placeholder={placeholder}
                 type="text"
