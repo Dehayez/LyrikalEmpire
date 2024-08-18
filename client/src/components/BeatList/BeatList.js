@@ -21,8 +21,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
 
   const { setPlaylistId } = usePlaylist();
-  const { beats: internalBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
-  const beats = externalBeats || internalBeats;
+  const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
+  const beats = externalBeats || allBeats;
   const filteredAndSortedBeats = useMemo(() => {
     const filteredBeats = beats.filter(beat => {
       const fieldsToSearch = [beat.title];

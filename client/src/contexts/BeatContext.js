@@ -6,6 +6,7 @@ const BeatContext = createContext();
 export const useBeat = () => useContext(BeatContext);
 
 export const BeatProvider = ({ children }) => {
+  const [allBeats, setAllBeats] = useState([]);
   const [beats, setBeats] = useState([]);
   const [paginatedBeats, setPaginatedBeats] = useState([]);
   const [hoveredBeat, setHoveredBeat] = useState(null);
@@ -15,6 +16,7 @@ export const BeatProvider = ({ children }) => {
     const fetchBeats = async () => {
       try {
         const data = await getBeats();
+        setAllBeats(data);
         setBeats(data);
       } catch (error) {
         console.error('Failed to fetch beats:', error);
@@ -25,7 +27,7 @@ export const BeatProvider = ({ children }) => {
   }, [refreshBeats]);
 
   return (
-    <BeatContext.Provider value={{ beats, setBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat, setRefreshBeats }}>
+    <BeatContext.Provider value={{allBeats, beats, setBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat, setRefreshBeats }}>
       {children}
     </BeatContext.Provider>
   );
