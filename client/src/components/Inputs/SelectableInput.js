@@ -136,7 +136,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
   }, [headerWidths]);
 
   useEffect(() => {
-    if (isNewBeat && newBeatId) {
+    if (isNewBeat && newBeatId && pendingAssociations.length > 0) {
       const uploadPendingAssociations = async () => {
         try {
           await addAssociationsToBeat(newBeatId, associationType, pendingAssociations);
@@ -145,7 +145,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
           console.error('Failed to upload pending associations:', error);
         }
       };
-
+  
       uploadPendingAssociations();
     }
   }, [newBeatId, isNewBeat, associationType, pendingAssociations]);
