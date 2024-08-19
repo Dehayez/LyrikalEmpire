@@ -14,6 +14,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [pendingAssociations, setPendingAssociations] = useState([]);
 
   const associationItems = items.filter(item => 
     item.name.toLowerCase().includes(inputValue.toLowerCase())
@@ -53,7 +54,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
   const handleInputChange = (e) => setInputValue(e.target.value);
 
   const handleItemSelect = async (item) => {
-    inputRef.current.focus()
+    inputRef.current.focus();
     const associationId = item.id;
     const newAssociation = {
       beat_id: beatId,
@@ -67,6 +68,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
     } else {
       if (isNewBeat) {
         setSelectedItems(prevItems => [...prevItems, newAssociation]);
+        setPendingAssociations(prevItems => [...prevItems, associationId]);
       } else {
         try {
           await addAssociationsToBeat(beatId, associationType, [associationId]);
@@ -83,6 +85,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
     const associationId = item[`${singularAssociationType}_id`];
     if (isNewBeat) {
       setSelectedItems(prevItems => prevItems.filter(item => item[`${singularAssociationType}_id`] !== associationId));
+      setPendingAssociations(prevItems => prevItems.filter(id => id !== associationId));
     } else {
       try {
         await removeAssociationFromBeat(beatId, associationType, associationId);
@@ -133,8 +136,19 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
   }, [headerWidths]);
 
   useEffect(() => {
-    console.log('Beat ID:', newBeatId);
-  }, [newBeatId]);
+    if (isNewBeat && newBeatId) {
+      const uploadPendingAssociations = async () => {
+        try {
+          await addAssociationsToBeat(newBeatId, associationType, pendingAssociations);
+          setPendingAssociations([]);
+        } catch (error) {
+          console.error('Failed to upload pending associations:', error);
+        }
+      };
+
+      uploadPendingAssociations();
+    }
+  }, [newBeatId, isNewBeat, associationType, pendingAssociations]);
 
   return (
     <>

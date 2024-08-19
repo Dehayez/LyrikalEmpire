@@ -175,7 +175,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                             spellCheck="false" 
                             isWarning={isTitleEmpty}
                         />
-                        <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres} newBeatId={beatId}  isNewBeat={true}/>
+                        <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres} newBeatId={beatId} isNewBeat={true}/>
                         <FormInput
                             id="bpm"
                             name="bpm"
@@ -206,9 +206,9 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                                 { value: 'F', label: 'F' },
                             ]}
                         />
-                        <SelectableInput label="Moods" placeholder="Enter moods" associationType="moods" items={moods} isNewBeat={true}/>
-                        <SelectableInput label="Keywords" placeholder="Enter keywords" associationType="keywords" items={keywords} isNewBeat={true}/>
-                        <SelectableInput label="Features" placeholder="Enter features" associationType="features" items={features} isNewBeat={true}/>
+                        <SelectableInput label="Moods" placeholder="Enter moods" associationType="moods" items={moods} newBeatId={beatId} isNewBeat={true}/>
+                        <SelectableInput label="Keywords" placeholder="Enter keywords" associationType="keywords" items={keywords} newBeatId={beatId} isNewBeat={true}/>
+                        <SelectableInput label="Features" placeholder="Enter features" associationType="features" items={features} newBeatId={beatId} isNewBeat={true}/>
                         <div className='modal__buttons'>
                             <button className="modal__button modal__button--add" type="submit">Add Beat</button>
                             <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
