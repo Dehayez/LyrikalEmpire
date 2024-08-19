@@ -240,9 +240,12 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
               className={`beat-list__search-input ${isSearchVisible ? 'visible' : ''}`}
             />
            {isSearchVisible && searchText && (
-              <div className="beat-list__action-button beat-list__action-button--clear" onClick={() => {
-                setSearchText('');
-                localStorage.setItem('searchText', '');
+              <div 
+                className="beat-list__action-button beat-list__action-button--clear" 
+                onClick={() => {
+                  setSearchText('');
+                  localStorage.setItem('searchText', '');
+                  searchInputRef.current?.focus();;
               }}>
                 <IoCloseSharp />
               </div>
