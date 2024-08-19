@@ -55,7 +55,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     if (willBeVisible) {
       setTimeout(() => {
         searchInputRef.current?.focus();
-      }, 150);
+      }, 200);
     } else if (!isHovering) {
       setIsSearchVisible(false);
     }
