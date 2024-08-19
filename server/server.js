@@ -118,42 +118,64 @@ app.delete('/api/beats/:id', (req, res) => {
       return res.status(500).json({ error: 'An error occurred starting the transaction' });
     }
 
-    db.query('SELECT audio FROM beats WHERE id = ?', [id], (err, results) => {
-      if (err) {
-        console.error(err);
-        return db.rollback(() => {
-          res.status(500).json({ error: 'An error occurred while fetching the beat' });
-        });
-      }
-
-      const audioFile = results[0]?.audio;
-      const filePath = path.join(__dirname, '../client/public', audioFile);
-
-      fs.unlink(filePath, (err) => {
-        if (err && err.code !== 'ENOENT') {
-          console.error('An error occurred while deleting the audio file:', err);
+    const deleteAssociations = (tableName, callback) => {
+      db.query(`DELETE FROM ${tableName} WHERE beat_id = ?`, [id], (err, results) => {
+        if (err) {
+          console.error(`An error occurred while deleting associated ${tableName}:`, err);
           return db.rollback(() => {
-            res.status(500).json({ error: 'An error occurred while deleting the audio file' });
+            res.status(500).json({ error: `An error occurred while deleting associated ${tableName}` });
           });
         }
+        callback();
+      });
+    };
 
-        db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
-          if (err) {
-            console.error(err);
-            return db.rollback(() => {
-              res.status(500).json({ error: 'An error occurred while deleting the beat' });
-            });
-          }
+    deleteAssociations('beat_genres', () => {
+      deleteAssociations('beat_moods', () => {
+        deleteAssociations('beat_keywords', () => {
+          deleteAssociations('beat_features', () => {
 
-          db.commit(err => {
-            if (err) {
-              console.error(err);
-              return db.rollback(() => {
-                res.status(500).json({ error: 'An error occurred while committing the transaction' });
+            db.query('SELECT audio FROM beats WHERE id = ?', [id], (err, results) => {
+              if (err) {
+                console.error(err);
+                return db.rollback(() => {
+                  res.status(500).json({ error: 'An error occurred while fetching the beat' });
+                });
+              }
+
+              const audioFile = results[0]?.audio;
+              const filePath = path.join(__dirname, '../client/public', audioFile);
+
+              fs.unlink(filePath, (err) => {
+                if (err && err.code !== 'ENOENT') {
+                  console.error('An error occurred while deleting the audio file:', err);
+                  return db.rollback(() => {
+                    res.status(500).json({ error: 'An error occurred while deleting the audio file' });
+                  });
+                }
+
+                db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
+                  if (err) {
+                    console.error(err);
+                    return db.rollback(() => {
+                      res.status(500).json({ error: 'An error occurred while deleting the beat' });
+                    });
+                  }
+
+                  db.commit(err => {
+                    if (err) {
+                      console.error(err);
+                      return db.rollback(() => {
+                        res.status(500).json({ error: 'An error occurred while committing the transaction' });
+                      });
+                    }
+
+                    res.json({ message: 'Beat deleted successfully' });
+                  });
+                });
               });
-            }
+            });
 
-            res.json({ message: 'Beat deleted successfully' });
           });
         });
       });
