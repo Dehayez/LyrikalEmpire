@@ -4,7 +4,7 @@ import { useHeaderWidths } from '../../contexts';
 import { SelectedList } from './SelectedList';
 import './SelectableInput.scss';
 
-export const SelectableInput = ({ items, beatId, associationType, headerIndex, label, placeholder, disableFocus, isNewBeat }) => {
+export const SelectableInput = ({ items, beatId, associationType, headerIndex, label, placeholder, disableFocus, isNewBeat, newBeatId }) => {
   const { headerWidths } = useHeaderWidths();
 
   const inputRef = useRef(null);
@@ -131,6 +131,10 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
       inputContainerRef.current.style.maxWidth = `${maxWidth}px`;
     }
   }, [headerWidths]);
+
+  useEffect(() => {
+    console.log('Beat ID:', newBeatId);
+  }, [newBeatId]);
 
   return (
     <>
