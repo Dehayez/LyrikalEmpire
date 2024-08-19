@@ -105,8 +105,10 @@
   
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 1px $color-gray;
+      background-color: $color-gray-dark-hover;
+      box-shadow: $box-shadow-focus;
     }
+
     &.visible {
       width: 200px;
       visibility: visible;
