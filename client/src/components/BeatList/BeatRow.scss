@@ -40,10 +40,14 @@
       color: $color-white;
     }
 
+    &:hover {
+      cursor: pointer;
+    }
+
     &:focus {
-      background-color: $color-gray-dark;
       outline: none;
-      box-shadow: 0 0 0 1px $color-gray;
+      background-color: $color-gray-dark-hover;
+      box-shadow: $box-shadow-focus;
       cursor: text;
     }
   }
@@ -126,8 +130,8 @@
       }
 
       &:focus {
-        background-color: $color-gray-dark;
-        box-shadow: 0 0 0 1px $color-gray;
+        background-color: $color-gray-dark-hover;
+        box-shadow: $box-shadow-focus;
       }
     }
 
