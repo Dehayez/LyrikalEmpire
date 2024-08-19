@@ -168,7 +168,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
                 ref={inputRef}
                 id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
                 className={`input selectable-input__input ${!isFocused ? 'selectable-input__input--hidden' : ''}`}
-                placeholder={placeholder}
+                placeholder={selectedItems.length === 0 ? placeholder : ''}
                 type="text"
                 value={inputValue}
                 onFocus={handleFocus}
