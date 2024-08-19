@@ -79,15 +79,15 @@ input[type="number"] {
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
             font-size: 16px;
 
-            &:hover {
-                background-color: $color-gray-dark-hover;
-                box-shadow: $box-shadow-hover !important;
-                transition: background-color 0.4s ease, box-shadow 0.4s ease;
-            }
-
             &:focus {
                 background-color: $color-gray-dark-hover;
                 box-shadow: $box-shadow-focus;
+            }
+
+            &:hover {
+                background-color: $color-gray-dark-hover;
+                box-shadow: $box-shadow-hover;
+                transition: background-color 0.4s ease, box-shadow 0.4s ease;
             }
         }
 
@@ -138,11 +138,11 @@ input[type="number"] {
 
         &:hover {
             background-color: $color-gray-dark-hover;
-            box-shadow: $box-shadow-hover !important;
+            box-shadow: $box-shadow-hover;
             transition: background-color 0.4s ease, box-shadow 0.4s ease;
         }
-
-        &:focus {
+        
+        &:focus{
             background-color: $color-gray-dark-hover;
             box-shadow: $box-shadow-focus;
         }
