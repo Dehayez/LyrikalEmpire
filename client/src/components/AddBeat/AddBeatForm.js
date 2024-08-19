@@ -31,6 +31,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
     const [isTitleEmpty, setIsTitleEmpty] = useState(false);
     const [isBpmInvalid, setIsBpmInvalid] = useState(false);
     const [showToast, setShowToast] = useState(false);
+    const [beatId, setBeatId] = useState(null);
     const { bpm, handleBpmChange: originalHandleBpmChange, handleOnKeyDown, handleBpmBlur, resetBpm } = useBpmHandlers(setBpm);
 
 
@@ -82,8 +83,11 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                 features,
                 audio
             };
+
+            const addedBeat = await addBeat(beatData);
+            const beatId = addedBeat.insertId;
+            setBeatId(beatId)
     
-            await addBeat(beatData);
             setRefreshBeats(prev => !prev);
     
             resetForm();
@@ -171,7 +175,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                             spellCheck="false" 
                             isWarning={isTitleEmpty}
                         />
-                        <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres} isNewBeat={true}/>
+                        <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres} newBeatId={beatId}  isNewBeat={true}/>
                         <FormInput
                             id="bpm"
                             name="bpm"
