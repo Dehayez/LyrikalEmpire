@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
+
 
 import { isMobileOrTablet, sortBeats } from '../../utils';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
@@ -18,8 +20,14 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const containerRef = useRef(null);
-  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');
 
+  
+  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');  
+  const urlKey = `currentPage_${location.pathname}`;
+  const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
+  const [previousPage, setPreviousPage] = useState(currentPage);
+  
+  const location = useLocation();
   const { setPlaylistId } = usePlaylist();
   const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
   const beats = externalBeats || allBeats;
@@ -65,6 +73,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     const newValue = e.target.value;
     setSearchText(newValue);
     localStorage.setItem('searchText', newValue);
+  
+    if (newValue && searchText === '') {
+      setPreviousPage(currentPage);
+      setCurrentPage(1);
+    } else if (!newValue) {
+      setCurrentPage(previousPage);
+    }
   };
 
   const handleConfirm = async () => {
@@ -187,6 +202,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     localStorage.setItem('mode', mode);
   }, [mode]);
 
+  useEffect(() => {
+    localStorage.setItem(urlKey, currentPage);
+  }, [currentPage, urlKey]);
+
   return (
     <div ref={containerRef} className="beat-list">
       <div className='beat-list__buffer'/>
@@ -245,7 +264,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
                 onClick={() => {
                   setSearchText('');
                   localStorage.setItem('searchText', '');
-                  searchInputRef.current?.focus();;
+                  searchInputRef.current?.focus();
+                  setCurrentPage(previousPage);
               }}>
                 <IoCloseSharp />
               </div>
@@ -298,6 +318,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
           <PaginationControls
             items={filteredAndSortedBeats}
             currentBeat={currentBeat}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
           />
         </div>
       )}
