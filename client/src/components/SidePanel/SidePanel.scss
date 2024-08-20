@@ -1,13 +1,14 @@
 @import '../../globals/variables';
 
 .left-side-panel, .right-side-panel {
-  width: 350px;
+  width: 300px;
   height: 100%;
   background-color: $color-black;
   transition: transform 0.2s ease-in-out;
   padding: 0 1em;
   border-radius: 4px;
   overflow-y: auto;
+
   &--hover {
     position: fixed;
     top: 73.5px;
@@ -17,11 +18,11 @@
   }
 
   &--visible {
-    animation:  0.4s forwards;
+    animation:  0.2s ease-in-out;
   }
 
   &--hidden {
-    animation:  0.4s forwards;
+    animation:  0.2s ease-in-out;
   }
 }
 
