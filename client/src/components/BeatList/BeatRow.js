@@ -199,7 +199,7 @@ const BeatRow = ({
     }
   };
 
-  const handleRightClick = (e, beat) => {
+  const handleMenuClick = (e, beat) => {
     e.preventDefault();
     if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
       handleBeatClick(beat, e);
@@ -207,9 +207,24 @@ const BeatRow = ({
   };
 
   const handleMenuButtonClick = (e, beat) => {
-    e.preventDefault();
-    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
-      handleBeatClick(beat, e);
+    e.stopPropagation();
+    //handleMenuClick(e, beat);
+    if (isMobileOrTablet()) {
+      setActiveContextMenu(beat.id);
+    } else {
+      if (activeContextMenu === beat.id) {
+        setActiveContextMenu(null);
+      } else {
+        setActiveContextMenu(beat.id);
+        const contextMenuWidth = -640;
+        let calculatedX = window.innerWidth - e.clientX - contextMenuWidth;
+        let calculatedY = e.clientY;
+        if (calculatedX < 0) {
+          calculatedX = 0;
+        }
+        setContextMenuX(calculatedX);
+        setContextMenuY(calculatedY);
+      }
     }
   };
 
@@ -252,7 +267,7 @@ const BeatRow = ({
       }}
       onContextMenu={(e) => {
         e.preventDefault();
-        handleRightClick(e, beat);
+        handleMenuClick(e, beat);
         setActiveContextMenu(beat.id);
         setContextMenuX(e.clientX);
         setContextMenuY(e.clientY);
@@ -395,27 +410,7 @@ const BeatRow = ({
       <td className="beat-row__data">
         <button 
           className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
-          onClick={(e) => {
-            e.stopPropagation();
-            handleMenuButtonClick(e, beat);
-            if (isMobileOrTablet()) {
-              setActiveContextMenu(beat.id);
-            } else {
-              if (activeContextMenu === beat.id) {
-                setActiveContextMenu(null);
-              } else {
-                setActiveContextMenu(beat.id);
-                const contextMenuWidth = -640;
-                let calculatedX = window.innerWidth - e.clientX - contextMenuWidth;
-                let calculatedY = e.clientY;
-                if (calculatedX < 0) {
-                  calculatedX = 0;
-                }
-                setContextMenuX(calculatedX);
-                setContextMenuY(calculatedY);
-              }
-            }
-          }}
+          onClick={(e) => handleMenuButtonClick(e, beat)}
         >
           <IoEllipsisHorizontal fontSize={24} />
         </button>
