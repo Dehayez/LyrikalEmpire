@@ -22,12 +22,12 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const containerRef = useRef(null);
 
   
+  const location = useLocation();
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');  
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
   const [previousPage, setPreviousPage] = useState(currentPage);
   
-  const location = useLocation();
   const { setPlaylistId } = usePlaylist();
   const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
   const beats = externalBeats || allBeats;
