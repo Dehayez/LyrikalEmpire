@@ -216,9 +216,14 @@ const BeatRow = ({
         setActiveContextMenu(null);
       } else {
         setActiveContextMenu(beat.id);
-        const contextMenuWidth = -640;
-        let calculatedX = window.innerWidth - e.clientX - contextMenuWidth;
-        let calculatedY = e.clientY;
+        const buttonRect = e.currentTarget.getBoundingClientRect();
+        const contextMenuWidth = 240;
+        const offsetY = 24;
+        let calculatedX = buttonRect.left;
+        let calculatedY = buttonRect.top + offsetY;
+        if (calculatedX + contextMenuWidth > window.innerWidth) {
+          calculatedX = window.innerWidth - contextMenuWidth;
+        }
         if (calculatedX < 0) {
           calculatedX = 0;
         }
