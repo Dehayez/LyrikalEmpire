@@ -46,6 +46,9 @@ const deletePlaylist = async (id) => {
 
 const addBeatsToPlaylist = async (playlistId, beatIds) => {
   try {
+    if (!Array.isArray(beatIds)) {
+      beatIds = [beatIds];
+    }
     const response = await axios.post(`${API_URL}/${playlistId}/beats`, { beatIds });
     return response.data;
   } catch (error) {
