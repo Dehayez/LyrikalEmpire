@@ -56,10 +56,10 @@ const BeatRow = ({
 
   const deleteText = selectedBeats.length > 1
     ? deleteMode === 'playlist'
-        ? `Remove ${selectedBeats.length} tracks from playlist`
+        ? `Remove ${selectedBeats.length} tracks`
         : `Delete ${selectedBeats.length} tracks`
     : deleteMode === 'playlist'
-        ? 'Remove this track from playlist'
+        ? 'Remove from playlist'
         : 'Delete this track';
 
   const beatRowClasses = classNames({
