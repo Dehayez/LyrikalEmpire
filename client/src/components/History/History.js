@@ -40,14 +40,21 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
 
   const handleRightClick = (e, beat, index) => {
     e.preventDefault();
-    const historyListElement = document.querySelector('.history__list');
+    const contextMenuWidth = 200;
+    const contextMenuHeight = 150;
+    let adjustedX = e.clientX;
+    let adjustedY = e.clientY;
   
-    if (historyListElement) {
-      const { left, top } = historyListElement.getBoundingClientRect();
-      setActiveContextMenu(`${beat.id}-${index}`);
-      setContextMenuX(e.clientX - left + 16);
-      setContextMenuY(e.clientY - top + 84);
+    if (adjustedX + contextMenuWidth > window.innerWidth) {
+      adjustedX = window.innerWidth - contextMenuWidth;
     }
+    if (adjustedY + contextMenuHeight > window.innerHeight) {
+      adjustedY = window.innerHeight - contextMenuHeight;
+    }
+  
+    setActiveContextMenu(`${beat.id}-${index}`);
+    setContextMenuX(adjustedX);
+    setContextMenuY(adjustedY);
   };
 
   const handleAddToCustomQueueClick = (beat) => {
