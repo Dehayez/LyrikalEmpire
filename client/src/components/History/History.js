@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { IoAddSharp, IoListSharp, IoEllipsisHorizontal } from "react-icons/io5";
+
+import { usePlaylist } from '../../contexts';
+import { addBeatsToPlaylist } from '../../services';
+
 import { ContextMenu } from '../ContextMenu';
 import { isMobileOrTablet } from '../../utils';
 import './History.scss';
 
 const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
+  const { playlists } = usePlaylist();
+
   const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');
 
   const [activeContextMenu, setActiveContextMenu] = useState(null);
@@ -61,6 +67,14 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
     setContextMenuX(adjustedX);
     setContextMenuY(adjustedY);
   };
+
+  const handleAddBeatToPlaylist = async (playlistId, beatIds) => {
+    try {
+      await addBeatsToPlaylist(playlistId, beatIds);
+    } catch (error) {
+      console.error('Error adding beats to playlist:', error);
+    }
+  };
   
   return (
     <div className="history">
@@ -111,7 +125,12 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
                         iconClass: 'add-playlist',
                         text: 'Add to playlist',
                         buttonClass: 'add-playlist',
-                        onClick: () => console.log(`Add ${beat.id} to playlist clicked`),
+                        subItems: playlists.map(playlist => ({
+                          text: playlist.title,
+                          onClick: () => {
+                            handleAddBeatToPlaylist(playlist.id, beat.id);
+                          },
+                        })),
                       },
                       {
                         icon: IoListSharp,
