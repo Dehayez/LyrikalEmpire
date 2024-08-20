@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoRemoveCircleOutline } from "react-icons/io5";
+
+import { usePlaylist } from '../../contexts';
+import { addBeatsToPlaylist } from '../../services';
+
 import { ContextMenu } from '../ContextMenu';
 import { isMobileOrTablet } from '../../utils';
 import './Queue.scss';
 
 const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, customQueue, setCustomQueue, addToCustomQueue }) => {
+  const { playlists } = usePlaylist();
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
@@ -81,6 +86,14 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
     return [];
   };
 
+  const handleAddBeatToPlaylist = async (playlistId, beatIds) => {
+    try {
+      await addBeatsToPlaylist(playlistId, beatIds);
+    } catch (error) {
+      console.error('Error adding beats to playlist:', error);
+    }
+  };
+
   return (
     <div className="queue">
       {queue.length > 0 && (
@@ -133,7 +146,12 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                     iconClass: 'add-playlist',
                     text: 'Add to playlist',
                     buttonClass: 'add-playlist',
-                    onClick: () => console.log(`Add ${queue[0].id} to playlist clicked`),
+                    subItems: playlists.map(playlist => ({
+                      text: playlist.title,
+                      onClick: () => {
+                        handleAddBeatToPlaylist(playlist.id, queue[0].id);
+                      },
+                    })),
                   },
                   {
                     icon: IoListSharp,
@@ -201,7 +219,12 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                         iconClass: 'add-playlist',
                         text: 'Add to playlist',
                         buttonClass: 'add-playlist',
-                        onClick: () => console.log(`Add ${beat.id} to playlist clicked`),
+                        subItems: playlists.map(playlist => ({
+                          text: playlist.title,
+                          onClick: () => {
+                            handleAddBeatToPlaylist(playlist.id, beat.id);
+                          },
+                        })),
                       },
                       {
                         icon: IoListSharp,
@@ -280,7 +303,12 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                     iconClass: 'add-playlist',
                     text: 'Add to playlist',
                     buttonClass: 'add-playlist',
-                    onClick: () => console.log(`Add ${beat.id} to playlist clicked`),
+                    subItems: playlists.map(playlist => ({
+                      text: playlist.title,
+                      onClick: () => {
+                        handleAddBeatToPlaylist(playlist.id, beat.id);
+                      },
+                    })),
                   },
                   {
                     icon: IoListSharp,
