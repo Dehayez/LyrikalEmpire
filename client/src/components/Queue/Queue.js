@@ -31,13 +31,26 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
 
   const handleRightClick = (e, beat, index) => {
     e.preventDefault();
-    const historyListElement = document.querySelector('.queue');
+    const queueElement = document.querySelector('.queue__list-item');
   
-    if (historyListElement) {
-      const { left, top } = historyListElement.getBoundingClientRect();
+    if (queueElement) {
+      const { left, top } = queueElement.getBoundingClientRect();
+      const contextMenuWidth = 200;
+      const contextMenuHeight = 150; // Adjust this value based on your context menu height
+      let adjustedX = e.clientX - left;
+      let adjustedY = e.clientY - top;
+  
+      // Ensure the context menu doesn't overflow the viewport
+      if (adjustedX + contextMenuWidth > window.innerWidth) {
+        adjustedX = window.innerWidth - contextMenuWidth;
+      }
+      if (adjustedY + contextMenuHeight > window.innerHeight) {
+        adjustedY = window.innerHeight - contextMenuHeight;
+      }
+  
       setActiveContextMenu(`${beat.id}-${index}`);
-      setContextMenuX(e.clientX - left + 16);
-      setContextMenuY(e.clientY - top + 84);
+      setContextMenuX(adjustedX);
+      setContextMenuY(adjustedY);
     }
   };
 
