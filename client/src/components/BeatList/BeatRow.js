@@ -208,7 +208,7 @@ const BeatRow = ({
 
   const handleMenuButtonClick = (e, beat) => {
     e.stopPropagation();
-    //handleMenuClick(e, beat);
+    handleMenuClick(e, beat);
     if (isMobileOrTablet()) {
       setActiveContextMenu(beat.id);
     } else {
