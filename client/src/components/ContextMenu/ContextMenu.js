@@ -18,7 +18,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
 
   const hideContextMenu = () => {
     setIsVisible(false);
-      setActiveContextMenu(null);
+    setActiveContextMenu(null);
   };
 
   useEffect(() => {
@@ -66,38 +66,38 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   }
 
   return (
-<div className="context-menu" id='context-menu' style={{ top: position.top, left: position.left }} onMouseDown={handleDragStart} onMouseMove={handleDragMove} onMouseUp={handleDragEnd} onMouseLeave={hideContextMenu}>
-  {items.map((item, index) => (
-    <div
-      key={index}
-      className={`context-menu__button context-menu__button--${item.buttonClass}`}
-      onClick={(e) => {
-        if (typeof item.onClick === 'function') {
-          handleClick(e, item.onClick);
-        }
-      }}
-      onMouseEnter={() => setHoveredItem(index)}
-      onMouseLeave={() => setHoveredItem(null)}
-    >
-      {item.icon && <item.icon className={`context-menu__icon context-menu__icon--${item.iconClass}`} />}
-      <p className="context-menu__text">{item.text}</p>
-      {item.subItems && (<button className='icon-button context-menu__subitem-icon'><IoChevronForwardSharp fontSize={16} /></button>)}
-      {item.subItems && hoveredItem === index && (
-        <div className="context-menu__nested-list">
-          {item.subItems.map((subItem, subIndex) => (
-            <div key={subIndex} className="context-menu__nested-list-item" onClick={() => {
-              if (typeof subItem.onClick === 'function') {
-                subItem.onClick();
-              }
-            }}>
-              {subItem.text}
+    <div className="context-menu" id='context-menu' style={{ top: position.top, left: position.left }} onMouseDown={handleDragStart} onMouseMove={handleDragMove} onMouseUp={handleDragEnd} onMouseLeave={hideContextMenu}>
+      {items.map((item, index) => (
+        <div
+          key={index}
+          className={`context-menu__button context-menu__button--${item.buttonClass}`}
+          onClick={(e) => {
+            if (typeof item.onClick === 'function') {
+              handleClick(e, item.onClick);
+            }
+          }}
+          onMouseEnter={() => setHoveredItem(index)}
+          onMouseLeave={() => setHoveredItem(null)}
+        >
+          {item.icon && <item.icon className={`context-menu__icon context-menu__icon--${item.iconClass}`} />}
+          <p className="context-menu__text">{item.text}</p>
+          {item.subItems && (<button className='icon-button context-menu__subitem-icon'><IoChevronForwardSharp fontSize={16} /></button>)}
+          {item.subItems && hoveredItem === index && (
+            <div className={`context-menu__nested-list ${position.left + 300 > window.innerWidth ? 'context-menu__nested-list--left' : ''}`}>
+              {item.subItems.map((subItem, subIndex) => (
+                <div key={subIndex} className="context-menu__nested-list-item" onClick={() => {
+                  if (typeof subItem.onClick === 'function') {
+                    subItem.onClick();
+                  }
+                }}>
+                  {subItem.text}
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      )}
+      ))}
     </div>
-  ))}
-</div>
   );
 };
 
