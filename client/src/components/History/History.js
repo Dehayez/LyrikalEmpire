@@ -52,19 +52,14 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
     e.stopPropagation();
     const button = e.currentTarget;
   
-    const historyListElement = document.querySelector('.history__list');
+    const buttonRect = button.getBoundingClientRect();
+    const contextMenuWidth = 200;
+    const adjustedX = buttonRect.right - contextMenuWidth;
+    const adjustedY = buttonRect.top + buttonRect.height;
   
-    if (historyListElement) {
-      const { left, top } = historyListElement.getBoundingClientRect();
-  
-      const buttonRect = button.getBoundingClientRect();
-      const adjustedX = buttonRect.left - left + buttonRect.width - 170;
-      const adjustedY = buttonRect.top - top + 100; 
-  
-      setActiveContextMenu(`${beat.id}-${index}`);
-      setContextMenuX(adjustedX);
-      setContextMenuY(adjustedY);
-    }
+    setActiveContextMenu(`${beat.id}-${index}`);
+    setContextMenuX(adjustedX);
+    setContextMenuY(adjustedY);
   };
   
   return (
