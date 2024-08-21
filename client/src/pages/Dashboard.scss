@@ -1,0 +1,15 @@
+@import '../globals/variables';
+
+.dashboard {
+  padding: 20px;
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+}
