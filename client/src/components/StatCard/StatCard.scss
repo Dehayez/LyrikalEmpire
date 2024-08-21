@@ -12,6 +12,10 @@
     transform: scale(1.02);
     box-shadow: $box-shadow-card-hover;
   }
+  
+  a {
+    text-decoration: none;
+  }
 
   h2 {
     margin-bottom: 10px;
