@@ -6,7 +6,7 @@ const BeatsPage = () => {
   const { allBeats } = useBeat();
 
   return (
-    <div>
+    <div className='page'>
       <h1 className="page-title">All Beats</h1>
       <ul className="page-list">
         {allBeats.map((beat) => (
