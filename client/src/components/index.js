@@ -2,6 +2,7 @@ export * from './AddBeat';
 export * from './AudioPlayer';
 export * from './BeatList';
 export * from './Buttons';
+export * from './Charts';
 export * from './ConfirmModal';
 export * from './Header';
 export * from './History';

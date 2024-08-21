@@ -1,0 +1,1 @@
+export { default as BeatStatisticsChart } from './BeatStatisticsChart';
