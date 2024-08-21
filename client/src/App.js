@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 
+import { Dashboard } from './pages';
 import { isMobileOrTablet, sortBeats } from './utils';
 import { addBeat } from './services';
 import { handlePlay, handlePrev } from './hooks';
@@ -373,41 +374,43 @@ function App() {
             </div>
             <div className={`container__content__middle ${isMobileOrTablet() ? 'container__content__middle--mobile' : ''} ${isMobileOrTablet() && (isRightPanelVisible || isLeftPanelVisible) ? 'container__content__middle--hide' : ''}`}>
             <Routes>
-            <Route path="/" element={
-              <>
-               <BeatList 
-                key={refresh} 
-                onPlay={handlePlayWrapper} 
-                selectedBeat={selectedBeat} 
-                isPlaying={isPlaying} 
-                handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
-                currentBeat={currentBeat} 
-                onSort={onSort} 
-                sortConfig={sortConfig}
-                addToCustomQueue={addToCustomQueue}
-                onBeatClick={handleBeatClick} 
-                onUpdateBeat={updateBeat}
-                onUpdate={onUpdate}
-              />
-              <AddBeatButton setIsOpen={setIsOpen} />
-              </>
-            } />
-              <Route path="/playlists/:id" element={
-                <PlaylistDetail
+              <Route path="/" element={
+                <>
+                <BeatList 
                   key={refresh} 
                   onPlay={handlePlayWrapper} 
                   selectedBeat={selectedBeat} 
                   isPlaying={isPlaying} 
                   handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
                   currentBeat={currentBeat} 
-                  sortedBeats={sortedBeats} 
                   onSort={onSort} 
                   sortConfig={sortConfig}
                   addToCustomQueue={addToCustomQueue}
-                  onBeatClick={handleBeatClick}  
+                  onBeatClick={handleBeatClick} 
+                  onUpdateBeat={updateBeat}
                   onUpdate={onUpdate}
-                />} 
                 />
+                <AddBeatButton setIsOpen={setIsOpen} />
+                </>
+              } />
+                <Route path="/playlists/:id" element={
+                  <PlaylistDetail
+                    key={refresh} 
+                    onPlay={handlePlayWrapper} 
+                    selectedBeat={selectedBeat} 
+                    isPlaying={isPlaying} 
+                    handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
+                    currentBeat={currentBeat} 
+                    sortedBeats={sortedBeats} 
+                    onSort={onSort} 
+                    sortConfig={sortConfig}
+                    addToCustomQueue={addToCustomQueue}
+                    onBeatClick={handleBeatClick}  
+                    onUpdate={onUpdate}
+                  />
+                } 
+                />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
