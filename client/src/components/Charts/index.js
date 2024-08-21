@@ -1,1 +1,1 @@
-export { default as BeatStatisticsChart } from './BeatStatisticsChart';
+export { default as StatChart } from './StatChart';

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useBeat, usePlaylist, useData } from '../../contexts';
 import { startOfWeek, format } from 'date-fns';
 
-const BeatStatisticsChart = () => {
+const StatChart = () => {
   const { allBeats } = useBeat();
   const { playlists } = usePlaylist();
   const { genres, moods, keywords, features } = useData();
@@ -105,16 +105,27 @@ const BeatStatisticsChart = () => {
         <option value="keywords">Keywords</option>
         <option value="features">Features</option>
       </select>
-      <LineChart width={600} height={300} data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" />
+      <AreaChart width={600} height={300} data={chartData}>
+        <defs>
+          <linearGradient id="colorData" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#FFCC44" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#FFCC44" stopOpacity={0} />
+          </linearGradient>
+        </defs>
         <XAxis dataKey="date" tickFormatter={formatXAxis} />
         <YAxis />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey={selectedData} stroke="#FFCC44" activeDot={{ r: 8 }} />
-      </LineChart>
+        <Area
+          type="monotone"
+          dataKey={selectedData}
+          stroke="#FFCC44"
+          fillOpacity={.6}
+          fill="url(#colorData)"
+        />
+      </AreaChart>
     </div>
   );
 };
 
-export default BeatStatisticsChart;
+export default StatChart;
