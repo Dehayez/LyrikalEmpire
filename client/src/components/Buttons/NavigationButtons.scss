@@ -1,0 +1,15 @@
+@import '../../globals/variables';
+
+.navigation-buttons {
+    display: flex;
+    gap: 12px;
+    position: absolute;
+    left: 80px;
+    z-index: 1;
+  }
+  
+  .navigation-button {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
