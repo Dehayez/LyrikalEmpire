@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 
-import { Dashboard } from './pages';
+import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
 import { isMobileOrTablet, sortBeats } from './utils';
 import { addBeat } from './services';
 import { handlePlay, handlePrev } from './hooks';
@@ -410,7 +410,13 @@ function App() {
                   />
                 } 
                 />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/dashboard/beats" element={<BeatsPage />} />
+                <Route path="/dashboard/playlists" element={<PlaylistsPage />} />
+                <Route path="/dashboard/genres" element={<GenresPage />} />
+                <Route path="/dashboard/moods" element={<MoodsPage />} />
+                <Route path="/dashboard/keywords" element={<KeywordsPage />} />
+                <Route path="/dashboard/features" element={<FeaturesPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
