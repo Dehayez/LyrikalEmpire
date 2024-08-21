@@ -7,28 +7,21 @@
   box-shadow: $box-shadow-card;
   text-align: center;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-
   &:hover {
     transform: scale(1.02);
     box-shadow: $box-shadow-card-hover;
   }
   
-  a {
-    text-decoration: none;
-  }
-
   h2 {
     margin-bottom: 10px;
     font-size: 18px;
     font-weight: 300;
     color: $color-gray;
   }
-
   p {
     font-size: 24px;
     font-weight: bold;
   }
-
   &--large {
     @media (min-width: 768px) {
       grid-column: span 2;
@@ -37,7 +30,6 @@
       grid-column: span 4;
     }
   }
-
   &--small {
     @media (min-width: 768px) {
       grid-column: span 1;
@@ -46,4 +38,10 @@
       grid-column: span 2;
     }
   }
+}
+
+.stat-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }

@@ -11,10 +11,18 @@ const StatCard = ({ title, value, size = 'small', link = null }) => {
     </>
   );
 
-  return (
+  const card = (
     <div className={`stat-card stat-card--${size}`}>
-      {link ? <Link to={link}>{cardContent}</Link> : cardContent}
+      {cardContent}
     </div>
+  );
+
+  return link ? (
+    <Link to={link} className={`stat-card-link stat-card--${size}`}>
+      {card}
+    </Link>
+  ) : (
+    card
   );
 };
 
