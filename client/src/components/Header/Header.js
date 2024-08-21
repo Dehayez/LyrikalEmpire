@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { isMobileOrTablet } from '../../utils';
 import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoListSharp } from 'react-icons/io5';
+import { NavigationButtons } from '../Buttons';
+
 import './Header.scss';
 
 const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, handleMouseEnterLeft, handleMouseLeaveLeft, handleMouseEnterRight, handleMouseLeaveRight, isLeftDivVisible, isRightDivVisible }) => {
@@ -28,6 +30,7 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
           : <div className={`icon-button ${isMobileOrTablet() ? 'icon-button--mobile' : ''}`}><IoMenuSharp /></div>
         }
       </div>
+      <NavigationButtons />
       
       <div className="header__nav-group">
         <Link to="/">

@@ -10,15 +10,8 @@
   border-radius: 4px;
 
   & .icon-button {
-    border-radius: 4px;
     padding: 6px;
-    color: $color-white;
-    &:active {
-      transform: scale(1);
-    }
-    &:hover {
-      background-color: $color-gray-dark;
-    }
+    z-index: 10;
 
     &--mobile {
       &:hover {
@@ -43,11 +36,12 @@
     align-items: center;
     position: absolute;
     margin: 20px;
-    font-size: 24px;
   }
+
   &__nav-menu-left {
     left: 0;
   }
+
   &__nav-menu-right {
     right: 0;
   }
