@@ -11,8 +11,8 @@ const DashboardPage = () => {
   return (
     <div className="dashboard">
       <h1>Dashboard</h1>
+      <StatChart />
       <div className="stats">
-        <StatChart />
         <StatCard size="large" title="Total Beats" value={allBeats.length} link="/dashboard/beats" />
         <StatCard size="large" title="Total Playlists" value={playlists.length} link="/dashboard/playlists" />
         <StatCard size="small" title="Total Genres" value={genres.length} link="/dashboard/genres" />

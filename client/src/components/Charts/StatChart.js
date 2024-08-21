@@ -92,7 +92,7 @@ const StatChart = () => {
   chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   const formatXAxis = (tickItem) => {
-    return format(new Date(tickItem), 'MMM dd');
+    return format(new Date(tickItem), 'dd MMM');
   };
 
   return (
@@ -114,7 +114,25 @@ const StatChart = () => {
         </defs>
         <XAxis dataKey="date" tickFormatter={formatXAxis} />
         <YAxis />
-        <Tooltip />
+        <Tooltip 
+          contentStyle={{ backgroundColor: '#202020', borderColor: '#202020', borderRadius: '4px', border: '1px solid #383838', display: 'flex', alignItems: 'center' }} 
+          itemStyle={{ color: '#fff' }} 
+          labelFormatter={(label) => format(new Date(label), 'dd MMM')}
+          formatter={(value, name) => [`${value}`, `${name}`]}
+          cursor={{ stroke: 'transparent', strokeWidth: 1 }}
+          content={({ payload, label }) => {
+            if (payload && payload.length) {
+              return (
+                <div style={{ backgroundColor: '#202020', border: '1px solid #383838', borderRadius: '4px', padding: '10px', color: '#fff', display: 'flex', alignItems: 'center' }}>
+                  <span>{format(new Date(label), 'dd MMM')}</span>
+                  <div style={{ height: '20px', width: '1px', backgroundColor: '#383838', margin: '0 10px' }}></div>
+                  <span>{payload[0].value}</span>
+                </div>
+              );
+            }
+            return null;
+          }}
+        />
         <Legend />
         <Area
           type="monotone"
@@ -122,6 +140,7 @@ const StatChart = () => {
           stroke="#FFCC44"
           fillOpacity={.6}
           fill="url(#colorData)"
+          activeDot={{ stroke: '#FFCC44', strokeWidth: 2, fill: '#FFCC44', r: 4 }}
         />
       </AreaChart>
     </div>

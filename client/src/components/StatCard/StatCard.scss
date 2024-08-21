@@ -4,9 +4,11 @@
   padding: 20px;
   background: $color-gray-dark;
   border-radius: 8px;
+  border: 1px solid $color-gray-dark-hover;
   box-shadow: $box-shadow-card;
   text-align: center;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
   &:hover {
     transform: scale(1.02);
     box-shadow: $box-shadow-card-hover;
