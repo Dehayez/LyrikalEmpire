@@ -1,29 +1,45 @@
 @import '../../globals/variables';
 
 .stat-card {
-    flex: 1 1 200px;
-    margin: 10px;
-    padding: 20px;
-    background: $color-gray-dark;
-    border-radius: 8px;
-    box-shadow: $box-shadow-card;
-    text-align: center;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: $box-shadow-card-hover;
+  padding: 20px;
+  background: $color-gray-dark;
+  border-radius: 8px;
+  box-shadow: $box-shadow-card;
+  text-align: center;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: $box-shadow-card-hover;
+  }
+
+  h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: $color-white;
+  }
+
+  p {
+    font-size: 24px;
+    font-weight: bold;
+    color: $color-yellow;
+  }
+
+  &--large {
+    @media (min-width: 768px) {
+      grid-column: span 2;
     }
-  
-    h2 {
-      margin-bottom: 10px;
-      font-size: 18px;
-      color: $color-white;
-    }
-  
-    p {
-      font-size: 24px;
-      font-weight: bold;
-      color: $color-yellow;
+    @media (max-width: 767px) {
+      grid-column: span 4;
     }
   }
+
+  &--small {
+    @media (min-width: 768px) {
+      grid-column: span 1;
+    }
+    @media (max-width: 767px) {
+      grid-column: span 2;
+    }
+  }
+}
