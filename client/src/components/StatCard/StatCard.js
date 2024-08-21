@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import './StatCard.scss';
 
-const StatCard = ({ title, value, size, link }) => {
+const StatCard = ({ title, value, size = 'small', link = null }) => {
   const cardContent = (
     <>
       <h2>{title}</h2>
@@ -23,11 +23,6 @@ StatCard.propTypes = {
   value: PropTypes.number.isRequired,
   size: PropTypes.oneOf(['large', 'small']),
   link: PropTypes.string,
-};
-
-StatCard.defaultProps = {
-  size: 'small',
-  link: null,
 };
 
 export default StatCard;
