@@ -7,3 +7,4 @@ export * from './SidePanel';
 export * from './Queue';
 export * from './History';
 export * from './Playlists';
+export * from './StatCard';

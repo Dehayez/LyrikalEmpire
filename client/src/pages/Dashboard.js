@@ -1,11 +1,24 @@
 import React from 'react';
+import { useBeat, usePlaylist, useData } from '../contexts';
+import { StatCard } from '../components';
+import './Dashboard.scss';
 
 const Dashboard = () => {
+  const { allBeats } = useBeat();
+  const { playlists } = usePlaylist();
+  const { genres, moods, keywords, features } = useData();
+
   return (
-    <div>
+    <div className="dashboard">
       <h1>Dashboard</h1>
-      <p>Here you can see all the stats of the application.</p>
-      {/* Add your stats and other components here */}
+      <div className="stats">
+        <StatCard title="Total Beats" value={allBeats.length} />
+        <StatCard title="Total Playlists" value={playlists.length} />
+        <StatCard title="Total Genres" value={genres.length} />
+        <StatCard title="Total Moods" value={moods.length} />
+        <StatCard title="Total Keywords" value={keywords.length} />
+        <StatCard title="Total Features" value={features.length} />
+      </div>
     </div>
   );
 };
