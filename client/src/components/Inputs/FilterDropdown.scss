@@ -1,0 +1,83 @@
+@import '../../globals/variables.scss';
+
+.filter-dropdown {
+  &__label-container {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 8px;
+
+    font-weight: 500;
+    border: 1px solid $color-gray-mid;
+    border-radius: 6px;
+
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-gray-mid;
+    }
+
+    &--active {
+      border: 1px solid $color-gray;
+    }
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+  }
+
+  input[type="checkbox"] {
+    padding: 7px;
+    position: relative;
+    display: flex;
+    appearance: none;
+    border: 1px solid $color-gray-mid;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s ease-in-out;
+
+    &:checked {
+      background-color: $color-primary;
+      border-color: $color-primary;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 4px;
+        width: 4px;
+        height: 6px;
+        border: solid $color-white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+    }
+
+    &:not(:checked) {
+      background-color: $color-gray-dark;
+    }
+  }
+
+  &__option-text {
+    padding-left: 4px;
+    cursor: pointer;
+  }
+
+  &__wrapper {
+    display: grid;
+    position: absolute;
+    z-index: 4;
+    gap: 8px;
+    max-width: 280px;
+    min-width: 200px;
+    max-height: 400px;
+    padding: 16px;
+    margin: 8px 0;
+    border-radius: 6px;
+    background-color: $color-gray-dark-active;
+    overflow: scroll;
+  }
+}
