@@ -4,12 +4,12 @@ import { useBeat, usePlaylist, useData } from '../../contexts';
 import { startOfWeek, format } from 'date-fns';
 import './StatChart.scss';
 
-const StatChart = ({ hoveredCard, isCardHovered }) => {
+const StatChart = ({ hoveredCard, isCardHovered, filterOption }) => {
   const { allBeats } = useBeat();
   const { playlists } = usePlaylist();
   const { genres, moods, keywords, features } = useData();
 
-  const [selectedData, setSelectedData] = useState('beats');
+  const [selectedData, setSelectedData] = useState(filterOption || 'beats');
   const [chartData, setChartData] = useState([]);
   const intervalRef = useRef(null);
   const chartRef = useRef(null);
@@ -18,7 +18,7 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    if (!isCardHovered && !chartRef.current?.contains(document.activeElement)) {
+    if (!isCardHovered && !chartRef.current?.contains(document.activeElement) && !filterOption) {
       intervalRef.current = setInterval(() => {
         setSelectedData((prevData) => {
           const currentIndex = options.findIndex(option => option.value === prevData);
@@ -32,7 +32,7 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
   useEffect(() => {
     resetInterval();
     return () => clearInterval(intervalRef.current);
-  }, [isCardHovered]);
+  }, [isCardHovered, filterOption]);
 
   useEffect(() => {
     if (hoveredCard) {
@@ -92,35 +92,35 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
   return (
     <div className="stat-chart" ref={chartRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <ResponsiveContainer width="100%" height={300}>
-      <AreaChart data={chartData}>
-        <Legend layout="horizontal" verticalAlign="top" align="center" wrapperStyle={{ marginLeft: '30px', paddingBottom: '20px' }} />
-        <defs>
-          <linearGradient id="colorData" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#FFCC44" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="#FFCC44" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <Tooltip
-          contentStyle={{ backgroundColor: '#202020', borderColor: '#202020', borderRadius: '4px', border: '1px solid #383838', display: 'flex', alignItems: 'center' }}
-          itemStyle={{ color: '#fff' }}
-          labelFormatter={(label) => format(new Date(label), 'dd MMM')}
-          formatter={(value, name) => [`${value}`, `${name}`]}
-          cursor={{ stroke: 'transparent', strokeWidth: 1 }}
-          content={({ payload, label }) => {
-            if (payload && payload.length) {
-              return (
-                <div style={{ backgroundColor: '#202020', border: '1px solid #383838', borderRadius: '4px', padding: '10px', color: '#fff', display: 'flex', alignItems: 'center' }}>
-                  <span>{format(new Date(label), 'dd MMM')}</span>
-                  <div style={{ height: '20px', width: '1px', backgroundColor: '#383838', margin: '0 10px' }}></div>
-                  <span>{payload[0].value}</span>
-                </div>
-              );
-            }
-            return null;
-          }}
-        />
-        <Area type="monotone" dataKey={selectedData} stroke="#FFCC44" fill="url(#colorData)" />
-      </AreaChart>
+        <AreaChart data={chartData}>
+          <Legend layout="horizontal" verticalAlign="top" align="center" wrapperStyle={{ marginLeft: '30px', paddingBottom: '20px' }} />
+          <defs>
+            <linearGradient id="colorData" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#FFCC44" stopOpacity={0.8} />
+              <stop offset="100%" stopColor="#FFCC44" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Tooltip
+            contentStyle={{ backgroundColor: '#202020', borderColor: '#202020', borderRadius: '4px', border: '1px solid #383838', display: 'flex', alignItems: 'center' }}
+            itemStyle={{ color: '#fff' }}
+            labelFormatter={(label) => format(new Date(label), 'dd MMM')}
+            formatter={(value, name) => [`${value}`, `${name}`]}
+            cursor={{ stroke: 'transparent', strokeWidth: 1 }}
+            content={({ payload, label }) => {
+              if (payload && payload.length) {
+                return (
+                  <div style={{ backgroundColor: '#202020', border: '1px solid #383838', borderRadius: '4px', padding: '10px', color: '#fff', display: 'flex', alignItems: 'center' }}>
+                    <span>{format(new Date(label), 'dd MMM')}</span>
+                    <div style={{ height: '20px', width: '1px', backgroundColor: '#383838', margin: '0 10px' }}></div>
+                    <span>{payload[0].value}</span>
+                  </div>
+                );
+              }
+              return null;
+            }}
+          />
+          <Area type="monotone" dataKey={selectedData} stroke="#FFCC44" fill="url(#colorData)" />
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );
