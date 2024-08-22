@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { isMobileOrTablet } from '../../utils';
-import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoListSharp, IoAnalytics } from 'react-icons/io5';
+import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoListSharp, IoAnalytics, IoLockOpen, IoLockClosed } from 'react-icons/io5';
 import { IconButton, NavigationButtons } from '../Buttons';
 import { Breadcrumb } from '../Breadcrumb';
 import { Tooltip } from '../Tooltip';
@@ -29,12 +29,12 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
         {
           isLeftPanelVisible ? (
             <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-              <IoChevronBackSharp />
+              <IoLockClosed />
               {!isMobileOrTablet() && <Tooltip text="Unlock Panel" position="right" />}
             </IconButton>
           ) : isLeftDivVisible ? (
             <IconButton>
-              <IoChevronForwardSharp />
+              <IoLockOpen />
               {!isMobileOrTablet() && <Tooltip text="Lock Panel" position="right" />}
             </IconButton>
           ) : (
@@ -64,12 +64,12 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
         {
           isRightPanelVisible ? (
             <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-              <IoChevronForwardSharp />
+              <IoLockClosed />
               {!isMobileOrTablet() && <Tooltip text="Unlock Panel" position="left" />}
             </IconButton>
           ) : isRightDivVisible ? (
             <IconButton>
-              <IoChevronBackSharp />
+              <IoLockOpen />
               {!isMobileOrTablet() && <Tooltip text="Lock Panel" position="left" />}
             </IconButton>
           ) : (
