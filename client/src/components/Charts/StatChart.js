@@ -3,10 +3,9 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 import { useBeat, usePlaylist, useData } from '../../contexts';
 import { startOfWeek, format } from 'date-fns';
 import { SelectInput } from '../Inputs/SelectInput';
-
 import './StatChart.scss';
 
-const StatChart = () => {
+const StatChart = ({ hoveredCard, isCardHovered }) => {
   const { allBeats } = useBeat();
   const { playlists } = usePlaylist();
   const { genres, moods, keywords, features } = useData();
@@ -22,21 +21,30 @@ const StatChart = () => {
 
   const resetInterval = () => {
     if (intervalRef.current) {
-      clearInterval(intervalRef.current);
+        clearInterval(intervalRef.current);
     }
-    intervalRef.current = setInterval(() => {
-      setSelectedData((prevData) => {
-        const currentIndex = options.findIndex(option => option.value === prevData);
-        const nextIndex = (currentIndex + 1) % options.length;
-        return options[nextIndex].value;
-      });
-    }, 12000);
+    if (!isCardHovered) {
+        intervalRef.current = setInterval(() => {
+            setSelectedData((prevData) => {
+                const currentIndex = options.findIndex(option => option.value === prevData);
+                const nextIndex = (currentIndex + 1) % options.length;
+                return options[nextIndex].value;
+            });
+        }, 12000);
+    }
   };
 
   useEffect(() => {
     resetInterval();
     return () => clearInterval(intervalRef.current);
-  }, []);
+  }, [isCardHovered]);
+
+    useEffect(() => {
+      if (hoveredCard) {
+        setSelectedData(hoveredCard);
+        resetInterval();
+      }
+    }, [hoveredCard]);
 
   const aggregateData = (data, key) => {
     return data.reduce((acc, item) => {
@@ -50,7 +58,7 @@ const StatChart = () => {
       return acc;
     }, {});
   };
-  
+
   const getData = () => {
     switch (selectedData) {
       case 'beats':
@@ -74,52 +82,52 @@ const StatChart = () => {
     const data = Object.values(getData());
     data.sort((a, b) => new Date(a.date) - new Date(b.date));
     setChartData(data);
-  }, [selectedData, allBeats]);
+  }, [selectedData, allBeats, playlists, genres, moods, keywords, features]);
 
   const formatXAxis = (tickItem) => {
     return format(new Date(tickItem), 'MMM dd');
   };
 
   return (
-<div className="stat-chart">
-  <SelectInput
-    id="data-select"
-    name="data"
-    selectedValue={selectedData}
-    onChange={handleDataChange}
-    options={options.map(option => ({ value: option.value, label: option.label.charAt(0).toUpperCase() + option.label.slice(1) }))}
-  />
-  <AreaChart width={600} height={300} data={chartData}>
-    <defs>
-      <linearGradient id="colorData" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="5%" stopColor="#FFCC44" stopOpacity={0.8} />
-        <stop offset="100%" stopColor="#FFCC44" stopOpacity={0} />
-      </linearGradient>
-    </defs>
-    <XAxis dataKey="date" tickFormatter={formatXAxis} />
-    <YAxis />
-    <Tooltip 
-      contentStyle={{ backgroundColor: '#202020', borderColor: '#202020', borderRadius: '4px', border: '1px solid #383838', display: 'flex', alignItems: 'center' }} 
-      itemStyle={{ color: '#fff' }} 
-      labelFormatter={(label) => format(new Date(label), 'dd MMM')}
-      formatter={(value, name) => [`${value}`, `${name}`]}
-      cursor={{ stroke: 'transparent', strokeWidth: 1 }}
-      content={({ payload, label }) => {
-        if (payload && payload.length) {
-          return (
-            <div style={{ backgroundColor: '#202020', border: '1px solid #383838', borderRadius: '4px', padding: '10px', color: '#fff', display: 'flex', alignItems: 'center' }}>
-              <span>{format(new Date(label), 'dd MMM')}</span>
-              <div style={{ height: '20px', width: '1px', backgroundColor: '#383838', margin: '0 10px' }}></div>
-              <span>{payload[0].value}</span>
-            </div>
-          );
-        }
-        return null;
-      }}
-    />
-    <Area type="monotone" dataKey={selectedData} stroke="#FFCC44" fill="url(#colorData)" />
-  </AreaChart>
-</div>
+    <div className="stat-chart">
+      <SelectInput
+        id="data-select"
+        name="data"
+        selectedValue={selectedData}
+        onChange={handleDataChange}
+        options={options.map(option => ({ value: option.value, label: option.label.charAt(0).toUpperCase() + option.label.slice(1) }))}
+      />
+      <AreaChart width={600} height={300} data={chartData}>
+        <defs>
+          <linearGradient id="colorData" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#FFCC44" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="#FFCC44" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <XAxis dataKey="date" tickFormatter={formatXAxis} />
+        <YAxis />
+        <Tooltip
+          contentStyle={{ backgroundColor: '#202020', borderColor: '#202020', borderRadius: '4px', border: '1px solid #383838', display: 'flex', alignItems: 'center' }}
+          itemStyle={{ color: '#fff' }}
+          labelFormatter={(label) => format(new Date(label), 'dd MMM')}
+          formatter={(value, name) => [`${value}`, `${name}`]}
+          cursor={{ stroke: 'transparent', strokeWidth: 1 }}
+          content={({ payload, label }) => {
+            if (payload && payload.length) {
+              return (
+                <div style={{ backgroundColor: '#202020', border: '1px solid #383838', borderRadius: '4px', padding: '10px', color: '#fff', display: 'flex', alignItems: 'center' }}>
+                  <span>{format(new Date(label), 'dd MMM')}</span>
+                  <div style={{ height: '20px', width: '1px', backgroundColor: '#383838', margin: '0 10px' }}></div>
+                  <span>{payload[0].value}</span>
+                </div>
+              );
+            }
+            return null;
+          }}
+        />
+        <Area type="monotone" dataKey={selectedData} stroke="#FFCC44" fill="url(#colorData)" />
+      </AreaChart>
+    </div>
   );
 };
 
