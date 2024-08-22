@@ -1,20 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useBeat, usePlaylist, useData } from '../../contexts';
 import { startOfWeek, format } from 'date-fns';
 import './StatChart.scss';
-
-const CustomLegend = ({ payload }) => {
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
-      {payload.map((entry, index) => (
-        <div key={`item-${index}`} style={{ marginRight: '10px' }}>
-          <span style={{ color: entry.color }}>{entry.value}</span>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 const StatChart = ({ hoveredCard, isCardHovered }) => {
   const { allBeats } = useBeat();
@@ -91,10 +79,6 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
     setChartData(data);
   }, [selectedData, allBeats, playlists, genres, moods, keywords, features]);
 
-  const formatXAxis = (tickItem) => {
-    return format(new Date(tickItem), 'MMM dd');
-  };
-
   const handleMouseEnter = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -116,8 +100,6 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
             <stop offset="100%" stopColor="#FFCC44" stopOpacity={0} />
           </linearGradient>
         </defs>
-        {/* <XAxis dataKey="date" tickFormatter={formatXAxis} />
-        <YAxis /> */}
         <Tooltip
           contentStyle={{ backgroundColor: '#202020', borderColor: '#202020', borderRadius: '4px', border: '1px solid #383838', display: 'flex', alignItems: 'center' }}
           itemStyle={{ color: '#fff' }}

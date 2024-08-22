@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import './StatCard.scss';
 
-const StatCard = ({ title, value, size = 'small', link = null, onMouseEnter, onMouseLeave }) => {
+const StatCard = ({ title, value, size = 'small', link = null, onMouseEnter, onMouseLeave, children }) => {
   const cardContent = (
     <>
       <h2>{title}</h2>
       <p>{value}</p>
+      {children}
     </>
   );
 
@@ -27,12 +28,13 @@ const StatCard = ({ title, value, size = 'small', link = null, onMouseEnter, onM
 };
 
 StatCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
-  size: PropTypes.oneOf(['large', 'small']),
+  title: PropTypes.string,
+  value: PropTypes.number,
+  size: PropTypes.oneOf(['large', 'small', 'full-width']),
   link: PropTypes.string,
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func,
+  children: PropTypes.node,
 };
 
 export default StatCard;

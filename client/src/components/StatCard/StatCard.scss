@@ -40,6 +40,9 @@
       grid-column: span 2;
     }
   }
+  &--full-width {
+    grid-column: span 4;
+  }
 }
 
 .stat-card-link {
