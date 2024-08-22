@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { isMobileOrTablet } from '../../utils';
-import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoListSharp } from 'react-icons/io5';
-import { NavigationButtons } from '../Buttons';
+import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoListSharp, IoAnalytics } from 'react-icons/io5';
+import { IconButton, NavigationButtons } from '../Buttons';
 
 import './Header.scss';
 
@@ -37,6 +37,12 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
           <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
         </Link>
       </div>
+
+      <Link to="/dashboard" className="header__nav-group-dashboard">
+        <IconButton>
+          <IoAnalytics />
+        </IconButton>
+      </Link>
 
       <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterRight, onMouseLeave: handleMouseLeaveRight } : {})} onClick={handleClickRight} className="header__nav-menu-right">
         {
