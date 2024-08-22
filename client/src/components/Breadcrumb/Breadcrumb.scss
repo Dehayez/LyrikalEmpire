@@ -1,0 +1,25 @@
+@import '../../globals/variables';
+
+.breadcrumb {
+    position: absolute;
+    left: 200px;
+    ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+  
+    li {
+        padding-left: 4px;
+        color: $color-gray-light;
+      a {
+        text-decoration: none;
+        color: $color-gray-light;
+  
+        &:hover {
+            color: $color-white;
+        }
+      }
+    }
+  }
