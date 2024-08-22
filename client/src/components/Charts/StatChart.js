@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useBeat, usePlaylist, useData } from '../../contexts';
 import { startOfWeek, format } from 'date-fns';
 import './StatChart.scss';
@@ -107,7 +107,8 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
 
   return (
     <div className="stat-chart" ref={chartRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <AreaChart width={600} height={300} data={chartData}>
+      <ResponsiveContainer width="100%" height={300}>
+      <AreaChart data={chartData}>
         <Legend layout="horizontal" verticalAlign="top" align="center" wrapperStyle={{ marginLeft: '30px', paddingBottom: '20px' }} />
         <defs>
           <linearGradient id="colorData" x1="0" y1="0" x2="0" y2="1">
@@ -115,8 +116,8 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
             <stop offset="100%" stopColor="#FFCC44" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <XAxis dataKey="date" tickFormatter={formatXAxis} />
-        <YAxis />
+        {/* <XAxis dataKey="date" tickFormatter={formatXAxis} />
+        <YAxis /> */}
         <Tooltip
           contentStyle={{ backgroundColor: '#202020', borderColor: '#202020', borderRadius: '4px', border: '1px solid #383838', display: 'flex', alignItems: 'center' }}
           itemStyle={{ color: '#fff' }}
@@ -138,6 +139,7 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
         />
         <Area type="monotone" dataKey={selectedData} stroke="#FFCC44" fill="url(#colorData)" />
       </AreaChart>
+      </ResponsiveContainer>
     </div>
   );
 };
