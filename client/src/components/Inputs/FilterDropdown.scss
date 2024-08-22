@@ -79,6 +79,7 @@
     display: flex;
     justify-content: space-between;
     padding: 16px;
+    border-radius: 0 0 6px 6px;
     border-top: 1px solid $color-gray-mid;
     background-color: $color-gray-dark-active;
   }
