@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import React, { useState, useEffect, useRef } from 'react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 import { useBeat, usePlaylist, useData } from '../../contexts';
 import { startOfWeek, format } from 'date-fns';
+import { SelectInput } from '../Inputs/SelectInput';
+
+import './StatChart.scss';
 
 const StatChart = () => {
   const { allBeats } = useBeat();
@@ -9,10 +12,31 @@ const StatChart = () => {
   const { genres, moods, keywords, features } = useData();
 
   const [selectedData, setSelectedData] = useState('beats');
+  const [chartData, setChartData] = useState([]);
+  const intervalRef = useRef(null);
 
   const handleDataChange = (event) => {
     setSelectedData(event.target.value);
+    resetInterval();
   };
+
+  const resetInterval = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    intervalRef.current = setInterval(() => {
+      setSelectedData((prevData) => {
+        const currentIndex = options.findIndex(option => option.value === prevData);
+        const nextIndex = (currentIndex + 1) % options.length;
+        return options[nextIndex].value;
+      });
+    }, 12000);
+  };
+
+  useEffect(() => {
+    resetInterval();
+    return () => clearInterval(intervalRef.current);
+  }, []);
 
   const getData = () => {
     switch (selectedData) {
@@ -87,64 +111,66 @@ const StatChart = () => {
     }
   };
 
-  const data = getData();
-  const chartData = Object.values(data);
-  chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
+  useEffect(() => {
+    const data = Object.values(getData());
+    data.sort((a, b) => new Date(a.date) - new Date(b.date));
+    setChartData(data);
+  }, [selectedData]);
 
   const formatXAxis = (tickItem) => {
-    return format(new Date(tickItem), 'dd MMM');
+    return format(new Date(tickItem), 'MMM dd');
   };
 
   return (
-    <div>
-      <select value={selectedData} onChange={handleDataChange}>
-        <option value="beats">Beats</option>
-        <option value="playlists">Playlists</option>
-        <option value="genres">Genres</option>
-        <option value="moods">Moods</option>
-        <option value="keywords">Keywords</option>
-        <option value="features">Features</option>
-      </select>
-      <AreaChart width={600} height={300} data={chartData}>
-        <defs>
-          <linearGradient id="colorData" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#FFCC44" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="#FFCC44" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <XAxis dataKey="date" tickFormatter={formatXAxis} />
-        <YAxis />
-        <Tooltip 
-          contentStyle={{ backgroundColor: '#202020', borderColor: '#202020', borderRadius: '4px', border: '1px solid #383838', display: 'flex', alignItems: 'center' }} 
-          itemStyle={{ color: '#fff' }} 
-          labelFormatter={(label) => format(new Date(label), 'dd MMM')}
-          formatter={(value, name) => [`${value}`, `${name}`]}
-          cursor={{ stroke: 'transparent', strokeWidth: 1 }}
-          content={({ payload, label }) => {
-            if (payload && payload.length) {
-              return (
-                <div style={{ backgroundColor: '#202020', border: '1px solid #383838', borderRadius: '4px', padding: '10px', color: '#fff', display: 'flex', alignItems: 'center' }}>
-                  <span>{format(new Date(label), 'dd MMM')}</span>
-                  <div style={{ height: '20px', width: '1px', backgroundColor: '#383838', margin: '0 10px' }}></div>
-                  <span>{payload[0].value}</span>
-                </div>
-              );
-            }
-            return null;
-          }}
-        />
-        <Legend />
-        <Area
-          type="monotone"
-          dataKey={selectedData}
-          stroke="#FFCC44"
-          fillOpacity={.6}
-          fill="url(#colorData)"
-          activeDot={{ stroke: '#FFCC44', strokeWidth: 2, fill: '#FFCC44', r: 4 }}
-        />
-      </AreaChart>
-    </div>
+<div className="stat-chart">
+  <SelectInput
+    id="data-select"
+    name="data"
+    selectedValue={selectedData} // Use selectedData directly
+    onChange={handleDataChange}
+    options={options.map(option => ({ value: option.value, label: option.label.charAt(0).toUpperCase() + option.label.slice(1) }))}
+  />
+  <AreaChart width={600} height={300} data={chartData}>
+    <defs>
+      <linearGradient id="colorData" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="5%" stopColor="#FFCC44" stopOpacity={0.8} />
+        <stop offset="100%" stopColor="#FFCC44" stopOpacity={0} />
+      </linearGradient>
+    </defs>
+    <XAxis dataKey="date" tickFormatter={formatXAxis} />
+    <YAxis />
+    <Tooltip 
+      contentStyle={{ backgroundColor: '#202020', borderColor: '#202020', borderRadius: '4px', border: '1px solid #383838', display: 'flex', alignItems: 'center' }} 
+      itemStyle={{ color: '#fff' }} 
+      labelFormatter={(label) => format(new Date(label), 'dd MMM')}
+      formatter={(value, name) => [`${value}`, `${name}`]}
+      cursor={{ stroke: 'transparent', strokeWidth: 1 }}
+      content={({ payload, label }) => {
+        if (payload && payload.length) {
+          return (
+            <div style={{ backgroundColor: '#202020', border: '1px solid #383838', borderRadius: '4px', padding: '10px', color: '#fff', display: 'flex', alignItems: 'center' }}>
+              <span>{format(new Date(label), 'dd MMM')}</span>
+              <div style={{ height: '20px', width: '1px', backgroundColor: '#383838', margin: '0 10px' }}></div>
+              <span>{payload[0].value}</span>
+            </div>
+          );
+        }
+        return null;
+      }}
+    />
+    <Area type="monotone" dataKey={selectedData} stroke="#FFCC44" fill="url(#colorData)" />
+  </AreaChart>
+</div>
   );
 };
+
+const options = [
+  { value: 'beats', label: 'Beats' },
+  { value: 'playlists', label: 'Playlists' },
+  { value: 'genres', label: 'Genres' },
+  { value: 'moods', label: 'Moods' },
+  { value: 'keywords', label: 'Keywords' },
+  { value: 'features', label: 'Features' }
+];
 
 export default StatChart;
