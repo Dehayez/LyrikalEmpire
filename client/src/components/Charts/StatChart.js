@@ -38,74 +38,33 @@ const StatChart = () => {
     return () => clearInterval(intervalRef.current);
   }, []);
 
+  const aggregateData = (data, key) => {
+    return data.reduce((acc, item) => {
+      const date = new Date(item.created_at);
+      const weekStart = startOfWeek(date, { weekStartsOn: 1 });
+      const week = format(weekStart, 'yyyy-MM-dd');
+      if (!acc[week]) {
+        acc[week] = { date: week, [key]: 0 };
+      }
+      acc[week][key] += 1;
+      return acc;
+    }, {});
+  };
+  
   const getData = () => {
     switch (selectedData) {
       case 'beats':
-        return allBeats.reduce((acc, beat) => {
-          const date = new Date(beat.created_at);
-          const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-          const week = format(weekStart, 'yyyy-MM-dd');
-          if (!acc[week]) {
-            acc[week] = { date: week, beats: 0 };
-          }
-          acc[week].beats += 1;
-          return acc;
-        }, {});
+        return aggregateData(allBeats, 'beats');
       case 'playlists':
-        return playlists.reduce((acc, playlist) => {
-          const date = new Date(playlist.created_at);
-          const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-          const week = format(weekStart, 'yyyy-MM-dd');
-          if (!acc[week]) {
-            acc[week] = { date: week, playlists: 0 };
-          }
-          acc[week].playlists += 1;
-          return acc;
-        }, {});
+        return aggregateData(playlists, 'playlists');
       case 'genres':
-        return genres.reduce((acc, genre) => {
-          const date = new Date(genre.created_at);
-          const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-          const week = format(weekStart, 'yyyy-MM-dd');
-          if (!acc[week]) {
-            acc[week] = { date: week, genres: 0 };
-          }
-          acc[week].genres += 1;
-          return acc;
-        }, {});
+        return aggregateData(genres, 'genres');
       case 'moods':
-        return moods.reduce((acc, mood) => {
-          const date = new Date(mood.created_at);
-          const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-          const week = format(weekStart, 'yyyy-MM-dd');
-          if (!acc[week]) {
-            acc[week] = { date: week, moods: 0 };
-          }
-          acc[week].moods += 1;
-          return acc;
-        }, {});
+        return aggregateData(moods, 'moods');
       case 'keywords':
-        return keywords.reduce((acc, keyword) => {
-          const date = new Date(keyword.created_at);
-          const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-          const week = format(weekStart, 'yyyy-MM-dd');
-          if (!acc[week]) {
-            acc[week] = { date: week, keywords: 0 };
-          }
-          acc[week].keywords += 1;
-          return acc;
-        }, {});
+        return aggregateData(keywords, 'keywords');
       case 'features':
-        return features.reduce((acc, feature) => {
-          const date = new Date(feature.created_at);
-          const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-          const week = format(weekStart, 'yyyy-MM-dd');
-          if (!acc[week]) {
-            acc[week] = { date: week, features: 0 };
-          }
-          acc[week].features += 1;
-          return acc;
-        }, {});
+        return aggregateData(features, 'features');
       default:
         return {};
     }
@@ -115,7 +74,7 @@ const StatChart = () => {
     const data = Object.values(getData());
     data.sort((a, b) => new Date(a.date) - new Date(b.date));
     setChartData(data);
-  }, [selectedData]);
+  }, [selectedData, allBeats]);
 
   const formatXAxis = (tickItem) => {
     return format(new Date(tickItem), 'MMM dd');
@@ -126,7 +85,7 @@ const StatChart = () => {
   <SelectInput
     id="data-select"
     name="data"
-    selectedValue={selectedData} // Use selectedData directly
+    selectedValue={selectedData}
     onChange={handleDataChange}
     options={options.map(option => ({ value: option.value, label: option.label.charAt(0).toUpperCase() + option.label.slice(1) }))}
   />
