@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { IoPlaySkipBackSharp } from "react-icons/io5";
+
+import { Tooltip } from '../../Tooltip';
+
 import './PrevButton.scss';
 
 const PrevButton = ({ onPrev }) => {
@@ -54,7 +57,7 @@ const PrevButton = ({ onPrev }) => {
       onMouseLeave={() => setIsPrevActive(false)}
       onClick={onPrev}
     >
-      <span className="tooltip">Prev</span>
+      <Tooltip text="Prev" />
       <IoPlaySkipBackSharp size={24} />
     </button>
   );

@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
-
 import { isMobileOrTablet, sortBeats } from '../../utils';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
 import { usePlaylist, useBeat } from '../../contexts';
@@ -13,6 +12,7 @@ import BeatRow from './BeatRow';
 import TableHeader from './TableHeader';
 import { IconButton } from '../Buttons';
 import PaginationControls from './PaginationControls';
+import { Tooltip } from '../Tooltip';
 
 import './BeatList.scss';
 
@@ -222,21 +222,21 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
             {mode === 'edit' ? 
             <>
               {!isMobileOrTablet() && (
-                <span className="tooltip tooltip--left tooltip--edit">Switch to Listen Mode</span>
+                <Tooltip text="Switch to Listen Mode" position='left' />
               )}
               <IoPencil/> 
             </>
             : mode === 'listen' ?
             <>
               {!isMobileOrTablet() && (
-              <span className="tooltip tooltip--left tooltip--listen">Switch to Lock Mode</span>
+              <Tooltip text="Switch to Lock Mode" position='left' />
             )}
               <IoHeadsetSharp/>
             </>
             :
             <>
               {!isMobileOrTablet() && (
-              <span className="tooltip tooltip--left tooltip--mixed">Switch to Edit Mode</span>
+              <Tooltip text="Switch to Edit Mode" position='left' />
             )}
               <IoLockClosedSharp/>
             </>
@@ -245,7 +245,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
           <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
             {!isMobileOrTablet() && (
-              <span className="tooltip tooltip--left tooltip--search">Search in tracks</span>
+              <Tooltip text="Search in tracks" position='left' />
             )}
               <IoSearchSharp />
             </div>

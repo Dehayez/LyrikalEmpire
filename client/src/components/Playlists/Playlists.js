@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
+import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp } from "react-icons/io5";
+
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus } from '../../utils';
-import { createPlaylist, deletePlaylist, getPlaylists } from '../../services';
+import { createPlaylist, deletePlaylist } from '../../services';
+
 import { ContextMenu } from '../ContextMenu';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import Button from '../Buttons';
-import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp } from "react-icons/io5";
+import { Tooltip } from '../Tooltip';
+
 import './Playlists.scss';
 
 const Playlists = ({ isPlaying }) => {
@@ -95,8 +99,7 @@ const Playlists = ({ isPlaying }) => {
       <div className="playlists__header">
         <h2 className="playlists__title">Playlists</h2>
         <button className='icon-button' onClick={handleAddPlaylist}>
-       
-        <span className="tooltip tooltip--left">Add playlist</span>
+          <Tooltip text="Add playlist" position='left' />
           <IoAddSharp />
         </button>
       </div>

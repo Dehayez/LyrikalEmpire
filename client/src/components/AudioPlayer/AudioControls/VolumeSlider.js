@@ -1,5 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { IoVolumeMuteSharp, IoVolumeMediumSharp, IoVolumeHighSharp, IoVolumeLowSharp } from "react-icons/io5";
+
+import { Tooltip } from '../../Tooltip';
+
 import './VolumeSlider.scss';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -52,7 +55,7 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
     <div className='volume-slider' style={{ flex: '1' }}>
       <div className='volume-slider__icon' onClick={toggleMute}>
         {volumeIcon}
-        <span className="tooltip">{isMuted ? 'Unmute' : 'Mute'}</span>
+        <Tooltip text={isMuted ? 'Unmute' : 'Mute'} />
       </div>
       <div 
         className={`volume-slider__track ${isHovering || isDragging ? 'hover' : ''}`}
