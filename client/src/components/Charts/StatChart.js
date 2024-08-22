@@ -1,9 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { useBeat, usePlaylist, useData } from '../../contexts';
 import { startOfWeek, format } from 'date-fns';
-import { SelectInput } from '../Inputs/SelectInput';
 import './StatChart.scss';
+
+const CustomLegend = ({ payload }) => {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+      {payload.map((entry, index) => (
+        <div key={`item-${index}`} style={{ marginRight: '10px' }}>
+          <span style={{ color: entry.color }}>{entry.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const StatChart = ({ hoveredCard, isCardHovered }) => {
   const { allBeats } = useBeat();
@@ -13,24 +24,20 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
   const [selectedData, setSelectedData] = useState('beats');
   const [chartData, setChartData] = useState([]);
   const intervalRef = useRef(null);
-
-  const handleDataChange = (event) => {
-    setSelectedData(event.target.value);
-    resetInterval();
-  };
+  const chartRef = useRef(null);
 
   const resetInterval = () => {
     if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      clearInterval(intervalRef.current);
     }
-    if (!isCardHovered) {
-        intervalRef.current = setInterval(() => {
-            setSelectedData((prevData) => {
-                const currentIndex = options.findIndex(option => option.value === prevData);
-                const nextIndex = (currentIndex + 1) % options.length;
-                return options[nextIndex].value;
-            });
-        }, 12000);
+    if (!isCardHovered && !chartRef.current?.contains(document.activeElement)) {
+      intervalRef.current = setInterval(() => {
+        setSelectedData((prevData) => {
+          const currentIndex = options.findIndex(option => option.value === prevData);
+          const nextIndex = (currentIndex + 1) % options.length;
+          return options[nextIndex].value;
+        });
+      }, 8000);
     }
   };
 
@@ -39,12 +46,12 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
     return () => clearInterval(intervalRef.current);
   }, [isCardHovered]);
 
-    useEffect(() => {
-      if (hoveredCard) {
-        setSelectedData(hoveredCard);
-        resetInterval();
-      }
-    }, [hoveredCard]);
+  useEffect(() => {
+    if (hoveredCard) {
+      setSelectedData(hoveredCard);
+      resetInterval();
+    }
+  }, [hoveredCard]);
 
   const aggregateData = (data, key) => {
     return data.reduce((acc, item) => {
@@ -88,16 +95,20 @@ const StatChart = ({ hoveredCard, isCardHovered }) => {
     return format(new Date(tickItem), 'MMM dd');
   };
 
+  const handleMouseEnter = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    resetInterval();
+  };
+
   return (
-    <div className="stat-chart">
-      <SelectInput
-        id="data-select"
-        name="data"
-        selectedValue={selectedData}
-        onChange={handleDataChange}
-        options={options.map(option => ({ value: option.value, label: option.label.charAt(0).toUpperCase() + option.label.slice(1) }))}
-      />
+    <div className="stat-chart" ref={chartRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <AreaChart width={600} height={300} data={chartData}>
+        <Legend layout="horizontal" verticalAlign="top" align="center" wrapperStyle={{ marginLeft: '30px', paddingBottom: '20px' }} />
         <defs>
           <linearGradient id="colorData" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#FFCC44" stopOpacity={0.8} />
