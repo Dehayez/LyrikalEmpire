@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp } from "react-icons/io5";
+import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoOptionsSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
 import { isMobileOrTablet, sortBeats } from '../../utils';
@@ -218,7 +218,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
           )
         }
         <div className='beat-list__actions'>
-          <IconButton className={'beat-list__action-button--edit'} onClick={toggleEdit}>
+          <IconButton className='beat-list__action-button--edit' onClick={toggleEdit}>
             {mode === 'edit' ? 
             <>
               {!isMobileOrTablet() && (
@@ -241,6 +241,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
               <IoLockClosedSharp/>
             </>
             }
+          </IconButton>
+          <IconButton className='beat-list__action-button--options'>
+            <IoOptionsSharp/>
           </IconButton>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
           <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
