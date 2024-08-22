@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { IoPlaySkipForwardSharp } from "react-icons/io5";
+
+import { Tooltip } from '../../Tooltip';
+
 import './NextButton.scss';
 
 const NextButton = ({ onNext }) => {
@@ -54,7 +57,7 @@ const NextButton = ({ onNext }) => {
       onMouseLeave={() => setIsNextActive(false)}
       onClick={onNext}
     >
-      <span className="tooltip">Next</span>
+      <Tooltip text="Next" />
       <IoPlaySkipForwardSharp size={24} />
     </button>
   );

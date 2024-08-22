@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { IoPlaySharp, IoPauseSharp } from "react-icons/io5";
+
+import { Tooltip } from '../../Tooltip';
+
 import './PlayPauseButton.scss';
 
 const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
@@ -16,7 +19,6 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
   };
 
   useEffect(() => {
-    // Media Session API integration
     const setMediaSession = () => {
       if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', () => {
@@ -29,13 +31,12 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
     };
 
     const handleKeyDown = (event) => {
-      // Check if the event target is an input, textarea, or select
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') {
-        return; // Ignore key press
+        return;
       }
     
       if (event.key === ' ' || event.code === 'MediaPlayPause') {
-        event.preventDefault(); // Prevent scrolling on spacebar press
+        event.preventDefault();
         togglePlayPause();
       }
     };
@@ -45,7 +46,6 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      // Reset Media Session action handlers to null when component unmounts
       if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', null);
         navigator.mediaSession.setActionHandler('pause', null);
@@ -61,7 +61,7 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
       onMouseLeave={() => setAnimatePlayPause(false)}
       onClick={handlePlayPauseClick}
     >
-      <span className="tooltip">{isPlaying ? 'Pause' : 'Play'}</span>
+      <Tooltip text={isPlaying ? 'Pause' : 'Play'} />
       {isPlaying ? <IoPauseSharp size={24} /> : <IoPlaySharp size={24} />}
     </button>
   );
