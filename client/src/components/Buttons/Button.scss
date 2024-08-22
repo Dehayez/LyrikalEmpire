@@ -15,12 +15,7 @@
     }
 
     &--primary {
-        color: $color-black;
-        background-color: $color-yellow;
-
-        &:hover {
-            background-color: $color-yellow-dark;
-        }
+        @include background-border-hover();
     }
 
     &--small {
