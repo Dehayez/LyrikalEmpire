@@ -21,7 +21,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="dashboard">
+    <div className="page dashboard">
       <h1>Dashboard</h1>
       <div className="stats">
         <StatCard size="full-width">
