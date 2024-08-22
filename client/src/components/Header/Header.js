@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { isMobileOrTablet } from '../../utils';
 import { IoMenuSharp, IoChevronForwardSharp, IoChevronBackSharp, IoListSharp, IoAnalytics } from 'react-icons/io5';
 import { IconButton, NavigationButtons } from '../Buttons';
+import { Breadcrumb } from '../Breadcrumb';
 
 import './Header.scss';
 
@@ -31,6 +32,7 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
         }
       </div>
       <NavigationButtons />
+      <Breadcrumb />
       
       <div className="header__nav-group">
         <Link to="/">
