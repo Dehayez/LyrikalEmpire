@@ -11,3 +11,4 @@ export * from './Playlists';
 export * from './Queue';
 export * from './SidePanel';
 export * from './StatCard';
+export * from './Tooltip';
