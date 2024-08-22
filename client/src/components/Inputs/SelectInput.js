@@ -4,7 +4,7 @@ import './Inputs.scss';
 
 export const SelectInput = ({ id, name, label, selectedValue, onChange, options }) => (
     <div className="form-group">
-        <label htmlFor={id}>{label}</label>
+        {label ? <label htmlFor={id}>{label}</label> : null}
         <div className="select-wrapper">
             <select 
                 id={id}
@@ -16,7 +16,7 @@ export const SelectInput = ({ id, name, label, selectedValue, onChange, options 
                 onBlur={(e) => e.target.style.color = selectedValue ? 'white' : 'grey'}
                 style={{color: selectedValue ? 'white' : 'grey'}}
             >
-                <option value="">{`Select ${label.toLowerCase()}`}</option>
+                {label && <option value="">{`Select ${label.toLowerCase()}`}</option>}
                 {options.map(option => (
                     <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
