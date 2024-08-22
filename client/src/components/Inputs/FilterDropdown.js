@@ -32,6 +32,12 @@ export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => 
     }
   };
 
+  const sortedOptions = [...options].sort((a, b) => {
+    const aSelected = selectedItems.some(selectedItem => selectedItem.id === a.id);
+    const bSelected = selectedItems.some(selectedItem => selectedItem.id === b.id);
+    return bSelected - aSelected;
+  });
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -55,7 +61,7 @@ export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => 
       {isDropdownOpen && (
         <div className="filter-dropdown__wrapper">
           <div className="filter-dropdown__list">
-            {options.map(option => {
+            {sortedOptions.map(option => {
               const optionId = `${id}-${option.id}`;
               return (
                 <div key={option.id} className="filter-dropdown__option">
