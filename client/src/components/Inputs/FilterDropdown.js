@@ -45,10 +45,6 @@ export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => 
     };
   }, []);
 
-  useEffect(() => { 
-    console.log(selectedItems);
-  }, [selectedItems]);
-
   return (
     <div className="filter-dropdown" ref={dropdownRef}>
       <span 
@@ -89,9 +85,9 @@ export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => 
         <div className="filter-dropdown__selected">
           {selectedItems.map(item => {
             return (
-              <div key={item.id} className="filter-dropdown__selected-item">
+              <div key={item.id} className="filter-dropdown__selected-item" onClick={() => handleSelect(item)}>
                 <span>{item.name}</span>
-                <button onClick={() => handleSelect(item)}>
+                <button >
                   <IoCloseSharp />
                 </button>
               </div>
