@@ -1,6 +1,16 @@
 $color-yellow: #FFCC44;
+$color-primary: $color-yellow;
+
+$color-primary-background: rgba($color-yellow, 0.2);
+$color-primary-background-hover: rgba($color-yellow, 0.1);
+
+$color-primary-border: rgba($color-yellow, 0.8);
+$color-primary-border-hover: rgba($color-yellow, 0.4);
+
+
 $color-dark-yellow: rgba($color-yellow, 0.2);
 $color-dark-yellow-hover: rgba($color-yellow, 0.1);
+
 $color-yellow-light: #FFE066;
 $color-yellow-dark: #CC9900;
 $color-black-dark: #141414;
@@ -20,16 +30,19 @@ $color-warning-dark: #CC4600;
 $color-success: #4CAF50;
 $color-success-dark: #388E3C;
 
-$color-primary: $color-yellow;
+
 
 
 $safe-area-inset-bottom: 36px;
 
 $overlay: rgba($color-black-dark, 0.5);
+
 $border-bottom: .5px solid $color-gray-mid;
 $border-bottom-dark: .5px solid $color-gray-dark-hover;
+$border-primary: 1px solid $color-primary-border;
+$border-primary-hover: 1px solid $color-primary-border-hover;
 
-$box-shadow: 0 0 24px 12px rgba(0, 0, 0, .05);
+$box-shadow: 0 0 24px 12px rgba(0, 0, 0, .1);
 $box-shadow-card: 0 0 24px 12px rgba(0, 0, 0, .02);
 $box-shadow-card-hover: 0 0 40px 12px rgba(0, 0, 0, .001);
 $box-shadow-hover: 0 0 0 .5px $color-gray-default;
@@ -40,4 +53,39 @@ $box-shadow-focus: 0 0 0 2px $color-gray;
         display: none; 
     }
     scrollbar-width: none;
+}
+
+@mixin background-border (
+    $text-color: $color-white,
+    $bg-color: $color-dark-yellow,
+    $border: $border-primary,
+) {
+    color: $text-color;
+    background-color: $bg-color;
+    border: $border;
+    transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
+
+}
+
+@mixin background-border-hover (
+    $text-color: $color-white,
+    $bg-color: $color-dark-yellow,
+    $border: $border-primary,
+    $hover-bg-color: $color-dark-yellow-hover,
+    $hover-border: $border-primary-hover
+) {
+    color: $text-color;
+    background-color: $bg-color;
+    border: $border;
+    transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
+
+    &:hover {
+        background-color: $hover-bg-color;
+        border: $hover-border;
+        cursor: pointer;
+    }
+
+    &:focus, &:active {
+        border: 1px solid transparent;
+    }
 }
