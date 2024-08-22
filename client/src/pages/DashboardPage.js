@@ -23,8 +23,10 @@ const DashboardPage = () => {
   return (
     <div className="dashboard">
       <h1>Dashboard</h1>
-      <StatChart hoveredCard={hoveredCard} isCardHovered={isCardHovered} />
       <div className="stats">
+        <StatCard size="full-width">
+            <StatChart hoveredCard={hoveredCard} isCardHovered={isCardHovered} />
+          </StatCard>
         <StatCard size="large" title="Total Beats" value={allBeats.length} link="/dashboard/beats" onMouseEnter={() => handleMouseEnter('beats')} onMouseLeave={handleMouseLeave} />
         <StatCard size="large" title="Total Playlists" value={playlists.length} link="/dashboard/playlists" onMouseEnter={() => handleMouseEnter('playlists')} onMouseLeave={handleMouseLeave} />
         <StatCard size="small" title="Total Genres" value={genres.length} link="/dashboard/genres" onMouseEnter={() => handleMouseEnter('genres')} onMouseLeave={handleMouseLeave} />
