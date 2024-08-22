@@ -74,8 +74,8 @@ export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => 
             })}
           </div>
           <div className="filter-dropdown__actions">
-            <Button className="filter-dropdown__clear-button" onClick={handleClear}>Clear</Button>
-            <Button className="filter-dropdown__close-button" type='submit' onClick={() => setIsDropdownOpen(false)}>Close</Button>
+            <Button size="small" type="transparent" className="filter-dropdown__clear-button" onClick={handleClear}>Clear</Button>
+            <Button size="small" className="filter-dropdown__close-button" type='primary' onClick={() => setIsDropdownOpen(false)}>Close</Button>
           </div>
         </div>
       )}
