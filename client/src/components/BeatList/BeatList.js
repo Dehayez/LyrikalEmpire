@@ -3,15 +3,16 @@ import { useLocation } from 'react-router-dom';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoOptionsSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
+import { usePlaylist, useBeat, useData } from '../../contexts';
 import { isMobileOrTablet, sortBeats } from '../../utils';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
-import { usePlaylist, useBeat } from '../../contexts';
 
-import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import BeatRow from './BeatRow';
-import TableHeader from './TableHeader';
+import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import { FilterDropdown } from '../Inputs/FilterDropdown';
 import { IconButton } from '../Buttons';
 import PaginationControls from './PaginationControls';
+import TableHeader from './TableHeader';
 import { Tooltip } from '../Tooltip';
 
 import './BeatList.scss';
@@ -21,23 +22,29 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const searchInputRef = useRef(null);
   const containerRef = useRef(null);
 
-  
   const location = useLocation();
   const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');  
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
   const [previousPage, setPreviousPage] = useState(currentPage);
   
+  const { genres, moods, keywords, features } = useData();
+  const [selectedGenre, setSelectedGenre] = useState(null);
+
   const { setPlaylistId } = usePlaylist();
   const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
   const beats = externalBeats || allBeats;
+
   const filteredAndSortedBeats = useMemo(() => {
     const filteredBeats = beats.filter(beat => {
       const fieldsToSearch = [beat.title];
-      return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+      const matchesSearchText = fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+      const matchesGenre = selectedGenre ? beat.genre === selectedGenre.value : true;
+      return matchesSearchText && matchesGenre;
     });
     return sortBeats(filteredBeats, sortConfig);
-  }, [beats, searchText, sortConfig]);
+  }, [beats, searchText, sortConfig, selectedGenre]);
+
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const { handleUpdate, handleDelete } = useBeatActions(beats, handleQueueUpdateAfterDelete);
   
@@ -50,6 +57,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const [hoverPosition, setHoverPosition] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [mode, setMode] = useState(() => localStorage.getItem('mode') || 'edit');
+
+  const handleFilterChange = (selectedGenre) => {
+    setSelectedGenre(selectedGenre);
+  };
     
   const handlePlayPause = useCallback((beat) => {
     const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
@@ -276,6 +287,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
           </div>
         </div>
       </div>
+
+      <FilterDropdown
+        id="genre-filter"
+        name="genres"
+        label="Genres"
+        options={genres}
+        onFilterChange={handleFilterChange}
+      />
+
       {beats.length > 0 && (
         <div className='beat-list__table-container'>
           <table className={`beat-list__table ${mode === 'lock' ? 'beat-list__table--lock' : ''}`} ref={tableRef}>
