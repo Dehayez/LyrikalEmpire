@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
+import Button from '../Buttons'
 import './FilterDropdown.scss';
 
 export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => {
@@ -19,6 +20,10 @@ export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => 
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClear = () => {
+    setSelectedItems([]);
   };
 
   const handleClickOutside = (event) => {
@@ -49,23 +54,29 @@ export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => 
       </span>
       {isDropdownOpen && (
         <div className="filter-dropdown__wrapper">
-          {options.map(option => {
-            const optionId = `${id}-${option.id}`;
-            return (
-              <div key={option.id} className="filter-dropdown__option">
-                <input
-                  type="checkbox"
-                  id={optionId}
-                  name={name}
-                  value={option.id}
-                  checked={selectedItems.some(selectedItem => selectedItem.id === option.id)}
-                  onChange={() => handleSelect(option)}
-                  className="filter-dropdown__option-input"
-                />
-                <span onClick={() => handleSelect(option)} className="filter-dropdown__option-text">{option.name}</span>
-              </div>
-            );
-          })}
+          <div className="filter-dropdown__list">
+            {options.map(option => {
+              const optionId = `${id}-${option.id}`;
+              return (
+                <div key={option.id} className="filter-dropdown__option">
+                  <input
+                    type="checkbox"
+                    id={optionId}
+                    name={name}
+                    value={option.id}
+                    checked={selectedItems.some(selectedItem => selectedItem.id === option.id)}
+                    onChange={() => handleSelect(option)}
+                    className="filter-dropdown__option-input"
+                  />
+                  <span onClick={() => handleSelect(option)} className="filter-dropdown__option-text">{option.name}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div className="filter-dropdown__actions">
+            <Button className="filter-dropdown__clear-button" onClick={handleClear}>Clear</Button>
+            <Button className="filter-dropdown__close-button" type='submit' onClick={() => setIsDropdownOpen(false)}>Close</Button>
+          </div>
         </div>
       )}
       {selectedItems.length > 0 && (

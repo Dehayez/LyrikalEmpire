@@ -7,28 +7,22 @@
     align-items: center;
     padding: 8px 12px;
     gap: 8px;
-
     font-weight: 500;
     border: 1px solid $color-gray-mid;
     border-radius: 6px;
-
     transition: background-color 0.3s;
     cursor: pointer;
-
     &:hover {
       background-color: $color-gray-mid;
     }
-
     &--active {
       border: 1px solid $color-gray;
     }
   }
-
   &__option {
     display: flex;
     align-items: center;
   }
-
   input[type="checkbox"] {
     padding: 7px;
     position: relative;
@@ -38,11 +32,9 @@
     border-radius: 2px;
     cursor: pointer;
     transition: background-color 0.2s, border-color 0.2s ease-in-out;
-
     &:checked {
       background-color: $color-primary;
       border-color: $color-primary;
-
       &::after {
         content: '';
         position: absolute;
@@ -55,29 +47,39 @@
         transform: rotate(45deg);
       }
     }
-
     &:not(:checked) {
       background-color: $color-gray-dark;
     }
   }
-
   &__option-text {
     padding-left: 4px;
     cursor: pointer;
   }
-
   &__wrapper {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     position: absolute;
     z-index: 4;
-    gap: 8px;
     max-width: 280px;
     min-width: 200px;
     max-height: 400px;
-    padding: 16px;
     margin: 8px 0;
     border-radius: 6px;
     background-color: $color-gray-dark-active;
-    overflow: scroll;
+  }
+  &__list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+  }
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    border-top: 1px solid $color-gray-mid;
+    background-color: $color-gray-dark-active;
   }
 }
