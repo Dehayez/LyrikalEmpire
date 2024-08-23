@@ -1,19 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Modal from 'react-modal';
-import Draggable from 'react-draggable';
 import { IoCheckmarkSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
 
 import { useData, useBeat } from '../../contexts';
 import { useBpmHandlers } from '../../hooks';
 import { addBeat } from '../../services';
+
+import DraggableModal from '../Modals/DraggableModal';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
-import { Button } from '../Buttons';
 
 import './AddBeatForm.scss';
 
-Modal.setAppElement('#root');
 
 const AddBeatForm = ({ isOpen, setIsOpen }) => {
     const { setRefreshBeats } = useBeat();
@@ -139,6 +137,11 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
         }
     };
 
+    const onClose = () => {
+        resetForm();
+        setIsOpen(false); 
+    };
+
     useEffect(() => {
         const handleKeyDown = (event) => isOpen && event.key === 'Enter' && handleSubmit(event);
         document.addEventListener('keydown', handleKeyDown);
@@ -146,79 +149,72 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
     }, [isOpen, handleSubmit]);
 
     return (
-        <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={{
-            overlay: { backgroundColor: 'rgba(30, 30, 30, 0.75)', zIndex: 5 },
-            content: { backgroundColor: 'transparent', color: 'white', border: 'none', height: '100%', width: '100%', margin: 'auto', position: 'absolute', top: '50%', left: '50%', right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)' }
-        }}>
-            <Draggable handle=".form__title" nodeRef={draggableRef}>
-                <div ref={draggableRef}>
-                <div className="modal-content">
-                    <h2 className='form__title'>Add Track</h2>
-                    {isTitleEmpty ? (
-                        <Warning message="Title is required." />
-                    ) : warningMessage && (
-                        <Warning message={warningMessage} />
-                    )}
-                    <form className='form' onSubmit={handleSubmit} noValidate>
-                        <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} labelRef={labelRef} />
-                        <FormInput 
-                            label="Title" 
-                            id="title" 
-                            name="title" 
-                            type="text" 
-                            placeholder='Enter title' 
-                            value={title} 
-                            onChange={(e) => {
-                                setTitle(e.target.value);
-                                setIsTitleEmpty(!e.target.value.trim());
-                            }} 
-                            required 
-                            spellCheck="false" 
-                            isWarning={isTitleEmpty}
-                        />
-                        <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres} newBeatId={beatId} isNewBeat={true}/>
-                        <FormInput
-                            id="bpm"
-                            name="bpm"
-                            label="BPM"
-                            type="text"
-                            placeholder="Enter BPM"
-                            value={bpm}
-                            onChange={handleBpmChangeExtended}
-                            onKeyDown={handleOnKeyDown}
-                            onBlur={handleBpmBlur}
-                            spellCheck="false"
-                            isWarning={isBpmInvalid}
-                        />
-                        <SelectInput 
-                            id="tierlist"
-                            name="tierlist"
-                            label="Tierlist"
-                            selectedValue={tierlist} 
-                            onChange={(e) => setTierlist(e.target.value)} 
-                            options={[
-                                { value: 'G', label: 'G' },
-                                { value: 'S', label: 'S' },
-                                { value: 'A', label: 'A' },
-                                { value: 'B', label: 'B' },
-                                { value: 'C', label: 'C' },
-                                { value: 'D', label: 'D' },
-                                { value: 'E', label: 'E' },
-                                { value: 'F', label: 'F' },
-                            ]}
-                        />
-                        <SelectableInput label="Moods" placeholder="Enter moods" associationType="moods" items={moods} newBeatId={beatId} isNewBeat={true}/>
-                        <SelectableInput label="Keywords" placeholder="Enter keywords" associationType="keywords" items={keywords} newBeatId={beatId} isNewBeat={true}/>
-                        <SelectableInput label="Features" placeholder="Enter features" associationType="features" items={features} newBeatId={beatId} isNewBeat={true}/>
-                        <div className='modal__buttons'>
-                            <Button type="transparent" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</Button>
-                            <Button type="primary">Add Track</Button>
-                        </div>
-                    </form>
-                </div>
-                </div>
-            </Draggable>
-        </Modal>
+        <DraggableModal
+            isOpen={isOpen}
+            title="Add Track"
+            onConfirm={handleSubmit}
+            onCancel={onClose}
+            confirmButtonText="Add"
+            cancelButtonText="Cancel"
+        >
+                {isTitleEmpty ? (
+                    <Warning message="Title is required." />
+                ) : warningMessage && (
+                    <Warning message={warningMessage} />
+                )}
+                <form className='form' onSubmit={handleSubmit} noValidate>
+                    <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} labelRef={labelRef} />
+                    <FormInput 
+                        label="Title" 
+                        id="title" 
+                        name="title" 
+                        type="text" 
+                        placeholder='Enter title' 
+                        value={title} 
+                        onChange={(e) => {
+                            setTitle(e.target.value);
+                            setIsTitleEmpty(!e.target.value.trim());
+                        }} 
+                        required 
+                        spellCheck="false" 
+                        isWarning={isTitleEmpty}
+                    />
+                    <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres} newBeatId={beatId} isNewBeat={true}/>
+                    <FormInput
+                        id="bpm"
+                        name="bpm"
+                        label="BPM"
+                        type="text"
+                        placeholder="Enter BPM"
+                        value={bpm}
+                        onChange={handleBpmChangeExtended}
+                        onKeyDown={handleOnKeyDown}
+                        onBlur={handleBpmBlur}
+                        spellCheck="false"
+                        isWarning={isBpmInvalid}
+                    />
+                    <SelectInput 
+                        id="tierlist"
+                        name="tierlist"
+                        label="Tierlist"
+                        selectedValue={tierlist} 
+                        onChange={(e) => setTierlist(e.target.value)} 
+                        options={[
+                            { value: 'G', label: 'G' },
+                            { value: 'S', label: 'S' },
+                            { value: 'A', label: 'A' },
+                            { value: 'B', label: 'B' },
+                            { value: 'C', label: 'C' },
+                            { value: 'D', label: 'D' },
+                            { value: 'E', label: 'E' },
+                            { value: 'F', label: 'F' },
+                        ]}
+                    />
+                    <SelectableInput label="Moods" placeholder="Enter moods" associationType="moods" items={moods} newBeatId={beatId} isNewBeat={true}/>
+                    <SelectableInput label="Keywords" placeholder="Enter keywords" associationType="keywords" items={keywords} newBeatId={beatId} isNewBeat={true}/>
+                    <SelectableInput label="Features" placeholder="Enter features" associationType="features" items={features} newBeatId={beatId} isNewBeat={true}/>
+                </form>
+        </DraggableModal>
     );
 };
 
