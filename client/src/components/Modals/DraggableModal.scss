@@ -1,0 +1,25 @@
+@import '../../globals/variables';
+
+.modal-content {
+    max-width: 400px;
+    min-width: 400px;
+    background-color: $color-black;
+    border-radius: 6px;
+    padding: 20px;
+    pointer-events: auto;
+}
+
+.modal__title {
+    margin-top: 0;
+}
+
+.ReactModal__Content {
+    pointer-events: none;
+}
+
+.react-draggable {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
