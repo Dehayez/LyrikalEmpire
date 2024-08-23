@@ -271,7 +271,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
               value={searchText}
               onChange={handleSearchChange}
               className={`beat-list__search-input ${isSearchVisible ? 'visible' : ''}`}
-              autocomplete="off"
+              autoComplete="off"
             />
            {isSearchVisible && searchText && (
               <div 
