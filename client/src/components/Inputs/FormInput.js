@@ -16,6 +16,7 @@ export const FormInput = ({ id, name, label, type, placeholder, value, onChange,
             min={min} 
             pattern={pattern} 
             maxLength={maxLength} 
+            autocomplete="off"
         />
     </div>
 );
