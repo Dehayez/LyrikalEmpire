@@ -176,7 +176,7 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 onClick={(e) => e.stopPropagation()}
-                autocomplete="off"
+                autoComplete="off"
               />
             </div>
             {isFocused && (
