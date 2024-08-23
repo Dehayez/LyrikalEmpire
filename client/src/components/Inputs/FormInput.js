@@ -3,7 +3,7 @@ import './Inputs.scss';
 
 export const FormInput = ({ id, name, label, type, placeholder, value, onChange, required, min, pattern, maxLength, className, isWarning }) => (
     <div className={`form-group ${className || ''}`}>
-        <label htmlFor={id}>{label}</label>
+        <span className='form-group__label'>{label}</span>
         <input 
             className={`form-group__input ${isWarning ? 'form-group__input--warning' : ''}`} 
             id={id} 

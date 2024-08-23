@@ -65,8 +65,9 @@ input[type="number"] {
         flex-direction: column;
         margin-bottom: 16px;
 
-        label {
+        label, span {
             margin-bottom: 8px;
+            cursor: default;
         }
 
         input,
