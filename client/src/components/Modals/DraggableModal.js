@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import Modal from 'react-modal';
-import Button from '../Buttons';
+import { Button, IconButton } from '../Buttons';
+import {IoCloseSharp} from 'react-icons/io5';
 import './DraggableModal.scss';
 
 Modal.setAppElement('#root');
@@ -49,6 +50,9 @@ const DraggableModal = ({ isOpen, title, children, onConfirm, onCancel, confirmB
       <Draggable handle=".modal__title" nodeRef={draggableRef}>
         <div ref={draggableRef} className='modal'>
           <div className='modal-content'>
+            <IconButton className="modal__close-button" onClick={onCancel}>
+                <IoCloseSharp />
+            </IconButton>
             <h2 className='modal__title'>{title}</h2>
             {children}
             <div className='modal__buttons'>

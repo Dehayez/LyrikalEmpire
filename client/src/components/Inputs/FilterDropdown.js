@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
-import Button from '../Buttons'
+import { Button } from '../Buttons'
 import './FilterDropdown.scss';
 
 export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => {

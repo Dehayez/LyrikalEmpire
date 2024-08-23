@@ -1,6 +1,7 @@
 @import '../../globals/variables';
 
 .modal-content {
+    position: relative;
     max-width: 400px;
     min-width: 400px;
     background-color: $color-black;
@@ -11,6 +12,15 @@
 
 .modal__title {
     margin-top: 0;
+}
+
+.modal__close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .ReactModal__Content {

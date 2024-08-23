@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 
 import { FormInput } from '../Inputs';
-import Button from '../Buttons';
+import { Button } from '../Buttons';
 import './Form.scss';
 
 const Form = ({ title, onClose, onSubmit, placeholder }) => {
