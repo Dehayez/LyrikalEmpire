@@ -18,7 +18,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
   const [beats, setBeats] = useState([]);
   const sortedBeatsFromPlaylist = useMemo(() => sortBeats(beats, sortConfig), [beats, sortConfig]);
 
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const refreshPlaylist = async () => {
     const updatedPlaylist = await getPlaylistById(id);
@@ -77,10 +77,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     };
   }, [playlist]);
 
-  const handleHeaderClick = () => {
-    setShowUpdateForm(true);
-  };
-
   const handleDeleteBeats = async (beatIds) => {
     try {
       const ids = Array.isArray(beatIds) ? beatIds : [beatIds];
@@ -120,7 +116,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                   moveBeat={moveBeat}
                   setBeats={setBeats}
                   headerContent={
-                    <div className='playlist__text' onClick={handleHeaderClick}>
+                    <div className='playlist__text' onClick={() => setIsOpen(true)}>
                       <h2 className='playlist__title'>{playlist.title}</h2>
                       <p className={classNames('playlist__description', { 'has-description': playlist.description })}>
                         {playlist.description}
@@ -132,14 +128,14 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
           </div>
         </div>
       )}
-      {showUpdateForm && ReactDOM.createPortal(
+      {isOpen &&
         <UpdatePlaylistForm
           playlist={playlist}
-          onClose={() => setShowUpdateForm(false)}
-          onUpdated={refreshPlaylist}
-        />,
-        document.getElementById('modal-root')
-      )}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          onConfirm={() =>  refreshPlaylist()}
+        />
+      }
     </>
   );
 };
