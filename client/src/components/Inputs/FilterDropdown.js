@@ -51,7 +51,11 @@ export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => 
         onClick={toggleDropdown} 
         className={`filter-dropdown__label-container ${isDropdownOpen ? 'filter-dropdown__label-container--active' : ''}`}
       >
-        {label && <span className="filter-dropdown__label-text">{label}</span>}
+       {label && (
+          <span className="filter-dropdown__label-text">
+            {label} {selectedItems.length > 0 && `(${selectedItems.length})`}
+          </span>
+        )}
         <IoChevronDownSharp className="filter-dropdown__label-icon" />
       </span>
       {isDropdownOpen && (
