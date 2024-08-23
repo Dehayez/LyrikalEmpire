@@ -23,6 +23,13 @@
     cursor: pointer;
 }
 
+.modal__buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: end;
+    gap: 20px;
+}
+
 .ReactModal__Content {
     pointer-events: none;
 }

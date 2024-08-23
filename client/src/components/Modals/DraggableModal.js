@@ -28,7 +28,7 @@ const modalStyle = {
   }
 };
 
-const DraggableModal = ({ isOpen, title, children, onConfirm, onCancel, confirmButtonText, cancelButtonText }) => {
+const DraggableModal = ({ isOpen, title, children, onConfirm, onCancel, confirmButtonText, cancelButtonText, cancelButtonType="transparent", confirmButtonType="primary" }) => {
   const draggableRef = useRef(null);
 
   useEffect(() => {
@@ -56,8 +56,8 @@ const DraggableModal = ({ isOpen, title, children, onConfirm, onCancel, confirmB
             <h2 className='modal__title'>{title}</h2>
             {children}
             <div className='modal__buttons'>
-              <Button type="transparent" onClick={onCancel}>{cancelButtonText}</Button>
-              <Button type="warning" onClick={onConfirm}>{confirmButtonText}</Button>
+              <Button type={cancelButtonType} onClick={onCancel}>{cancelButtonText}</Button>
+              <Button type={confirmButtonType} onClick={onConfirm}>{confirmButtonText}</Button>
             </div>
           </div>
         </div>

@@ -10,9 +10,6 @@
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 
-    &:hover {
-        background-color: $color-black;
-    }
 
     &--primary {
         @include background-border-hover();

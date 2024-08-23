@@ -11,6 +11,7 @@ const ConfirmModal = ({ isOpen, title = "Confirm", message, confirmButtonText = 
       onCancel={onCancel}
       confirmButtonText={confirmButtonText}
       cancelButtonText={cancelButtonText}
+      confirmButtonType='warning'
     >
       <p>{message}</p>
     </DraggableModal>
