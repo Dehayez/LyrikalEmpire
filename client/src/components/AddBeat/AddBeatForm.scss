@@ -26,22 +26,10 @@ input[type="number"] {
 }
 
 .modal__buttons {
-    margin-top: 1.5em;
-}
-
-.modal__button {
-    &:focus {
-        outline: none;
-        box-shadow: 0 0 0 1px $color-gray;
-    }
-}
-
-.modal__button.modal__button--add {
-    background-color: #FFCC44;
-    color: black;
-    &:hover {
-        background-color: #CC9900;
-    }
+    margin-top: 20px;
+    display: flex;
+    justify-content: end;
+    gap: 20px;
 }
 
 .ReactModal__Content {
