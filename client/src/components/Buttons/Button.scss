@@ -7,8 +7,8 @@
     padding: 12px 24px;
     border-radius: 4px;
     font-size: 16px;
-    cursor: pointer !important;
-    transition: all 0.2s ease;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 
     &:hover {
         background-color: $color-black;
@@ -16,6 +16,13 @@
 
     &--primary {
         @include background-border-hover();
+    }
+
+    &--warning {
+        background-color: $color-warning;
+        &:hover {
+            background-color: $color-warning-dark;
+        }
     }
 
     &--small {

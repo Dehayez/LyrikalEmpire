@@ -6,8 +6,9 @@ const Button = ({ className, onClick, children, text, type, size }) => {
     button 
     ${className} 
     ${type === 'primary' ? 'button--primary' : ''} 
-    ${size ? `button--${size}` : ''} 
     ${type === 'transparent' ? 'button--transparent' : ''}
+    ${type === 'warning' ? 'button--warning' : ''}
+    ${size ? `button--${size}` : ''} 
   `;
 
   return (
