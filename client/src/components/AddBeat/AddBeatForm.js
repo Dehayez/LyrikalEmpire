@@ -9,6 +9,7 @@ import { useBpmHandlers } from '../../hooks';
 import { addBeat } from '../../services';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
+import Button from '../Buttons';
 
 import './AddBeatForm.scss';
 
@@ -210,8 +211,8 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                         <SelectableInput label="Keywords" placeholder="Enter keywords" associationType="keywords" items={keywords} newBeatId={beatId} isNewBeat={true}/>
                         <SelectableInput label="Features" placeholder="Enter features" associationType="features" items={features} newBeatId={beatId} isNewBeat={true}/>
                         <div className='modal__buttons'>
-                            <button className="modal__button modal__button--add" type="submit">Add Beat</button>
-                            <button className="modal__button" type="button" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</button>
+                            <Button type="transparent" onClick={() => {setIsOpen(false); resetForm();}}>Cancel</Button>
+                            <Button type="primary">Add Track</Button>
                         </div>
                     </form>
                 </div>
