@@ -7,11 +7,11 @@ import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus } from '../../utils';
 import { createPlaylist, deletePlaylist } from '../../services';
 
-import { ContextMenu } from '../ContextMenu';
-import { UpdatePlaylistForm } from './UpdatePlaylistForm';
+import { Button } from '../Buttons';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
-import Button from '../Buttons';
+import { ContextMenu } from '../ContextMenu';
 import { Tooltip } from '../Tooltip';
+import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 
 import './Playlists.scss';
 

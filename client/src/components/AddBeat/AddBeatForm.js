@@ -9,7 +9,7 @@ import { useBpmHandlers } from '../../hooks';
 import { addBeat } from '../../services';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
-import Button from '../Buttons';
+import { Button } from '../Buttons';
 
 import './AddBeatForm.scss';
 
