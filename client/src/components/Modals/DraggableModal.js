@@ -28,7 +28,7 @@ const modalStyle = {
   }
 };
 
-const DraggableModal = ({ isOpen, title, children, onConfirm, onCancel, confirmButtonText, cancelButtonText, cancelButtonType="transparent", confirmButtonType="primary" }) => {
+const DraggableModal = ({ isOpen, title, children, onConfirm, onCancel, confirmButtonText="Save", cancelButtonText="Cancel", cancelButtonType="transparent", confirmButtonType="primary" }) => {
   const draggableRef = useRef(null);
 
   useEffect(() => {
