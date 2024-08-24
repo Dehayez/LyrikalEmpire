@@ -19,9 +19,13 @@ export const PlaylistProvider = ({ children }) => {
     setPlayedPlaylistId(id);
   };
 
-  useEffect(() => {
-    setIsSamePlaylist(playedPlaylistId == currentPlaylistId);
-  }, [playedPlaylistId, currentPlaylistId]);
+  const updatePlaylist = (updatedPlaylist) => {
+    setPlaylists((prevPlaylists) => {
+      return prevPlaylists.map((playlist) =>
+        playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
+      );
+    });
+  };
 
   useEffect(() => {
     if (playedPlaylistId) {
@@ -79,7 +83,7 @@ export const PlaylistProvider = ({ children }) => {
   }, []);
 
   return (
-    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId, isSamePlaylist, playlists }}>
+    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId, isSamePlaylist, playlists, updatePlaylist }}>
       {children}
     </PlaylistContext.Provider>
   );

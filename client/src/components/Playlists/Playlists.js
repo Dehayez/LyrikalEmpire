@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp } from "react-icons/io5";
 
@@ -17,7 +16,7 @@ import './Playlists.scss';
 
 const Playlists = ({ isPlaying }) => {
   const navigate = useNavigate();
-  const { playlists, playedPlaylistId, currentPlaylistId } = usePlaylist();
+  const { playlists, playedPlaylistId, currentPlaylistId, updatePlaylist } = usePlaylist();
 
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
@@ -52,6 +51,11 @@ const Playlists = ({ isPlaying }) => {
   const handleOpenUpdateForm = (playlist) => {
     setPlaylistToUpdate(playlist);
     setIsOpenUpdate(true);
+  };
+
+  const handleUpdatePlaylist = (updatedPlaylist) => {
+    updatePlaylist(updatedPlaylist);
+    setIsOpenUpdate(false);
   };
 
   const handleLeftClick = (playlistId) => {
@@ -152,7 +156,7 @@ const Playlists = ({ isPlaying }) => {
           playlist={playlistToUpdate}
           isOpen={isOpenUpdate}
           setIsOpen={setIsOpenUpdate}
-          onConfirm={() => setIsOpenUpdate(false)}
+          onConfirm={handleUpdatePlaylist}
           onCancel={() => setIsOpenUpdate(false)}
         />
       }
