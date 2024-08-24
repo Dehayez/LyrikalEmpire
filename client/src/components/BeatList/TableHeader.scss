@@ -3,7 +3,6 @@
     position: sticky;
     top: 70px;
     background-color: $color-black;
-    color: $color-gray-light;
     text-align: left;
     z-index: 3;
   
@@ -14,12 +13,12 @@
       min-width: 60px;
       transition: background-color .2s ease-in-out;
       background-color: $color-black;
-      font-weight: 300;
+      font-weight: 500;
       padding-right: 36px;
       cursor: default;
 
       &-text {
-        color: $color-gray;
+        color: $color-gray-default;
         &:hover {
           color: $color-white;
         }
