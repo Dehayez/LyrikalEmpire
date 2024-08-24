@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { isMobileOrTablet } from '../../utils';
 import { IoMenuSharp, IoListSharp, IoAnalytics, IoLockOpen, IoLockClosed } from 'react-icons/io5';
 import { IconButton, NavigationButtons } from '../Buttons';
@@ -9,6 +9,9 @@ import { Tooltip } from '../Tooltip';
 import './Header.scss';
 
 const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, handleMouseEnterLeft, handleMouseLeaveLeft, handleMouseEnterRight, handleMouseLeaveRight, isLeftDivVisible, isRightDivVisible }) => {
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/dashboard');
+
   const handleClickLeft = () => {
     if (isMobileOrTablet() && isRightPanelVisible) {
       toggleSidePanel('right');
@@ -44,8 +47,13 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
           )
         }
       </div>
-      <NavigationButtons />
-      <Breadcrumb />
+
+      {isDashboard && (
+        <>
+          <NavigationButtons />
+          <Breadcrumb />
+        </>
+      )}
       
       <div className="header__nav-group">
         <Link to="/">
