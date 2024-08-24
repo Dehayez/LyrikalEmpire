@@ -42,6 +42,10 @@ export const PlaylistProvider = ({ children }) => {
   }, [location]);
 
   useEffect(() => {
+    setIsSamePlaylist(playedPlaylistId == currentPlaylistId);
+  }, [playedPlaylistId, currentPlaylistId]);
+
+  useEffect(() => {
     const fetchPlaylists = async () => {
       try {
         const data = await getPlaylists();
