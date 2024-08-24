@@ -37,7 +37,7 @@ const BeatRow = ({
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
-  const toDragAndDrop = location.pathname !== '/' && mode === 'lock';
+  const toDragAndDrop = location.pathname !== '/' && (mode === 'lock' || mode === 'listen');
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
   const [isInputFocused, setInputFocused] = useState(false);
   const [disableFocus, setDisableFocus] = useState(false);
