@@ -23,10 +23,10 @@ const Playlists = ({ isPlaying }) => {
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
 
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [isOpenUpdate, setIsOpenUpdate] = useState(false);
+  const [isOpenDelete, setIsOpenDelete] = useState(false);
+  
   const [playlistToUpdate, setPlaylistToUpdate] = useState(null);
-
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
 
   const handleAddPlaylist = async () => {
@@ -42,7 +42,7 @@ const Playlists = ({ isPlaying }) => {
   const handleDeletePlaylist = async (playlistId) => {
     try {
       await deletePlaylist(playlistId);
-      setShowConfirmModal(false);
+     setIsOpenDelete(false);
       eventBus.emit('playlistDeleted', playlistId);
     } catch (error) {
       console.error(`Error deleting playlist with ID ${playlistId}:`, error);
@@ -51,7 +51,7 @@ const Playlists = ({ isPlaying }) => {
 
   const handleOpenUpdateForm = (playlist) => {
     setPlaylistToUpdate(playlist);
-    setShowUpdateForm(true);
+    setIsOpenUpdate(true);
   };
 
   const handleLeftClick = (playlistId) => {
@@ -77,7 +77,7 @@ const Playlists = ({ isPlaying }) => {
       return;
     }
     setPlaylistToDelete(playlist);
-    setShowConfirmModal(true);
+   setIsOpenDelete(true);
   };
 
   useEffect(() => {
@@ -147,23 +147,27 @@ const Playlists = ({ isPlaying }) => {
           </li>
         ))}
       </ul>)}
-      {showUpdateForm && playlistToUpdate && ReactDOM.createPortal(
+      {isOpenUpdate && 
         <UpdatePlaylistForm
           playlist={playlistToUpdate}
-          onClose={() => setShowUpdateForm(false)}
-          onUpdated={() => setShowUpdateForm(false)}
-        />,
-        document.getElementById('modal-root')
-      )}
-      <ConfirmModal
-        isOpen={showConfirmModal}
-        title="Delete playlist"
-        message={<span>Are you sure you want to delete <strong>{playlistToDelete?.title}</strong>?</span>}
-        confirmButtonText="Delete"
-        cancelButtonText="Cancel"
-        onConfirm={() => handleDeletePlaylist(playlistToDelete?.id)}
-        onCancel={() => setShowConfirmModal(false)}
-      />
+          isOpen={isOpenUpdate}
+          setIsOpen={setIsOpenUpdate}
+          onConfirm={() => setIsOpenUpdate(false)}
+          onCancel={() => setIsOpenUpdate(false)}
+        />
+      }
+      {isOpenDelete && 
+        <ConfirmModal
+          isOpen={isOpenDelete}
+          isSetOpen={setIsOpenDelete}
+          title="Delete playlist"
+          message={<span>Are you sure you want to delete <strong>{playlistToDelete?.title}</strong>?</span>}
+          confirmButtonText="Delete"
+          cancelButtonText="Cancel"
+          onConfirm={() => handleDeletePlaylist(playlistToDelete?.id)}
+          onCancel={() => setIsOpenDelete(false)}
+        />
+      }
     </div>
   );
 };
