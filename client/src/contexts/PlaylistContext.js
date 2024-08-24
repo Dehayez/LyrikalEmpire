@@ -20,6 +20,7 @@ export const PlaylistProvider = ({ children }) => {
   };
 
   const updatePlaylist = (updatedPlaylist) => {
+    console.log('updatedPlaylist', updatedPlaylist);
     setPlaylists((prevPlaylists) => {
       return prevPlaylists.map((playlist) =>
         playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist

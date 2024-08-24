@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp } from "react-icons/io5";
 
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus } from '../../utils';
-import { createPlaylist, deletePlaylist } from '../../services';
+import { getPlaylistById, createPlaylist, deletePlaylist } from '../../services';
 
 import { Button } from '../Buttons';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
@@ -15,6 +16,7 @@ import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 import './Playlists.scss';
 
 const Playlists = ({ isPlaying }) => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { playlists, playedPlaylistId, currentPlaylistId, updatePlaylist } = usePlaylist();
 
@@ -27,6 +29,7 @@ const Playlists = ({ isPlaying }) => {
   
   const [playlistToUpdate, setPlaylistToUpdate] = useState(null);
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
+  const [playlist, setPlaylist] = useState(null);
 
   const handleAddPlaylist = async () => {
     const newPlaylistTitle = `Playlist #${playlists.length + 1}`;
@@ -53,9 +56,10 @@ const Playlists = ({ isPlaying }) => {
     setIsOpenUpdate(true);
   };
 
-  const handleUpdatePlaylist = (updatedPlaylist) => {
+  const refreshPlaylist = async (playlistId) => {
+    const updatedPlaylist = await getPlaylistById(playlistId);
+    setPlaylist(updatedPlaylist);
     updatePlaylist(updatedPlaylist);
-    setIsOpenUpdate(false);
   };
 
   const handleLeftClick = (playlistId) => {
@@ -151,15 +155,15 @@ const Playlists = ({ isPlaying }) => {
           </li>
         ))}
       </ul>)}
-      {isOpenUpdate && 
+      {playlistToUpdate && (
         <UpdatePlaylistForm
           playlist={playlistToUpdate}
           isOpen={isOpenUpdate}
           setIsOpen={setIsOpenUpdate}
-          onConfirm={handleUpdatePlaylist}
+          onConfirm={() => refreshPlaylist(playlistToUpdate.id)}
           onCancel={() => setIsOpenUpdate(false)}
         />
-      }
+      )}
       {isOpenDelete && 
         <ConfirmModal
           isOpen={isOpenDelete}
