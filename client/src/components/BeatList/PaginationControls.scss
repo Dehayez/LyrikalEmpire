@@ -39,18 +39,25 @@
         text-align: center;
         max-width: 40px;
         min-width: 40px;
+        transition: all 0.2s ease-in-out;
     }
 
     &__link {
-        color: $color-gray-light;
+        color: $color-gray-default;
         &:hover {
-          color: $color-white;
+          color:$color-gray;
+          font-weight: 500;
           cursor: pointer;
-          transform: scale(1.04);
         }
+        &:active, &:focus {
+          color: $color-gray-dark-active;
+          font-weight: bold;
+        }
+
         &.active {
           color: $color-white;
           font-weight: bold;
+          transform: scale(1.2);
         }
 
         &.highlight {
