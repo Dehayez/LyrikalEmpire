@@ -7,7 +7,7 @@ import { Warning } from '../Warning';
 
 import './UpdatePlaylistForm.scss';
 
-export const UpdatePlaylistForm = ({ playlist, onClose, onConfirm, isOpen }) => {
+export const UpdatePlaylistForm = ({ playlist, onClose, onConfirm, isOpen, setIsOpen }) => {
     const [title, setTitle] = useState(playlist.title);
     const [isTitleEmpty, setIsTitleEmpty] = useState(false);
     const [description, setDescription] = useState(playlist.description || '');
@@ -46,6 +46,7 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onConfirm, isOpen }) => 
     return (
         <DraggableModal
             isOpen={isOpen}
+            setIsOpen={setIsOpen}
             title='Update Playlist'
             onConfirm={handleUpdate}
             onCancel={onClose}

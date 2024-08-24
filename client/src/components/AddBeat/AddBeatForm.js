@@ -151,6 +151,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
     return (
         <DraggableModal
             isOpen={isOpen}
+            setIsOpen={setIsOpen}
             title="Add Track"
             onConfirm={handleSubmit}
             onCancel={onClose}

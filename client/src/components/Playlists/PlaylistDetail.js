@@ -14,11 +14,10 @@ import './PlaylistDetail.scss';
 
 const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, onUpdate }) => {
   const { id } = useParams();
+  const [isOpen, setIsOpen] = useState(false);
   const [playlist, setPlaylist] = useState(null);
   const [beats, setBeats] = useState([]);
   const sortedBeatsFromPlaylist = useMemo(() => sortBeats(beats, sortConfig), [beats, sortConfig]);
-
-  const [isOpen, setIsOpen] = useState(false);
 
   const refreshPlaylist = async () => {
     const updatedPlaylist = await getPlaylistById(id);
@@ -132,6 +131,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
         <UpdatePlaylistForm
           playlist={playlist}
           isOpen={isOpen}
+          setIsOpen={setIsOpen}
           onClose={() => setIsOpen(false)}
           onConfirm={() =>  refreshPlaylist()}
         />
