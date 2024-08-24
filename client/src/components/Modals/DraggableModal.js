@@ -28,7 +28,7 @@ const modalStyle = {
   }
 };
 
-const DraggableModal = ({ isOpen, title, children, onConfirm, onCancel, confirmButtonText="Save", cancelButtonText="Cancel", cancelButtonType="transparent", confirmButtonType="primary" }) => {
+const DraggableModal = ({ isOpen, setIsOpen, title, children, onConfirm, onCancel, confirmButtonText="Save", cancelButtonText="Cancel", cancelButtonType="transparent", confirmButtonType="primary" }) => {
   const draggableRef = useRef(null);
 
   useEffect(() => {
@@ -45,18 +45,29 @@ const DraggableModal = ({ isOpen, title, children, onConfirm, onCancel, confirmB
     };
   }, [isOpen, onConfirm]);
 
+  useEffect(() => {
+    console.log('isOpen:', isOpen);
+  }, [isOpen]);
+
+  const handleCancel = () => {
+    setIsOpen(false);
+    if (onCancel) {
+      onCancel();
+    }
+  };
+
   return (
-    <Modal isOpen={isOpen} onRequestClose={onCancel} style={modalStyle}>
+    <Modal isOpen={isOpen} onRequestClose={handleCancel} style={modalStyle}>
       <Draggable handle=".modal__title" nodeRef={draggableRef}>
         <div ref={draggableRef} className='modal'>
           <div className='modal-content'>
-            <IconButton className="modal__close-button" onClick={onCancel}>
+            <IconButton className="modal__close-button" onClick={handleCancel}>
                 <IoCloseSharp />
             </IconButton>
             <h2 className='modal__title'>{title}</h2>
             {children}
             <div className='modal__buttons'>
-              <Button type={cancelButtonType} onClick={onCancel}>{cancelButtonText}</Button>
+              <Button type={cancelButtonType} onClick={handleCancel}>{cancelButtonText}</Button>
               <Button type={confirmButtonType} onClick={onConfirm}>{confirmButtonText}</Button>
             </div>
           </div>
