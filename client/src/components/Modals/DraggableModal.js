@@ -45,10 +45,6 @@ const DraggableModal = ({ isOpen, setIsOpen, title, children, onConfirm, onCance
     };
   }, [isOpen, onConfirm]);
 
-  useEffect(() => {
-    console.log('isOpen:', isOpen);
-  }, [isOpen]);
-
   const handleCancel = () => {
     setIsOpen(false);
     if (onCancel) {

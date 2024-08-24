@@ -50,7 +50,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   
   const [hoverIndex, setHoverIndex] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
-  const [confirmModalState, setConfirmModalState] = useState({ isOpen: false, beatsToDelete: [] });
+  const [isOpen, setIsOpen] = useState(false);
+  const [beatsToDelete, setBeatsToDelete] = useState([]);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [isHovering, setIsHovering] = useState(false);
   const [headerOpacity, setHeaderOpacity] = useState(1);
@@ -94,25 +95,26 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   };
 
   const handleConfirm = async () => {
-    if (confirmModalState.beatsToDelete.length > 0) {
+    if (beatsToDelete.length > 0) {
       if (onDeleteFromPlaylist) {
-        await onDeleteFromPlaylist(confirmModalState.beatsToDelete);
+        await onDeleteFromPlaylist(beatsToDelete);
       } else {
-        await Promise.all(confirmModalState.beatsToDelete.map(beatId => handleDelete(beatId)));
+        await Promise.all(beatsToDelete.map(beatId => handleDelete(beatId)));
       }
   
-      const titlesToDelete = confirmModalState.beatsToDelete.map(beatId => {
+      const titlesToDelete = beatsToDelete.map(beatId => {
         const beat = beats.find(b => b.id === beatId);
         return beat ? beat.title : 'Unknown Track';
       });
   
-      const message = confirmModalState.beatsToDelete.length === 1
+      const message = beatsToDelete.length === 1
         ? <div><strong>{titlesToDelete[0]}</strong> has been {deleteMode === 'playlist' ? <>removed from <strong>{playlistName}</strong></> : 'deleted'}.</div>
-        : <div><strong>{confirmModalState.beatsToDelete.length} tracks</strong> have been {deleteMode === 'playlist' ? <>removed from <strong>{playlistName}</strong></> : 'deleted'}.</div>;
+        : <div><strong>{beatsToDelete.length} tracks</strong> have been {deleteMode === 'playlist' ? <>removed from <strong>{playlistName}</strong></> : 'deleted'}.</div>;
   
       setRefreshBeats(prev => !prev);
   
-      setConfirmModalState({ isOpen: false, beatsToDelete: [] });
+      setIsOpen(false);
+      setBeatsToDelete([]);
   
       toast.dark(message, {
         autoClose: 3000,
@@ -122,7 +124,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     }
   };
 
-  const openConfirmModal = () => setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
+  const openConfirmModal = () => {
+    setIsOpen(true);
+    setBeatsToDelete(selectedBeats.map(beat => beat.id));
+  };
   
   const toggleEdit = () => {
     const newState = mode === 'edit' ? 'listen' : mode === 'listen' ? 'lock' : 'edit';
@@ -202,12 +207,12 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
         handlePlayPause(selectedBeats[0]);
       }
       if (!isInputFocused && (event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
-        setConfirmModalState({ isOpen: true, beatsToDelete: selectedBeats.map(beat => beat.id) });
+        openConfirmModal();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBeats, handlePlayPause]);
+  }, [selectedBeats, handlePlayPause, isInputFocused]);
   
   useEffect(() => {
     localStorage.setItem('mode', mode);
@@ -352,13 +357,14 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
         <p className='beat-list__empty'>No tracks are added yet.</p>
       )}
       <ConfirmModal 
-        isOpen={confirmModalState.isOpen} 
-        title={`${deleteMode === 'playlist' ? 'Remove' : 'Delete'} ${confirmModalState.beatsToDelete.length > 1 ? `tracks` : 'track'}`}
-        message={<span>Are you sure you want to {deleteMode === 'playlist' ? 'remove' : 'delete'} {confirmModalState.beatsToDelete.length > 1 ? `${confirmModalState.beatsToDelete.length} tracks` : 'this track'}{deleteMode === 'playlist' ? <> from <strong>{playlistName}</strong></> : ''}?</span>}
+        isOpen={isOpen} 
+        setIsOpen={setIsOpen}
+        title={`${deleteMode === 'playlist' ? 'Remove' : 'Delete'} ${beatsToDelete.length > 1 ? `tracks` : 'track'}`}
+        message={<span>Are you sure you want to {deleteMode === 'playlist' ? 'remove' : 'delete'} {beatsToDelete.length > 1 ? `${beatsToDelete.length} tracks` : 'this track'}{deleteMode === 'playlist' ? <> from <strong>{playlistName}</strong></> : ''}?</span>}
         confirmButtonText={`${deleteMode === 'playlist' ? 'Remove' : 'Delete'}`}
         cancelButtonText="Cancel" 
         onConfirm={handleConfirm} 
-        onCancel={() => setConfirmModalState({ ...confirmModalState, isOpen: false })}
+        onCancel={() => setIsOpen(false)}
       />
     </div>
   );
