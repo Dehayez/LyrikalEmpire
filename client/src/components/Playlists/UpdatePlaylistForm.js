@@ -14,18 +14,18 @@ export const UpdatePlaylistForm = ({ playlist, onCancel, onConfirm, isOpen, setI
     
     const handleUpdate = async () => {
         if (!title.trim()) {
-            setIsTitleEmpty(true);
-            return;
+          setIsTitleEmpty(true);
+          return;
         }
-
+      
         try {
-            await updatePlaylist(playlist.id, { title, description });
-            onConfirm();
-            setIsOpen(false);
+          await updatePlaylist(playlist.id, { title, description });
+          onConfirm();
+          setIsOpen(false);
         } catch (error) {
-            console.error('Failed to update playlist', error);
+          console.error('Failed to update playlist', error);
         }
-    };    
+      }; 
 
     useEffect(() => {
         const handleKeyDown = (event) => {

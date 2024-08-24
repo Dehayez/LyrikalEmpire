@@ -55,7 +55,7 @@ const Playlists = ({ isPlaying }) => {
     setPlaylistToUpdate(playlist);
     setIsOpenUpdate(true);
   };
-
+  
   const refreshPlaylist = async (playlistId) => {
     const updatedPlaylist = await getPlaylistById(playlistId);
     setPlaylist(updatedPlaylist);

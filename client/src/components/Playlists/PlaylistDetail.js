@@ -15,10 +15,10 @@ import './PlaylistDetail.scss';
 
 const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, onUpdate }) => {
   const { id } = useParams();
-  const { updatePlaylist } = usePlaylist();
+  const { playlists, updatePlaylist } = usePlaylist();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [playlist, setPlaylist] = useState(null);
+  const [playlist, setPlaylist] = useState(() => playlists.find(p => p.id === id));
   const [beats, setBeats] = useState([]);
   const sortedBeatsFromPlaylist = useMemo(() => sortBeats(beats, sortConfig), [beats, sortConfig]);
 
@@ -55,7 +55,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     };
   
     fetchPlaylistDetails();
-  }, [id]);
+  }, [id, playlists]);
 
   const handleUpdateBeat = (beatId, updatedFields) => {
     setBeats((prevBeats) => {
