@@ -302,59 +302,62 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
         onFilterChange={handleFilterChange}
       />
 
-      {beats.length > 0 && (
-        <div className='beat-list__table-container'>
-          <table className={`beat-list__table ${mode === 'lock' ? 'beat-list__table--lock' : ''}`} ref={tableRef}>
-            <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
-            <tbody>
-              {paginatedBeats.map((beat, index) => (
-                <React.Fragment key={beat.id}>
-                {hoverIndex === index && hoverPosition === 'top' && <tr className="drop-line" />}
-                <BeatRow
-                  key={`${beat.id}-${index}`}
-                  beat={beat}
-                  currentBeat={currentBeat}
-                  index={index}
-                  handlePlayPause={handlePlayPause}
-                  handleUpdate={handleUpdate}
-                  handleDelete={handleDelete}
-                  selectedBeat={selectedBeat}
-                  isPlaying={isPlaying}
-                  handleBeatClick={handleBeatClick}
-                  selectedBeats={selectedBeats}
-                  openConfirmModal={openConfirmModal}
-                  beats={beats}
-                  addToCustomQueue={addToCustomQueue}
-                  searchText={searchText}
-                  mode={mode}
-                  setActiveContextMenu={setActiveContextMenu}
-                  activeContextMenu={activeContextMenu}
-                  onBeatClick={onBeatClick}
-                  deleteMode={deleteMode}
-                  onUpdateBeat={onUpdateBeat}
-                  onUpdate={onUpdate}
-                  moveBeat={moveBeat}
-                  playlistId={playlistId}
-                  setBeats={setBeats}
-                  setHoverIndex={setHoverIndex}
-                  setHoverPosition={setHoverPosition}
-                />
-                {hoverIndex === index && hoverPosition === 'bottom' && <tr className="drop-line" />}
-                 </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-          <PaginationControls
-            items={filteredAndSortedBeats}
-            currentBeat={currentBeat}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        </div>
-      )}
-     
-     {beats.length === 0 && showMessage && (
-        <p className='beat-list__empty'>No tracks are added yet.</p>
+      {beats.length > 0 ? (
+        filteredAndSortedBeats.length === 0 ? (
+          <div className="placeholder-text">No tracks found</div>
+        ) : (
+          <div className='beat-list__table-container'>
+            <table className={`beat-list__table ${mode === 'lock' ? 'beat-list__table--lock' : ''}`} ref={tableRef}>
+              <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
+
+              <tbody>
+                {paginatedBeats.map((beat, index) => (
+                  <React.Fragment key={beat.id}>
+                    {hoverIndex === index && hoverPosition === 'top' && <tr className="drop-line" />}
+                    <BeatRow
+                      key={`${beat.id}-${index}`}
+                      beat={beat}
+                      currentBeat={currentBeat}
+                      index={index}
+                      handlePlayPause={handlePlayPause}
+                      handleUpdate={handleUpdate}
+                      handleDelete={handleDelete}
+                      selectedBeat={selectedBeat}
+                      isPlaying={isPlaying}
+                      handleBeatClick={handleBeatClick}
+                      selectedBeats={selectedBeats}
+                      openConfirmModal={openConfirmModal}
+                      beats={beats}
+                      addToCustomQueue={addToCustomQueue}
+                      searchText={searchText}
+                      mode={mode}
+                      setActiveContextMenu={setActiveContextMenu}
+                      activeContextMenu={activeContextMenu}
+                      onBeatClick={onBeatClick}
+                      deleteMode={deleteMode}
+                      onUpdateBeat={onUpdateBeat}
+                      onUpdate={onUpdate}
+                      moveBeat={moveBeat}
+                      playlistId={playlistId}
+                      setBeats={setBeats}
+                      setHoverIndex={setHoverIndex}
+                      setHoverPosition={setHoverPosition}
+                    />
+                    {hoverIndex === index && hoverPosition === 'bottom' && <tr className="drop-line" />}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+            <PaginationControls
+              items={filteredAndSortedBeats}
+              currentBeat={currentBeat}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          </div>
+        )
+      ) : (
+        showMessage && <p className='placeholder-text'>No tracks are added yet.</p>
       )}
       <ConfirmModal 
         isOpen={isOpen} 
