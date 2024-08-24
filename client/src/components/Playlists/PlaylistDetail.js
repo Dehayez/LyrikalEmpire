@@ -4,6 +4,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import classNames from 'classnames';
 
+import { usePlaylist } from '../../contexts';
 import { getPlaylistById, getBeatsByPlaylistId, removeBeatFromPlaylist, updateBeatOrder } from '../../services';
 import { eventBus, sortBeats } from '../../utils';
 
@@ -14,6 +15,8 @@ import './PlaylistDetail.scss';
 
 const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, onUpdate }) => {
   const { id } = useParams();
+  const { updatePlaylist } = usePlaylist();
+
   const [isOpen, setIsOpen] = useState(false);
   const [playlist, setPlaylist] = useState(null);
   const [beats, setBeats] = useState([]);
@@ -22,6 +25,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
   const refreshPlaylist = async () => {
     const updatedPlaylist = await getPlaylistById(id);
     setPlaylist(updatedPlaylist);
+    updatePlaylist(updatedPlaylist);
     const updatedBeats = await getBeatsByPlaylistId(id);
     setBeats(updatedBeats);
   };
