@@ -7,7 +7,7 @@ import { Warning } from '../Warning';
 
 import './UpdatePlaylistForm.scss';
 
-export const UpdatePlaylistForm = ({ playlist, onClose, onConfirm, isOpen, setIsOpen }) => {
+export const UpdatePlaylistForm = ({ playlist, onCancel, onConfirm, isOpen, setIsOpen }) => {
     const [title, setTitle] = useState(playlist.title);
     const [isTitleEmpty, setIsTitleEmpty] = useState(false);
     const [description, setDescription] = useState(playlist.description || '');
@@ -21,7 +21,7 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onConfirm, isOpen, setIs
         try {
             await updatePlaylist(playlist.id, { title, description });
             onConfirm();
-            onClose();
+            setIsOpen(false);
         } catch (error) {
             console.error('Failed to update playlist', error);
         }
@@ -32,7 +32,7 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onConfirm, isOpen, setIs
             if (event.key === 'Enter') {
                 handleUpdate();
             } else if (event.key === 'Escape') {
-                onClose();
+                onCancel();
             }
         };
 
@@ -49,7 +49,7 @@ export const UpdatePlaylistForm = ({ playlist, onClose, onConfirm, isOpen, setIs
             setIsOpen={setIsOpen}
             title='Update Playlist'
             onConfirm={handleUpdate}
-            onCancel={onClose}
+            onCancel={onCancel}
          >
             <div className="update-playlist__form">
                 <FormInput label="Title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} spellCheck="false" maxLength={100} />
