@@ -12,14 +12,11 @@
 
 
     &--primary {
-        @include background-border-hover();
+        @include bg-border-hover();
     }
 
     &--warning {
-        background-color: $color-warning;
-        &:hover {
-            background-color: $color-warning-dark;
-        }
+        @include bg-border-hover-warning();
     }
 
     &--small {
