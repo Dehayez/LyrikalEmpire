@@ -47,6 +47,12 @@
     &--edit, &--options {
       margin: 0 12px;
     }
+
+    &--options {
+     &.active {
+        color: $color-white;
+      }
+    }
     
     &--search {
       left: 0;
