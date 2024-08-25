@@ -16,16 +16,19 @@
       padding-right: 36px;
       cursor: default;
 
-      &:hover {
-        .table-header__cell-icon,
-        .table-header__cell-text {
-          color: $color-gray;
-        }
+      &-left {
+        display: inline-flex;
 
-        .table-header__cell-icon {
-         opacity: 1;
-        }
-      }
+        &:hover {
+          .table-header__cell-icon,
+          .table-header__cell-text {
+            color: $color-gray;
+          }
+  
+          .table-header__cell-icon {
+           opacity: 1;
+          }
+        }}
 
       &-text {
         color: $color-gray-default;
@@ -38,7 +41,6 @@
 
       &-icon {
         font-size: 20px;
-        position: absolute;
         transform: translateX(50%);
         transition: all .2s ease-in-out;
         opacity: 0;
