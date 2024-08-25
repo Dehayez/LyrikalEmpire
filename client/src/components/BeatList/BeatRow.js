@@ -342,6 +342,7 @@ const BeatRow = ({
                 }}
                 onClick={(e) => e.stopPropagation()}
                 spellCheck="false"
+                autoComplete="off"
               />
             : 
               <div className='beat-row__input beat-row__input--static beat-row__input--bpm'>{beat.bpm}</div> 
