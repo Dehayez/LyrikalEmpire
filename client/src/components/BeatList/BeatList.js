@@ -40,7 +40,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
       const fieldsToSearch = [beat.title];
       const matchesSearchText = fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
       const matchesGenre = selectedGenre ? beat.genre === selectedGenre.value : true;
-      return matchesSearchText && matchesGenre;
+      return matchesSearchText;
     });
     return sortBeats(filteredBeats, sortConfig);
   }, [beats, searchText, sortConfig, selectedGenre]);
