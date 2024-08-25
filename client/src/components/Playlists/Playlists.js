@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp } from "react-icons/io5";
+import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp, IoAlbums } from "react-icons/io5";
 
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus } from '../../utils';
 import { getPlaylistById, createPlaylist, deletePlaylist } from '../../services';
 
-import { Button } from '../Buttons';
+import { Button, IconButton } from '../Buttons';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import { ContextMenu } from '../ContextMenu';
 import { Tooltip } from '../Tooltip';
@@ -105,7 +105,14 @@ const Playlists = ({ isPlaying }) => {
   return (
     <div className="playlists">
       <div className="playlists__header">
-        <h2 className="playlists__title">Playlists</h2>
+        <div className="playlists__header-left">
+          <Link to="/" className="button-homepage">
+            <IconButton>
+              <IoAlbums />
+            </IconButton>
+          </Link>
+          <h2 className="playlists__title">Playlists</h2>
+        </div>
         <button className='icon-button' onClick={handleAddPlaylist}>
           <Tooltip text="Add playlist" position='left' />
           <IoAddSharp />

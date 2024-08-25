@@ -13,7 +13,7 @@ export const Highlight = ({ text = '', highlight = '', children }) => {
       <div className='highlight'>
         <span className="highlight-content">
           {parts.filter(String).map((part, i) => 
-            regex.test(part) ? <mark key={i} style={{ color: '#141414', backgroundColor: '#FFCC44' }}>{part}</mark> : part
+            regex.test(part) ? <mark key={i} className="highlight-content-text">{part}</mark> : part
           )}
         </span>
         {children}
