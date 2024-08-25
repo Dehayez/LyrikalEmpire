@@ -58,6 +58,11 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const [hoverPosition, setHoverPosition] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [mode, setMode] = useState(() => localStorage.getItem('mode') || 'edit');
+  const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(false);
+
+  const toggleFilterDropdown = () => {
+    setIsFilterDropdownVisible(prevState => !prevState);
+  };
 
   const handleFilterChange = (selectedGenre) => {
     setSelectedGenre(selectedGenre);
@@ -258,7 +263,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
             </>
             }
           </IconButton>
-          <IconButton className='beat-list__action-button--options'>
+          <IconButton className={`beat-list__action-button--options${isFilterDropdownVisible ? ' active' : ''}`} onClick={toggleFilterDropdown}>
             <IoOptionsSharp/>
           </IconButton>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
@@ -294,13 +299,16 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
         </div>
       </div>
 
-      <FilterDropdown
-        id="genre-filter"
-        name="genres"
-        label="Genres"
-        options={genres}
-        onFilterChange={handleFilterChange}
-      />
+      {isFilterDropdownVisible && 
+        <FilterDropdown
+          id="genre-filter"
+          name="genres"
+          label="Genres"
+          options={genres}
+          onFilterChange={handleFilterChange}
+        />
+      }
+      
 
       {beats.length > 0 ? (
         filteredAndSortedBeats.length === 0 ? (
