@@ -11,16 +11,44 @@
       box-sizing: border-box;
       padding: 12px 8px;
       min-width: 60px;
-      transition: background-color .2s ease-in-out;
-      background-color: $color-black;
+      color: $color-gray-default;
       font-weight: 500;
       padding-right: 36px;
       cursor: default;
 
+      &:hover {
+        .table-header__cell-icon,
+        .table-header__cell-text {
+          color: $color-gray;
+        }
+
+        .table-header__cell-icon {
+         opacity: 1;
+        }
+      }
+
       &-text {
         color: $color-gray-default;
+        transition: all .2s ease-in-out;
+
+        &.active {
+          color: $color-white !important;
+        }
+      }
+
+      &-icon {
+        font-size: 20px;
+        position: absolute;
+        transform: translateX(50%);
+        transition: all .2s ease-in-out;
+        opacity: 0;
+
+        &.active {
+          color: $color-primary !important;
+          opacity: 1;
+        }
         &:hover {
-          color: $color-white;
+          color: $color-primary;
         }
       }
 
@@ -32,7 +60,7 @@
           top: 0;
           right: 0;
           bottom: 0;
-          width: 4px;
+          width: 1px;
           cursor: col-resize;
           background-color: transparent;
           transition: background-color .2s ease-in-out;
@@ -48,7 +76,7 @@
           z-index: 1;
         }
         &.hovered::after {
-          background-color: $color-gray-dark-hover;
+          background-color: $color-gray;
         }
       }
 
@@ -69,16 +97,6 @@
       &.no-transition {
           transition: none;
       }
-    }
-
-    &__sort-icon {
-      color: $color-yellow;
-      font-size: 20px;
-      padding: 8px;
-      position: absolute;
-      right: 0;
-      top: 55%;
-      transform: translateY(-50%);
     }
 }
 

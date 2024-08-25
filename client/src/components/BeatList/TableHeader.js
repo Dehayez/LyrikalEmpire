@@ -83,16 +83,15 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
               key={column}
               onContextMenu={(e) => handleRightClick(e, column)}
               className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}
+              onClick={() => handleMouseEvents('click', column)}
             >
-              <span className="table-header__cell-text" onClick={() => handleMouseEvents('click', column)}>
+              <span className={`table-header__cell-text${sortConfig.key === column ? ' active' : ''}`}>
                 {column === 'bpm' ? 'BPM' : column.charAt(0).toUpperCase() + column.slice(1)}
               </span>
               
-              {sortConfig.key === column && (
-                <span className="table-header__sort-icon" onClick={() => handleMouseEvents('click', column)}>
-                  {sortConfig.direction === 'ascending' ? <IoChevronUpSharp/> : <IoChevronDownSharp/>}
-                </span>
-              )}
+              <span className={`table-header__cell-icon${sortConfig.key === column ? ' active' : ''}`}>
+                {sortConfig.key === column && sortConfig.direction === 'ascending' ? <IoChevronUpSharp/> : <IoChevronDownSharp/>}
+              </span>
 
               {(column === 'genre' || column === 'mood' || column === 'keyword' || column === 'feature') && (
                 activeContextMenu === column && (
