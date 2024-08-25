@@ -61,12 +61,12 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
         </Link>
       </div>
 
-      <Link to="/dashboard" className="header__nav-group-dashboard">
+      {/* <Link to="/dashboard" className="header__nav-group-dashboard">
         <IconButton>
           <Tooltip text="Go to Dashboard" position='left' />
           <IoAnalytics />
         </IconButton>
-      </Link>
+      </Link> */}
 
       <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterRight, onMouseLeave: handleMouseLeaveRight } : {})} onClick={handleClickRight} className="header__nav-menu-right">
         {
