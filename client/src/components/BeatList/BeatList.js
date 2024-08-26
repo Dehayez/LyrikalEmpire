@@ -95,7 +95,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const [hoverPosition, setHoverPosition] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
   const [mode, setMode] = useState(() => localStorage.getItem('mode') || 'edit');
-  const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(false);
+  const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(() => {
+    const savedState = localStorage.getItem('isFilterDropdownVisible');
+    return savedState ? JSON.parse(savedState) : false;
+  });
 
   const toggleFilterDropdown = () => {
     setIsFilterDropdownVisible(prevState => !prevState);
@@ -278,6 +281,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   useEffect(() => {
     localStorage.setItem(urlKey, currentPage);
   }, [currentPage, urlKey]);
+
+  useEffect(() => {
+    localStorage.setItem('isFilterDropdownVisible', JSON.stringify(isFilterDropdownVisible));
+  }, [isFilterDropdownVisible]);
 
   return (
     <div ref={containerRef} className="beat-list">
