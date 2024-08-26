@@ -118,8 +118,8 @@ app.delete('/api/beats/:id', (req, res) => {
       return res.status(500).json({ error: 'An error occurred starting the transaction' });
     }
 
-    // First, delete associations in playlist_beats
-    db.query('DELETE FROM playlist_beats WHERE beat_id = ?', [id], (err, results) => {
+    // First, delete associations in playlists_beats
+    db.query('DELETE FROM playlists_beats WHERE beat_id = ?', [id], (err, results) => {
       if (err) {
         console.error('An error occurred while deleting associated playlist beats:', err);
         return db.rollback(() => {
@@ -139,10 +139,10 @@ app.delete('/api/beats/:id', (req, res) => {
         });
       };
 
-      deleteAssociations('beat_genres', () => {
-        deleteAssociations('beat_moods', () => {
-          deleteAssociations('beat_keywords', () => {
-            deleteAssociations('beat_features', () => {
+      deleteAssociations('beats_genres', () => {
+        deleteAssociations('beats_moods', () => {
+          deleteAssociations('beats_keywords', () => {
+            deleteAssociations('beats_features', () => {
 
               db.query('SELECT audio FROM beats WHERE id = ?', [id], (err, results) => {
                 if (err) {
@@ -483,7 +483,7 @@ app.delete('/api/playlists/:id', (req, res) => {
   const { id } = req.params;
   
   // First, delete all beats associated with the playlist
-  db.query('DELETE FROM playlist_beats WHERE playlist_id = ?', [id], (err, results) => {
+  db.query('DELETE FROM playlists_beats WHERE playlist_id = ?', [id], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'An error occurred while removing beats from the playlist' });
@@ -501,11 +501,11 @@ app.delete('/api/playlists/:id', (req, res) => {
   });
 });
 
-// CRUD for playlist_beats
+// CRUD for playlists_beats
 // Add Beat to Playlist
 app.post('/api/playlists/:playlist_id/beats/:beat_id', (req, res) => {
   const { playlist_id, beat_id } = req.params;
-  db.query('INSERT INTO playlist_beats (playlist_id, beat_id) VALUES (?, ?)', [playlist_id, beat_id], (err, results) => {
+  db.query('INSERT INTO playlists_beats (playlist_id, beat_id) VALUES (?, ?)', [playlist_id, beat_id], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'An error occurred while adding the beat to the playlist' });
@@ -518,7 +518,7 @@ app.post('/api/playlists/:playlist_id/beats/:beat_id', (req, res) => {
 // Remove Beat from Playlist
 app.delete('/api/playlists/:playlist_id/beats/:beat_id', (req, res) => {
   const { playlist_id, beat_id } = req.params;
-  db.query('DELETE FROM playlist_beats WHERE playlist_id = ? AND beat_id = ?', [playlist_id, beat_id], (err, results) => {
+  db.query('DELETE FROM playlists_beats WHERE playlist_id = ? AND beat_id = ?', [playlist_id, beat_id], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'An error occurred while removing the beat from the playlist' });
@@ -532,7 +532,7 @@ app.delete('/api/playlists/:playlist_id/beats/:beat_id', (req, res) => {
 app.get('/api/playlists/:playlist_id/beats', (req, res) => {
   const { playlist_id } = req.params;
   db.query(
-    'SELECT b.*, pb.beat_order FROM beats b INNER JOIN playlist_beats pb ON b.id = pb.beat_id WHERE pb.playlist_id = ? ORDER BY pb.beat_order',
+    'SELECT b.*, pb.beat_order FROM beats b INNER JOIN playlists_beats pb ON b.id = pb.beat_id WHERE pb.playlist_id = ? ORDER BY pb.beat_order',
     [playlist_id],
     (err, results) => {
       if (err) {
@@ -559,7 +559,7 @@ app.post('/api/playlists/:playlist_id/beats', (req, res) => {
     }
 
     // Increment the order of existing beats
-    db.query('UPDATE playlist_beats SET beat_order = beat_order + 1 WHERE playlist_id = ?', [playlist_id], (err) => {
+    db.query('UPDATE playlists_beats SET beat_order = beat_order + 1 WHERE playlist_id = ?', [playlist_id], (err) => {
       if (err) {
         return db.rollback(() => {
           res.status(500).json({ error: 'An error occurred while updating the beat order' });
@@ -568,12 +568,12 @@ app.post('/api/playlists/:playlist_id/beats', (req, res) => {
 
       const checkAndInsertPromises = insertValues.map(([playlistId, beatId]) => 
         new Promise((resolve, reject) => {
-          db.query('SELECT 1 FROM playlist_beats WHERE playlist_id = ? AND beat_id = ?', [playlistId, beatId], (err, results) => {
+          db.query('SELECT 1 FROM playlists_beats WHERE playlist_id = ? AND beat_id = ?', [playlistId, beatId], (err, results) => {
             if (err) {
               return reject(err);
             }
             if (results.length === 0) { 
-              db.query('INSERT INTO playlist_beats (playlist_id, beat_id, beat_order) VALUES (?, ?, 0)', [playlistId, beatId], (err, results) => {
+              db.query('INSERT INTO playlists_beats (playlist_id, beat_id, beat_order) VALUES (?, ?, 0)', [playlistId, beatId], (err, results) => {
                 if (err) {
                   return reject(err);
                 }
@@ -615,7 +615,7 @@ app.put('/api/playlists/:playlist_id/beats/order', (req, res) => {
 
   const queries = beatOrders.map(({ id, order }) => {
     return new Promise((resolve, reject) => {
-      db.query('UPDATE playlist_beats SET beat_order = ? WHERE playlist_id = ? AND beat_id = ?', [order, playlist_id, id], (err, results) => {
+      db.query('UPDATE playlists_beats SET beat_order = ? WHERE playlist_id = ? AND beat_id = ?', [order, playlist_id, id], (err, results) => {
         if (err) {
           return reject(err);
         }
@@ -634,7 +634,7 @@ app.put('/api/playlists/:playlist_id/beats/order', (req, res) => {
 
 app.delete('/api/playlists/:id/beats', (req, res) => {
   const { id } = req.params;
-  const deleteQuery = 'DELETE FROM playlist_beats WHERE playlist_id = ?';
+  const deleteQuery = 'DELETE FROM playlists_beats WHERE playlist_id = ?';
 
   db.query(deleteQuery, [id], (err, results) => {
     if (err) {
@@ -655,10 +655,10 @@ app.post('/api/beats/:beat_id/:association_type', (req, res) => {
   }
   
   const tableMap = {
-    genres: 'beat_genres',
-    moods: 'beat_moods',
-    keywords: 'beat_keywords',
-    features: 'beat_features'
+    genres: 'beats_genres',
+    moods: 'beats_moods',
+    keywords: 'beats_keywords',
+    features: 'beats_features'
   };
   
   const tableName = tableMap[association_type];
@@ -720,10 +720,10 @@ app.delete('/api/beats/:beat_id/:association_type/:association_id', (req, res) =
   const { beat_id, association_type, association_id } = req.params;
 
   const tableMap = {
-    genres: 'beat_genres',
-    moods: 'beat_moods',
-    keywords: 'beat_keywords',
-    features: 'beat_features'
+    genres: 'beats_genres',
+    moods: 'beats_moods',
+    keywords: 'beats_keywords',
+    features: 'beats_features'
   };
 
   const tableName = tableMap[association_type];
@@ -745,10 +745,10 @@ app.get('/api/beats/:beat_id/:association_type', (req, res) => {
   const { beat_id, association_type } = req.params;
 
   const tableMap = {
-    genres: 'beat_genres',
-    moods: 'beat_moods',
-    keywords: 'beat_keywords',
-    features: 'beat_features'
+    genres: 'beats_genres',
+    moods: 'beats_moods',
+    keywords: 'beats_keywords',
+    features: 'beats_features'
   };
 
   const tableName = tableMap[association_type];
@@ -770,10 +770,10 @@ app.delete('/api/beats/:beat_id/:association_type', (req, res) => {
   const { beat_id, association_type } = req.params;
 
   const tableMap = {
-    genres: 'beat_genres',
-    moods: 'beat_moods',
-    keywords: 'beat_keywords',
-    features: 'beat_features'
+    genres: 'beats_genres',
+    moods: 'beats_moods',
+    keywords: 'beats_keywords',
+    features: 'beats_features'
   };
 
   const tableName = tableMap[association_type];
