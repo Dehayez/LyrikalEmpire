@@ -6,6 +6,7 @@ import { toast, Slide } from 'react-toastify';
 import { usePlaylist, useBeat, useData } from '../../contexts';
 import { isMobileOrTablet, sortBeats } from '../../utils';
 import { useHandleBeatClick, useBeatActions } from '../../hooks';
+import { getBeatsByAssociation } from '../../services/beatService';
 
 import BeatRow from './BeatRow';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
@@ -29,21 +30,40 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const [previousPage, setPreviousPage] = useState(currentPage);
   
   const { genres, moods, keywords, features } = useData();
-  const [selectedGenre, setSelectedGenre] = useState(null);
-
+  const [selectedGenre, setSelectedGenre] = useState([]);
+  
   const { setPlaylistId } = usePlaylist();
   const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
   const beats = externalBeats || allBeats;
-
+  const [filteredBeats, setFilteredBeats] = useState(beats);
+  
+  useEffect(() => {
+    const fetchBeatsByGenre = async () => {
+      if (selectedGenre.length > 0) {
+        try {
+          const genreIds = selectedGenre.map(genre => genre.id);
+          const beatsByGenre = await getBeatsByAssociation('genres', genreIds);
+          console.log('Fetched beats by genre:', beatsByGenre);
+          setFilteredBeats(beatsByGenre);
+        } catch (error) {
+          console.error('Error fetching beats by genre:', error);
+        }
+      } else {
+        setFilteredBeats(beats);
+      }
+    };
+  
+    fetchBeatsByGenre();
+  }, [selectedGenre, beats]);
+  
   const filteredAndSortedBeats = useMemo(() => {
-    const filteredBeats = beats.filter(beat => {
+    const filteredBeatsList = filteredBeats.filter(beat => {
       const fieldsToSearch = [beat.title];
       const matchesSearchText = fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
-      const matchesGenre = selectedGenre ? beat.genre === selectedGenre.value : true;
       return matchesSearchText;
     });
-    return sortBeats(filteredBeats, sortConfig);
-  }, [beats, searchText, sortConfig, selectedGenre]);
+    return sortBeats(filteredBeatsList, sortConfig);
+  }, [filteredBeats, searchText, sortConfig]);
 
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const { handleUpdate, handleDelete } = useBeatActions(beats, handleQueueUpdateAfterDelete);

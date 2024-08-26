@@ -40,14 +40,51 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.get('/api/beats', (req, res) => {
-  db.query('SELECT * FROM beats ORDER BY created_at DESC', (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'An error occurred while fetching beats' });
-    } else {
-      res.json(results);
+  const { associationType, associationIds } = req.query;
+
+  if (associationType && associationIds) {
+
+    const tableMap = {
+      genres: 'beats_genres',
+      moods: 'beats_moods',
+      keywords: 'beats_keywords',
+      features: 'beats_features'
+    };
+
+    const tableName = tableMap[associationType];
+    if (!tableName) {
+      console.log('Invalid association type');
+      return res.status(400).json({ error: 'Invalid association type' });
     }
-  });
+
+    const ids = associationIds.split(',').map(id => parseInt(id, 10));
+    const placeholders = ids.map(() => '?').join(',');
+
+    const query = `
+      SELECT b.* FROM beats b
+      JOIN ${tableName} bg ON b.id = bg.beat_id
+      WHERE bg.${associationType.slice(0, -1)}_id IN (${placeholders})
+    `;
+
+    db.query(query, ids, (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: `An error occurred while fetching beats with ${associationType}` });
+      } else {
+        res.json(results);
+      }
+    });
+  } else {
+    console.log('Received request for /api/beats without associationType and associationIds');
+    db.query('SELECT * FROM beats ORDER BY created_at DESC', (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'An error occurred while fetching beats' });
+      } else {
+        res.json(results);
+      }
+    });
+  }
 });
 
 app.post('/api/beats', upload.single('audio'), (req, res) => {
@@ -787,6 +824,53 @@ app.delete('/api/beats/:beat_id/:association_type', (req, res) => {
       res.status(500).json({ error: `An error occurred while deleting all ${association_type} from the beat` });
     } else {
       res.json({ message: `All ${association_type} removed from beat successfully` });
+    }
+  });
+});
+
+app.get('/api/beats', (req, res) => {
+  console.log('Received request for /api/beats');
+  const { associationType, associationIds } = req.query;
+
+  console.log('associationType:', associationType);
+  console.log('associationIds:', associationIds);
+
+  if (!associationType || !associationIds) {
+    console.log('Missing parameters');
+    return res.status(400).json({ error: 'associationType and associationIds are required' });
+  }
+
+  const tableMap = {
+    genres: 'beats_genres',
+    moods: 'beats_moods',
+    keywords: 'beats_keywords',
+    features: 'beats_features'
+  };
+
+  const tableName = tableMap[associationType];
+  if (!tableName) {
+    console.log('Invalid association type');
+    return res.status(400).json({ error: 'Invalid association type' });
+  }
+
+  const ids = associationIds.split(',').map(id => parseInt(id, 10));
+  const placeholders = ids.map(() => '?').join(',');
+
+  const query = `
+    SELECT b.* FROM beats b
+    JOIN ${tableName} bg ON b.id = bg.beat_id
+    WHERE bg.${associationType.slice(0, -1)}_id IN (${placeholders})
+  `;
+
+  console.log('Executing query:', query, 'with IDs:', ids);
+
+  db.query(query, ids, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: `An error occurred while fetching beats with ${associationType}` });
+    } else {
+      console.log('Query results:', results);
+      res.json(results);
     }
   });
 });
