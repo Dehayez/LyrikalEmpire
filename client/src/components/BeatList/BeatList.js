@@ -323,6 +323,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
             }
           </IconButton>
           <IconButton className={`beat-list__action-button--options${isFilterDropdownVisible ? ' active' : ''}`} onClick={toggleFilterDropdown}>
+              <Tooltip text={isFilterDropdownVisible ? "Hide Filter" : "Show Filter"} position='left' />
             <IoOptionsSharp/>
           </IconButton>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
