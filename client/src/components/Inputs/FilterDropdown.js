@@ -1,104 +1,109 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
-import { Button } from '../Buttons'
+import { Button } from '../Buttons';
 import './FilterDropdown.scss';
 
-export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => {
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  const handleSelect = (item) => {
-    const isSelected = selectedItems.some(selectedItem => selectedItem.id === item.id);
-    const newSelectedItems = isSelected
-      ? selectedItems.filter(selectedItem => selectedItem.id !== item.id)
-      : [...selectedItems, item];
-
-    setSelectedItems(newSelectedItems);
-    onFilterChange(newSelectedItems, name);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleClear = () => {
-    setSelectedItems([]);
-  };
-
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsDropdownOpen(false);
-    }
-  };
-
-  const sortedOptions = [...options].sort((a, b) => {
-    const aSelected = selectedItems.some(selectedItem => selectedItem.id === a.id);
-    const bSelected = selectedItems.some(selectedItem => selectedItem.id === b.id);
-    return bSelected - aSelected;
+export const FilterDropdown = ({ filters, onFilterChange }) => {
+  const [selectedItems, setSelectedItems] = useState(() => {
+    const initialSelectedItems = {};
+    filters.forEach(filter => {
+      initialSelectedItems[filter.name] = [];
+    });
+    return initialSelectedItems;
   });
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(() => {
+    const initialDropdownState = {};
+    filters.forEach(filter => {
+      initialDropdownState[filter.name] = false;
+    });
+    return initialDropdownState;
+  });
+
+  const handleSelect = (filterType, item) => {
+    const isSelected = selectedItems[filterType]?.some(selectedItem => selectedItem.id === item.id);
+    const newSelectedItems = isSelected
+      ? selectedItems[filterType].filter(selectedItem => selectedItem.id !== item.id)
+      : [...(selectedItems[filterType] || []), item];
+
+    setSelectedItems(prevState => ({
+      ...prevState,
+      [filterType]: newSelectedItems
+    }));
+    onFilterChange(newSelectedItems, filterType);
+  };
+
+  const toggleDropdown = (filterType) => {
+    setIsDropdownOpen(prevState => ({
+      ...prevState,
+      [filterType]: !prevState[filterType]
+    }));
+  };
+
+  const handleClear = (filterType) => {
+    setSelectedItems(prevState => ({
+      ...prevState,
+      [filterType]: []
+    }));
+    onFilterChange([], filterType);
+  };
 
   return (
-    <div className="filter-dropdown" ref={dropdownRef}>
-      <span 
-        onClick={toggleDropdown} 
-        className={`filter-dropdown__label-container ${isDropdownOpen ? 'filter-dropdown__label-container--active' : ''}`}
-      >
-       {label && (
-          <span className="filter-dropdown__label-text">
-            {label} {selectedItems.length > 0 && `(${selectedItems.length})`}
-          </span>
-        )}
-        <IoChevronDownSharp className="filter-dropdown__label-icon" />
-      </span>
-      {isDropdownOpen && (
-        <div className="filter-dropdown__wrapper">
-          <div className="filter-dropdown__list">
-            {sortedOptions.map(option => {
-              const optionId = `${id}-${option.id}`;
-              return (
-                <div key={option.id} className="filter-dropdown__option">
-                  <input
-                    type="checkbox"
-                    id={optionId}
-                    name={name}
-                    value={option.id}
-                    checked={selectedItems.some(selectedItem => selectedItem.id === option.id)}
-                    onChange={() => handleSelect(option)}
-                    className="filter-dropdown__option-input"
-                  />
-                  <span onClick={() => handleSelect(option)} className="filter-dropdown__option-text">{option.name}</span>
+    <div className="filter-dropdown-container">
+      <div className="filter-dropdowns-container">
+        {filters.map(({ id, name, label, options }) => (
+          <div key={id} className="filter-dropdown">
+            <span
+              onClick={() => toggleDropdown(name)}
+              className={`filter-dropdown__label-container ${isDropdownOpen[name] ? 'filter-dropdown__label-container--active' : ''}`}
+            >
+              {label && (
+                <span className="filter-dropdown__label-text">
+                  {label} {selectedItems[name]?.length > 0 && `(${selectedItems[name].length})`}
+                </span>
+              )}
+              <IoChevronDownSharp className="filter-dropdown__label-icon" />
+            </span>
+            {isDropdownOpen[name] && (
+              <div className="filter-dropdown__wrapper">
+                <div className="filter-dropdown__list">
+                  {options.map(option => {
+                    const optionId = `${id}-${option.id}`;
+                    return (
+                      <div key={option.id} className="filter-dropdown__option">
+                        <input
+                          type="checkbox"
+                          id={optionId}
+                          name={name}
+                          value={option.id}
+                          checked={selectedItems[name]?.some(selectedItem => selectedItem.id === option.id)}
+                          onChange={() => handleSelect(name, option)}
+                          className="filter-dropdown__option-input"
+                        />
+                        <span onClick={() => handleSelect(name, option)} className="filter-dropdown__option-text">{option.name}</span>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
-          <div className="filter-dropdown__actions">
-            <Button size="small" type="transparent" className="filter-dropdown__clear-button" onClick={handleClear}>Clear</Button>
-            <Button size="small" className="filter-dropdown__close-button" type='primary' onClick={() => setIsDropdownOpen(false)}>Close</Button>
-          </div>
-        </div>
-      )}
-      {selectedItems.length > 0 && (
-        <div className="filter-dropdown__selected">
-          {selectedItems.map(item => {
-            return (
-              <div key={item.id} className="filter-dropdown__selected-item" onClick={() => handleSelect(item)}>
-                <span>{item.name}</span>
-                <button >
-                  <IoCloseSharp />
-                </button>
+                <div className="filter-dropdown__actions">
+                  <Button size="small" type="transparent" className="filter-dropdown__clear-button" onClick={() => handleClear(name)}>Clear</Button>
+                  <Button size="small" className="filter-dropdown__close-button" type='primary' onClick={() => toggleDropdown(name)}>Close</Button>
+                </div>
               </div>
-            );
-          })}
-        </div>
-      )}
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="filter-dropdown__selected">
+        {Object.values(selectedItems).flat().map(item => (
+          <div key={item.id} className="filter-dropdown__selected-item" onClick={() => handleSelect(item.type, item)}>
+            <span>{item.name}</span>
+            <button>
+              <IoCloseSharp />
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
