@@ -17,11 +17,16 @@ $indicator-half-size: math.div($indicator-size, 2);
   transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   box-sizing: border-box;
   background-color: $color-black;
+  padding: 0 20px;
+
+  &__title {
+    width: 100%;
+  }
 
   &--mobile {
     display: flex;
     justify-content: space-between;
-    padding-bottom: $safe-area-inset-bottom;
+    padding: 0 0 $safe-area-inset-bottom 0;
 
     .audio-player__title {
       padding-left: 20px;
@@ -48,10 +53,6 @@ $indicator-half-size: math.div($indicator-size, 2);
     .rhap_time {
       display: none;
     }
-  }
-
-  &__title {
-    width: 100%;
   }
 }
 
