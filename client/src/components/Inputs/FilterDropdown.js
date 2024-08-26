@@ -33,7 +33,7 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
     const newSelectedItems = isSelected
       ? selectedItems[filterType].filter(selectedItem => selectedItem.id !== item.id)
       : [...(selectedItems[filterType] || []), item];
-
+  
     setSelectedItems(prevState => ({
       ...prevState,
       [filterType]: newSelectedItems
@@ -111,14 +111,16 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
         ))}
       </div>
       <div className="filter-dropdown__selected">
-        {Object.values(selectedItems).flat().map(item => (
-          <div key={item.id} className="filter-dropdown__selected-item" onClick={() => handleSelect(item.type, item)}>
-            <span>{item.name}</span>
-            <button>
-              <IoCloseSharp />
-            </button>
-          </div>
-        ))}
+      {Object.entries(selectedItems).flatMap(([filterType, items]) =>
+          items.map(item => (
+            <div key={item.id} className="filter-dropdown__selected-item" onClick={() => handleSelect(filterType, item)}>
+              <span>{item.name}</span>
+              <button>
+                <IoCloseSharp />
+              </button>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
