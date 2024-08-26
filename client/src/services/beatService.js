@@ -84,3 +84,18 @@ export const removeAllAssociationsFromBeat = async (beatId, associationType) => 
     throw error;
   }
 };
+
+export const getBeatsByAssociation = async (associationType, associationIds) => {
+  try {
+    const response = await axios.get(API_URL, {
+      params: {
+        associationType,
+        associationIds: associationIds.join(',')
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch beats with ${associationType} and IDs ${associationIds}:`, error);
+    throw error;
+  }
+};
