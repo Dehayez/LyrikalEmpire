@@ -31,30 +31,47 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   
   const { genres, moods, keywords, features } = useData();
   const [selectedGenre, setSelectedGenre] = useState([]);
+  const [selectedMood, setSelectedMood] = useState([]);
+  const [selectedKeyword, setSelectedKeyword] = useState([]);
+  const [selectedFeature, setSelectedFeature] = useState([]);
   
   const { setPlaylistId } = usePlaylist();
   const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
   const beats = externalBeats || allBeats;
   const [filteredBeats, setFilteredBeats] = useState(beats);
-  
+
   useEffect(() => {
-    const fetchBeatsByGenre = async () => {
-      if (selectedGenre.length > 0) {
+    const fetchBeatsByAssociation = async () => {
+      const associations = [
+        { type: 'genres', selected: selectedGenre },
+        { type: 'moods', selected: selectedMood },
+        { type: 'keywords', selected: selectedKeyword },
+        { type: 'features', selected: selectedFeature }
+      ];
+  
+      const activeAssociations = associations.filter(assoc => assoc.selected.length > 0);
+  
+      if (activeAssociations.length > 0) {
         try {
-          const genreIds = selectedGenre.map(genre => genre.id);
-          const beatsByGenre = await getBeatsByAssociation('genres', genreIds);
-          console.log('Fetched beats by genre:', beatsByGenre);
-          setFilteredBeats(beatsByGenre);
+          const beatsByAssociations = await Promise.all(
+            activeAssociations.map(async assoc => {
+              const ids = assoc.selected.map(item => item.id);
+              return await getBeatsByAssociation(assoc.type, ids);
+            })
+          );
+  
+          const combinedBeats = beatsByAssociations.flat();
+          setFilteredBeats(combinedBeats);
         } catch (error) {
-          console.error('Error fetching beats by genre:', error);
+          console.error('Error fetching beats by associations:', error);
         }
       } else {
         setFilteredBeats(beats);
       }
     };
   
-    fetchBeatsByGenre();
-  }, [selectedGenre, beats]);
+    fetchBeatsByAssociation();
+  }, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, beats]);
   
   const filteredAndSortedBeats = useMemo(() => {
     const filteredBeatsList = filteredBeats.filter(beat => {
@@ -84,8 +101,23 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     setIsFilterDropdownVisible(prevState => !prevState);
   };
 
-  const handleFilterChange = (selectedGenre) => {
-    setSelectedGenre(selectedGenre);
+  const handleFilterChange = (selectedItems, filterType) => {
+    switch (filterType) {
+      case 'genres':
+        setSelectedGenre(selectedItems);
+        break;
+      case 'moods':
+        setSelectedMood(selectedItems);
+        break;
+      case 'keywords':
+        setSelectedKeyword(selectedItems);
+        break;
+      case 'features':
+        setSelectedFeature(selectedItems);
+        break;
+      default:
+        break;
+    }
   };
     
   const handlePlayPause = useCallback((beat) => {
@@ -319,15 +351,38 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
         </div>
       </div>
 
-      {isFilterDropdownVisible && 
-        <FilterDropdown
-          id="genre-filter"
-          name="genres"
-          label="Genres"
-          options={genres}
-          onFilterChange={handleFilterChange}
-        />
-      }
+      {isFilterDropdownVisible && (
+        <>
+          <FilterDropdown
+            id="genre-filter"
+            name="genres"
+            label="Genres"
+            options={genres}
+            onFilterChange={(selectedItems) => handleFilterChange(selectedItems, 'genres')}
+          />
+          <FilterDropdown
+            id="mood-filter"
+            name="moods"
+            label="Moods"
+            options={moods}
+            onFilterChange={(selectedItems) => handleFilterChange(selectedItems, 'moods')}
+          />
+          <FilterDropdown
+            id="keyword-filter"
+            name="keywords"
+            label="Keywords"
+            options={keywords}
+            onFilterChange={(selectedItems) => handleFilterChange(selectedItems, 'keywords')}
+          />
+          <FilterDropdown
+            id="feature-filter"
+            name="features"
+            label="Features"
+            options={features}
+            onFilterChange={(selectedItems) => handleFilterChange(selectedItems, 'features')}
+          />
+        </>
+      )}
       
 
       {beats.length > 0 ? (

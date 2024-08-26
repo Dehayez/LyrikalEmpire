@@ -15,7 +15,7 @@ export const FilterDropdown = ({ id, name, label, options, onFilterChange }) => 
       : [...selectedItems, item];
 
     setSelectedItems(newSelectedItems);
-    onFilterChange(newSelectedItems);
+    onFilterChange(newSelectedItems, name);
   };
 
   const toggleDropdown = () => {
