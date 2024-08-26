@@ -1,11 +1,13 @@
 @import '../../globals/variables.scss';
 
 .filter-dropdown {
+  display: inline-block;
+
   &__label-container {
     display: inline-flex;
     position: relative;
     align-items: center;
-    margin: 12px 0;
+    margin: 12px 12px 12px 0;
     padding: 8px 12px;
     gap: 8px;
     font-weight: 500;
@@ -107,3 +109,22 @@
     }
   }
 }
+
+/* .filter-dropdowns-container {
+  display: flex;
+  gap: 16px;
+}
+
+.filter-dropdown__selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.filter-dropdown__selected-item {
+  padding: 4px 8px;
+  border: 1px solid $color-gray-mid;
+  border-radius: 4px;
+  background-color: $color-gray-dark;
+} */

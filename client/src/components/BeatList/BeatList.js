@@ -352,37 +352,16 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
       </div>
 
       {isFilterDropdownVisible && (
-        <>
-          <FilterDropdown
-            id="genre-filter"
-            name="genres"
-            label="Genres"
-            options={genres}
-            onFilterChange={(selectedItems) => handleFilterChange(selectedItems, 'genres')}
-          />
-          <FilterDropdown
-            id="mood-filter"
-            name="moods"
-            label="Moods"
-            options={moods}
-            onFilterChange={(selectedItems) => handleFilterChange(selectedItems, 'moods')}
-          />
-          <FilterDropdown
-            id="keyword-filter"
-            name="keywords"
-            label="Keywords"
-            options={keywords}
-            onFilterChange={(selectedItems) => handleFilterChange(selectedItems, 'keywords')}
-          />
-          <FilterDropdown
-            id="feature-filter"
-            name="features"
-            label="Features"
-            options={features}
-            onFilterChange={(selectedItems) => handleFilterChange(selectedItems, 'features')}
-          />
-        </>
-      )}
+      <FilterDropdown
+        filters={[
+          { id: 'genre-filter', name: 'genres', label: 'Genres', options: genres },
+          { id: 'mood-filter', name: 'moods', label: 'Moods', options: moods },
+          { id: 'keyword-filter', name: 'keywords', label: 'Keywords', options: keywords },
+          { id: 'feature-filter', name: 'features', label: 'Features', options: features }
+        ]}
+        onFilterChange={handleFilterChange}
+      />
+    )}
       
 
       {beats.length > 0 ? (
