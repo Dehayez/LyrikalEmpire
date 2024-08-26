@@ -118,8 +118,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
       case 'features':
         setSelectedFeature(selectedItems);
         break;
-      default:
-        break;
     }
   };
     
@@ -365,7 +363,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
           { id: 'genre-filter', name: 'genres', label: 'Genres', options: genres },
           { id: 'mood-filter', name: 'moods', label: 'Moods', options: moods },
           { id: 'keyword-filter', name: 'keywords', label: 'Keywords', options: keywords },
-          { id: 'feature-filter', name: 'features', label: 'Features', options: features }
+          { id: 'feature-filter', name: 'features', label: 'Features', options: features },
+          { id: 'hidden-filter', name: 'hidden', label: 'Hidden', options: [] }
         ]}
         onFilterChange={handleFilterChange}
       />

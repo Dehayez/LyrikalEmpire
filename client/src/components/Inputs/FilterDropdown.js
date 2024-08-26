@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
 import { Button } from '../Buttons';
 import './FilterDropdown.scss';
 
 export const FilterDropdown = ({ filters, onFilterChange }) => {
+  const dropdownRef = useRef(null);
+
   const [selectedItems, setSelectedItems] = useState(() => {
     const savedSelectedItems = localStorage.getItem('selectedItems');
     if (savedSelectedItems) {
@@ -64,11 +66,25 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
     localStorage.setItem('isDropdownOpen', JSON.stringify(isDropdownOpen));
   }, [isDropdownOpen]);
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target) && !event.target.closest('.filter-dropdown__wrapper')) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+
   return (
     <div className="filter-dropdown-container">
       <div className="filter-dropdowns-container">
         {filters.map(({ id, name, label, options }) => (
-          <div key={id} className="filter-dropdown">
+          <div key={id} className={`filter-dropdown ${name === 'hidden' ? 'hidden-filter' : ''}`} ref={dropdownRef}>
             <span
               onClick={() => toggleDropdown(name)}
               className={`filter-dropdown__label-container ${isDropdownOpen[name] ? 'filter-dropdown__label-container--active' : ''}`}
@@ -80,6 +96,7 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
               )}
               <IoChevronDownSharp className="filter-dropdown__label-icon" />
             </span>
+
             {isDropdownOpen[name] && (
               <div className="filter-dropdown__wrapper">
                 <div className="filter-dropdown__list">
