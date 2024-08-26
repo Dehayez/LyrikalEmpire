@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
 import { Button } from '../Buttons';
 import './FilterDropdown.scss';
 
 export const FilterDropdown = ({ filters, onFilterChange }) => {
   const [selectedItems, setSelectedItems] = useState(() => {
+    const savedSelectedItems = localStorage.getItem('selectedItems');
+    if (savedSelectedItems) {
+      return JSON.parse(savedSelectedItems);
+    }
     const initialSelectedItems = {};
     filters.forEach(filter => {
       initialSelectedItems[filter.name] = [];
     });
     return initialSelectedItems;
   });
-
+  
   const [isDropdownOpen, setIsDropdownOpen] = useState(() => {
+    const savedDropdownState = localStorage.getItem('isDropdownOpen');
+    if (savedDropdownState) {
+      return JSON.parse(savedDropdownState);
+    }
     const initialDropdownState = {};
     filters.forEach(filter => {
       initialDropdownState[filter.name] = false;
@@ -47,6 +55,14 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
     }));
     onFilterChange([], filterType);
   };
+
+  useEffect(() => {
+    localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+  }, [selectedItems]);
+  
+  useEffect(() => {
+    localStorage.setItem('isDropdownOpen', JSON.stringify(isDropdownOpen));
+  }, [isDropdownOpen]);
 
   return (
     <div className="filter-dropdown-container">
