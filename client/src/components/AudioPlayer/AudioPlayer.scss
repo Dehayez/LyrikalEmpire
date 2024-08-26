@@ -15,7 +15,6 @@ $indicator-half-size: math.div($indicator-size, 2);
   align-items: center;
   width: 100%;
   transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-  padding: 0 20px;
   box-sizing: border-box;
   background-color: $color-black;
 
@@ -23,6 +22,16 @@ $indicator-half-size: math.div($indicator-size, 2);
     display: flex;
     justify-content: space-between;
     padding-bottom: $safe-area-inset-bottom;
+
+    .audio-player__title {
+      padding-left: 20px;
+    }
+
+    .icon-button.play-pause {
+      background-color: $color-black;
+      padding: 0 20px;
+      z-index: 10;
+    }
 
     .rhap_container {
       background-color: transparent;
@@ -117,7 +126,7 @@ $indicator-half-size: math.div($indicator-size, 2);
 
 
 @media (max-width: 580px) {
-  .audio-player__title {
+  .audio-player__title--desktop {
     display: none;
   }
   .volume-slider {

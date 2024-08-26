@@ -127,6 +127,10 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, [onPrev, playerRef]);
 
+  useEffect(() => {
+    console.log(currentBeat);
+  }, [currentBeat]);
+
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       <H5AudioPlayer
@@ -149,7 +153,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     </div>
   ) : (
     <div className="audio-player" id="audio-player">
-      <div className='audio-player__title' style={{ flex: '1' }}>
+      <div className='audio-player__title audio-player__title--desktop' style={{ flex: '1' }}>
         {currentBeat && <p>{currentBeat.title}</p>}
       </div>
       <div style={{ flex: '2' }}>
