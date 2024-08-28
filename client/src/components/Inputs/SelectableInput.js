@@ -60,9 +60,9 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
       beat_id: beatId,
       [`${singularAssociationType}_id`]: associationId
     };
-
+  
     const isSelected = selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === associationId);
-
+  
     if (isSelected) {
       await handleRemoveAssociation(newAssociation);
     } else {

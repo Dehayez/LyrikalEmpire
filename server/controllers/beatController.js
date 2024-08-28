@@ -90,6 +90,10 @@ const addAssociation = (req, res) => {
   const { beat_id, association_type } = req.params;
   const { association_id } = req.body;
 
+  if (!association_id) {
+    return res.status(400).json({ error: 'Association ID is required' });
+  }
+
   const tableName = getTableName(association_type, res);
   if (!tableName) return;
 

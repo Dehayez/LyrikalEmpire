@@ -47,7 +47,7 @@ export const deleteBeat = async (id) => {
 
 export const addAssociationsToBeat = async (beatId, associationType, associationIds) => {
   try {
-    const response = await axios.post(`${API_URL}/${beatId}/${associationType}`, { associationIds });
+    const response = await axios.post(`${API_URL}/${beatId}/${associationType}`, { association_id: associationIds });
     return response.data;
   } catch (error) {
     console.error(`Failed to add ${associationType} to beat:`, error);
