@@ -21,11 +21,20 @@
     border: none;
     width: 100%;
     font-size: 16px;
-    cursor: default;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      background-color: $color-gray-dark-hover;
+      box-shadow: $box-shadow-focus;
+      cursor: text;
+    }
 
     &--static {
       padding: 10px;
       text-align: left;
+      cursor: default;
+
       &-select {
         padding: 10px 8px;
         text-align: left;
@@ -38,17 +47,6 @@
 
     &--title, &--bpm {
       color: $color-white;
-    }
-
-    &:hover {
-      cursor: pointer;
-    }
-
-    &:focus {
-      outline: none;
-      background-color: $color-gray-dark-hover;
-      box-shadow: $box-shadow-focus;
-      cursor: text;
     }
   }
 
