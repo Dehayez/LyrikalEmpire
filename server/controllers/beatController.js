@@ -1,5 +1,4 @@
-const db = require('../config/db');
-const { handleQuery } = require('../helpers/dbHelpers');
+const { handleQuery, handleTransaction } = require('../helpers/dbHelpers');
 
 const tableMap = {
   genres: 'beats_genres',
@@ -53,133 +52,36 @@ const getBeatById = (req, res) => {
 };
 
 const updateBeat = (req, res) => {
+  const { title, bpm, genre, tierlist, mood, keyword, feature, filePath, duration } = req.body;
   const { id } = req.params;
-  let updatedBeat = { ...req.body, edited_at: new Date().toISOString().replace('T', ' ').split('.')[0] };
-  delete updatedBeat.created_at;
-
-  let updateQuery = 'UPDATE beats SET ';
-  let queryParams = [];
-
-  for (let key in updatedBeat) {
-    if (key !== 'beat_order') {
-      updateQuery += `${key} = ?, `;
-      queryParams.push(updatedBeat[key]);
-    }
-  }
-
-  updateQuery = updateQuery.slice(0, -2) + ' WHERE id = ?';
-  queryParams.push(id);
-
-  handleQuery(updateQuery, queryParams, res, 'Beat updated successfully');
+  const query = 'UPDATE beats SET title = ?, audio = ?, bpm = ?, genre = ?, tierlist = ?, mood = ?, keyword = ?, feature = ?, duration = ? WHERE id = ?';
+  const params = [title, filePath, bpm, genre, tierlist, mood, keyword, feature, duration, id];
+  handleQuery(query, params, res, 'Beat updated successfully');
 };
 
 const deleteBeat = (req, res) => {
   const { id } = req.params;
-
-  db.beginTransaction(err => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'An error occurred starting the transaction' });
-    }
-
-    const deleteAssociations = (tableName, callback) => {
-      db.query(`DELETE FROM ${tableName} WHERE beat_id = ?`, [id], (err, results) => {
-        if (err) {
-          console.error(`An error occurred while deleting from ${tableName}:`, err);
-          return db.rollback(() => {
-            res.status(500).json({ error: `An error occurred while deleting from ${tableName}` });
-          });
-        }
-        callback();
-      });
-    };
-
-    deleteAssociations('beats_genres', () => {
-      deleteAssociations('beats_moods', () => {
-        deleteAssociations('beats_keywords', () => {
-          deleteAssociations('beats_features', () => {
-            db.query('DELETE FROM beats WHERE id = ?', [id], (err, results) => {
-              if (err) {
-                console.error('An error occurred while deleting the beat:', err);
-                return db.rollback(() => {
-                  res.status(500).json({ error: 'An error occurred while deleting the beat' });
-                });
-              }
-              db.commit(err => {
-                if (err) {
-                  console.error('An error occurred while committing the transaction:', err);
-                  return db.rollback(() => {
-                    res.status(500).json({ error: 'An error occurred while committing the transaction' });
-                  });
-                }
-                res.json({ message: 'Beat deleted successfully' });
-              });
-            });
-          });
-        });
-      });
-    });
-  });
+  const queries = [
+    { query: 'DELETE FROM beats_genres WHERE beat_id = ?', params: [id] },
+    { query: 'DELETE FROM beats_moods WHERE beat_id = ?', params: [id] },
+    { query: 'DELETE FROM beats_keywords WHERE beat_id = ?', params: [id] },
+    { query: 'DELETE FROM beats_features WHERE beat_id = ?', params: [id] },
+    { query: 'DELETE FROM beats WHERE id = ?', params: [id] }
+  ];
+  handleTransaction(queries, res, 'Beat and all associated data deleted successfully');
 };
 
 const addAssociation = (req, res) => {
   const { beat_id, association_type } = req.params;
-  const { associationIds } = req.body;
-
-  if (!Array.isArray(associationIds) || associationIds.length === 0) {
-    return res.status(400).json({ error: 'associationIds must be a non-empty array' });
-  }
+  const { association_id } = req.body;
 
   const tableName = getTableName(association_type, res);
   if (!tableName) return;
 
-  const insertValues = associationIds.map(id => [beat_id, id]);
+  const query = `INSERT INTO ${tableName} (beat_id, ${association_type.slice(0, -1)}_id) VALUES (?, ?)`;
+  const params = [beat_id, association_id];
 
-  db.beginTransaction(err => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'An error occurred starting the transaction' });
-    }
-
-    const checkAndInsertPromises = insertValues.map(([beatId, associationId]) =>
-      new Promise((resolve, reject) => {
-        db.query(`SELECT 1 FROM ${tableName} WHERE beat_id = ? AND ${association_type.slice(0, -1)}_id = ?`, [beatId, associationId], (err, results) => {
-          if (err) {
-            return reject(err);
-          }
-          if (results.length === 0) {
-            db.query(`INSERT INTO ${tableName} (beat_id, ${association_type.slice(0, -1)}_id) VALUES (?, ?)`, [beatId, associationId], (err, results) => {
-              if (err) {
-                return reject(err);
-              }
-              resolve(results);
-            });
-          } else {
-            resolve(results);
-          }
-        });
-      })
-    );
-
-    Promise.all(checkAndInsertPromises)
-      .then(() => {
-        db.commit(err => {
-          if (err) {
-            console.error(err);
-            return db.rollback(() => {
-              res.status(500).json({ error: 'An error occurred while committing the transaction' });
-            });
-          }
-          res.json({ message: 'Associations added successfully' });
-        });
-      })
-      .catch(err => {
-        console.error(err);
-        db.rollback(() => {
-          res.status(500).json({ error: 'An error occurred while processing the request' });
-        });
-      });
-  });
+  handleQuery(query, params, res, 'Association added successfully');
 };
 
 const removeAssociation = (req, res) => {
@@ -188,12 +90,10 @@ const removeAssociation = (req, res) => {
   const tableName = getTableName(association_type, res);
   if (!tableName) return;
 
-  handleQuery(
-    `DELETE FROM ${tableName} WHERE beat_id = ? AND ${association_type.slice(0, -1)}_id = ?`,
-    [beat_id, association_id],
-    res,
-    `${association_type.slice(0, -1)} removed from beat successfully`
-  );
+  const query = `DELETE FROM ${tableName} WHERE beat_id = ? AND ${association_type.slice(0, -1)}_id = ?`;
+  const params = [beat_id, association_id];
+
+  handleQuery(query, params, res, 'Association removed successfully');
 };
 
 const getAssociations = (req, res) => {
@@ -202,13 +102,10 @@ const getAssociations = (req, res) => {
   const tableName = getTableName(association_type, res);
   if (!tableName) return;
 
-  handleQuery(
-    `SELECT * FROM ${tableName} WHERE beat_id = ?`,
-    [beat_id],
-    res,
-    `${association_type} fetched successfully`,
-    true
-  );
+  const query = `SELECT * FROM ${tableName} WHERE beat_id = ?`;
+  const params = [beat_id];
+
+  handleQuery(query, params, res, 'Associations fetched successfully', true);
 };
 
 const removeAllAssociations = (req, res) => {
@@ -217,12 +114,10 @@ const removeAllAssociations = (req, res) => {
   const tableName = getTableName(association_type, res);
   if (!tableName) return;
 
-  handleQuery(
-    `DELETE FROM ${tableName} WHERE beat_id = ?`,
-    [beat_id],
-    res,
-    `All ${association_type} removed from beat successfully`
-  );
+  const query = `DELETE FROM ${tableName} WHERE beat_id = ?`;
+  const params = [beat_id];
+
+  handleQuery(query, params, res, 'All associations removed successfully');
 };
 
 module.exports = {
