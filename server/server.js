@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const db = require('./config/db');
 const path = require('path');
 
 const app = express();
@@ -11,7 +10,6 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
 
-// Import routes
 const keywordRoutes = require('./routes/keywordRoute');
 const moodRoutes = require('./routes/moodRoute');
 const featureRoutes = require('./routes/featureRoute');
@@ -19,7 +17,6 @@ const playlistRoutes = require('./routes/playlistRoute');
 const beatRoutes = require('./routes/beatRoute');
 const genreRoutes = require('./routes/genreRoute');
 
-// Use routes
 app.use('/api/keywords', keywordRoutes);
 app.use('/api/moods', moodRoutes);
 app.use('/api/features', featureRoutes);
@@ -28,13 +25,7 @@ app.use('/api/beats', beatRoutes);
 app.use('/api/genres', genreRoutes);
 
 const PORT = process.env.PORT || 4000;
-db.connect(err => {
-  if (err) {
-    console.error('An error occurred while connecting to the database:', err);
-    process.exit(1);
-  }
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
