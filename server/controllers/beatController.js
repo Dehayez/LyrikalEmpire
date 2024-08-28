@@ -52,10 +52,25 @@ const getBeatById = (req, res) => {
 };
 
 const updateBeat = (req, res) => {
-  const { title, bpm, genre, tierlist, mood, keyword, feature, filePath, duration } = req.body;
   const { id } = req.params;
-  const query = 'UPDATE beats SET title = ?, audio = ?, bpm = ?, genre = ?, tierlist = ?, mood = ?, keyword = ?, feature = ?, duration = ? WHERE id = ?';
-  const params = [title, filePath, bpm, genre, tierlist, mood, keyword, feature, duration, id];
+  const fields = ['title', 'bpm', 'tierlist', 'filePath'];
+  const updates = [];
+  const params = [];
+
+  fields.forEach(field => {
+    if (req.body[field] !== undefined) {
+      updates.push(`${field} = ?`);
+      params.push(req.body[field]);
+    }
+  });
+
+  if (updates.length === 0) {
+    return res.status(400).json({ error: 'No fields to update' });
+  }
+
+  params.push(id);
+  const query = `UPDATE beats SET ${updates.join(', ')} WHERE id = ?`;
+
   handleQuery(query, params, res, 'Beat updated successfully');
 };
 
