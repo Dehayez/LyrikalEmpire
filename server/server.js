@@ -4,7 +4,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const db = require('./config/db');
-const upload = require('./config/multer');
 const path = require('path');
 
 const app = express();
@@ -13,20 +12,20 @@ app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
 
 // Import routes
-const keywordsRoutes = require('./routes/keywords');
-const moodsRoutes = require('./routes/moods');
-const featuresRoutes = require('./routes/features');
-const playlistsRoutes = require('./routes/playlists');
-const beatsRoutes = require('./routes/beats');
-const genresRoutes = require('./routes/genres');
+const keywordRoutes = require('./routes/keywordRoute');
+const moodRoutes = require('./routes/moodRoute');
+const featureRoutes = require('./routes/featureRoute');
+const playlistRoutes = require('./routes/playlistRoute');
+const beatRoutes = require('./routes/beatRoute');
+const genreRoutes = require('./routes/genreRoute');
 
 // Use routes
-app.use('/api/keywords', keywordsRoutes);
-app.use('/api/moods', moodsRoutes);
-app.use('/api/features', featuresRoutes);
-app.use('/api/playlists', playlistsRoutes);
-app.use('/api/beats', beatsRoutes);
-app.use('/api/genres', genresRoutes);
+app.use('/api/keywords', keywordRoutes);
+app.use('/api/moods', moodRoutes);
+app.use('/api/features', featureRoutes);
+app.use('/api/playlists', playlistRoutes);
+app.use('/api/beats', beatRoutes);
+app.use('/api/genres', genreRoutes);
 
 const PORT = process.env.PORT || 4000;
 db.connect(err => {

@@ -1,12 +1,10 @@
-const express = require('express');
-const router = express.Router();
 const { handleQuery } = require('../helpers/dbHelpers');
 
-router.get('/', (req, res) => {
+const getMoods = (req, res) => {
   handleQuery('SELECT * FROM moods', [], res, null, true);
-});
+};
 
-router.post('/', (req, res) => {
+const createMood = (req, res) => {
   const { name } = req.body;
 
   if (!name) {
@@ -14,17 +12,22 @@ router.post('/', (req, res) => {
   }
 
   handleQuery('INSERT INTO moods (name) VALUES (?)', [name], res, 'Mood added successfully');
-});
+};
 
-router.put('/:id', (req, res) => {
+const updateMood = (req, res) => {
   const { name } = req.body;
   const { id } = req.params;
   handleQuery('UPDATE moods SET name = ? WHERE id = ?', [name, id], res, 'Mood updated successfully');
-});
+};
 
-router.delete('/:id', (req, res) => {
+const deleteMood = (req, res) => {
   const { id } = req.params;
   handleQuery('DELETE FROM moods WHERE id = ?', [id], res, 'Mood deleted successfully');
-});
+};
 
-module.exports = router;
+module.exports = {
+  getMoods,
+  createMood,
+  updateMood,
+  deleteMood
+};
