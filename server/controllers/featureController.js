@@ -1,12 +1,10 @@
-const express = require('express');
-const router = express.Router();
 const { handleQuery } = require('../helpers/dbHelpers');
 
-router.get('/', (req, res) => {
+const getFeatures = (req, res) => {
   handleQuery('SELECT * FROM features', [], res, null, true);
-});
+};
 
-router.post('/', (req, res) => {
+const createFeature = (req, res) => {
   const { name } = req.body;
 
   if (!name) {
@@ -14,17 +12,22 @@ router.post('/', (req, res) => {
   }
 
   handleQuery('INSERT INTO features (name) VALUES (?)', [name], res, 'Feature added successfully');
-});
+};
 
-router.put('/:id', (req, res) => {
+const updateFeature = (req, res) => {
   const { name } = req.body;
   const { id } = req.params;
   handleQuery('UPDATE features SET name = ? WHERE id = ?', [name, id], res, 'Feature updated successfully');
-});
+};
 
-router.delete('/:id', (req, res) => {
+const deleteFeature = (req, res) => {
   const { id } = req.params;
   handleQuery('DELETE FROM features WHERE id = ?', [id], res, 'Feature deleted successfully');
-});
+};
 
-module.exports = router;
+module.exports = {
+  getFeatures,
+  createFeature,
+  updateFeature,
+  deleteFeature
+};

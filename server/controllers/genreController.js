@@ -1,12 +1,10 @@
-const express = require('express');
-const router = express.Router();
 const { handleQuery } = require('../helpers/dbHelpers');
 
-router.get('/', (req, res) => {
+const getGenres = (req, res) => {
   handleQuery('SELECT * FROM genres', [], res, null, true);
-});
+};
 
-router.post('/', (req, res) => {
+const createGenre = (req, res) => {
   const { name } = req.body;
 
   if (!name) {
@@ -14,17 +12,22 @@ router.post('/', (req, res) => {
   }
 
   handleQuery('INSERT INTO genres (name) VALUES (?)', [name], res, 'Genre added successfully');
-});
+};
 
-router.put('/:id', (req, res) => {
+const updateGenre = (req, res) => {
   const { name } = req.body;
   const { id } = req.params;
   handleQuery('UPDATE genres SET name = ? WHERE id = ?', [name, id], res, 'Genre updated successfully');
-});
+};
 
-router.delete('/:id', (req, res) => {
+const deleteGenre = (req, res) => {
   const { id } = req.params;
   handleQuery('DELETE FROM genres WHERE id = ?', [id], res, 'Genre deleted successfully');
-});
+};
 
-module.exports = router;
+module.exports = {
+  getGenres,
+  createGenre,
+  updateGenre,
+  deleteGenre
+};
