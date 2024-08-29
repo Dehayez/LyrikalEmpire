@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import { usePlaylist } from '../../contexts';
 import { getPlaylistById, getBeatsByPlaylistId, removeBeatFromPlaylist, updateBeatOrder } from '../../services';
-import { eventBus, sortBeats } from '../../utils';
+import { eventBus } from '../../utils';
 import { useSort } from '../../hooks/useSort';
 
 import { BeatList } from '../BeatList';
