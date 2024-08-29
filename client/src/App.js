@@ -4,9 +4,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
-import { isMobileOrTablet, sortBeats } from './utils';
+import { isMobileOrTablet } from './utils';
 import { addBeat } from './services';
-import { handlePlay, handlePrev } from './hooks';
+import { handlePlay, handlePrev, useSort } from './hooks';
 import { useBeat } from './contexts';
 
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
@@ -23,10 +23,7 @@ function App() {
   
   const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
   const [selectedBeat, setSelectedBeat] = useState(() => {const item = localStorage.getItem('selectedBeat');return item && item !== "undefined" ? JSON.parse(item) : null;});
-  const [sortConfig, setSortConfig] = useState(() => {const savedSortConfig = localStorage.getItem('sortConfig'); return savedSortConfig ? JSON.parse(savedSortConfig) : { key: null, direction: 'ascending' };});
-  const sortedBeats = useMemo(() => {
-    return sortBeats(beats, sortConfig);
-  }, [beats, sortConfig]);
+  const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(beats);
   
   const [queue, setQueue] = useState([]);
   const [customQueue, setCustomQueue] = useState(() => {const savedQueue = localStorage.getItem('customQueue');return savedQueue ? JSON.parse(savedQueue) : [];});
@@ -226,14 +223,6 @@ function App() {
     localStorage.setItem('playedBeatsHistory', JSON.stringify(updatedHistory));
   };
 
-  const onSort = (key) => {
-    let direction = 'ascending';
-    if (sortConfig.key === key) {
-      direction = sortConfig.direction === 'ascending' ? 'descending' : sortConfig.direction === 'descending' ? null : 'ascending';
-    }
-    setSortConfig({ key: direction ? key : null, direction });
-  };
-
   const handlePlayWrapper = (beat, play, beats) => {
     handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
     updateHistory(beat);
@@ -383,8 +372,6 @@ function App() {
                   isPlaying={isPlaying} 
                   handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
                   currentBeat={currentBeat} 
-                  onSort={onSort} 
-                  sortConfig={sortConfig}
                   addToCustomQueue={addToCustomQueue}
                   onBeatClick={handleBeatClick} 
                   onUpdateBeat={updateBeat}
@@ -402,8 +389,6 @@ function App() {
                     handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
                     currentBeat={currentBeat} 
                     sortedBeats={sortedBeats} 
-                    onSort={onSort} 
-                    sortConfig={sortConfig}
                     addToCustomQueue={addToCustomQueue}
                     onBeatClick={handleBeatClick}  
                     onUpdate={onUpdate}
