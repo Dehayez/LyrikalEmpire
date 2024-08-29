@@ -73,15 +73,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     fetchBeatsByAssociation();
   }, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, beats]);
   
-  /* const filteredAndSortedBeats = useMemo(() => {
-    const filteredBeatsList = filteredBeats.filter(beat => {
-      const fieldsToSearch = [beat.title];
-      const matchesSearchText = fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
-      return matchesSearchText;
-    });
-    return sortBeats(filteredBeatsList, sortConfig);
-  }, [filteredBeats, searchText, sortConfig]); */
-
   const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(filteredBeats);
 
   const filteredAndSortedBeats = useMemo(() => {
