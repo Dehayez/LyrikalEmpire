@@ -82,7 +82,14 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     return sortBeats(filteredBeatsList, sortConfig);
   }, [filteredBeats, searchText, sortConfig]); */
 
-  const { sortedItems: filteredAndSortedBeats, sortConfig, onSort } = useSort(filteredBeats);
+  const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(filteredBeats);
+
+  const filteredAndSortedBeats = useMemo(() => {
+    return sortedBeats.filter(beat => {
+      const fieldsToSearch = [beat.title];
+      return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+    });
+  }, [sortedBeats, searchText]);
 
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const { handleUpdate, handleDelete } = useBeatActions(beats, handleQueueUpdateAfterDelete);
