@@ -4,8 +4,8 @@ import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedShar
 import { toast, Slide } from 'react-toastify';
 
 import { usePlaylist, useBeat, useData } from '../../contexts';
-import { isMobileOrTablet, sortBeats } from '../../utils';
-import { useHandleBeatClick, useBeatActions } from '../../hooks';
+import { isMobileOrTablet } from '../../utils';
+import { useHandleBeatClick, useBeatActions, useSort } from '../../hooks';
 import { getBeatsByAssociation } from '../../services/beatService';
 
 import BeatRow from './BeatRow';
@@ -18,7 +18,7 @@ import { Tooltip } from '../Tooltip';
 
 import './BeatList.scss';
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdateAfterDelete, currentBeat, onSort, sortConfig, addToCustomQueue, onBeatClick, externalBeats, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdateAfterDelete, currentBeat, addToCustomQueue, onBeatClick, externalBeats, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const containerRef = useRef(null);
@@ -73,14 +73,16 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     fetchBeatsByAssociation();
   }, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, beats]);
   
-  const filteredAndSortedBeats = useMemo(() => {
+  /* const filteredAndSortedBeats = useMemo(() => {
     const filteredBeatsList = filteredBeats.filter(beat => {
       const fieldsToSearch = [beat.title];
       const matchesSearchText = fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
       return matchesSearchText;
     });
     return sortBeats(filteredBeatsList, sortConfig);
-  }, [filteredBeats, searchText, sortConfig]);
+  }, [filteredBeats, searchText, sortConfig]); */
+
+  const { sortedItems: filteredAndSortedBeats, sortConfig, onSort } = useSort(filteredBeats);
 
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const { handleUpdate, handleDelete } = useBeatActions(beats, handleQueueUpdateAfterDelete);

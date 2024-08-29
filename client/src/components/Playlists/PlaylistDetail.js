@@ -7,20 +7,21 @@ import classNames from 'classnames';
 import { usePlaylist } from '../../contexts';
 import { getPlaylistById, getBeatsByPlaylistId, removeBeatFromPlaylist, updateBeatOrder } from '../../services';
 import { eventBus, sortBeats } from '../../utils';
+import { useSort } from '../../hooks/useSort';
 
 import { BeatList } from '../BeatList';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm'; 
 
 import './PlaylistDetail.scss';
 
-const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, onSort, sortedBeats, sortConfig, addToCustomQueue, onBeatClick, onUpdate }) => {
+const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, sortedBeats, addToCustomQueue, onBeatClick, onUpdate }) => {
   const { id } = useParams();
   const { playlists, updatePlaylist } = usePlaylist();
 
   const [isOpen, setIsOpen] = useState(false);
   const [playlist, setPlaylist] = useState(() => playlists.find(p => p.id === id));
   const [beats, setBeats] = useState([]);
-  const sortedBeatsFromPlaylist = useMemo(() => sortBeats(beats, sortConfig), [beats, sortConfig]);
+  const { sortedItems: sortedBeatsFromPlaylist, sortConfig, onSort } = useSort(beats);
 
   const refreshPlaylist = async () => {
     const updatedPlaylist = await getPlaylistById(id);
