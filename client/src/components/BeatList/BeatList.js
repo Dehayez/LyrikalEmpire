@@ -103,12 +103,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   useLocalStorageSync({ 
     mode, 
     isFilterDropdownVisible, 
-    searchText 
+    searchText,
+    urlKey,
+    currentPage
   });
-  
-  useEffect(() => {
-    localStorage.setItem(urlKey, currentPage);
-  }, [currentPage, urlKey]);
 
   const toggleFilterDropdown = () => {
     setIsFilterDropdownVisible(prevState => !prevState);
