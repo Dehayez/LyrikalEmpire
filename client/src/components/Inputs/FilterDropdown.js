@@ -1,33 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
+
+import { useLocalStorageSync } from '../../hooks';
+import { getInitialState, getInitialStateForFilters } from '../../utils/stateUtils';
+
 import { Button } from '../Buttons';
 import './FilterDropdown.scss';
 
 export const FilterDropdown = ({ filters, onFilterChange }) => {
   const dropdownRef = useRef(null);
 
-  const [selectedItems, setSelectedItems] = useState(() => {
-    const savedSelectedItems = localStorage.getItem('selectedItems');
-    if (savedSelectedItems) {
-      return JSON.parse(savedSelectedItems);
-    }
-    const initialSelectedItems = {};
-    filters.forEach(filter => {
-      initialSelectedItems[filter.name] = [];
-    });
-    return initialSelectedItems;
-  });
+  const initialSelectedItems = getInitialStateForFilters(filters, []);
+  const initialDropdownState = getInitialStateForFilters(filters, false);
   
-  const [isDropdownOpen, setIsDropdownOpen] = useState(() => {
-    const savedDropdownState = localStorage.getItem('isDropdownOpen');
-    if (savedDropdownState) {
-      return JSON.parse(savedDropdownState);
-    }
-    const initialDropdownState = {};
-    filters.forEach(filter => {
-      initialDropdownState[filter.name] = false;
-    });
-    return initialDropdownState;
+  const [selectedItems, setSelectedItems] = useState(() => getInitialState('selectedItems', initialSelectedItems));
+  const [isDropdownOpen, setIsDropdownOpen] = useState(() => getInitialState('isDropdownOpen', initialDropdownState));
+
+  useLocalStorageSync({
+    selectedItems,
+    isDropdownOpen
   });
 
   const handleSelect = (filterType, item) => {
@@ -57,14 +48,6 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
     }));
     onFilterChange([], filterType);
   };
-
-  useEffect(() => {
-    localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
-  }, [selectedItems]);
-  
-  useEffect(() => {
-    localStorage.setItem('isDropdownOpen', JSON.stringify(isDropdownOpen));
-  }, [isDropdownOpen]);
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target) && !event.target.closest('.filter-dropdown__wrapper')) {
