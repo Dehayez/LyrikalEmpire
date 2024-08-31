@@ -83,7 +83,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   }, [sortedBeats, searchText]);
 
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
-  const { handleUpdate, handleDelete } = useBeatActions(beats, handleQueueUpdateAfterDelete);
+  const { handleUpdate, handleDelete } = useBeatActions();
   
   const [hoverIndex, setHoverIndex] = useState(null);
   const [showMessage, setShowMessage] = useState(false);

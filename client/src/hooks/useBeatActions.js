@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useBeat } from '../contexts/BeatContext';
 import { updateBeat, deleteBeat } from '../services';
 
-export const useBeatActions = (initialBeats, handleQueueUpdateAfterDelete) => {
-  const [beats, setBeats] = useState(initialBeats);
+export const useBeatActions = () => {
+  const { beats, setBeats, setGlobalBeats } = useBeat();
 
   const handleUpdateAll = (newBeats) => {
     setBeats(newBeats);
+    setGlobalBeats(newBeats);
   };
 
   const handleUpdate = async (id, key, value) => {
@@ -13,16 +14,21 @@ export const useBeatActions = (initialBeats, handleQueueUpdateAfterDelete) => {
       ? new Date(value).toISOString().replace('T', ' ').replace('.000Z', '') 
       : value;
     const updatedBeat = { ...beats.find(beat => beat.id === id), [key]: updatedValue };
+    
+    // Update the database
     await updateBeat(id, updatedBeat);
-    setBeats(beats.map(beat => beat.id === id ? updatedBeat : beat));
+    
+    // Update the local state
+    const updatedBeats = beats.map(beat => beat.id === id ? updatedBeat : beat);
+    setBeats(updatedBeats);
+    setGlobalBeats(updatedBeats);
   };
 
   const handleDelete = async (id) => {
     await deleteBeat(id);
-    setBeats(beats.filter(beat => beat.id !== id));
-    if (handleQueueUpdateAfterDelete) {
-      handleQueueUpdateAfterDelete(id);
-    }
+    const updatedBeats = beats.filter(beat => beat.id !== id);
+    setBeats(updatedBeats);
+    setGlobalBeats(updatedBeats);
   };
 
   return { beats, handleUpdate, handleDelete, handleUpdateAll };
