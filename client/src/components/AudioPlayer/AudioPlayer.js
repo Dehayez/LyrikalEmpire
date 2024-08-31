@@ -1,19 +1,25 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { isMobileOrTablet } from '../../utils';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
+
+import { isMobileOrTablet } from '../../utils';
+import { useLocalStorageSync } from '../../hooks/useLocalStorageSync';
+
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
 
 const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat }) => {
   const playerRef = useRef();
-  const [volume, setVolume] = useState(() => {
-    const savedVolume = localStorage.getItem('volume');
-    return savedVolume !== null ? parseFloat(savedVolume) : 1.0;
-  });
+  const [volume, setVolume] = useState(() => parseFloat(localStorage.getItem('volume')) || 1);
+  const [currentTime, setCurrentTime] = useState(() => parseFloat(localStorage.getItem('currentTime')) || 0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [dragPosition, setDragPosition] = useState(0);
+
+  useLocalStorageSync({
+    volume,
+    currentTime,
+  });
 
   const handleVolumeChange = e => {
     const newVolume = parseFloat(e.target.value);
@@ -75,20 +81,14 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   useEffect(() => {
     const audioElement = playerRef.current?.audio?.current;
     if (audioElement) {
-      audioElement.volume = volume;
-      const updateTime = () => {
-        localStorage.setItem('currentTime', audioElement.currentTime.toString());
-        localStorage.setItem('timestamp', Date.now().toString());
-      };
-      audioElement.addEventListener('timeupdate', updateTime);
-      audioElement.addEventListener('ended', handleEnded);
-
+      const updateCurrentTime = () => setCurrentTime(audioElement.currentTime.toString());
+      audioElement.addEventListener('timeupdate', updateCurrentTime);
+  
       return () => {
-        audioElement.removeEventListener('timeupdate', updateTime);
-        audioElement.removeEventListener('ended', handleEnded);
+        audioElement.removeEventListener('timeupdate', updateCurrentTime);
       };
     }
-  }, [volume, handleEnded]);
+  }, [handleEnded]);
 
   useEffect(() => {
     if (currentBeat && currentBeat.audio) {
