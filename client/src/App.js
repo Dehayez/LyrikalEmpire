@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
-import { isMobileOrTablet } from './utils';
+import { isMobileOrTablet, getInitialState } from './utils';
 import { handlePlay, handlePrev, useSort, useDragAndDrop, useLocalStorageSync } from './hooks';
 import { useBeat } from './contexts';
 
+import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
 import NotFound from './components/NotFound';
 
@@ -17,14 +17,14 @@ function App() {
   const { beats, setBeats, setRefreshBeats } = useBeat();
   const { isDraggingOver, droppedFiles, clearDroppedFiles, setRefresh, refresh } = useDragAndDrop(setRefreshBeats);
 
-  const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
+  const [viewState, setViewState] = useState(() => getInitialState('lastView', 'queue'));
   
-  const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
-  const [selectedBeat, setSelectedBeat] = useState(() => {const item = localStorage.getItem('selectedBeat');return item && item !== "undefined" ? JSON.parse(item) : null;});
+  const [currentBeat, setCurrentBeat] = useState(() => getInitialState('currentBeat', null));
+  const [selectedBeat, setSelectedBeat] = useState(() => getInitialState('selectedBeat', null));
   const { sortedItems: sortedBeats, sortConfig } = useSort(beats);
   
   const [queue, setQueue] = useState([]);
-  const [customQueue, setCustomQueue] = useState(() => {const savedQueue = localStorage.getItem('customQueue');return savedQueue ? JSON.parse(savedQueue) : [];});
+  const [customQueue, setCustomQueue] = useState(() => getInitialState('customQueue', []));
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
@@ -37,12 +37,12 @@ function App() {
   const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
-  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isLeftPanelVisible') || 'false'));
-  const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => JSON.parse(localStorage.getItem('isRightPanelVisible') || 'false'));
+  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => getInitialState('isLeftPanelVisible', false));
+  const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => getInitialState('isRightPanelVisible', false));
   
   const [volume, setVolume] = useState(1.0);
-  const [shuffle, setShuffle] = useState(() => JSON.parse(localStorage.getItem('shuffle') || 'false'));
-  const [repeat, setRepeat] = useState(() => localStorage.getItem('repeat') || 'Disabled Repeat');
+  const [shuffle, setShuffle] = useState(() => getInitialState('shuffle', false));
+  const [repeat, setRepeat] = useState(() => getInitialState('repeat', 'Disabled Repeat'));
   
   useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
@@ -90,7 +90,7 @@ function App() {
   }
 
   const updateHistory = (playedBeat) => {
-    const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');
+    const history = getInitialState('playedBeatsHistory', []);
     const updatedHistory = [playedBeat, ...history].slice(0, 100);
     localStorage.setItem('playedBeatsHistory', JSON.stringify(updatedHistory));
   };
