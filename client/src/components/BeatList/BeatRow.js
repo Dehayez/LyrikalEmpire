@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import { useBpmHandlers } from '../../hooks';
 import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services';
-import { isMobileOrTablet } from '../../utils';
+import { isMobileOrTablet, formatDuration } from '../../utils';
 import { usePlaylist, useBeat, useData } from '../../contexts';
 
 import BeatAnimation from './BeatAnimation';
@@ -206,13 +206,6 @@ const BeatRow = ({
       console.error('Error adding beats to playlist:', error);
     }
   };
-
-  function formatDuration(durationInSeconds) {
-    const totalSeconds = Math.round(durationInSeconds);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  }
 
   useEffect(() => {
     const contextMenuElement = document.getElementById('context-menu');
