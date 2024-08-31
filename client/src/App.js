@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
 import { isMobileOrTablet } from './utils';
-import { handlePlay, handlePrev, useSort, useDragAndDrop } from './hooks';
+import { handlePlay, handlePrev, useSort, useDragAndDrop, useLocalStorageSync } from './hooks';
 import { useBeat } from './contexts';
 
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
@@ -46,18 +46,8 @@ function App() {
   
   useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
-  useEffect(() => {
-    localStorage.setItem('shuffle', shuffle);
-    localStorage.setItem('repeat', repeat);
-    localStorage.setItem('currentBeat', JSON.stringify(currentBeat));
-    localStorage.setItem('selectedBeat', JSON.stringify(selectedBeat));
-    localStorage.setItem('isLeftPanelVisible', isLeftPanelVisible);
-    localStorage.setItem('isRightPanelVisible', isRightPanelVisible);
-    localStorage.setItem('lastView', viewState);
-    localStorage.setItem('customQueue', JSON.stringify(customQueue));
-    localStorage.setItem('sortConfig', JSON.stringify(sortConfig));
-  }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig]);
-  
+  useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig });
+
   useEffect(() => {
     const timer = setTimeout(() => {
       document.querySelector('.app').classList.remove('app--hidden');
@@ -98,7 +88,6 @@ function App() {
     }
     setQueue(queue);
   }
-
 
   const updateHistory = (playedBeat) => {
     const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');

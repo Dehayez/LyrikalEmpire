@@ -5,7 +5,7 @@ import { toast, Slide } from 'react-toastify';
 
 import { usePlaylist, useBeat, useData } from '../../contexts';
 import { isMobileOrTablet } from '../../utils';
-import { useHandleBeatClick, useBeatActions, useSort } from '../../hooks';
+import { useHandleBeatClick, useBeatActions, useSort, useLocalStorageSync } from '../../hooks';
 import { getBeatsByAssociation } from '../../services/beatService';
 
 import BeatRow from './BeatRow';
@@ -100,6 +100,16 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     return savedState ? JSON.parse(savedState) : false;
   });
 
+  useLocalStorageSync({ 
+    mode, 
+    isFilterDropdownVisible, 
+    searchText 
+  });
+  
+  useEffect(() => {
+    localStorage.setItem(urlKey, currentPage);
+  }, [currentPage, urlKey]);
+
   const toggleFilterDropdown = () => {
     setIsFilterDropdownVisible(prevState => !prevState);
   };
@@ -142,7 +152,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const handleSearchChange = (e) => {
     const newValue = e.target.value;
     setSearchText(newValue);
-    localStorage.setItem('searchText', newValue);
   
     if (newValue && searchText === '') {
       setPreviousPage(currentPage);
@@ -271,18 +280,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats, handlePlayPause, isInputFocused]);
-  
-  useEffect(() => {
-    localStorage.setItem('mode', mode);
-  }, [mode]);
-
-  useEffect(() => {
-    localStorage.setItem(urlKey, currentPage);
-  }, [currentPage, urlKey]);
-
-  useEffect(() => {
-    localStorage.setItem('isFilterDropdownVisible', JSON.stringify(isFilterDropdownVisible));
-  }, [isFilterDropdownVisible]);
 
   return (
     <div ref={containerRef} className="beat-list">
