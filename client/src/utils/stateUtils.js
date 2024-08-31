@@ -1,6 +1,10 @@
 export const getInitialState = (key, defaultState) => {
   const savedState = localStorage.getItem(key);
-  return savedState ? JSON.parse(savedState) : defaultState;
+  try {
+    return savedState ? JSON.parse(savedState) : defaultState;
+  } catch (e) {
+    return savedState || defaultState;
+  }
 };
 
 export const getInitialStateForFilters = (filters, initialValue) => {

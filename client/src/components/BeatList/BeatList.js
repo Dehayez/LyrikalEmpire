@@ -4,7 +4,7 @@ import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedShar
 import { toast, Slide } from 'react-toastify';
 
 import { usePlaylist, useBeat, useData } from '../../contexts';
-import { isMobileOrTablet } from '../../utils';
+import { isMobileOrTablet, getInitialState } from '../../utils';
 import { useHandleBeatClick, useBeatActions, useSort, useLocalStorageSync } from '../../hooks';
 import { getBeatsByAssociation } from '../../services/beatService';
 
@@ -24,9 +24,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const containerRef = useRef(null);
 
   const location = useLocation();
-  const [searchText, setSearchText] = useState(localStorage.getItem('searchText') || '');  
+  const [searchText, setSearchText] = useState(() => getInitialState('searchText', ''));
   const urlKey = `currentPage_${location.pathname}`;
-  const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
+  const [currentPage, setCurrentPage] = useState(() => getInitialState(urlKey, 1));
   const [previousPage, setPreviousPage] = useState(currentPage);
   
   const { genres, moods, keywords, features } = useData();
@@ -93,12 +93,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, handleQueueUpdate
   const [isHovering, setIsHovering] = useState(false);
   const [headerOpacity, setHeaderOpacity] = useState(1);
   const [hoverPosition, setHoverPosition] = useState(null);
-  const [isSearchVisible, setIsSearchVisible] = useState(localStorage.getItem('searchText') ? true : false);
-  const [mode, setMode] = useState(() => localStorage.getItem('mode') || 'edit');
-  const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(() => {
-    const savedState = localStorage.getItem('isFilterDropdownVisible');
-    return savedState ? JSON.parse(savedState) : false;
-  });
+  const [isSearchVisible, setIsSearchVisible] = useState(() => getInitialState('searchText', '') !== '');
+  const [mode, setMode] = useState(() => getInitialState('mode', 'edit'));
+  const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(() => getInitialState('isFilterDropdownVisible', false));
 
   useLocalStorageSync({ 
     mode, 
