@@ -41,14 +41,6 @@ const BeatRow = ({
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
   const [isInputFocused, setInputFocused] = useState(false);
   const [disableFocus, setDisableFocus] = useState(false);
-
-  useEffect(() => {
-    if (mode !== 'edit') {
-      setDisableFocus(true);
-    } else {
-      setDisableFocus(false);
-    }
-  }, [mode]);
   
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
@@ -146,32 +138,6 @@ const BeatRow = ({
     drag(drop(ref));
   }
 
-  useEffect(() => {
-    const contextMenuElement = document.getElementById('context-menu');
-    let hideTimeoutId;
-  
-    const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
-    const manageContextMenuVisibility = (show) => {
-      window[`${show ? 'add' : 'remove'}EventListener`]('click', hideContextMenu);
-      toggleScroll(show);
-      if (contextMenuElement) {
-        ['mouseleave', 'mouseenter'].forEach(event => {
-          contextMenuElement[`${show ? 'add' : 'remove'}EventListener`](event, eventHandlers[event]);
-        });
-      }
-    };
-  
-    const hideContextMenu = () => setActiveContextMenu(null);
-    const eventHandlers = {
-      mouseleave: () => hideTimeoutId = setTimeout(hideContextMenu, 0),
-      mouseenter: () => clearTimeout(hideTimeoutId)
-    };
-  
-    manageContextMenuVisibility(activeContextMenu === beat.id);
-  
-    return () => manageContextMenuVisibility(false);
-  }, [activeContextMenu, beat.id]);
-
   const handleAddToCustomQueueClick = () => {
     addToCustomQueue(selectedBeats);
   };
@@ -247,6 +213,40 @@ const BeatRow = ({
     const seconds = totalSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
+
+  useEffect(() => {
+    const contextMenuElement = document.getElementById('context-menu');
+    let hideTimeoutId;
+  
+    const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
+    const manageContextMenuVisibility = (show) => {
+      window[`${show ? 'add' : 'remove'}EventListener`]('click', hideContextMenu);
+      toggleScroll(show);
+      if (contextMenuElement) {
+        ['mouseleave', 'mouseenter'].forEach(event => {
+          contextMenuElement[`${show ? 'add' : 'remove'}EventListener`](event, eventHandlers[event]);
+        });
+      }
+    };
+  
+    const hideContextMenu = () => setActiveContextMenu(null);
+    const eventHandlers = {
+      mouseleave: () => hideTimeoutId = setTimeout(hideContextMenu, 0),
+      mouseenter: () => clearTimeout(hideTimeoutId)
+    };
+  
+    manageContextMenuVisibility(activeContextMenu === beat.id);
+  
+    return () => manageContextMenuVisibility(false);
+  }, [activeContextMenu, beat.id]);
+
+  useEffect(() => {
+    if (mode !== 'edit') {
+      setDisableFocus(true);
+    } else {
+      setDisableFocus(false);
+    }
+  }, [mode]);
 
   return (
     <tr
