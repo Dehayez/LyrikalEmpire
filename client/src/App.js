@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
+import { ToastContainer } from 'react-toastify';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
 import { isMobileOrTablet } from './utils';
-import { addBeat } from './services';
-import { handlePlay, handlePrev, useSort } from './hooks';
+import { handlePlay, handlePrev, useSort, useDragAndDrop } from './hooks';
 import { useBeat } from './contexts';
 
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
@@ -17,13 +15,13 @@ import './App.scss';
 
 function App() {
   const { beats, setBeats, setRefreshBeats } = useBeat();
+  const { isDraggingOver, droppedFiles, clearDroppedFiles, setRefresh, refresh } = useDragAndDrop(setRefreshBeats);
 
-  const [refresh, setRefresh] = useState(false);
   const [viewState, setViewState] = useState(localStorage.getItem('lastView') || "queue");
   
   const [currentBeat, setCurrentBeat] = useState(() => JSON.parse(localStorage.getItem('currentBeat') || 'null'));
   const [selectedBeat, setSelectedBeat] = useState(() => {const item = localStorage.getItem('selectedBeat');return item && item !== "undefined" ? JSON.parse(item) : null;});
-  const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(beats);
+  const { sortedItems: sortedBeats, sortConfig } = useSort(beats);
   
   const [queue, setQueue] = useState([]);
   const [customQueue, setCustomQueue] = useState(() => {const savedQueue = localStorage.getItem('customQueue');return savedQueue ? JSON.parse(savedQueue) : [];});
@@ -32,9 +30,7 @@ function App() {
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   
   const [isOpen, setIsOpen] = useState(false);
-  const [showToast, setShowToast] = useState(false);
   const [allowHover, setAllowHover] = useState(true);
-  const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const hoverRefLeft = useRef(false);
   const hoverRefRight = useRef(false);
@@ -48,9 +44,6 @@ function App() {
   const [shuffle, setShuffle] = useState(() => JSON.parse(localStorage.getItem('shuffle') || 'false'));
   const [repeat, setRepeat] = useState(() => localStorage.getItem('repeat') || 'Disabled Repeat');
   
-  const [droppedFiles, setDroppedFiles] = useState([]);
-  const [activeUploads, setActiveUploads] = useState(0);
-
   useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
   useEffect(() => {
@@ -66,18 +59,6 @@ function App() {
   }, [shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig]);
   
   useEffect(() => {
-    window.addEventListener('dragover', handleDragOver);
-    window.addEventListener('drop', handleDrop);
-    window.addEventListener('dragleave', handleDragLeave);
-    
-    return () => {
-      window.removeEventListener('dragover', handleDragOver);
-      window.removeEventListener('drop', handleDrop);
-      window.removeEventListener('dragleave', handleDragLeave);
-    };
-  }, []);
-  
-  useEffect(() => {
     const timer = setTimeout(() => {
       document.querySelector('.app').classList.remove('app--hidden');
     }, 400); 
@@ -85,12 +66,6 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
   
-  useEffect(() => {
-    if (activeUploads === 0 && showToast) {
-      setRefresh(!refresh); 
-    }
-  }, [activeUploads, showToast]); 
-
   const updateBeat = (id, newData) => {
     setBeats(currentBeats =>
       currentBeats.map(beat => beat.id === id ? { ...beat, ...newData } : beat)
@@ -124,98 +99,6 @@ function App() {
     setQueue(queue);
   }
 
-  function handleDragOver(e) {
-    e.preventDefault();
-    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-      const isFileDrag = Array.from(e.dataTransfer.items).some(item => item.kind === 'file');
-      if (isFileDrag) {
-        setIsDraggingOver(true);
-      }
-    }
-  }
-
-  function handleDrop(e) {
-    e.preventDefault();
-    setIsDraggingOver(false);
-  
-    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-      const files = Array.from(e.dataTransfer.files);
-      const audioFiles = files.filter(file => file.type.startsWith('audio/'));
-      const nonAudioFiles = files.filter(file => !file.type.startsWith('audio/'));
-  
-      autoSubmitFiles(audioFiles);
-  
-      if (nonAudioFiles.length > 0) {
-        setShowToast(true);
-        const message = nonAudioFiles.length === 1
-          ? `<strong>${nonAudioFiles[0].name} is not uploaded</strong><br /> Only audio files are accepted`
-          : `<strong>${nonAudioFiles.length} files are not uploaded</strong><br /> Only audio files are accepted`;
-  
-        toast.dark(
-          <div dangerouslySetInnerHTML={{ __html: message }} />, {
-            autoClose: 3000,
-            pauseOnFocusLoss: false,
-            icon: <IoCloseSharp size={24} />,
-            className: "Toastify__toast--warning",
-          }
-        );
-      }
-    }
-  }
-
-  function handleDragLeave(e) {
-    e.preventDefault();
-    setIsDraggingOver(false);
-  }
-
-  const clearDroppedFiles = () => {
-    setDroppedFiles([]);
-  };
-
-  const getAudioDuration = (file) => {
-    return new Promise((resolve, reject) => {
-      const audio = new Audio();
-      audio.src = URL.createObjectURL(file);
-      audio.addEventListener('loadedmetadata', () => {
-        resolve(audio.duration);
-        URL.revokeObjectURL(audio.src);
-      });
-      audio.onerror = () => reject(new Error('Failed to load audio metadata'));
-    });
-  };
-  
-  const autoSubmitFiles = async (files) => {
-    setActiveUploads(activeUploads => activeUploads + files.length);
-    files.forEach(async (file) => {
-      try {
-        const duration = await getAudioDuration(file);
-        const beat = {
-          title: file.name.replace(/\.[^/.]+$/, ""),
-          duration: duration,
-        };
-        const data = await addBeat(beat, file);
-        setShowToast(true);
-        toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
-          autoClose: 3000,
-          pauseOnFocusLoss: false,
-          icon: <IoCheckmarkSharp size={24} />,
-          className: "Toastify__toast--success",
-        });
-        setRefreshBeats(prev => !prev);
-      } catch (error) {
-        toast.dark(
-          <div><strong>Error:</strong> {error.message}</div>, {
-            autoClose: 5000,
-            pauseOnFocusLoss: false,
-            icon: <IoCloseSharp size={24} />,
-            className: "Toastify__toast--warning",
-          }
-        );
-      } finally {
-        setActiveUploads(activeUploads => activeUploads - 1);
-      }
-    });
-  };
 
   const updateHistory = (playedBeat) => {
     const history = JSON.parse(localStorage.getItem('playedBeatsHistory') || '[]');
