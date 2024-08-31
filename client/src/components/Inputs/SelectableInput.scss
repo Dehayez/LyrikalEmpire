@@ -41,6 +41,7 @@
         overflow: auto;
         scroll-behavior: smooth;
         @include hide-scrollbar;
+        min-width: 100px;
 
         &--new-beat {
             background-color: $color-gray-dark;
