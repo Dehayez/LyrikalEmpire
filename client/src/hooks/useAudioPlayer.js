@@ -130,6 +130,49 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     }
   }, [onPrev, playerRef]);
 
+  const handlePlay = (beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed) => {
+    setSelectedBeat(beat);
+    setBeats(beats);
+    if (!beat) {
+      setCurrentBeat(null);
+      setIsPlaying(false);
+    } else if (currentBeat && currentBeat.id === beat.id) {
+      setIsPlaying(play);
+    } else {
+      setCurrentBeat(beat);
+      setIsPlaying(true);
+      setHasBeatPlayed(true);
+    }
+  };
+
+  const handleNext = (repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlay, setIsPlaying) => {
+    let nextIndex;
+    if (shuffle) {
+      do {
+        nextIndex = Math.floor(Math.random() * beats.length);
+      } while (nextIndex === lastPlayedIndex && beats.length > 1);
+    } else {
+      const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
+      nextIndex = (currentIndex + 1) % beats.length;
+    }
+    setLastPlayedIndex(nextIndex);
+    if (repeat === 'Disabled Repeat' && nextIndex === 0) {
+      handlePlay(beats[nextIndex], true, beats);
+      setTimeout(() => setIsPlaying(false), 1);
+    } else {
+      handlePlay(beats[nextIndex], true, beats);
+    }
+  };
+
+  const handlePrev = (beats, currentBeat, handlePlay, repeat, setRepeat) => {
+    if (repeat === 'Repeat One') {
+      setRepeat('Repeat');
+    }
+    const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
+    const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
+    handlePlay(beats[prevIndex], true, beats);
+  };
+
   return {
     playerRef,
     volume,
@@ -140,5 +183,8 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     handleTouchMove,
     handleTouchEnd,
     handlePrevClick,
+    handlePlay,
+    handleNext,
+    handlePrev,
   };
 };

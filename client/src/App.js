@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import { isMobileOrTablet, getInitialState } from './utils';
-import { handlePlay, handlePrev, useSort, useDragAndDrop, useLocalStorageSync } from './hooks';
+import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer } from './hooks';
 import { useBeat } from './contexts';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
@@ -43,6 +43,41 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [shuffle, setShuffle] = useState(() => getInitialState('shuffle', false));
   const [repeat, setRepeat] = useState(() => getInitialState('repeat', 'Disabled Repeat'));
+
+  const handleNextWrapper = () => {
+    if (customQueue.length > 0) {
+      const nextCustomBeat = customQueue[0];
+      handlePlayWrapper(nextCustomBeat, true, beats);
+      setCustomQueue(customQueue.slice(1));
+    } else {
+      const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+      const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
+      const nextBeat = queue[nextIndex];
+      handlePlayWrapper(nextBeat, true, beats);
+    }
+    if (repeat === 'Repeat One') {
+      setRepeat('Repeat');
+    }
+  };
+  
+  const handlePrevWrapper = () => handlePrev(beats, currentBeat, handlePlayWrapper, repeat, setRepeat);
+
+  const {
+    handlePlay,
+    handlePrev,
+    handleNext,
+  } = useAudioPlayer({
+    currentBeat,
+    setCurrentBeat,
+    isPlaying,
+    setIsPlaying,
+    onNext: handleNextWrapper,
+    onPrev: handlePrevWrapper,
+    shuffle,
+    setShuffle,
+    repeat,
+    setRepeat,
+  });
   
   useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
@@ -99,24 +134,6 @@ function App() {
     handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
     updateHistory(beat);
   };
-
-  const handleNextWrapper = () => {
-    if (customQueue.length > 0) {
-      const nextCustomBeat = customQueue[0];
-      handlePlayWrapper(nextCustomBeat, true, beats);
-      setCustomQueue(customQueue.slice(1));
-    } else {
-      const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
-      const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
-      const nextBeat = queue[nextIndex];
-      handlePlayWrapper(nextBeat, true, beats);
-    }
-    if (repeat === 'Repeat One') {
-      setRepeat('Repeat');
-    }
-  };
-
-  const handlePrevWrapper = () => handlePrev(beats, currentBeat, handlePlayWrapper, repeat, setRepeat);
 
   const handleQueueUpdateAfterDelete = (deletedBeatId) => {
     const updatedQueue = queue.filter(beat => beat.id !== deletedBeatId);
