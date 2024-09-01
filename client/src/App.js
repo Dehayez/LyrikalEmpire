@@ -59,7 +59,7 @@ function App() {
       setRepeat('Repeat');
     }
   };
-  
+
   const handlePrevWrapper = () => handlePrev(beats, currentBeat, handlePlayWrapper, repeat, setRepeat);
 
   const {
@@ -133,26 +133,6 @@ function App() {
   const handlePlayWrapper = (beat, play, beats) => {
     handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
     updateHistory(beat);
-  };
-
-  const handleQueueUpdateAfterDelete = (deletedBeatId) => {
-    const updatedQueue = queue.filter(beat => beat.id !== deletedBeatId);
-    const updatedBeats = beats.filter(beat => beat.id !== deletedBeatId);
-    setQueue(updatedQueue);
-    setBeats(updatedBeats);
-    setRefresh(!refresh);
-  
-    if (currentBeat && currentBeat.id === deletedBeatId) {
-      const nextBeatIndex = updatedQueue.length > 0 ? 0 : -1;
-      const nextBeat = nextBeatIndex !== -1 ? updatedQueue[nextBeatIndex] : null;
-  
-      if (nextBeat) {
-        setCurrentBeat(nextBeat);
-      } else {
-        setCurrentBeat(null);
-        setIsPlaying(false);
-      }
-    }
   };
 
   const handleMouseEnterLeft = () => {
@@ -259,7 +239,6 @@ function App() {
                   onPlay={handlePlayWrapper} 
                   selectedBeat={selectedBeat} 
                   isPlaying={isPlaying} 
-                  handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
                   currentBeat={currentBeat} 
                   addToCustomQueue={addToCustomQueue}
                   onBeatClick={handleBeatClick} 
@@ -275,7 +254,6 @@ function App() {
                     onPlay={handlePlayWrapper} 
                     selectedBeat={selectedBeat} 
                     isPlaying={isPlaying} 
-                    handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete} 
                     currentBeat={currentBeat} 
                     sortedBeats={sortedBeats} 
                     addToCustomQueue={addToCustomQueue}
