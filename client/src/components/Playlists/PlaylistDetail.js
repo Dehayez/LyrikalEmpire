@@ -25,6 +25,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
 
   const refreshPlaylist = async () => {
     const updatedPlaylist = await getPlaylistById(id);
+    console.log('updatedPlaylist', updatedPlaylist);
     setPlaylist(updatedPlaylist);
     updatePlaylist(updatedPlaylist);
     const updatedBeats = await getBeatsByPlaylistId(id);
@@ -45,8 +46,13 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
     const fetchPlaylistDetails = async () => {
       try {
         const playlistData = await getPlaylistById(id);
-        setPlaylist(playlistData);
-        
+        console.log('playlistData', playlistData);
+        if (Array.isArray(playlistData) && playlistData.length > 0) {
+          setPlaylist(playlistData[0]);
+        } else {
+          setPlaylist(playlistData);
+        }
+  
         const beatsData = await getBeatsByPlaylistId(id);
         const sortedBeats = beatsData.sort((a, b) => a.beat_order - b.beat_order);
         setBeats(sortedBeats);
