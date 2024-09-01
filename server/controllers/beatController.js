@@ -77,6 +77,7 @@ const updateBeat = (req, res) => {
 const deleteBeat = (req, res) => {
   const { id } = req.params;
   const queries = [
+    { query: 'DELETE FROM playlists_beats WHERE beat_id = ?', params: [id] },
     { query: 'DELETE FROM beats_genres WHERE beat_id = ?', params: [id] },
     { query: 'DELETE FROM beats_moods WHERE beat_id = ?', params: [id] },
     { query: 'DELETE FROM beats_keywords WHERE beat_id = ?', params: [id] },
