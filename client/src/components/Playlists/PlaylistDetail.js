@@ -14,7 +14,7 @@ import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 
 import './PlaylistDetail.scss';
 
-const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfterDelete, currentBeat, sortedBeats, addToCustomQueue, onBeatClick, onUpdate }) => {
+const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBeats, addToCustomQueue, onBeatClick, onUpdate }) => {
   const { id } = useParams();
   const { playlists, updatePlaylist } = usePlaylist();
 
@@ -110,7 +110,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, handleQueueUpdateAfte
                   onPlay={onPlay}
                   selectedBeat={selectedBeat}
                   isPlaying={isPlaying}
-                  handleQueueUpdateAfterDelete={handleQueueUpdateAfterDelete}
                   currentBeat={currentBeat}
                   sortedBeats={sortedBeats}
                   addToCustomQueue={addToCustomQueue}
