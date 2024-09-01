@@ -39,10 +39,10 @@ const getBeats = (req, res) => {
 };
 
 const createBeat = (req, res) => {
-  const { title, bpm, genre, tierlist, mood, keyword, feature, filePath, duration } = req.body;
+  const { title, bpm, tierlist, filePath, duration } = req.body;
   const createdAt = new Date();
-  const query = 'INSERT INTO beats (title, audio, bpm, genre, tierlist, mood, keyword, feature, created_at, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  const params = [title, filePath, bpm, genre, tierlist, mood, keyword, feature, createdAt, duration];
+  const query = 'INSERT INTO beats (title, audio, bpm, tierlist, created_at, duration) VALUES (?, ?, ?, ?, ?, ?)';
+  const params = [title, filePath, bpm, tierlist, createdAt, duration];
   handleQuery(query, params, res, 'Beat added successfully');
 };
 
