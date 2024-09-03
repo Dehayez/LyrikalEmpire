@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const newFileName = uniqueSuffix + '-' + file.originalname;
     cb(null, newFileName);
-    req.body.filePath = '/' + path.join('uploads', newFileName);
+    req.body.filePath = newFileName;
   }
 });
 

@@ -86,12 +86,10 @@ const deleteBeat = async (req, res) => {
     const filePath = results[0]?.audio;
 
     if (filePath) {
-      const fullPath = path.join(__dirname, '../../client/public', filePath);
+      const fullPath = path.join(__dirname, '../../client/public/uploads', filePath);
       fs.unlink(fullPath, (err) => {
         if (err) {
           console.error(`Failed to delete audio file at path: ${fullPath}`, err);
-        } else {
-          console.log(`Successfully deleted audio file at path: ${fullPath}`);
         }
       });
     }
