@@ -15,10 +15,8 @@ export const useBeatActions = () => {
       : value;
     const updatedBeat = { ...beats.find(beat => beat.id === id), [key]: updatedValue };
     
-    // Update the database
     await updateBeat(id, updatedBeat);
     
-    // Update the local state
     const updatedBeats = beats.map(beat => beat.id === id ? updatedBeat : beat);
     setBeats(updatedBeats);
     setGlobalBeats(updatedBeats);

@@ -1,4 +1,7 @@
-const { handleQuery, handleTransaction } = require('../helpers/dbHelpers');
+const fs = require('fs');
+const path = require('path');
+const { handleTransaction, handleQuery } = require('../helpers/dbHelpers');
+const db = require('../config/db'); // Import the db module
 
 const tableMap = {
   genres: 'beats_genres',
@@ -74,17 +77,39 @@ const updateBeat = (req, res) => {
   handleQuery(query, params, res, 'Beat updated successfully');
 };
 
-const deleteBeat = (req, res) => {
+const deleteBeat = async (req, res) => {
   const { id } = req.params;
-  const queries = [
-    { query: 'DELETE FROM playlists_beats WHERE beat_id = ?', params: [id] },
-    { query: 'DELETE FROM beats_genres WHERE beat_id = ?', params: [id] },
-    { query: 'DELETE FROM beats_moods WHERE beat_id = ?', params: [id] },
-    { query: 'DELETE FROM beats_keywords WHERE beat_id = ?', params: [id] },
-    { query: 'DELETE FROM beats_features WHERE beat_id = ?', params: [id] },
-    { query: 'DELETE FROM beats WHERE id = ?', params: [id] }
-  ];
-  handleTransaction(queries, res, 'Beat and all associated data deleted successfully');
+  console.log(`Attempting to delete beat with id: ${id}`);
+
+  try {
+    const [results] = await db.query('SELECT audio FROM beats WHERE id = ?', [id]);
+    const filePath = results[0]?.audio;
+
+    if (filePath) {
+      const fullPath = path.join(__dirname, '../../client/public', filePath);
+      fs.unlink(fullPath, (err) => {
+        if (err) {
+          console.error(`Failed to delete audio file at path: ${fullPath}`, err);
+        } else {
+          console.log(`Successfully deleted audio file at path: ${fullPath}`);
+        }
+      });
+    }
+
+    const queries = [
+      { query: 'DELETE FROM playlists_beats WHERE beat_id = ?', params: [id] },
+      { query: 'DELETE FROM beats_genres WHERE beat_id = ?', params: [id] },
+      { query: 'DELETE FROM beats_moods WHERE beat_id = ?', params: [id] },
+      { query: 'DELETE FROM beats_keywords WHERE beat_id = ?', params: [id] },
+      { query: 'DELETE FROM beats_features WHERE beat_id = ?', params: [id] },
+      { query: 'DELETE FROM beats WHERE id = ?', params: [id] }
+    ];
+
+    handleTransaction(queries, res, 'Beat and all associated data deleted successfully');
+  } catch (error) {
+    console.error(`Failed to delete beat with id: ${id}`, error);
+    res.status(500).json({ error: 'An error occurred while deleting the beat' });
+  }
 };
 
 const addAssociation = (req, res) => {
