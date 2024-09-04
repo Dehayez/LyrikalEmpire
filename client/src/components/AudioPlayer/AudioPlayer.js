@@ -21,12 +21,14 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     handlePrevClick,
   } = useAudioPlayer({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat });
 
+  const audioSrc = currentBeat ? `/uploads/${currentBeat.audio}` : '';
+
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       <H5AudioPlayer
           className="smooth-progress-bar smooth-progress-bar--mobile"
           autoPlayAfterSrcChange={true}
-          src={currentBeat ? currentBeat.audio : ''}
+          src={audioSrc}
           ref={playerRef}
           customProgressBarSection={[
               RHAP_UI.CURRENT_TIME,
@@ -50,7 +52,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         <H5AudioPlayer
           className="smooth-progress-bar"
           autoPlayAfterSrcChange={true}
-          src={currentBeat ? currentBeat.audio : ''}
+          src={audioSrc}
           ref={playerRef}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
