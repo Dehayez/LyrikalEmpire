@@ -87,6 +87,7 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
     <div className="history">
        <ul className='history__list'>
           {history.map((beat, index) => (
+              beat && beat.id ? (
               <li 
                 key={index}
                 className={`history__list-item ${currentBeat && beat.id === currentBeat.id ? 'history__list-item--playing' : ''}`}
@@ -150,7 +151,7 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
                   />
                 )}
               </li>
-              
+               ) : null
           ))}
         </ul>
     </div>
