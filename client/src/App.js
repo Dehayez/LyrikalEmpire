@@ -78,18 +78,8 @@ function App() {
     repeat,
     setRepeat,
   });
-  
-  useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
   useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig });
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      document.querySelector('.app').classList.remove('app--hidden');
-    }, 400); 
-    
-    return () => clearTimeout(timer);
-  }, []);
   
   const updateBeat = (id, newData) => {
     setBeats(currentBeats =>
@@ -105,7 +95,14 @@ function App() {
     );
   };
 
-  function logQueue(beats, shuffle, currentBeat) {
+  const addToCustomQueue = (beatOrBeats) => {
+    setCustomQueue((prevQueue) => [
+      ...prevQueue,
+      ...(Array.isArray(beatOrBeats) ? beatOrBeats : [beatOrBeats]),
+    ]);
+  };
+
+  const logQueue = (beats, shuffle, currentBeat) => {
     let queue = [...beats];
     if (shuffle) {
       for (let i = queue.length - 1; i > 0; i--) {
@@ -123,6 +120,8 @@ function App() {
     }
     setQueue(queue);
   }
+  
+  useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
 
   const updateHistory = (playedBeat) => {
     const history = getInitialState('playedBeatsHistory', []);
@@ -144,13 +143,13 @@ function App() {
     setViewState(view);
     localStorage.setItem('lastView', view);
   };
-
-  const addToCustomQueue = (beatOrBeats) => {
-    setCustomQueue((prevQueue) => [
-      ...prevQueue,
-      ...(Array.isArray(beatOrBeats) ? beatOrBeats : [beatOrBeats]),
-    ]);
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      document.querySelector('.app').classList.remove('app--hidden');
+    }, 400); 
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
       <div className="app app--hidden">
