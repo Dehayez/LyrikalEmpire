@@ -6,3 +6,4 @@ export { useSort } from './useSort';
 export { useDragAndDrop } from './useDragAndDrop';
 export { useLocalStorageSync } from './useLocalStorageSync';
 export { useAudioPlayer } from './useAudioPlayer';
+export { usePanels } from './usePanels';

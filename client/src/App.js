@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import { isMobileOrTablet, getInitialState } from './utils';
-import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer } from './hooks';
+import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
 import { useBeat } from './contexts';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
@@ -18,31 +18,31 @@ function App() {
   const { isDraggingOver, droppedFiles, clearDroppedFiles, setRefresh, refresh } = useDragAndDrop(setRefreshBeats);
 
   const [viewState, setViewState] = useState(() => getInitialState('lastView', 'queue'));
-  
   const [currentBeat, setCurrentBeat] = useState(() => getInitialState('currentBeat', null));
   const [selectedBeat, setSelectedBeat] = useState(() => getInitialState('selectedBeat', null));
   const { sortedItems: sortedBeats, sortConfig } = useSort(beats);
-  
   const [queue, setQueue] = useState([]);
   const [customQueue, setCustomQueue] = useState(() => getInitialState('customQueue', []));
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
-  
   const [isOpen, setIsOpen] = useState(false);
-  const [allowHover, setAllowHover] = useState(true);
-
-  const hoverRefLeft = useRef(false);
-  const hoverRefRight = useRef(false);
-  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
-  const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
-  const [isRightDivVisible, setIsRightDivVisible] = useState(false);
-  const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(() => getInitialState('isLeftPanelVisible', false));
-  const [isRightPanelVisible, setIsRightPanelVisible] = useState(() => getInitialState('isRightPanelVisible', false));
-  
   const [volume, setVolume] = useState(1.0);
   const [shuffle, setShuffle] = useState(() => getInitialState('shuffle', false));
   const [repeat, setRepeat] = useState(() => getInitialState('repeat', 'Disabled Repeat'));
+
+  const {
+    isLeftPanelVisible,
+    isRightPanelVisible,
+    isLeftDivVisible,
+    isRightDivVisible,
+    isSidePanelInContent,
+    setIsSidePanelInContent,
+    handleMouseEnterLeft,
+    handleMouseLeaveLeft,
+    handleMouseEnterRight,
+    handleMouseLeaveRight,
+    toggleSidePanel,
+  } = usePanels();
 
   const handleNextWrapper = () => {
     if (customQueue.length > 0) {
@@ -133,46 +133,6 @@ function App() {
   const handlePlayWrapper = (beat, play, beats) => {
     handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
     updateHistory(beat);
-  };
-
-  const handleMouseEnterLeft = () => {
-    if (!allowHover) return;
-    hoverRefLeft.current = true;
-    setIsLeftDivVisible(true);
-  };
-  
-  const handleMouseLeaveLeft = () => {
-    hoverRefLeft.current = false;
-      if (!hoverRefLeft.current) {
-        setIsLeftDivVisible(false);
-      }
-  };
-  
-  const handleMouseEnterRight = () => {
-    if (!allowHover) return;
-    hoverRefRight.current = true;
-    setIsRightDivVisible(true);
-  };
-  
-  const handleMouseLeaveRight = () => {
-    hoverRefRight.current = false;
-      if (!hoverRefRight.current) {
-        setIsRightDivVisible(false);
-      }
-  };
-  
-  const toggleSidePanel = (panel) => {
-    if (panel === 'left') {
-      setIsLeftPanelVisible(!isLeftPanelVisible);
-      setIsLeftDivVisible(!isLeftPanelVisible);
-    } else if (panel === 'right') {
-      setIsRightPanelVisible(!isRightPanelVisible);
-      setIsRightDivVisible(!isRightPanelVisible);
-    }
-    setAllowHover(false);
-    setTimeout(() => {
-      setAllowHover(true);
-    }, 200);
   };
 
   const handleBeatClick = (beat) => {
