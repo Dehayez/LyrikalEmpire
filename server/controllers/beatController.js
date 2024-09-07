@@ -110,6 +110,39 @@ const deleteBeat = async (req, res) => {
   }
 };
 
+const replaceAudio = async (req, res) => {
+  const { id } = req.params;
+  const newAudioFile = req.file;
+
+  if (!newAudioFile) {
+    return res.status(400).json({ error: 'No audio file provided' });
+  }
+
+  try {
+    const [results] = await db.query('SELECT audio FROM beats WHERE id = ?', [id]);
+    const oldFilePath = results[0]?.audio;
+
+    if (oldFilePath) {
+      const fullPath = path.join(__dirname, '../../client/public/uploads', oldFilePath);
+      fs.unlink(fullPath, (err) => {
+        if (err) {
+          console.error(`Failed to delete old audio file at path: ${fullPath}`, err);
+        }
+      });
+    }
+
+    const newFilePath = `uploads/${newAudioFile.filename}`;
+    const query = 'UPDATE beats SET audio = ? WHERE id = ?';
+    const params = [newFilePath, id];
+
+    await db.query(query, params);
+    res.status(200).json({ message: 'Audio replaced successfully', newFilePath });
+  } catch (error) {
+    console.error(`Failed to replace audio for beat with id: ${id}`, error);
+    res.status(500).json({ error: 'An error occurred while replacing the audio' });
+  }
+};
+
 const addAssociation = (req, res) => {
   const { beat_id, association_type } = req.params;
   const { association_id } = req.body;
@@ -172,5 +205,6 @@ module.exports = {
   addAssociation,
   removeAssociation,
   getAssociations,
-  removeAllAssociations
+  removeAllAssociations,
+  replaceAudio
 };

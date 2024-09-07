@@ -45,6 +45,23 @@ export const deleteBeat = async (id) => {
   }
 };
 
+export const replaceAudio = async (beatId, newAudioFile) => {
+  const formData = new FormData();
+  formData.append('audio', newAudioFile, newAudioFile.name);
+
+  try {
+    const { data } = await axios.put(`${API_URL}/${beatId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return data;
+  } catch (error) {
+    console.error('Failed to replace audio:', error);
+    throw error;
+  }
+};
+
 export const addAssociationsToBeat = async (beatId, associationType, associationIds) => {
   try {
     const response = await axios.post(`${API_URL}/${beatId}/${associationType}`, { association_id: associationIds });

@@ -5,7 +5,7 @@ import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, I
 import classNames from 'classnames';
 
 import { useBpmHandlers } from '../../hooks';
-import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services';
+import { addBeatsToPlaylist, getBeatsByPlaylistId, replaceAudio } from '../../services';
 import { isMobileOrTablet, formatDuration } from '../../utils';
 import { usePlaylist, useBeat, useData } from '../../contexts';
 
@@ -205,6 +205,31 @@ const BeatRow = ({
     } catch (error) {
       console.error('Error adding beats to playlist:', error);
     }
+  };
+
+  const handleReplaceAudio = async () => {
+    const newAudioFile = await selectNewAudioFile();
+    if (newAudioFile) {
+      try {
+        await replaceAudio(beat.id, newAudioFile);
+        console.log('Audio replaced successfully');
+      } catch (error) {
+        console.error('Failed to replace audio:', error);
+      }
+    }
+  };
+
+  const selectNewAudioFile = () => {
+    return new Promise((resolve) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'audio/*';
+      input.onchange = (event) => {
+        const file = event.target.files[0];
+        resolve(file);
+      };
+      input.click();
+    });
   };
 
   useEffect(() => {
@@ -453,7 +478,7 @@ const BeatRow = ({
                 iconClass: 'replace-audio',
                 text: 'Replace audio',
                 buttonClass: 'replace-audio',
-                onClick: () => console.log('Replace'),
+                onClick: handleReplaceAudio,
               },
             ]}
           />
