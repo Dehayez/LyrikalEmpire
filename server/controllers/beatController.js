@@ -79,7 +79,6 @@ const updateBeat = (req, res) => {
 
 const deleteBeat = async (req, res) => {
   const { id } = req.params;
-  console.log(`Attempting to delete beat with id: ${id}`);
 
   try {
     const [results] = await db.query('SELECT audio FROM beats WHERE id = ?', [id]);
@@ -111,10 +110,6 @@ const deleteBeat = async (req, res) => {
 };
 
 const replaceAudio = async (req, res) => {
-  console.log('Incoming request:', req.method, req.url);
-  console.log('Request body:', req.body);
-  console.log('Uploaded file:', req.file);
-
   const { id } = req.params;
   const newAudioFile = req.file;
 
