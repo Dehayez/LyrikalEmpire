@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useLocation } from 'react-router-dom';
-import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline } from "react-icons/io5";
+import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline, IoRefreshSharp } from "react-icons/io5";
 import classNames from 'classnames';
 
 import { useBpmHandlers } from '../../hooks';
@@ -447,6 +447,13 @@ const BeatRow = ({
                 text: deleteText,
                 buttonClass: 'delete',
                 onClick: () => openConfirmModal(beat.id),
+              },
+              {
+                icon: IoRefreshSharp,
+                iconClass: 'replace-audio',
+                text: 'Replace audio',
+                buttonClass: 'replace-audio',
+                onClick: () => console.log('Replace'),
               },
             ]}
           />
