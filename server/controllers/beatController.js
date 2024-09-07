@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { handleTransaction, handleQuery } = require('../helpers/dbHelpers');
-const db = require('../config/db'); // Import the db module
+const db = require('../config/db');
 
 const tableMap = {
   genres: 'beats_genres',
