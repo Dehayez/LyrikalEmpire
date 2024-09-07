@@ -50,7 +50,7 @@ export const replaceAudio = async (beatId, newAudioFile) => {
   formData.append('audio', newAudioFile, newAudioFile.name);
 
   try {
-    const { data } = await axios.put(`${API_URL}/${beatId}`, formData, {
+    const { data } = await axios.put(`${API_URL}/${beatId}/audio`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

@@ -111,6 +111,10 @@ const deleteBeat = async (req, res) => {
 };
 
 const replaceAudio = async (req, res) => {
+  console.log('Incoming request:', req.method, req.url);
+  console.log('Request body:', req.body);
+  console.log('Uploaded file:', req.file);
+
   const { id } = req.params;
   const newAudioFile = req.file;
 
@@ -131,12 +135,11 @@ const replaceAudio = async (req, res) => {
       });
     }
 
-    const newFilePath = `uploads/${newAudioFile.filename}`;
+    const newFilePath = `${newAudioFile.filename}`;
     const query = 'UPDATE beats SET audio = ? WHERE id = ?';
     const params = [newFilePath, id];
 
     await db.query(query, params);
-    res.status(200).json({ message: 'Audio replaced successfully', newFilePath });
   } catch (error) {
     console.error(`Failed to replace audio for beat with id: ${id}`, error);
     res.status(500).json({ error: 'An error occurred while replacing the audio' });
