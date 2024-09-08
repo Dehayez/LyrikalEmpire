@@ -51,11 +51,11 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
           await addMood(data);
           fetchMoods();
           break;
-        case 'keywords':
+        case 'keyword':
           await addKeyword(data);
           fetchKeywords();
           break;
-        case 'features':
+        case 'feature':
           await addFeature(data);
           fetchFeatures();
           break;
