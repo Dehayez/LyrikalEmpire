@@ -37,9 +37,9 @@ const Form = ({ title, onClose, onSubmit, placeholder }) => {
                     <h2 className='form__title'>{title}</h2>
                     <form onSubmit={handleSubmit}>
                         <FormInput type="text" id="input" placeholder={placeholder} min={2} maxLength={30} value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
-                        <div className="form__actions">
-                            <Button type="submit" text='Submit'/>
-                            <Button onClick={onClose} text='Cancel'/>
+                        <div className="form__buttons">
+                            <Button type='transparent' onClick={onClose}>Cancel</Button>
+                            <Button type='primary'>Submit</Button>
                         </div>
                     </form>
                 </div>
