@@ -472,18 +472,18 @@ const BeatRow = ({
                 onClick: handleAddToCustomQueueClick,
               },
               {
-                icon: deleteMode === "playlist" ? IoTrashBinOutline : IoRemoveCircleOutline,
-                iconClass: 'delete',
-                text: deleteText,
-                buttonClass: 'delete',
-                onClick: () => openConfirmModal(beat.id),
-              },
-              {
                 icon: IoRefreshSharp,
                 iconClass: 'replace-audio',
                 text: 'Replace audio',
                 buttonClass: 'replace-audio',
                 onClick: handleReplaceAudio,
+              },
+              {
+                icon: deleteMode === "playlist" ? IoTrashBinOutline : IoRemoveCircleOutline,
+                iconClass: 'delete',
+                text: deleteText,
+                buttonClass: 'delete',
+                onClick: () => openConfirmModal(beat.id),
               },
             ]}
           />
