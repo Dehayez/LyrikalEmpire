@@ -24,7 +24,7 @@ export const BeatProvider = ({ children }) => {
     };
 
     fetchBeats();
-  }, []);
+  }, [refreshBeats]);
 
   return (
     <BeatContext.Provider value={{ allBeats, beats, setBeats, setGlobalBeats: setAllBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat, setRefreshBeats }}>
