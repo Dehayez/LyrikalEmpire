@@ -39,39 +39,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
   const beats = externalBeats || allBeats;
   const [filteredBeats, setFilteredBeats] = useState(beats);
-
-  useEffect(() => {
-    const fetchBeatsByAssociation = async () => {
-      const associations = [
-        { type: 'genres', selected: selectedGenre },
-        { type: 'moods', selected: selectedMood },
-        { type: 'keywords', selected: selectedKeyword },
-        { type: 'features', selected: selectedFeature }
-      ];
-  
-      const activeAssociations = associations.filter(assoc => assoc.selected.length > 0);
-  
-      if (activeAssociations.length > 0) {
-        try {
-          const beatsByAssociations = await Promise.all(
-            activeAssociations.map(async assoc => {
-              const ids = assoc.selected.map(item => item.id);
-              return await getBeatsByAssociation(assoc.type, ids);
-            })
-          );
-  
-          const combinedBeats = beatsByAssociations.flat();
-          setFilteredBeats(combinedBeats);
-        } catch (error) {
-          console.error('Error fetching beats by associations:', error);
-        }
-      } else {
-        setFilteredBeats(beats);
-      }
-    };
-  
-    fetchBeatsByAssociation();
-  }, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, beats]);
   
   const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(filteredBeats);
 
@@ -226,6 +193,39 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
       });
     }, 250);
   };
+
+  useEffect(() => {
+    const fetchBeatsByAssociation = async () => {
+      const associations = [
+        { type: 'genres', selected: selectedGenre },
+        { type: 'moods', selected: selectedMood },
+        { type: 'keywords', selected: selectedKeyword },
+        { type: 'features', selected: selectedFeature }
+      ];
+  
+      const activeAssociations = associations.filter(assoc => assoc.selected.length > 0);
+  
+      if (activeAssociations.length > 0) {
+        try {
+          const beatsByAssociations = await Promise.all(
+            activeAssociations.map(async assoc => {
+              const ids = assoc.selected.map(item => item.id);
+              return await getBeatsByAssociation(assoc.type, ids);
+            })
+          );
+  
+          const combinedBeats = beatsByAssociations.flat();
+          setFilteredBeats(combinedBeats);
+        } catch (error) {
+          console.error('Error fetching beats by associations:', error);
+        }
+      } else {
+        setFilteredBeats(beats);
+      }
+    };
+  
+    fetchBeatsByAssociation();
+  }, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, beats]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
