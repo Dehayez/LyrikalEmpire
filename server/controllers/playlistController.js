@@ -97,7 +97,11 @@ const removeAllBeatsFromPlaylist = (req, res) => {
 const getBeatsInPlaylist = (req, res) => {
   const { playlist_id } = req.params;
   dbHelpers.handleQuery(
-    'SELECT * FROM beats WHERE id IN (SELECT beat_id FROM playlists_beats WHERE playlist_id = ?)',
+    `SELECT b.*, pb.beat_order 
+     FROM beats b 
+     JOIN playlists_beats pb ON b.id = pb.beat_id 
+     WHERE pb.playlist_id = ? 
+     ORDER BY pb.beat_order`,
     [playlist_id],
     res,
     'Beats in playlist fetched successfully',
