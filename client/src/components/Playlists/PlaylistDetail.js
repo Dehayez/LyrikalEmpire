@@ -79,7 +79,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBe
     const fetchPlaylistDetails = async () => {
       try {
         const playlistData = await getPlaylistById(id);
-        console.log('playlistData', playlistData);
         if (Array.isArray(playlistData) && playlistData.length > 0) {
           setPlaylist(playlistData[0]);
         } else {
@@ -88,6 +87,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBe
   
         const beatsData = await getBeatsByPlaylistId(id);
         const sortedBeats = beatsData.sort((a, b) => a.beat_order - b.beat_order);
+        sortedBeats.forEach(beat => console.log(`Beat ID: ${beat.id}, Beat Order: ${beat.beat_order}`)); // Log each beat's beat_order
         setBeats(sortedBeats);
       } catch (error) {
         console.error('Error fetching playlist details:', error);
