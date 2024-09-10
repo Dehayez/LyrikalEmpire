@@ -21,7 +21,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBe
   const [isOpen, setIsOpen] = useState(false);
   const [playlist, setPlaylist] = useState(() => playlists.find(p => p.id === id));
   const [beats, setBeats] = useState([]);
-  const { sortedItems: sortedBeatsFromPlaylist, sortConfig, onSort } = useSort(beats);
+  const { sortedItems: sortedBeatsFromPlaylist } = useSort(beats);
 
   const refreshPlaylist = async () => {
     const updatedPlaylist = await getPlaylistById(id);
@@ -41,28 +41,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBe
     setBeats(updatedBeats);
     updateBeatOrder(id, updatedBeats.map((beat, index) => ({ id: beat.id, order: index + 1 })));
   }, [beats, id]);
-
-  useEffect(() => {
-    const fetchPlaylistDetails = async () => {
-      try {
-        const playlistData = await getPlaylistById(id);
-        console.log('playlistData', playlistData);
-        if (Array.isArray(playlistData) && playlistData.length > 0) {
-          setPlaylist(playlistData[0]);
-        } else {
-          setPlaylist(playlistData);
-        }
-  
-        const beatsData = await getBeatsByPlaylistId(id);
-        const sortedBeats = beatsData.sort((a, b) => a.beat_order - b.beat_order);
-        setBeats(sortedBeats);
-      } catch (error) {
-        console.error('Error fetching playlist details:', error);
-      }
-    };
-  
-    fetchPlaylistDetails();
-  }, [id, playlists]);
 
   const handleUpdateBeat = (beatId, updatedFields) => {
     setBeats((prevBeats) => {
@@ -96,6 +74,28 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBe
       console.error('Error deleting beats from playlist:', error);
     }
   };
+
+  useEffect(() => {
+    const fetchPlaylistDetails = async () => {
+      try {
+        const playlistData = await getPlaylistById(id);
+        console.log('playlistData', playlistData);
+        if (Array.isArray(playlistData) && playlistData.length > 0) {
+          setPlaylist(playlistData[0]);
+        } else {
+          setPlaylist(playlistData);
+        }
+  
+        const beatsData = await getBeatsByPlaylistId(id);
+        const sortedBeats = beatsData.sort((a, b) => a.beat_order - b.beat_order);
+        setBeats(sortedBeats);
+      } catch (error) {
+        console.error('Error fetching playlist details:', error);
+      }
+    };
+  
+    fetchPlaylistDetails();
+  }, [id, playlists]);
 
   return (
     <>
