@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
+import WaveSurfer from 'wavesurfer.js';
 
 import { isMobileOrTablet } from '../../utils';
 import { useAudioPlayer } from '../../hooks/useAudioPlayer';
@@ -19,9 +20,58 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     handleTouchMove,
     handleTouchEnd,
     handlePrevClick,
+    currentTime,
   } = useAudioPlayer({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat });
-
+  const waveformRef = useRef(null);
+  const wavesurfer = useRef(null);
   const audioSrc = currentBeat ? `/uploads/${currentBeat.audio}` : '';
+
+  useEffect(() => {
+    if (waveformRef.current) {
+      wavesurfer.current = WaveSurfer.create({
+        container: waveformRef.current,
+        waveColor: '#828282',
+        progressColor: '#FFCC44',
+        height: 80,
+        barWidth: 2,
+        responsive: true,
+        interact: false,
+      });
+
+      wavesurfer.current.load(audioSrc);
+      wavesurfer.current.setVolume(0);
+    }
+
+    return () => {
+      if (wavesurfer.current) wavesurfer.current.destroy();
+    };
+  }, [audioSrc]);
+
+  useEffect(() => {
+    if (wavesurfer.current) {
+      if (isPlaying) {
+        wavesurfer.current.play();
+      } else {
+        wavesurfer.current.pause();
+      }
+    }
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (wavesurfer.current) {
+      const duration = wavesurfer.current.getDuration();
+      if (!isNaN(currentTime) && duration > 0) {
+        wavesurfer.current.seekTo(currentTime / duration);
+      }
+    }
+  }, [currentTime]);
+
+  useEffect(() => {
+    const progressContainer = document.querySelector('.rhap_progress-container');
+    if (progressContainer && waveformRef.current) {
+      progressContainer.appendChild(waveformRef.current);
+    }
+  }, []);
 
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
@@ -30,11 +80,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           autoPlayAfterSrcChange={true}
           src={audioSrc}
           ref={playerRef}
-          customProgressBarSection={[
-              RHAP_UI.CURRENT_TIME,
-              RHAP_UI.PROGRESS_BAR,
-              RHAP_UI.DURATION
-          ]}
+          customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
         />
       {currentBeat && (
        <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
@@ -48,7 +94,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       <div className='audio-player__title audio-player__title--desktop' style={{ flex: '1' }}>
         {currentBeat && <p>{currentBeat.title}</p>}
       </div>
-      <div style={{ flex: '2' }}>
+      <div style={{ flex: '3' }}>
         <H5AudioPlayer
           className="smooth-progress-bar"
           autoPlayAfterSrcChange={true}
@@ -56,11 +102,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           ref={playerRef}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
-          customProgressBarSection={[
-              RHAP_UI.CURRENT_TIME,
-              RHAP_UI.PROGRESS_BAR,
-              RHAP_UI.DURATION
-          ]}
+          customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
           customControlsSection={[
             <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
             <PrevButton onPrev={handlePrevClick} />,
@@ -69,6 +111,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
             <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
           ]}
         />
+        <div ref={waveformRef} className="waveform"></div>
       </div>
       <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
     </div>

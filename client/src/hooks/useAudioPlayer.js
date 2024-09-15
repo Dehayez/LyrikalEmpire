@@ -10,12 +10,17 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [dragPosition, setDragPosition] = useState(0);
+  const [currentTime, setCurrentTime] = useState(() => {
+    const savedCurrentTime = localStorage.getItem('currentTime');
+    return savedCurrentTime !== null ? parseFloat(savedCurrentTime) : 0;
+  });
 
   useLocalStorageSync({
     shuffle,
     repeat,
     currentBeat,
     volume,
+    currentTime,
   });
 
   const handleVolumeChange = e => {
@@ -80,6 +85,7 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     if (audioElement) {
       audioElement.volume = volume;
       const updateTime = () => {
+        setCurrentTime(audioElement.currentTime);
         localStorage.setItem('currentTime', audioElement.currentTime.toString());
         localStorage.setItem('timestamp', Date.now().toString());
       };
@@ -186,5 +192,6 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     handlePlay,
     handleNext,
     handlePrev,
+    currentTime, // Export currentTime state
   };
 };

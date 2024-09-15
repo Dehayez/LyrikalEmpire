@@ -16,8 +16,27 @@ $indicator-half-size: math.div($indicator-size, 2);
   width: 100%;
   transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   box-sizing: border-box;
-  background-color: $color-black;
+  background-color: transparent;
   padding: 0 20px;
+
+  .rhap_current-time,
+  .rhap_total-time {
+    width: 40px;
+  }
+
+  .rhap_progress-container {
+    position: relative;
+  }
+
+  .waveform {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
 
   &__title {
     width: 100%;
@@ -69,7 +88,7 @@ $indicator-half-size: math.div($indicator-size, 2);
 }
 
 .rhap_container {
-  background-color: $color-black;
+  background-color: transparent;
   box-shadow: none;
 }
 
