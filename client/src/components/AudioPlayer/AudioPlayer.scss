@@ -27,6 +27,9 @@ $indicator-half-size: math.div($indicator-size, 2);
   .rhap_progress-container {
     position: relative;
   }
+  .rhap_progress-section {
+    padding: 28px 0;
+  }
 
   .waveform {
     position: absolute;
@@ -87,6 +90,10 @@ $indicator-half-size: math.div($indicator-size, 2);
   }
 }
 
+.rhap_main {
+  flex-direction: column-reverse;
+}
+
 .rhap_container {
   background-color: transparent;
   box-shadow: none;
@@ -129,7 +136,7 @@ $indicator-half-size: math.div($indicator-size, 2);
 
   .waveform {
     opacity: 0;
-    transition: opacity .4s ease-in-out;
+    transition: opacity .3s ease;
   }
 
   &:hover .waveform {
@@ -151,9 +158,9 @@ $indicator-half-size: math.div($indicator-size, 2);
 }
 
 .rhap_controls-section {
-  padding: 10px 0;
   width: fit-content;
   margin: auto;
+  margin: 4px auto !important;
 }
 
 
