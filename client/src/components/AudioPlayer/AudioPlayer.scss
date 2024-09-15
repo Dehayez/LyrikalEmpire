@@ -16,7 +16,7 @@ $indicator-half-size: math.div($indicator-size, 2);
   width: 100%;
   transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   box-sizing: border-box;
-  background-color: transparent;
+  background-color: $color-black;
   padding: 0 20px;
 
   .rhap_current-time,
@@ -121,6 +121,19 @@ $indicator-half-size: math.div($indicator-size, 2);
 
   .rhap_progress-filled {
     background: #FFFFFF;
+  }
+}
+
+.rhap_progress-container {
+  position: relative;
+
+  .waveform {
+    opacity: 0;
+    transition: opacity .4s ease-in-out;
+  }
+
+  &:hover .waveform {
+    opacity: .4;
   }
 }
 
