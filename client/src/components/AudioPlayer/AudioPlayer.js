@@ -28,6 +28,11 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
 
   useEffect(() => {
     if (waveformRef.current) {
+      // Clean up any existing waveform container
+      while (waveformRef.current.firstChild) {
+        waveformRef.current.removeChild(waveformRef.current.firstChild);
+      }
+  
       wavesurfer.current = WaveSurfer.create({
         container: waveformRef.current,
         waveColor: '#828282',
@@ -36,17 +41,36 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         barWidth: 2,
         responsive: true,
         interact: false,
-        cursorWidth: 0,
       });
-
+  
       wavesurfer.current.load(audioSrc);
       wavesurfer.current.setVolume(0);
     }
-
+  
     return () => {
-      if (wavesurfer.current) wavesurfer.current.destroy();
+      if (wavesurfer.current) {
+        try {
+          console.log("Destroying wavesurfer instance");
+          if (wavesurfer.current.isReady) {
+            wavesurfer.current.destroy();
+          } else {
+            wavesurfer.current.once('ready', () => {
+              wavesurfer.current.destroy();
+            });
+          }
+        } catch (error) {
+          console.error("Error destroying wavesurfer instance:", error);
+        }
+      }
     };
   }, [audioSrc]);
+
+  useEffect(() => {
+    const progressContainer = document.querySelector('.rhap_progress-container');
+    if (progressContainer && waveformRef.current && !progressContainer.contains(waveformRef.current)) {
+      progressContainer.appendChild(waveformRef.current);
+    }
+  }, []);
 
   useEffect(() => {
     if (wavesurfer.current) {
