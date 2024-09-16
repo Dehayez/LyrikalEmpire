@@ -28,7 +28,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
 
   useEffect(() => {
     if (waveformRef.current) {
-      // Clean up any existing waveform container
       while (waveformRef.current.firstChild) {
         waveformRef.current.removeChild(waveformRef.current.firstChild);
       }
