@@ -36,6 +36,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         barWidth: 2,
         responsive: true,
         interact: false,
+        cursorWidth: 0,
       });
 
       wavesurfer.current.load(audioSrc);
