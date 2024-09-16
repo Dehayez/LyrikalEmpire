@@ -52,6 +52,13 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
 
       wavesurfer.current.load(audioSrc);
       wavesurfer.current.setVolume(0);
+
+      wavesurfer.current.on('ready', () => {
+        const duration = wavesurfer.current.getDuration();
+        if (!isNaN(currentTime) && duration > 0) {
+          wavesurfer.current.seekTo(currentTime / duration);
+        }
+      });
     }
 
     return () => {
