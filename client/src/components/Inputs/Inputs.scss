@@ -71,6 +71,14 @@ input[type="number"] {
             cursor: default;
         }
 
+        .form-textarea__input {
+            padding-bottom: 16px;
+        }
+
+        .form-textarea__remaining-chars {
+            margin: 0;
+        }
+
         input,
         select {
             padding: 8px;
