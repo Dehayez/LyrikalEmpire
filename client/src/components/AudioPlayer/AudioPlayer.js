@@ -25,13 +25,20 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
   const audioSrc = currentBeat ? `/uploads/${currentBeat.audio}` : '';
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (waveformRef.current) {
+    if (audioSrc) {
+      setIsLoading(false);
+    }
+  }, [audioSrc]);
+
+  useEffect(() => {
+    if (!isLoading && waveformRef.current) {
       while (waveformRef.current.firstChild) {
         waveformRef.current.removeChild(waveformRef.current.firstChild);
       }
-  
+
       wavesurfer.current = WaveSurfer.create({
         container: waveformRef.current,
         waveColor: '#828282',
@@ -40,12 +47,13 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         barWidth: 2,
         responsive: true,
         interact: false,
+        cursorColor: '#FFCC44', // Set the cursor color here
       });
-  
+
       wavesurfer.current.load(audioSrc);
       wavesurfer.current.setVolume(0);
     }
-  
+
     return () => {
       if (wavesurfer.current) {
         try {
@@ -62,7 +70,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         }
       }
     };
-  }, [audioSrc]);
+  }, [audioSrc, isLoading]);
 
   useEffect(() => {
     const progressContainer = document.querySelector('.rhap_progress-container');
