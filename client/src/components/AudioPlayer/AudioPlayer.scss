@@ -110,29 +110,28 @@ $indicator-half-size: math.div($indicator-size, 2);
   width: $indicator-size;
   height: $indicator-size;
   top: calc(50% - #{$indicator-half-size});
-  left: 0;
+  margin-left: -7px;
 }
 
-.audio-player {
-  .rhap_progress-container:hover {
-    .rhap_progress-filled {
-      background: #FFCC44 !important;
-    }
-  }
 
-  .rhap_time,
-  .rhap_additional-controls,
-  .rhap_controls-section {
-    color: #FFFFFF;
-  }
+.rhap_time,
+.rhap_additional-controls,
+.rhap_controls-section {
+  color: #FFFFFF;
+}
 
-  .rhap_progress-filled {
-    background: #FFFFFF;
-  }
+.rhap_progress-filled {
+  background: #FFFFFF;
 }
 
 .rhap_progress-container {
   position: relative;
+
+  &:hover {
+    .rhap_progress-filled {
+      background: #FFCC44 !important;
+    }
+  }
 
   .waveform {
     opacity: 0;
