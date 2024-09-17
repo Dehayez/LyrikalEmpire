@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp, IoAlbums } from "react-icons/io5";
 
@@ -16,7 +16,6 @@ import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 import './Playlists.scss';
 
 const Playlists = ({ isPlaying }) => {
-  const { id } = useParams();
   const navigate = useNavigate();
   const { playlists, playedPlaylistId, currentPlaylistId, updatePlaylist } = usePlaylist();
 
@@ -128,7 +127,7 @@ const Playlists = ({ isPlaying }) => {
         {playlists.map((playlist, index) => (
           <li 
             key={index} 
-            className={`playlists__list-item${playedPlaylistId === playlist.id ? ' playlists__list-item--playing' : ''}${playlist.id == currentPlaylistId ? ' playlists__list-item--active' : ''}`}
+            className={`playlists__list-item${playedPlaylistId === playlist.id ? ' playlists__list-item--playing' : ''}${playlist.id === currentPlaylistId ? ' playlists__list-item--active' : ''}`}
             onClick={() => {handleLeftClick(playlist.id);}}
             onContextMenu={(e) => handleRightClick(e, playlist, index)}
             style={{ textDecoration: 'none' }}

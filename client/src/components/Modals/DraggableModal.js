@@ -63,8 +63,8 @@ const DraggableModal = ({ isOpen, setIsOpen, title, children, onConfirm, onCance
             <h2 className='modal__title'>{title}</h2>
             {children}
             <div className='modal__buttons'>
-              <Button type={cancelButtonType} onClick={handleCancel}>{cancelButtonText}</Button>
-              <Button type={confirmButtonType} onClick={onConfirm}>{confirmButtonText}</Button>
+              <Button variant={cancelButtonType} onClick={handleCancel}>{cancelButtonText}</Button>
+              <Button variant={confirmButtonType} onClick={onConfirm}>{confirmButtonText}</Button>
             </div>
           </div>
         </div>
