@@ -47,7 +47,8 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         barWidth: 2,
         responsive: true,
         interact: false,
-        cursorColor: '#FFCC44', // Set the cursor color here
+        cursorColor: '#FFCC44', 
+        cursorWidth: 0,
       });
 
       wavesurfer.current.load(audioSrc);

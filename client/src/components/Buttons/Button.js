@@ -1,13 +1,13 @@
 import React from 'react';
 import './Button.scss';
 
-const Button = ({ className, onClick, children, text, type, size }) => {
+const Button = ({ className, onClick, children, text, type = 'button', variant, size }) => {
   const buttonClass = `
     button 
     ${className} 
-    ${type === 'primary' ? 'button--primary' : ''} 
-    ${type === 'transparent' ? 'button--transparent' : ''}
-    ${type === 'warning' ? 'button--warning' : ''}
+    ${variant === 'primary' ? 'button--primary' : ''} 
+    ${variant === 'transparent' ? 'button--transparent' : ''}
+    ${variant === 'warning' ? 'button--warning' : ''}
     ${size ? `button--${size}` : ''} 
   `;
 
