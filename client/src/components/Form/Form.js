@@ -38,8 +38,8 @@ const Form = ({ title, onClose, onSubmit, placeholder }) => {
                     <form onSubmit={handleSubmit}>
                         <FormInput type="text" id="input" placeholder={placeholder} min={2} maxLength={30} value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
                         <div className="form__buttons">
-                            <Button type='transparent' onClick={onClose}>Cancel</Button>
-                            <Button type='primary'>Submit</Button>
+                            <Button variant='transparent' onClick={onClose}>Cancel</Button>
+                            <Button variant='primary' type="submit">Submit</Button>
                         </div>
                     </form>
                 </div>

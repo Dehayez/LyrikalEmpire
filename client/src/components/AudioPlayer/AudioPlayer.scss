@@ -103,6 +103,10 @@ $indicator-half-size: math.div($indicator-size, 2);
   background-color: transparent;
 }
 
+.rhap_progress-bar {
+  z-index: 1;
+}
+
 .rhap_progress-indicator {
   opacity: 0;
   background-color: white;
@@ -110,7 +114,7 @@ $indicator-half-size: math.div($indicator-size, 2);
   width: $indicator-size;
   height: $indicator-size;
   top: calc(50% - #{$indicator-half-size});
-  margin-left: -6px;
+  margin-left: -8px;
 }
 
 
@@ -139,7 +143,7 @@ $indicator-half-size: math.div($indicator-size, 2);
   }
 
   &:hover .waveform {
-    opacity: .4;
+    opacity: 1;
   }
 }
 
