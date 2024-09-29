@@ -17,7 +17,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
   const [showForm, setShowForm] = useState(false);
   const [formType, setFormType] = useState('');
 
-  const { fetchGenres, fetchMoods, fetchKeywords, fetchFeatures } = useData();
+  const { fetchGenres, fetchMoods, fetchKeywords, fetchFeatures, genres, moods, keywords, features } = useData();
 
   useResizableColumns(tableRef, mode, setIsDragging);
 
@@ -66,6 +66,25 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
       console.error('Error adding item:', error);
     }
     setShowForm(false);
+  };
+
+  const handleUpdateSelectableInput = (newItem) => {
+    switch (formType) {
+      case 'genre':
+        genres.push(newItem);
+        break;
+      case 'mood':
+        moods.push(newItem);
+        break;
+      case 'keyword':
+        keywords.push(newItem);
+        break;
+      case 'feature':
+        features.push(newItem);
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -127,6 +146,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
           item={formType}
           onClose={() => setShowForm(false)}
           onSubmit={handleSubmit}
+          onUpdateSelectableInput={handleUpdateSelectableInput}
         />,
         document.getElementById('modal-root')
       )}

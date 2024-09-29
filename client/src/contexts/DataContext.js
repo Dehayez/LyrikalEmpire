@@ -11,6 +11,46 @@ export const DataProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchGenres = async () => {
+    try {
+      const genresData = await getGenres();
+      setGenres(genresData);
+    } catch (err) {
+      console.error('Error fetching genres:', err);
+      setError(err);
+    }
+  };
+
+  const fetchMoods = async () => {
+    try {
+      const moodsData = await getMoods();
+      setMoods(moodsData);
+    } catch (err) {
+      console.error('Error fetching moods:', err);
+      setError(err);
+    }
+  };
+
+  const fetchKeywords = async () => {
+    try {
+      const keywordsData = await getKeywords();
+      setKeywords(keywordsData);
+    } catch (err) {
+      console.error('Error fetching keywords:', err);
+      setError(err);
+    }
+  };
+
+  const fetchFeatures = async () => {
+    try {
+      const featuresData = await getFeatures();
+      setFeatures(featuresData);
+    } catch (err) {
+      console.error('Error fetching features:', err);
+      setError(err);
+    }
+  };
+
   const fetchData = async () => {
     try {
       const [genresData, moodsData, keywordsData, featuresData] = await Promise.all([
@@ -42,7 +82,11 @@ export const DataProvider = ({ children }) => {
     features,
     loading,
     error,
-    refetch: fetchData
+    refetch: fetchData,
+    fetchGenres,
+    fetchMoods,
+    fetchKeywords,
+    fetchFeatures,
   }), [genres, moods, keywords, features, loading, error]);
 
   return (
