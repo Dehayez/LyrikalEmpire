@@ -34,38 +34,40 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   }, [audioSrc]);
 
   useEffect(() => {
-    if (!isLoading && waveformRef.current) {
-      while (waveformRef.current.firstChild) {
-        waveformRef.current.removeChild(waveformRef.current.firstChild);
-      }
-
-      wavesurfer.current = WaveSurfer.create({
-        container: waveformRef.current,
-        waveColor: '#828282',
-        progressColor: '#FFCC44',
-        height: 80,
-        barWidth: 2,
-        responsive: true,
-        interact: false,
-        cursorColor: '#FFCC44', 
-        cursorWidth: 0,
-      });
-
-      wavesurfer.current.load(audioSrc);
-      wavesurfer.current.setVolume(0);
-
-      wavesurfer.current.on('ready', () => {
-        const duration = wavesurfer.current.getDuration();
-        if (!isNaN(currentTime) && duration > 0) {
-          wavesurfer.current.seekTo(currentTime / duration);
+    const timer = setTimeout(() => {
+      if (!isLoading && waveformRef.current) {
+        while (waveformRef.current.firstChild) {
+          waveformRef.current.removeChild(waveformRef.current.firstChild);
         }
-      });
-    }
-
+  
+        wavesurfer.current = WaveSurfer.create({
+          container: waveformRef.current,
+          waveColor: '#828282',
+          progressColor: '#FFCC44',
+          height: 80,
+          barWidth: 2,
+          responsive: true,
+          interact: false,
+          cursorColor: '#FFCC44', 
+          cursorWidth: 0,
+        });
+  
+        wavesurfer.current.load(audioSrc);
+        wavesurfer.current.setVolume(0);
+  
+        wavesurfer.current.on('ready', () => {
+          const duration = wavesurfer.current.getDuration();
+          if (!isNaN(currentTime) && duration > 0) {
+            wavesurfer.current.seekTo(currentTime / duration);
+          }
+        });
+      }
+    }, 100);
+  
     return () => {
+      clearTimeout(timer);
       if (wavesurfer.current) {
         try {
-          console.log("Destroying wavesurfer instance");
           if (wavesurfer.current.isReady) {
             wavesurfer.current.destroy();
           } else {
@@ -78,7 +80,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         }
       }
     };
-  }, [audioSrc, isLoading]);
+  }, [currentBeat]);
 
   useEffect(() => {
     const progressContainer = document.querySelector('.rhap_progress-container');
