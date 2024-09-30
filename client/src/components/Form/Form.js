@@ -5,7 +5,7 @@ import { FormInput } from '../Inputs';
 import { Button } from '../Buttons';
 import './Form.scss';
 
-const Form = ({ title, item, onClose, onSubmit, placeholder, onUpdateSelectableInput }) => {
+const Form = ({ title, onClose, onSubmit, placeholder, onUpdateSelectableInput }) => {
     const [inputValue, setInputValue] = useState('');
     const draggableRef = useRef(null);
 
@@ -29,9 +29,8 @@ const Form = ({ title, item, onClose, onSubmit, placeholder, onUpdateSelectableI
         e.preventDefault();
         onSubmit(inputValue);
 
-        // Update the selectable input with the new item
         if (typeof onUpdateSelectableInput === 'function') {
-            onUpdateSelectableInput({ name: inputValue, id: Date.now() }); // Assuming the new item has a name and a unique id
+            onUpdateSelectableInput({ name: inputValue, id: Date.now() });
         }
     };
 

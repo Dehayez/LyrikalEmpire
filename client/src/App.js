@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
@@ -7,7 +7,7 @@ import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels
 import { useBeat } from './contexts';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail } from './components';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
 import NotFound from './components/NotFound';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -165,6 +165,7 @@ function App() {
           </>
         )}
         <ToastContainer />
+        <LyricsModal />
         <Header 
           isLeftPanelVisible={isLeftPanelVisible} 
           isRightPanelVisible={isRightPanelVisible} 
