@@ -11,6 +11,7 @@ export * from './Header';
 export * from './Highlight';
 export * from './History';
 export * from './Inputs';
+export * from './Modals';
 export * from './Playlists';
 export * from './Queue';
 export * from './SidePanel';

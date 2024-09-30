@@ -7,7 +7,8 @@ const tableMap = {
   genres: 'beats_genres',
   moods: 'beats_moods',
   keywords: 'beats_keywords',
-  features: 'beats_features'
+  features: 'beats_features',
+  lyrics: 'beats_lyrics'
 };
 
 const getTableName = (association_type, res) => {
