@@ -2,15 +2,17 @@ import React, { useRef } from 'react';
 import Draggable from 'react-draggable';
 import Modal from 'react-modal';
 import { IconButton } from '../Buttons';
+import { FormTextarea } from '../Inputs';
 import { IoCloseSharp } from 'react-icons/io5';
 import './LyricsModal.scss';
+import { Form } from '../Form';
 
 Modal.setAppElement('#modal-root');
 
 const modalStyle = {
   overlay: {
     backgroundColor: 'transparent', 
-    zIndex: 10,
+    zIndex: 3,
     pointerEvents: 'none', 
   },
   content: {
@@ -43,6 +45,7 @@ const LyricsModal = ({ isOpen = true, setIsOpen }) => {
       onRequestClose={handleCancel} 
       style={modalStyle} 
       shouldCloseOnOverlayClick={false}
+      className="lyrics-modal"
     >
       <Draggable handle=".modal__title" nodeRef={draggableRef}>
         <div ref={draggableRef} className='modal'>
@@ -51,7 +54,7 @@ const LyricsModal = ({ isOpen = true, setIsOpen }) => {
               <IoCloseSharp />
             </IconButton>
             <h2 className='modal__title'>Lyrics</h2>
-            <textarea className='modal__textarea' placeholder='Enter lyrics here...'></textarea>
+            <FormTextarea value='' onChange={() => {}} required={true} rows={10} />
           </div>
         </div>
       </Draggable>
