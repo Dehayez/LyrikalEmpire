@@ -16,6 +16,7 @@ const featureRoutes = require('./routes/featureRoute');
 const playlistRoutes = require('./routes/playlistRoute');
 const beatRoutes = require('./routes/beatRoute');
 const genreRoutes = require('./routes/genreRoute');
+const lyricsRoutes = require('./routes/lyricsRoute');
 
 app.use('/api/keywords', keywordRoutes);
 app.use('/api/moods', moodRoutes);
@@ -23,6 +24,7 @@ app.use('/api/features', featureRoutes);
 app.use('/api/playlists', playlistRoutes);
 app.use('/api/beats', beatRoutes);
 app.use('/api/genres', genreRoutes);
+app.use('/api/lyrics', lyricsRoutes);
 
 const PORT = process.env.PORT || 4000;
 
