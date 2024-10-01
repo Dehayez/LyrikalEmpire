@@ -29,9 +29,11 @@ export const FormTextarea = ({ label, placeholder, value, onChange, required, ro
                 rows={rows}
                 maxLength={maxLength}
             />
-            <span className='form-textarea__remaining-chars'>
-                {remainingChars}
-            </span>
+            {maxLength && (
+                <span className='form-textarea__remaining-chars'>
+                    {remainingChars}
+                </span>
+            )}
         </div>
     );
 };
