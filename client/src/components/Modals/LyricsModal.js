@@ -33,7 +33,7 @@ const modalStyle = {
   }
 };
 
-const LyricsModal = ({ isOpen = true, setIsOpen, beatId }) => { 
+const LyricsModal = ({ isOpen = true, setIsOpen, beatId, title }) => { 
   const draggableRef = useRef(null);
   const [lyrics, setLyrics] = useState('');
 
@@ -42,17 +42,13 @@ const LyricsModal = ({ isOpen = true, setIsOpen, beatId }) => {
   };
 
   useEffect(() => {
-    console.log(lyrics);
-  }, [lyrics]);
-
-  useEffect(() => {
     const fetchLyrics = async () => {
       try {
         const data = await getAssociationsByBeatId(beatId, 'lyrics');
-        if (data && data.length > 0 && data[0].lyric_id) {
-          const lyricData = await getLyricsById(data[0].lyric_id);
-          if (lyricData && lyricData.lyrics) {
-            setLyrics(lyricData.lyrics);
+        if (data && data.length > 0 && data[0].lyrics_id) {
+          const lyricData = await getLyricsById(data[0].lyrics_id);
+          if (lyricData && lyricData.length > 0 && lyricData[0].lyrics) {
+            setLyrics(lyricData[0].lyrics);
           } else {
             setLyrics('');
           }
@@ -83,7 +79,7 @@ const LyricsModal = ({ isOpen = true, setIsOpen, beatId }) => {
             <IconButton className="modal__close-button" onClick={handleCancel}>
               <IoCloseSharp />
             </IconButton>
-            <h2 className='modal__title'>Lyrics</h2>
+            <h2 className='modal__title'>{title}</h2>
             <FormTextarea value={lyrics} onChange={() => {}} required={true} rows={10} />
           </div>
         </div>

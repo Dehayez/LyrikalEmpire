@@ -165,7 +165,7 @@ function App() {
           </>
         )}
         <ToastContainer />
-        <LyricsModal beatId={currentBeat.id} />
+        <LyricsModal beatId={currentBeat.id} title={currentBeat.title} />
         <Header 
           isLeftPanelVisible={isLeftPanelVisible} 
           isRightPanelVisible={isRightPanelVisible} 
