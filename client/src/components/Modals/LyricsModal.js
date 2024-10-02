@@ -72,20 +72,15 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
   const handleLyricsChange = async (e) => {
     const newLyrics = e.target.value;
     setLyrics(newLyrics);
-    console.log('New lyrics:', newLyrics); // Log new lyrics
-  
+
     try {
       if (lyricsId) {
-        console.log('Updating lyrics with ID:', lyricsId); // Log update action
         await updateLyricsById(lyricsId, newLyrics);
-        console.log('Lyrics updated successfully'); // Log success
       } else {
-        console.log('Creating new lyrics'); // Log create action
-        const createdLyrics = await createLyrics(newLyrics);
-        console.log('Created lyrics:', createdLyrics); // Log created lyrics
-        setLyricsId(createdLyrics.id);
-        console.log('Associating lyrics with beat ID:', beatId); // Log association action
-        await addAssociationsToBeat(beatId, 'lyrics', createdLyrics.id); // Add association
+        const createdLyricsId = await createLyrics(newLyrics);
+        console.log('Created lyrics ID:', createdLyricsId); // Log created lyrics ID
+        setLyricsId(createdLyricsId);
+        await addAssociationsToBeat(beatId, 'lyrics', createdLyricsId); // Add association
         console.log('Association added successfully'); // Log success
       }
     } catch (error) {

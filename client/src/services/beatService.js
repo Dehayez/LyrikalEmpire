@@ -62,12 +62,14 @@ export const replaceAudio = async (beatId, newAudioFile) => {
   }
 };
 
-export const addAssociationsToBeat = async (beatId, associationType, associationIds) => {
+export const addAssociationsToBeat = async (beatId, associationType, associationId) => {
   try {
-    const response = await axios.post(`${API_URL}/${beatId}/${associationType}`, { association_id: associationIds });
+    console.log('Sending request to add association:', { beatId, associationType, associationId }); // Log request data
+    const response = await axios.post(`${API_URL}/${beatId}/${associationType}`, { association_id: associationId });
+    console.log('API response for addAssociationsToBeat:', response.data); // Log API response
     return response.data;
   } catch (error) {
-    console.error(`Failed to add ${associationType} to beat:`, error);
+    console.error(`Failed to add ${associationType} to beat:`, error); // Log error
     throw error;
   }
 };
