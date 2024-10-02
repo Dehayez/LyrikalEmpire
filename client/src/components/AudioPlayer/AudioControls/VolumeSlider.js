@@ -52,7 +52,7 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
     : <IoVolumeMuteSharp size={22} />;
 
   return (
-    <div className='volume-slider' style={{ flex: '1' }}>
+    <div className='volume-slider'>
       <div className='volume-slider__icon' onClick={toggleMute}>
         {volumeIcon}
         <Tooltip text={isMuted ? 'Unmute' : 'Mute'} />
