@@ -1,7 +1,35 @@
 @import '../../globals/variables';
 
 .lyrics-modal {
-    .modal-content {
-       border: 1px solid $color-gray-dark-active;
-    }
+  .modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .modal-content {
+    border: 1px solid $color-gray-dark-active;
+    max-width: none !important; 
+    resize: both;
+    overflow: auto;
+  }
+
+  .modal__title {
+    margin-top: 0;
+    cursor: default;
+  }
+
+  .modal__close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .form-textarea {
+    height: 100% !important;
+  }
 }

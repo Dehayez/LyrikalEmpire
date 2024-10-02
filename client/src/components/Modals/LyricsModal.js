@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
 import Modal from 'react-modal';
 import { IconButton } from '../Buttons';
@@ -12,9 +13,9 @@ Modal.setAppElement('#modal-root');
 
 const modalStyle = {
   overlay: {
-    backgroundColor: 'transparent', 
+    backgroundColor: 'transparent',
     zIndex: 3,
-    pointerEvents: 'none', 
+    pointerEvents: 'none',
   },
   content: {
     backgroundColor: 'transparent',
@@ -29,11 +30,11 @@ const modalStyle = {
     right: 'auto',
     bottom: 'auto',
     transform: 'translate(-50%, -50%)',
-    pointerEvents: 'none', 
+    pointerEvents: 'none',
   }
 };
 
-const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => { 
+const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
   const draggableRef = useRef(null);
   const [lyrics, setLyrics] = useState('');
   const [lyricsId, setLyricsId] = useState(null);
@@ -63,7 +64,7 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
         console.error('Failed to fetch lyrics:', error);
       }
     };
-  
+
     if (beatId) {
       fetchLyrics();
     }
@@ -96,13 +97,15 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     >
       <Draggable handle=".modal__title" nodeRef={draggableRef}>
         <div ref={draggableRef} className='modal'>
-          <div className='modal-content'>
-            <IconButton className="modal__close-button" onClick={handleCancel}>
-              <IoCloseSharp />
-            </IconButton>
-            <h2 className='modal__title'>{title}</h2>
-            <FormTextarea value={lyrics} onChange={handleLyricsChange} required={true} rows={10} />
-          </div>
+          <ResizableBox width={400} height={300} minConstraints={[300, 200]} maxConstraints={[800, 600]}>
+            <div className='modal-content'>
+              <IconButton className="modal__close-button" onClick={handleCancel}>
+                <IoCloseSharp />
+              </IconButton>
+              <h2 className='modal__title'>{title}</h2>
+              <FormTextarea value={lyrics} onChange={handleLyricsChange} />
+            </div>
+          </ResizableBox>
         </div>
       </Draggable>
     </Modal>
