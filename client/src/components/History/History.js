@@ -90,7 +90,7 @@ const History = ({ onBeatClick, currentBeat, addToCustomQueue }) => {
               beat && beat.id ? (
               <li 
                 key={index}
-                className={`history__list-item ${currentBeat && beat.id === currentBeat.id ? 'history__list-item--playing' : ''}`}
+                className={`history__list-item`}
                 onContextMenu={(e) => handleRightClick(e, beat, index)}
                 onClick={(e) => {
                   handleBeatClick(beat);
