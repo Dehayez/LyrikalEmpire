@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { isMobileOrTablet } from '../../utils';
-import { IoMenuSharp, IoListSharp, IoAnalytics, IoLockOpen, IoLockClosed } from 'react-icons/io5';
+import { IoMenuSharp, IoListSharp, IoLockOpen, IoLockClosed } from 'react-icons/io5';
 import { IconButton, NavigationButtons } from '../Buttons';
 import { Breadcrumb } from '../Breadcrumb';
 import { Tooltip } from '../Tooltip';

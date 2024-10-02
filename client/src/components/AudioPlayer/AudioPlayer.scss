@@ -19,6 +19,10 @@ $indicator-half-size: math.div($indicator-size, 2);
   background-color: $color-black;
   padding: 0 20px;
 
+  .icon-white {
+    color: $color-white;
+  }
+
   .rhap_current-time,
   .rhap_total-time {
     width: 40px;
