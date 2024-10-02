@@ -4,8 +4,8 @@ import Modal from 'react-modal';
 import { IconButton } from '../Buttons';
 import { FormTextarea } from '../Inputs';
 import { IoCloseSharp } from 'react-icons/io5';
-import { getAssociationsByBeatId, addAssociationsToBeat } from '../../services/beatService'; // Import addAssociation
-import { getLyricsById, updateLyricsById, createLyrics } from '../../services/lyricsService'; // Import createLyrics
+import { getAssociationsByBeatId, addAssociationsToBeat } from '../../services/beatService';
+import { getLyricsById, updateLyricsById, createLyrics } from '../../services/lyricsService';
 import './LyricsModal.scss';
 
 Modal.setAppElement('#modal-root');
@@ -78,13 +78,11 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
         await updateLyricsById(lyricsId, newLyrics);
       } else {
         const createdLyricsId = await createLyrics(newLyrics);
-        console.log('Created lyrics ID:', createdLyricsId); // Log created lyrics ID
         setLyricsId(createdLyricsId);
-        await addAssociationsToBeat(beatId, 'lyrics', createdLyricsId); // Add association
-        console.log('Association added successfully'); // Log success
+        await addAssociationsToBeat(beatId, 'lyrics', createdLyricsId);
       }
     } catch (error) {
-      console.error('Failed to update or create lyrics:', error); // Log error
+      console.error('Failed to update or create lyrics:', error);
     }
   };
 
