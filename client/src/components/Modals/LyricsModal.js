@@ -4,8 +4,8 @@ import Modal from 'react-modal';
 import { IconButton } from '../Buttons';
 import { FormTextarea } from '../Inputs';
 import { IoCloseSharp } from 'react-icons/io5';
-import { getAssociationsByBeatId } from '../../services/beatService';
-import { getLyricsById } from '../../services/lyricsService';
+import { getAssociationsByBeatId, addAssociationsToBeat } from '../../services/beatService'; // Import addAssociation
+import { getLyricsById, updateLyricsById, createLyrics } from '../../services/lyricsService'; // Import createLyrics
 import './LyricsModal.scss';
 
 Modal.setAppElement('#modal-root');
@@ -36,6 +36,7 @@ const modalStyle = {
 const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => { 
   const draggableRef = useRef(null);
   const [lyrics, setLyrics] = useState('');
+  const [lyricsId, setLyricsId] = useState(null);
 
   const handleCancel = () => {
     setLyricsModal(false);
@@ -49,11 +50,14 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
           const lyricData = await getLyricsById(data[0].lyrics_id);
           if (lyricData && lyricData.length > 0 && lyricData[0].lyrics) {
             setLyrics(lyricData[0].lyrics);
+            setLyricsId(data[0].lyrics_id);
           } else {
             setLyrics('');
+            setLyricsId(null);
           }
         } else {
           setLyrics('');
+          setLyricsId(null);
         }
       } catch (error) {
         console.error('Failed to fetch lyrics:', error);
@@ -64,6 +68,30 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
       fetchLyrics();
     }
   }, [beatId]);
+
+  const handleLyricsChange = async (e) => {
+    const newLyrics = e.target.value;
+    setLyrics(newLyrics);
+    console.log('New lyrics:', newLyrics); // Log new lyrics
+  
+    try {
+      if (lyricsId) {
+        console.log('Updating lyrics with ID:', lyricsId); // Log update action
+        await updateLyricsById(lyricsId, newLyrics);
+        console.log('Lyrics updated successfully'); // Log success
+      } else {
+        console.log('Creating new lyrics'); // Log create action
+        const createdLyrics = await createLyrics(newLyrics);
+        console.log('Created lyrics:', createdLyrics); // Log created lyrics
+        setLyricsId(createdLyrics.id);
+        console.log('Associating lyrics with beat ID:', beatId); // Log association action
+        await addAssociationsToBeat(beatId, 'lyrics', createdLyrics.id); // Add association
+        console.log('Association added successfully'); // Log success
+      }
+    } catch (error) {
+      console.error('Failed to update or create lyrics:', error); // Log error
+    }
+  };
 
   return (
     <Modal 
@@ -80,7 +108,7 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
               <IoCloseSharp />
             </IconButton>
             <h2 className='modal__title'>{title}</h2>
-            <FormTextarea value={lyrics} onChange={() => {}} required={true} rows={10} />
+            <FormTextarea value={lyrics} onChange={handleLyricsChange} required={true} rows={10} />
           </div>
         </div>
       </Draggable>
