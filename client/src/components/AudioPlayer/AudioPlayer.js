@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import WaveSurfer from 'wavesurfer.js';
-import { PiMicrophoneStageBold } from "react-icons/pi";
+import { LiaMicrophoneAltSolid } from "react-icons/lia";
 
 import { isMobileOrTablet } from '../../utils';
 import { useAudioPlayer } from '../../hooks/useAudioPlayer';
@@ -165,7 +165,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       </div>
       <div className='audio-player__settings' style={{ flex: '1' }}>
         <IconButton className='audio-player__icon-lyrics' onClick={toggleLyricsModal}>
-          <PiMicrophoneStageBold fontSize={22} className={lyricsModal ? 'icon-white' : ''} />
+          <LiaMicrophoneAltSolid fontSize={24} className={lyricsModal ? 'icon-white' : ''} />
           {!isMobileOrTablet() && <Tooltip text={lyricsModal ? "Hide lyrics" : "Show lyrics"} />}
         </IconButton>
         <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
