@@ -51,6 +51,7 @@ $indicator-half-size: math.div($indicator-size, 2);
 
   &__settings {
     display: flex;
+    padding-left: 20px;
   }
 
   &__icon-lyrics {

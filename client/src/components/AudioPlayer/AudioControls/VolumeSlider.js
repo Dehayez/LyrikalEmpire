@@ -46,10 +46,10 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
     }
   }, [isDragging]);
 
-  const volumeIcon = volume > 0.66 ? <IoVolumeHighSharp size={22} />
-    : volume > 0.33 ? <IoVolumeMediumSharp size={22} />
-    : volume > 0 ? <IoVolumeLowSharp size={22} />
-    : <IoVolumeMuteSharp size={22} />;
+  const volumeIcon = volume > 0.66 ? <IoVolumeHighSharp size={24} />
+    : volume > 0.33 ? <IoVolumeMediumSharp size={24} />
+    : volume > 0 ? <IoVolumeLowSharp size={24} />
+    : <IoVolumeMuteSharp size={24} />;
 
   return (
     <div className='volume-slider'>
