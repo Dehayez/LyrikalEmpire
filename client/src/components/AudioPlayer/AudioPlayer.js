@@ -163,20 +163,13 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         />
         <div ref={waveformRef} className="waveform"></div>
       </div>
-      {
-        lyricsModal ? (
-          <IconButton onClick={toggleLyricsModal}>
-            <PiMicrophoneStageBold fontSize={20} className="icon-white" />
-            {!isMobileOrTablet() && <Tooltip text="Hide lyrics" position="left" />}
-          </IconButton>
-        ) : (
-          <IconButton onClick={toggleLyricsModal}>
-            <PiMicrophoneStageBold fontSize={20} />
-            {!isMobileOrTablet() && <Tooltip text="Show lyrics" position="left" />}
-          </IconButton>
-        )
-      }
-      <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
+      <div className='audio-player__settings' style={{ flex: '1' }}>
+        <IconButton className='audio-player__icon-lyrics' onClick={toggleLyricsModal}>
+          <PiMicrophoneStageBold fontSize={22} className={lyricsModal ? 'icon-white' : ''} />
+          {!isMobileOrTablet() && <Tooltip text={lyricsModal ? "Hide lyrics" : "Show lyrics"} />}
+        </IconButton>
+        <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
+      </div>
     </div>
   );
 };
