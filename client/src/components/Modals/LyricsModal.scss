@@ -29,7 +29,11 @@
     cursor: pointer;
   }
 
-  .form-textarea {
-    height: 100% !important;
+  .form-group {
+    height: calc(100% - 48px);
+
+    &__input {
+        height: 100% !important;
+    }
   }
 }
