@@ -80,7 +80,7 @@ function App() {
     setRepeat,
   });
 
-  useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig });
+  useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig, lyricsModal });
   
   const updateBeat = (id, newData) => {
     setBeats(currentBeats =>
