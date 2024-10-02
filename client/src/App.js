@@ -29,6 +29,7 @@ function App() {
   const [volume, setVolume] = useState(1.0);
   const [shuffle, setShuffle] = useState(() => getInitialState('shuffle', false));
   const [repeat, setRepeat] = useState(() => getInitialState('repeat', 'Disabled Repeat'));
+  const [lyricsModal, setLyricsModal] = useState(getInitialState('lyricsModal', false));
 
   const {
     isLeftPanelVisible,
@@ -165,7 +166,12 @@ function App() {
           </>
         )}
         <ToastContainer />
-        <LyricsModal beatId={currentBeat.id} title={currentBeat.title} />
+        <LyricsModal 
+          beatId={currentBeat.id} 
+          title={currentBeat.title} 
+          lyricsModal={lyricsModal}
+          setLyricsModal={setLyricsModal}
+        />
         <Header 
           isLeftPanelVisible={isLeftPanelVisible} 
           isRightPanelVisible={isRightPanelVisible} 
@@ -287,6 +293,8 @@ function App() {
           setShuffle={setShuffle} 
           repeat={repeat} 
           setRepeat={setRepeat}
+          lyricsModal={lyricsModal}
+          setLyricsModal={setLyricsModal}
         />
       </div>
   );

@@ -33,12 +33,12 @@ const modalStyle = {
   }
 };
 
-const LyricsModal = ({ isOpen = true, setIsOpen, beatId, title }) => { 
+const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => { 
   const draggableRef = useRef(null);
   const [lyrics, setLyrics] = useState('');
 
   const handleCancel = () => {
-    setIsOpen(false);
+    setLyricsModal(false);
   };
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const LyricsModal = ({ isOpen = true, setIsOpen, beatId, title }) => {
 
   return (
     <Modal 
-      isOpen={isOpen} 
+      isOpen={lyricsModal} 
       onRequestClose={handleCancel} 
       style={modalStyle} 
       shouldCloseOnOverlayClick={false}

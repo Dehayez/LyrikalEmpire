@@ -1,15 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import WaveSurfer from 'wavesurfer.js';
+import { PiMicrophoneStageBold } from "react-icons/pi";
 
 import { isMobileOrTablet } from '../../utils';
 import { useAudioPlayer } from '../../hooks/useAudioPlayer';
 
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
+import { IconButton } from '../Buttons';
+import { Tooltip } from '../Tooltip';
+
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
 
-const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat }) => {
+const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat, lyricsModal, setLyricsModal }) => {
   const {
     playerRef,
     volume,
@@ -32,6 +36,10 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       setIsLoading(false);
     }
   }, [audioSrc]);
+
+  const toggleLyricsModal = () => {
+    setLyricsModal(prevState => !prevState);
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -155,6 +163,19 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         />
         <div ref={waveformRef} className="waveform"></div>
       </div>
+      {
+        lyricsModal ? (
+          <IconButton onClick={toggleLyricsModal}>
+            <PiMicrophoneStageBold fontSize={20} className="icon-white" />
+            {!isMobileOrTablet() && <Tooltip text="Hide lyrics" position="left" />}
+          </IconButton>
+        ) : (
+          <IconButton onClick={toggleLyricsModal}>
+            <PiMicrophoneStageBold fontSize={20} />
+            {!isMobileOrTablet() && <Tooltip text="Show lyrics" position="left" />}
+          </IconButton>
+        )
+      }
       <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
     </div>
   );
