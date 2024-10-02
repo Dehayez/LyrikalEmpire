@@ -146,7 +146,7 @@ const addAssociation = (req, res) => {
   const { beat_id, association_type } = req.params;
   const { association_id } = req.body;
 
-  console.log('Received request to add association:', { beat_id, association_type, association_id }); // Log request data
+  console.log('Received request to add association:', { beat_id, association_type, association_id });
 
   if (!association_id) {
     return res.status(400).json({ error: 'Association ID is required' });

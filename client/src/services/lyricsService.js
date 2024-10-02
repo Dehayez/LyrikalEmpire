@@ -26,8 +26,7 @@ export const updateLyricsById = async (id, lyrics) => {
 export const createLyrics = async (lyrics) => {
     try {
       const response = await axios.post(`${API_URL}`, { lyrics });
-      console.log('Created lyrics response:', response.data); // Log response data
-      return response.data.results.insertId; // Return only the insertId
+      return response.data.results.insertId;
     } catch (error) {
       console.error('Failed to create lyrics:', error);
       throw error;
