@@ -288,6 +288,10 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
           )
         }
         <div className='beat-list__actions'>
+          <IconButton className={`beat-list__action-button--options${isFilterDropdownVisible ? ' active' : ''}`} onClick={toggleFilterDropdown}>
+              <Tooltip text={isFilterDropdownVisible ? "Hide Filter" : "Show Filter"} position='left' />
+            <IoOptionsSharp/>
+          </IconButton>
           <IconButton className='beat-list__action-button--edit' onClick={toggleEdit}>
             {mode === 'edit' ? 
             <>
@@ -311,10 +315,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
               <IoLockClosedSharp/>
             </>
             }
-          </IconButton>
-          <IconButton className={`beat-list__action-button--options${isFilterDropdownVisible ? ' active' : ''}`} onClick={toggleFilterDropdown}>
-              <Tooltip text={isFilterDropdownVisible ? "Hide Filter" : "Show Filter"} position='left' />
-            <IoOptionsSharp/>
           </IconButton>
           <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
           <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
