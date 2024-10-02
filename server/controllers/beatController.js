@@ -146,8 +146,6 @@ const addAssociation = (req, res) => {
   const { beat_id, association_type } = req.params;
   const { association_id } = req.body;
 
-  console.log('Received request to add association:', { beat_id, association_type, association_id });
-
   if (!association_id) {
     return res.status(400).json({ error: 'Association ID is required' });
   }
@@ -155,7 +153,8 @@ const addAssociation = (req, res) => {
   const tableName = getTableName(association_type, res);
   if (!tableName) return;
 
-  const query = `INSERT INTO ${tableName} (beat_id, ${association_type.slice(0, -1)}_id) VALUES (?, ?)`;
+  const columnName = association_type === 'lyrics' ? 'lyrics_id' : `${association_type.slice(0, -1)}_id`;
+  const query = `INSERT INTO ${tableName} (beat_id, ${columnName}) VALUES (?, ?)`;
   const params = [beat_id, association_id];
 
   handleQuery(query, params, res, 'Association added successfully');
