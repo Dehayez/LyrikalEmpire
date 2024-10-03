@@ -15,7 +15,7 @@ import './App.scss';
 
 function App() {
   const { beats, setBeats, setRefreshBeats } = useBeat();
-  const { isDraggingOver, droppedFiles, clearDroppedFiles, setRefresh, refresh } = useDragAndDrop(setRefreshBeats);
+  const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats);
 
   const [viewState, setViewState] = useState(() => getInitialState('lastView', 'queue'));
   const [currentBeat, setCurrentBeat] = useState(() => getInitialState('currentBeat', null));
@@ -24,7 +24,6 @@ function App() {
   const [queue, setQueue] = useState([]);
   const [customQueue, setCustomQueue] = useState(() => getInitialState('customQueue', []));
   const [isPlaying, setIsPlaying] = useState(false);
-  const [hasBeatPlayed, setHasBeatPlayed] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [volume, setVolume] = useState(1.0);
   const [shuffle, setShuffle] = useState(() => getInitialState('shuffle', false));
@@ -131,7 +130,7 @@ function App() {
   };
 
   const handlePlayWrapper = (beat, play, beats) => {
-    handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed);
+    handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
     updateHistory(beat);
   };
 
@@ -201,7 +200,6 @@ function App() {
               <Route path="/" element={
                 <>
                 <BeatList 
-                  key={refresh} 
                   onPlay={handlePlayWrapper} 
                   selectedBeat={selectedBeat} 
                   isPlaying={isPlaying} 
@@ -216,7 +214,6 @@ function App() {
               } />
                 <Route path="/playlists/:id" element={
                   <PlaylistDetail
-                    key={refresh} 
                     onPlay={handlePlayWrapper} 
                     selectedBeat={selectedBeat} 
                     isPlaying={isPlaying} 

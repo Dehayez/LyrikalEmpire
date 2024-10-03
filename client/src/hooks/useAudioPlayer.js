@@ -136,7 +136,7 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     }
   }, [onPrev, playerRef]);
 
-  const handlePlay = (beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying, setHasBeatPlayed) => {
+  const handlePlay = (beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying) => {
     setSelectedBeat(beat);
     setBeats(beats);
     if (!beat) {
@@ -147,7 +147,6 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     } else {
       setCurrentBeat(beat);
       setIsPlaying(true);
-      setHasBeatPlayed(true);
     }
   };
 

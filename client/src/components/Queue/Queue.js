@@ -13,7 +13,6 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
-  const [hoveredBeat, setHoveredBeat] = useState(null);
 
   useEffect(() => {
     const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
@@ -122,7 +121,6 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                 e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
                   button.style.opacity = 1;
                 });
-                setHoveredBeat(queue[0].id);
               }
             }}
             onMouseLeave={(e) => {
@@ -130,7 +128,6 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                 e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
                   button.style.opacity = 0;
                 });
-                setHoveredBeat(null);
               }
             }}
           >
@@ -195,7 +192,6 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                     e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
                       button.style.opacity = 1;
                     });
-                    setHoveredBeat(beat.id);
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -203,7 +199,6 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                     e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
                       button.style.opacity = 0;
                     });
-                    setHoveredBeat(null);
                   }
                 }}
               >
@@ -279,7 +274,6 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                   e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
                     button.style.opacity = 1;
                   });
-                  setHoveredBeat(beat.id);
                 }
               }}
               onMouseLeave={(e) => {
@@ -287,7 +281,6 @@ const Queue = ({ queue, setQueue, currentBeat, onBeatClick, isShuffleEnabled, cu
                   e.currentTarget.querySelectorAll('.interactive-button').forEach(button => {
                     button.style.opacity = 0;
                   });
-                  setHoveredBeat(null);
                 }
               }}
             >

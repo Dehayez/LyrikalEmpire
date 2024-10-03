@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { updatePlaylist } from '../../services';
 
 import DraggableModal from '../Modals/DraggableModal';
@@ -11,8 +11,8 @@ export const UpdatePlaylistForm = ({ playlist, onCancel, onConfirm, isOpen, setI
     const [title, setTitle] = useState(playlist.title);
     const [isTitleEmpty, setIsTitleEmpty] = useState(false);
     const [description, setDescription] = useState(playlist.description || '');
-    
-    const handleUpdate = async () => {
+
+    const handleUpdate = useCallback(async () => {
         if (!title.trim()) {
           setIsTitleEmpty(true);
           return;
@@ -25,7 +25,7 @@ export const UpdatePlaylistForm = ({ playlist, onCancel, onConfirm, isOpen, setI
         } catch (error) {
           console.error('Failed to update playlist', error);
         }
-      }; 
+    }, [title, description, playlist.id, onConfirm, setIsOpen]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -41,7 +41,7 @@ export const UpdatePlaylistForm = ({ playlist, onCancel, onConfirm, isOpen, setI
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [title, description]);
+    }, [handleUpdate, onCancel]);
 
     return (
         <DraggableModal
