@@ -28,7 +28,6 @@ const Playlists = ({ isPlaying }) => {
   
   const [playlistToUpdate, setPlaylistToUpdate] = useState(null);
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
-  const [playlist, setPlaylist] = useState(null);
 
   const handleAddPlaylist = async () => {
     const newPlaylistTitle = `Playlist #${playlists.length + 1}`;
@@ -57,7 +56,6 @@ const Playlists = ({ isPlaying }) => {
   
   const refreshPlaylist = async (playlistId) => {
     const updatedPlaylist = await getPlaylistById(playlistId);
-    setPlaylist(updatedPlaylist);
     updatePlaylist(updatedPlaylist);
   };
 

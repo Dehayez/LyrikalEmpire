@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { addBeat } from '../services';
@@ -8,27 +8,53 @@ export const useDragAndDrop = (setRefreshBeats) => {
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [activeUploads, setActiveUploads] = useState(0);
   const [showToast, setShowToast] = useState(false);
-  const [refresh, setRefresh] = useState(false);
 
-  useEffect(() => {
-    window.addEventListener('dragover', handleDragOver);
-    window.addEventListener('drop', handleDrop);
-    window.addEventListener('dragleave', handleDragLeave);
-
-    return () => {
-      window.removeEventListener('dragover', handleDragOver);
-      window.removeEventListener('drop', handleDrop);
-      window.removeEventListener('dragleave', handleDragLeave);
-    };
+  const getAudioDuration = useCallback((file) => {
+    return new Promise((resolve, reject) => {
+      const audio = new Audio();
+      audio.src = URL.createObjectURL(file);
+      audio.addEventListener('loadedmetadata', () => {
+        resolve(audio.duration);
+        URL.revokeObjectURL(audio.src);
+      });
+      audio.onerror = () => reject(new Error('Failed to load audio metadata'));
+    });
   }, []);
 
-  useEffect(() => {
-    if (activeUploads === 0 && showToast) {
-      setRefresh(!refresh);
-    }
-  }, [activeUploads, showToast]);
+  const autoSubmitFiles = useCallback(async (files) => {
+    setActiveUploads(activeUploads => activeUploads + files.length);
+    files.forEach(async (file) => {
+      try {
+        const duration = await getAudioDuration(file);
+        const beat = {
+          title: file.name.replace(/\.[^/.]+$/, ""),
+          duration: duration,
+        };
+        await addBeat(beat, file);
+        setShowToast(true);
+        toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
+          autoClose: 3000,
+          pauseOnFocusLoss: false,
+          icon: <IoCheckmarkSharp size={24} />,
+          className: "Toastify__toast--success",
+        });
+        setRefreshBeats(prev => !prev);
+      } catch (error) {
+        toast.dark(
+          <div><strong>Error:</strong> {error.message}</div>, {
+            autoClose: 5000,
+            pauseOnFocusLoss: false,
+            icon: <IoCloseSharp size={24} />,
+            className: "Toastify__toast--warning",
+          }
+        );
+      } finally {
+        setActiveUploads(activeUploads => activeUploads - 1);
+      }
+    });
+  }, [getAudioDuration, setRefreshBeats]);
 
-  const handleDragOver = (e) => {
+  const handleDragOver = useCallback((e) => {
     e.preventDefault();
     if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
       const isFileDrag = Array.from(e.dataTransfer.items).some(item => item.kind === 'file');
@@ -36,9 +62,9 @@ export const useDragAndDrop = (setRefreshBeats) => {
         setIsDraggingOver(true);
       }
     }
-  };
+  }, []);
 
-  const handleDrop = (e) => {
+  const handleDrop = useCallback((e) => {
     e.preventDefault();
     setIsDraggingOver(false);
 
@@ -65,57 +91,24 @@ export const useDragAndDrop = (setRefreshBeats) => {
         );
       }
     }
-  };
+  }, [autoSubmitFiles]);
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = useCallback((e) => {
     e.preventDefault();
     setIsDraggingOver(false);
-  };
+  }, []);
 
-  const getAudioDuration = (file) => {
-    return new Promise((resolve, reject) => {
-      const audio = new Audio();
-      audio.src = URL.createObjectURL(file);
-      audio.addEventListener('loadedmetadata', () => {
-        resolve(audio.duration);
-        URL.revokeObjectURL(audio.src);
-      });
-      audio.onerror = () => reject(new Error('Failed to load audio metadata'));
-    });
-  };
+  useEffect(() => {
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('drop', handleDrop);
+    window.addEventListener('dragleave', handleDragLeave);
 
-  const autoSubmitFiles = async (files) => {
-    setActiveUploads(activeUploads => activeUploads + files.length);
-    files.forEach(async (file) => {
-      try {
-        const duration = await getAudioDuration(file);
-        const beat = {
-          title: file.name.replace(/\.[^/.]+$/, ""),
-          duration: duration,
-        };
-        const data = await addBeat(beat, file);
-        setShowToast(true);
-        toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
-          autoClose: 3000,
-          pauseOnFocusLoss: false,
-          icon: <IoCheckmarkSharp size={24} />,
-          className: "Toastify__toast--success",
-        });
-        setRefreshBeats(prev => !prev);
-      } catch (error) {
-        toast.dark(
-          <div><strong>Error:</strong> {error.message}</div>, {
-            autoClose: 5000,
-            pauseOnFocusLoss: false,
-            icon: <IoCloseSharp size={24} />,
-            className: "Toastify__toast--warning",
-          }
-        );
-      } finally {
-        setActiveUploads(activeUploads => activeUploads - 1);
-      }
-    });
-  };
+    return () => {
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('drop', handleDrop);
+      window.removeEventListener('dragleave', handleDragLeave);
+    };
+  }, [handleDragOver, handleDrop, handleDragLeave]);
 
   return {
     isDraggingOver,

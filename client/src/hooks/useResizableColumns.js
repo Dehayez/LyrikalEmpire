@@ -74,7 +74,7 @@ export const useResizableColumns = (tableRef, mode) => {
     return () => {
       cleanupHeaders();
     };
-  }, [tableRef, mode]);
+  }, [tableRef, mode, setHeaderWidths]);
 
   useEffect(() => {
     const handleMouseEnter = (event) => {
