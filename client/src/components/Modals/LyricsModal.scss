@@ -12,7 +12,7 @@
     border: 1px solid $color-gray-dark-active;
     max-width: none !important; 
     resize: both;
-    overflow: auto;
+    overflow: hidden;
   }
 
   .modal__title {
@@ -34,6 +34,7 @@
 
     &__input {
         height: 100% !important;
+        overflow: auto;
     }
   }
 }
