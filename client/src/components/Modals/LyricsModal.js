@@ -14,7 +14,7 @@ Modal.setAppElement('#modal-root');
 const modalStyle = {
   overlay: {
     backgroundColor: 'transparent',
-    zIndex: 3,
+    zIndex: 10,
     pointerEvents: 'none',
   },
   content: {
