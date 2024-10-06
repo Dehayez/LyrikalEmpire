@@ -110,7 +110,7 @@ export const getBeatsByAssociation = async (associationType, associationIds) => 
         associationIds: associationIds.join(',')
       }
     });
-    return response.data;
+    return response.data.reverse();
   } catch (error) {
     console.error(`Failed to fetch beats with ${associationType} and IDs ${associationIds}:`, error);
     throw error;
