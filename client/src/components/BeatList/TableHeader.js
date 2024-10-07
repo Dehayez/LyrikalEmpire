@@ -16,8 +16,8 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
   const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
   const [showForm, setShowForm] = useState(false);
   const [formType, setFormType] = useState('');
-
   const { fetchGenres, fetchMoods, fetchKeywords, fetchFeatures, genres, moods, keywords, features } = useData();
+  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keyword', 'feature'];
 
   useResizableColumns(tableRef, mode, setIsDragging);
 
@@ -26,8 +26,6 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
       onSort && onSort(columnName);
     }
   };
-
-  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keyword', 'feature'];
 
   const handleRightClick = (e, column) => {
     e.preventDefault();

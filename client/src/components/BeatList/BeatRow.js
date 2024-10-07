@@ -223,7 +223,7 @@ const BeatRow = ({
     return new Promise((resolve) => {
       const input = document.createElement('input');
       input.type = 'file';
-      input.accept = 'audio/mpeg, audio/wav'; // Only allow .mp3 and .wav files
+      input.accept = 'audio/mpeg, audio/wav';
       input.onchange = (event) => {
         const file = event.target.files[0];
         if (file) {
