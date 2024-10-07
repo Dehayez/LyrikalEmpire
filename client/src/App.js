@@ -165,12 +165,14 @@ function App() {
           </>
         )}
         <ToastContainer />
-        <LyricsModal 
-          beatId={currentBeat.id} 
-          title={currentBeat.title} 
-          lyricsModal={lyricsModal}
-          setLyricsModal={setLyricsModal}
-        />
+        {currentBeat && (
+          <LyricsModal 
+            beatId={currentBeat.id} 
+            title={currentBeat.title} 
+            lyricsModal={lyricsModal}
+            setLyricsModal={setLyricsModal}
+          />
+        )}
         <Header 
           isLeftPanelVisible={isLeftPanelVisible} 
           isRightPanelVisible={isRightPanelVisible} 
