@@ -165,7 +165,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       </div>
       <div className='audio-player__settings' style={{ flex: '1' }}>
         <IconButton className='audio-player__icon-lyrics' onClick={toggleLyricsModal}>
-          <LiaMicrophoneAltSolid fontSize={24} className={lyricsModal ? 'icon-white' : ''} />
+          <LiaMicrophoneAltSolid fontSize={24} className={lyricsModal ? 'icon-primary' : ''} />
           {!isMobileOrTablet() && <Tooltip text={lyricsModal ? "Hide lyrics" : "Show lyrics"} />}
         </IconButton>
         <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
