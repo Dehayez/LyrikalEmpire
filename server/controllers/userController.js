@@ -23,20 +23,22 @@ const register = async (req, res) => {
 };
 
 const login = (req, res) => {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
+    if (!identifier || !password) {
+        return res.status(400).json({ error: 'Email/Username and password are required' });
     }
 
-    handleQuery('SELECT * FROM users WHERE email = ?', [email], res, null, true, async (user) => {
+    const query = identifier.includes('@') ? 'SELECT * FROM users WHERE email = ?' : 'SELECT * FROM users WHERE username = ?';
+
+    handleQuery(query, [identifier], res, null, true, async (user) => {
         if (!user) {
-            return res.status(400).json({ error: 'Invalid email or password' });
+            return res.status(400).json({ error: 'Invalid email/username or password' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ error: 'Invalid email or password' });
+            return res.status(400).json({ error: 'Invalid email/username or password' });
         }
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });

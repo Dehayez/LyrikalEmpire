@@ -12,12 +12,10 @@ import { Warning } from '../Warning';
 
 import './AddBeatForm.scss';
 
-
 const AddBeatForm = ({ isOpen, setIsOpen }) => {
     const { setRefreshBeats } = useBeat();
     const { genres, moods, keywords, features } = useData();
     
-    const draggableRef = useRef(null);
     const labelRef = useRef(null);
     
     const [title, setTitle] = useState('');

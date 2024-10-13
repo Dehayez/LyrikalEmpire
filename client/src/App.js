@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import { isMobileOrTablet, getInitialState } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
 import { useBeat } from './contexts';
 
-import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage } from './pages';
+import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage } from './pages';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
 import NotFound from './components/NotFound';
 
@@ -14,6 +14,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
 function App() {
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   const { beats, setBeats, setRefreshBeats } = useBeat();
   const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats);
 
@@ -183,6 +185,7 @@ function App() {
           handleMouseLeaveRight={handleMouseLeaveRight}
           isLeftDivVisible={isLeftDivVisible}
           isRightDivVisible={isRightDivVisible}
+          isAuthPage={isAuthPage}
         />
         <div className="container">
           <div className='container__content'>
@@ -234,6 +237,8 @@ function App() {
                 <Route path="/dashboard/moods" element={<MoodsPage />} />
                 <Route path="/dashboard/keywords" element={<KeywordsPage />} />
                 <Route path="/dashboard/features" element={<FeaturesPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
@@ -279,22 +284,24 @@ function App() {
             clearDroppedFiles={clearDroppedFiles} 
           />
         </div>
-        <AudioPlayer 
-          currentBeat={currentBeat} 
-          setCurrentBeat={setCurrentBeat} 
-          isPlaying={isPlaying} 
-          setIsPlaying={setIsPlaying} 
-          onNext={handleNextWrapper} 
-          onPrev={handlePrevWrapper} 
-          volume={volume} 
-          setVolume={setVolume} 
-          shuffle={shuffle} 
-          setShuffle={setShuffle} 
-          repeat={repeat} 
-          setRepeat={setRepeat}
-          lyricsModal={lyricsModal}
-          setLyricsModal={setLyricsModal}
-        />
+        {!isAuthPage &&
+          <AudioPlayer 
+            currentBeat={currentBeat} 
+            setCurrentBeat={setCurrentBeat} 
+            isPlaying={isPlaying} 
+            setIsPlaying={setIsPlaying} 
+            onNext={handleNextWrapper} 
+            onPrev={handlePrevWrapper} 
+            volume={volume} 
+            setVolume={setVolume} 
+            shuffle={shuffle} 
+            setShuffle={setShuffle} 
+            repeat={repeat} 
+            setRepeat={setRepeat}
+            lyricsModal={lyricsModal}
+            setLyricsModal={setLyricsModal}
+          />
+        }
       </div>
   );
 }

@@ -5,3 +5,4 @@ export * from './moodService';
 export * from './featureService';
 export * from './playlistService';
 export * from './lyricsService';
+export * from './userService';

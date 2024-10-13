@@ -5,3 +5,5 @@ export { default as GenresPage } from './GenresPage';
 export { default as MoodsPage } from './MoodsPage';
 export { default as FeaturesPage } from './FeaturesPage';
 export { default as KeywordsPage } from './KeywordsPage';
+export { default as LoginPage } from './LoginPage';
+export { default as RegisterPage } from './RegisterPage';
