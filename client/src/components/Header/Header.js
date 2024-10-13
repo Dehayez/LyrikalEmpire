@@ -8,7 +8,7 @@ import { Tooltip } from '../Tooltip';
 
 import './Header.scss';
 
-const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, handleMouseEnterLeft, handleMouseLeaveLeft, handleMouseEnterRight, handleMouseLeaveRight, isLeftDivVisible, isRightDivVisible }) => {
+const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, handleMouseEnterLeft, handleMouseLeaveLeft, handleMouseEnterRight, handleMouseLeaveRight, isLeftDivVisible, isRightDivVisible, isAuthPage }) => {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
 
@@ -28,25 +28,27 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
 
   return (
     <header className="header">
-      <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterLeft, onMouseLeave: handleMouseLeaveLeft } : {})} onClick={handleClickLeft} className="header__nav-menu-left">
-        {
-          isLeftPanelVisible ? (
-            <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-              <IoLockClosed />
-              {!isMobileOrTablet() && <Tooltip text="Unlock Panel" position="right" />}
-            </IconButton>
-          ) : isLeftDivVisible ? (
-            <IconButton>
-              <IoLockOpen />
-              {!isMobileOrTablet() && <Tooltip text="Lock Panel" position="right" />}
-            </IconButton>
-          ) : (
-            <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-              <IoMenuSharp />
-            </IconButton>
-          )
-        }
-      </div>
+      {!isAuthPage && 
+        <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterLeft, onMouseLeave: handleMouseLeaveLeft } : {})} onClick={handleClickLeft} className="header__nav-menu-left">
+          {
+            isLeftPanelVisible ? (
+              <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
+                <IoLockClosed />
+                {!isMobileOrTablet() && <Tooltip text="Unlock Panel" position="right" />}
+              </IconButton>
+            ) : isLeftDivVisible ? (
+              <IconButton>
+                <IoLockOpen />
+                {!isMobileOrTablet() && <Tooltip text="Lock Panel" position="right" />}
+              </IconButton>
+            ) : (
+              <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
+                <IoMenuSharp />
+              </IconButton>
+            )
+          }
+        </div>
+    }
 
       {isDashboard && (
         <>
@@ -61,32 +63,27 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
         </Link>
       </div>
 
-      {/* <Link to="/dashboard" className="header__nav-group-dashboard">
-        <IconButton>
-          <Tooltip text="Go to Dashboard" position='left' />
-          <IoAnalytics />
-        </IconButton>
-      </Link> */}
-
-      <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterRight, onMouseLeave: handleMouseLeaveRight } : {})} onClick={handleClickRight} className="header__nav-menu-right">
-        {
-          isRightPanelVisible ? (
-            <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-              <IoLockClosed />
-              {!isMobileOrTablet() && <Tooltip text="Unlock Panel" position="left" />}
-            </IconButton>
-          ) : isRightDivVisible ? (
-            <IconButton>
-              <IoLockOpen />
-              {!isMobileOrTablet() && <Tooltip text="Lock Panel" position="left" />}
-            </IconButton>
-          ) : (
-            <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-              <IoListSharp />
-            </IconButton>
-          )
-        }
-      </div>
+      {!isAuthPage && 
+        <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterRight, onMouseLeave: handleMouseLeaveRight } : {})} onClick={handleClickRight} className="header__nav-menu-right">
+          {
+            isRightPanelVisible ? (
+              <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
+                <IoLockClosed />
+                {!isMobileOrTablet() && <Tooltip text="Unlock Panel" position="left" />}
+              </IconButton>
+            ) : isRightDivVisible ? (
+              <IconButton>
+                <IoLockOpen />
+                {!isMobileOrTablet() && <Tooltip text="Lock Panel" position="left" />}
+              </IconButton>
+            ) : (
+              <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
+                <IoListSharp />
+              </IconButton>
+            )
+          }
+        </div>
+      }
   </header>
   );
 };

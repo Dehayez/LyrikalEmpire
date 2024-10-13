@@ -9,6 +9,7 @@
     font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    width: 100%;
 
 
     &--primary {
@@ -29,6 +30,9 @@
 
     &--large {
         padding: 16px 32px;
+    }
+    &--full-width {
+        width: 100%;
     }
 
     &--transparent {
