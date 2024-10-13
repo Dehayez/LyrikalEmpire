@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { addAssociationsToBeat, removeAssociationFromBeat, getAssociationsByBeatId } from '../../services';
-import { useHeaderWidths } from '../../contexts';
+import { useHeaderWidths, useData } from '../../contexts';
 import { SelectedList } from './SelectedList';
 import './SelectableInput.scss';
 
-export const SelectableInput = ({ items, beatId, associationType, headerIndex, label, placeholder, disableFocus, isNewBeat, newBeatId }) => {
+export const SelectableInput = ({ beatId, associationType, headerIndex, label, placeholder, disableFocus, isNewBeat, newBeatId }) => {
   const { headerWidths } = useHeaderWidths();
+  const { genres, moods, keywords, features } = useData();
 
   const inputRef = useRef(null);
   const containerRef = useRef(null);
@@ -15,6 +16,13 @@ export const SelectableInput = ({ items, beatId, associationType, headerIndex, l
   const [isFocused, setIsFocused] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [pendingAssociations, setPendingAssociations] = useState([]);
+
+  const items = {
+    moods,
+    genres,
+    keywords,
+    features
+  }[associationType];
 
   const associationItems = items.filter(item => 
     item.name.toLowerCase().includes(inputValue.toLowerCase())

@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
 
+const userRoutes = require('./routes/userRoute');
 const keywordRoutes = require('./routes/keywordRoute');
 const moodRoutes = require('./routes/moodRoute');
 const featureRoutes = require('./routes/featureRoute');
@@ -18,6 +19,7 @@ const beatRoutes = require('./routes/beatRoute');
 const genreRoutes = require('./routes/genreRoute');
 const lyricsRoutes = require('./routes/lyricsRoute');
 
+app.use('/api/users', userRoutes);
 app.use('/api/keywords', keywordRoutes);
 app.use('/api/moods', moodRoutes);
 app.use('/api/features', featureRoutes);
