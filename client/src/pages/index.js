@@ -7,3 +7,4 @@ export { default as FeaturesPage } from './FeaturesPage';
 export { default as KeywordsPage } from './KeywordsPage';
 export { default as LoginPage } from './LoginPage';
 export { default as RegisterPage } from './RegisterPage';
+export { default as ConfirmEmailPage } from './ConfirmEmailPage';

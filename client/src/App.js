@@ -6,7 +6,7 @@ import { isMobileOrTablet, getInitialState } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
 import { useBeat } from './contexts';
 
-import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage } from './pages';
+import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage } from './pages';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
 import NotFound from './components/NotFound';
 
@@ -239,6 +239,7 @@ function App() {
                 <Route path="/dashboard/features" element={<FeaturesPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/confirm-email" element={<ConfirmEmailPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
