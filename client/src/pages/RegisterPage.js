@@ -66,6 +66,7 @@ const RegisterPage = () => {
           required
         />
         <Button variant='primary' type='submit' size='full-width'>Register</Button>
+        <Button variant='transparent' type='button' size='full-width' onClick={() => navigate('/login')}>Login</Button>
       </form>
     </div>
   );
