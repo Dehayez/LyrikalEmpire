@@ -39,10 +39,11 @@
         background-color: transparent;
         color: $color-white;
         padding: 0;
-        margin: 8px 12px;
+        margin: 12px 0;
         
         &:hover {
             background-color: transparent;
+            color: $color-gray;
         }
     }
 }
