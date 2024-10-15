@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
 import './Auth.scss';
 import { FormInput, Button } from '../components';
@@ -16,10 +17,20 @@ const LoginPage = () => {
     try {
       const response = await userService.login({ identifier, password });
       localStorage.setItem('token', response.data.token);
-      toast.success('Login successful');
+      toast.dark(<div><strong>Login successful</strong></div>, {
+        autoClose: 3000,
+        pauseOnFocusLoss: false,
+        icon: <IoCheckmarkSharp size={24} />,
+        className: "Toastify__toast--success",
+      });
       navigate('/');
     } catch (error) {
-      toast.error('Invalid email/username or password');
+      toast.dark(<div><strong>Invalid email/username or password</strong></div>, {
+        autoClose: 3000,
+        pauseOnFocusLoss: false,
+        icon: <IoCheckmarkSharp size={24} />,
+        className: "Toastify__toast--warning",
+      });
     }
   };
 
@@ -46,6 +57,7 @@ const LoginPage = () => {
           required
         />
         <Button variant='primary' type='submit' size='full-width'>Login</Button>
+        <Button variant='transparent' type='button' size='full-width' onClick={() => navigate('/register')}>Register</Button>
       </form>
     </div>
   );
