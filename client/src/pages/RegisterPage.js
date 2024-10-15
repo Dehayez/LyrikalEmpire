@@ -17,7 +17,7 @@ const RegisterPage = () => {
     try {
       await userService.register({ username, email, password });
       toast.success('Registration successful. Please check your email to confirm your account.');
-      navigate('/login');
+      navigate('/confirm-wait', { state: { email } });
     } catch (error) {
       toast.error('Registration failed');
     }

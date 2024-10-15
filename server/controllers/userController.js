@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const transporter = require('../config/emailConfig');
 const { handleQuery } = require('../helpers/dbHelpers');
-const db = require('../config/db'); // Import the database connection
+const db = require('../config/db');
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -14,8 +14,6 @@ const register = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const token = jwt.sign({ username, email, password: hashedPassword }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    console.log('Generated token:', token); // Log the generated token
 
     const url = `http://localhost:3000/confirm/${token}`;
     await transporter.sendMail({
@@ -39,6 +37,7 @@ const confirmEmail = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { username, email, password } = decoded;
 
+    // Check if the user already exists
     const existingUserQuery = 'SELECT * FROM users WHERE username = ? OR email = ?';
     const existingUserParams = [username, email];
     const [existingUser] = await db.query(existingUserQuery, existingUserParams);
@@ -59,32 +58,58 @@ const confirmEmail = async (req, res) => {
   }
 };
 
-const login = (req, res) => {
-  const { identifier, password } = req.body;
+const resendConfirmationEmail = async (req, res) => {
+  const { email } = req.body;
 
-  if (!identifier || !password) {
-    return res.status(400).json({ error: 'Email/Username and password are required' });
+  try {
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    const url = `http://localhost:3000/confirm/${token}`;
+    await transporter.sendMail({
+      from: '"Lyrikal Empire" <info@lyrikalempire.com>',
+      to: email,
+      subject: 'Confirm your email',
+      html: `Click <a href="${url}">here</a> to confirm your email.`,
+    });
+
+    res.status(200).json({ message: 'Confirmation email resent. Please check your email.' });
+  } catch (error) {
+    console.error('Error resending confirmation email:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
   }
 
-  const query = identifier.includes('@') ? 'SELECT * FROM users WHERE email = ?' : 'SELECT * FROM users WHERE username = ?';
+  try {
+    const userQuery = 'SELECT * FROM users WHERE email = ?';
+    const [user] = await db.query(userQuery, [email]);
 
-  handleQuery(query, [identifier], res, null, true, async (user) => {
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid email/username or password' });
+    if (user.length === 0) {
+      return res.status(400).json({ error: 'User not found' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid email/username or password' });
+    const validPassword = await bcrypt.compare(password, user[0].password);
+    if (!validPassword) {
+      return res.status(400).json({ error: 'Invalid password' });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
-  });
+    const token = jwt.sign({ id: user[0].id, email: user[0].email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
 };
 
 module.exports = {
   register,
   confirmEmail,
+  resendConfirmationEmail,
   login
 };
