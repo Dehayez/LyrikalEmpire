@@ -10,6 +10,7 @@ const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
+    console.error('Username, email, and password are required');
     return res.status(400).json({ error: 'Username, email, and password are required' });
   }
 
@@ -103,26 +104,32 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+    return res.status(400).json({ error: 'Email/Username and password are required' });
   }
 
   try {
-    const userQuery = 'SELECT * FROM users WHERE email = ?';
-    const [user] = await db.query(userQuery, [email]);
+    const [user] = await db.query(
+      'SELECT * FROM users WHERE email = ? OR username = ?',
+      [email, email]
+    );
 
-    if (user.length === 0) {
-      return res.status(400).json({ error: 'User not found' });
+    if (!user || user.length === 0) {
+      return res.status(401).json({ error: 'Invalid email/username or password' });
     }
 
-    const validPassword = await bcrypt.compare(password, user[0].password);
-    if (!validPassword) {
-      return res.status(400).json({ error: 'Invalid password' });
+    const isPasswordValid = await bcrypt.compare(password, user[0].password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid email/username or password' });
     }
 
-    const token = jwt.sign({ id: user[0].id, email: user[0].email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ token });
+    const token = jwt.sign({ id: user[0].id, email: user[0].email }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    res.json({ token });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 

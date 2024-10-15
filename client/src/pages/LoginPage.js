@@ -15,14 +15,8 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await userService.login({ identifier, password });
+      const response = await userService.login({ email: identifier, password });
       localStorage.setItem('token', response.data.token);
-      toast.dark(<div><strong>Login successful</strong></div>, {
-        autoClose: 3000,
-        pauseOnFocusLoss: false,
-        icon: <IoCheckmarkSharp size={24} />,
-        className: "Toastify__toast--success",
-      });
       navigate('/');
     } catch (error) {
       toast.dark(<div><strong>Invalid email/username or password</strong></div>, {
