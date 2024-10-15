@@ -2,65 +2,59 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const transporter = require('../config/emailConfig');
 const { handleQuery } = require('../helpers/dbHelpers');
+const db = require('../config/db'); // Import the database connection
 
 const register = async (req, res) => {
-    const { username, email, password } = req.body;
-  
-    if (!username || !email || !password) {
-      return res.status(400).json({ error: 'Username, email, and password are required' });
-    }
-  
-    try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  
-      console.log('Generated Token:', token); // Log the generated token
-  
-      await handleQuery(
-        'INSERT INTO users (username, email, password, confirmed) VALUES (?, ?, ?, ?)',
-        [username, email, hashedPassword, false],
-        res,
-        'User created successfully'
-      );
-  
-      const url = `http://localhost:3000/confirm/${token}`;
-      await transporter.sendMail({
-        from: '"Lyrikal Empire" <info@lyrikalempire.com>', // Add the from field
-        to: email,
-        subject: 'Confirm your email',
-        html: `Click <a href="${url}">here</a> to confirm your email.`,
-      });
-  
-      if (!res.headersSent) {
-        res.status(200).json({ message: 'Registration successful. Please check your email to confirm your account.' });
-      }
-    } catch (error) {
-      console.error('Error during registration:', error); // Log the error
-  
-      if (!res.headersSent) {
-        res.status(500).json({ error: 'Server error' });
-      }
-    }
-  };
+  const { username, email, password } = req.body;
 
-const confirmEmail = (req, res) => {
+  if (!username || !email || !password) {
+    return res.status(400).json({ error: 'Username, email, and password are required' });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const token = jwt.sign({ username, email, password: hashedPassword }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    console.log('Generated token:', token); // Log the generated token
+
+    const url = `http://localhost:3000/confirm/${token}`;
+    await transporter.sendMail({
+      from: '"Lyrikal Empire" <info@lyrikalempire.com>',
+      to: email,
+      subject: 'Confirm your email',
+      html: `Click <a href="${url}">here</a> to confirm your email.`,
+    });
+
+    res.status(200).json({ message: 'Registration successful. Please check your email to confirm your account.' });
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const confirmEmail = async (req, res) => {
   const { token } = req.params;
 
   try {
-    console.log('Received Token:', token); // Log the received token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { username, email, password } = decoded;
 
-    const { email } = jwt.verify(token, process.env.JWT_SECRET);
+    const existingUserQuery = 'SELECT * FROM users WHERE username = ? OR email = ?';
+    const existingUserParams = [username, email];
+    const [existingUser] = await db.query(existingUserQuery, existingUserParams);
 
-    console.log('Verified Email:', email); // Log the verified email
+    if (existingUser.length > 0) {
+      return res.status(400).json({ error: 'User already exists' });
+    }
 
-    handleQuery(
-      'UPDATE users SET confirmed = ? WHERE email = ?',
-      [true, email],
+    await handleQuery(
+      'INSERT INTO users (username, email, password, confirmed) VALUES (?, ?, ?, ?)',
+      [username, email, password, true],
       res,
       'Email confirmed successfully'
     );
   } catch (error) {
-    console.error('Error during email confirmation:', error); // Log the error
+    console.error('Error confirming email:', error);
     res.status(400).json({ error: 'Invalid or expired token' });
   }
 };

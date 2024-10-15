@@ -239,7 +239,7 @@ function App() {
                 <Route path="/dashboard/features" element={<FeaturesPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="/confirm-email" element={<ConfirmEmailPage />} />
+                <Route path="/confirm/:token" element={<ConfirmEmailPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>

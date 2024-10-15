@@ -17,7 +17,7 @@ const LoginPage = () => {
       const response = await userService.login({ identifier, password });
       localStorage.setItem('token', response.data.token);
       toast.success('Login successful');
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
       toast.error('Invalid email/username or password');
     }
