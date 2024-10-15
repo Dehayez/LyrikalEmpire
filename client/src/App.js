@@ -15,7 +15,7 @@ import './App.scss';
 
 function App() {
   const location = useLocation();
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/confirm-wait' || location.pathname === '/confirm/:token';
   const { beats, setBeats, setRefreshBeats } = useBeat();
   const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats);
 
