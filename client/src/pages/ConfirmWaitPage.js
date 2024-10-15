@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,7 +8,6 @@ import userService from '../services/userService';
 import './Auth.scss';
 
 const ConfirmWaitPage = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { email } = location.state || {};
   const [waitTime, setWaitTime] = useState(0);
@@ -41,21 +40,21 @@ const ConfirmWaitPage = () => {
           autoClose: 3000,
           pauseOnFocusLoss: false,
           icon: <IoCheckmarkSharp size={24} />,
-          className: "Toastify__toast--error",
+          className: "Toastify__toast--warning",
         });
       } else if (error.response && error.response.data && error.response.data.error) {
         toast.dark(<div><strong>Error:</strong> {error.response.data.error}</div>, {
           autoClose: 3000,
           pauseOnFocusLoss: false,
           icon: <IoCheckmarkSharp size={24} />,
-          className: "Toastify__toast--error",
+          className: "Toastify__toast--warning",
         });
       } else {
         toast.dark(<div><strong>Failed to resend confirmation email.</strong></div>, {
           autoClose: 3000,
           pauseOnFocusLoss: false,
           icon: <IoCheckmarkSharp size={24} />,
-          className: "Toastify__toast--error",
+          className: "Toastify__toast--warning",
         });
       }
     }
@@ -65,12 +64,9 @@ const ConfirmWaitPage = () => {
     <div className="auth-container">
       <h2>Waiting for Email Confirmation</h2>
       <p>Check your email (including spam) and click the confirmation link to activate your account.</p>
-      <div className="auth-container__buttons">
-        <Button variant='primary' onClick={() => navigate('/login')} size='full-width'>Login</Button>
-        <Button variant='transparent' onClick={handleResendEmail} size='full-width' disabled={waitTime > 0}>
-          {waitTime > 0 ? `Resend (${waitTime}s)` : 'Resend'}
-        </Button>
-      </div>
+    <Button variant='transparent' onClick={handleResendEmail} size='full-width' disabled={waitTime > 0}>
+        {waitTime > 0 ? `Resend Email (${waitTime}s)` : 'Resend Email'}
+    </Button>
     </div>
   );
 };
