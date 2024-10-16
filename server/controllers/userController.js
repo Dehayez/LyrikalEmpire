@@ -10,11 +10,33 @@ const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
-    console.error('Username, email, and password are required');
     return res.status(400).json({ error: 'Username, email, and password are required' });
   }
 
   try {
+    try {
+      await transporter.verify();
+    } catch (emailError) {
+      return res.status(400).json({ error: "Invalid email address. Please provide a valid email." });
+    }
+
+    const existingUserQuery = 'SELECT * FROM users WHERE username = ? OR email = ?';
+    const existingUserParams = [username, email];
+    const [existingUser] = await db.query(existingUserQuery, existingUserParams);
+
+    if (existingUser.length > 0) {
+      const existingUsernames = existingUser.filter(user => user.username === username);
+      const existingEmails = existingUser.filter(user => user.email === email);
+
+      if (existingEmails.length > 0 && existingUsernames.length > 0) {
+        return res.status(400).json({ error: 'Email and Username are already in use' });
+      } else if (existingEmails.length > 0) {
+        return res.status(400).json({ error: 'Email is already in use' });
+      } else if (existingUsernames.length > 0) {
+        return res.status(400).json({ error: 'Username is already in use' });
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const token = jwt.sign({ username, email, password: hashedPassword }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
@@ -30,7 +52,6 @@ const register = async (req, res) => {
 
     res.status(200).json({ message: 'Registration successful. Please check your email to confirm your account.' });
   } catch (error) {
-    console.error('Error during registration:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -59,7 +80,6 @@ const confirmEmail = async (req, res) => {
 
     delete resendAttempts[email];
   } catch (error) {
-    console.error('Error confirming email:', error);
     res.status(400).json({ error: 'Invalid or expired token' });
   }
 };
@@ -68,7 +88,6 @@ const resendConfirmationEmail = async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
-    console.error('Email is required');
     return res.status(400).json({ error: 'Email is required' });
   }
 
@@ -78,7 +97,6 @@ const resendConfirmationEmail = async (req, res) => {
 
     if (resendAttempts[email] && now - new Date(resendAttempts[email].lastResend) < bufferPeriod) {
       const waitTime = Math.ceil((bufferPeriod - (now - new Date(resendAttempts[email].lastResend))) / 1000);
-      console.error(`Please wait ${waitTime} seconds before resending the confirmation email.`);
       return res.status(429).json({ error: `Please wait ${waitTime} seconds before resending the confirmation email.`, waitTime });
     }
 

@@ -63,7 +63,7 @@ const ConfirmWaitPage = () => {
   return (
     <div className="auth-container">
       <h2>Waiting for Email Confirmation</h2>
-      <p>Check your email (including spam) and click the confirmation link to activate your account.</p>
+      <p>Check your email <b>(including spam)</b> and click the confirmation link to activate your account.</p>
     <Button variant='transparent' onClick={handleResendEmail} size='full-width' disabled={waitTime > 0}>
         {waitTime > 0 ? `Resend Email (${waitTime}s)` : 'Resend Email'}
     </Button>
