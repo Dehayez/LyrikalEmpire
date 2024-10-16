@@ -13,13 +13,12 @@ const register = async (req, res) => {
     return res.status(400).json({ error: 'Username, email, and password are required' });
   }
 
-  try {
-    try {
-      await transporter.verify();
-    } catch (emailError) {
-      return res.status(400).json({ error: "Invalid email address. Please provide a valid email." });
-    }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Invalid email address. Please provide a valid email.' });
+  }
 
+  try {
     const existingUserQuery = 'SELECT * FROM users WHERE username = ? OR email = ?';
     const existingUserParams = [username, email];
     const [existingUser] = await db.query(existingUserQuery, existingUserParams);
