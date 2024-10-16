@@ -12,15 +12,55 @@ const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessages, setErrorMessages] = useState([]);
+  const [isUsernameValid, setIsUsernameValid] = useState(true);
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
+    setErrorMessages([]);
+
+    let isValid = true;
+    const newErrorMessages = [];
+
+    if (username.trim() === '') {
+      setIsUsernameValid(false);
+      newErrorMessages.push('Username is required');
+      isValid = false;
+    } else {
+      setIsUsernameValid(true);
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setIsEmailValid(false);
+      newErrorMessages.push('Invalid email address');
+      isValid = false;
+    } else {
+      setIsEmailValid(true);
+    }
+
+    if (password.trim() === '') {
+      setIsPasswordValid(false);
+      newErrorMessages.push('Password is required');
+      isValid = false;
+    } else {
+      setIsPasswordValid(true);
+    }
 
     if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match');
+      setIsConfirmPasswordValid(false);
+      newErrorMessages.push('Passwords do not match');
+      isValid = false;
+    } else {
+      setIsConfirmPasswordValid(true);
+    }
+
+    if (!isValid) {
+      setErrorMessages(newErrorMessages);
       return;
     }
 
@@ -38,13 +78,18 @@ const RegisterPage = () => {
         const errorMessage = error.response.data.error;
         console.log('Received error message:', errorMessage);
         if (errorMessage.includes("Invalid email address")) {
-          setErrorMessage('Invalid email address');
+          newErrorMessages.push('Invalid email address');
+          setIsEmailValid(false);
         } else if (errorMessage.includes('Email and Username are already in use')) {
-          setErrorMessage('Email and Username are already in use');
+          newErrorMessages.push('Email and Username are already in use');
+          setIsEmailValid(false);
+          setIsUsernameValid(false);
         } else if (errorMessage.includes('Email is already in use')) {
-          setErrorMessage('Email is already in use');
+          newErrorMessages.push('Email is already in use');
+          setIsEmailValid(false);
         } else if (errorMessage.includes('Username is already in use')) {
-          setErrorMessage('Username is already in use');
+          newErrorMessages.push('Username is already in use');
+          setIsUsernameValid(false);
         }
       } else {
         toast.dark(<div><strong>Registration failed</strong></div>, {
@@ -54,6 +99,7 @@ const RegisterPage = () => {
           className: "Toastify__toast--error",
         });
       }
+      setErrorMessages(newErrorMessages);
     }
   };
 
@@ -69,6 +115,7 @@ const RegisterPage = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
+          isWarning={!isUsernameValid}
         />
         <FormInput
           id='email'
@@ -78,6 +125,7 @@ const RegisterPage = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          isWarning={!isEmailValid}
         />
         <FormInput
           id='password'
@@ -87,6 +135,7 @@ const RegisterPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          isWarning={!isPasswordValid}
         />
         <FormInput
           id='confirmPassword'
@@ -96,8 +145,11 @@ const RegisterPage = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
+          isWarning={!isConfirmPasswordValid}
         />
-        {errorMessage && <Warning message={errorMessage} />}
+        {errorMessages.map((message, index) => (
+          <Warning key={index} message={message} />
+        ))}
         <Button variant='primary' type='submit' size='full-width'>Register</Button>
         <Button variant='transparent' type='button' size='full-width' onClick={() => navigate('/login')}>Login</Button>
       </form>
