@@ -11,12 +11,19 @@ const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
+
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match');
+      return;
+    }
+
     try {
       await userService.register({ username, email, password });
       toast.dark(<div><strong>Registration successful</strong>. Check your email to confirm your account.</div>, {
@@ -79,6 +86,15 @@ const RegisterPage = () => {
           placeholder='Password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <FormInput
+          id='confirmPassword'
+          name='confirmPassword'
+          type='password'
+          placeholder='Confirm Password'
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
         {errorMessage && <Warning message={errorMessage} />}
