@@ -17,9 +17,19 @@ const resendConfirmationEmail = (email) => {
   return axios.post(`${API_BASE_URL}/api/users/resend-confirmation`, { email });
 };
 
+const requestPasswordReset = (email) => {
+  return axios.post(`${API_BASE_URL}/api/users/request-password-reset`, { email });
+};
+
+const resetPassword = (token, password) => {
+  return axios.post(`${API_BASE_URL}/api/users/reset-password/${token}`, { password });
+};
+
 export default {
   register,
   login,
   confirmEmail,
   resendConfirmationEmail,
+  requestPasswordReset,
+  resetPassword,
 };
