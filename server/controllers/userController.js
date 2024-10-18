@@ -44,7 +44,16 @@ const register = async (req, res) => {
       from: '"Lyrikal Empire" <info@lyrikalempire.com>',
       to: email,
       subject: 'Confirm your email',
-      html: `Click <a href="${url}">here</a> to confirm your email.`,
+      html: `
+        <div>
+          <p>Hi ${username},</p>
+          <p>Please click <a href="${url}">here</a> to confirm your email address.</p>
+          <p>Or use the following link:</p>
+          <p><a href="${url}">${url}</a></p>
+          <p>If you did not register for an account, please ignore this email.</p>
+          <p>Best regards,<br>Lyrikal Empire Team</p>
+        </div>
+      `,
     });
 
     resendAttempts[email] = { lastResend: new Date() };
@@ -171,7 +180,16 @@ const requestPasswordReset = async (req, res) => {
       from: '"Lyrikal Empire" <info@lyrikalempire.com>',
       to: email,
       subject: 'Reset your password',
-      html: `Click <a href="${url}">here</a> to reset your password.`,
+      html: `
+        <div>
+          <p>Hi ${user[0].username},</p>
+          <p>We received a request to reset your password. Please click <a href="${url}">here</a> to reset your password.</p>
+          <p>Or use the following link:</p>
+          <p><a href="${url}">${url}</a></p>
+          <p>If you did not request a password reset, please ignore this email.</p>
+          <p>Best regards,<br>Lyrikal Empire Team</p>
+        </div>
+      `,
     });
 
     res.status(200).json({ message: 'Password reset email sent. Please check your email.' });
