@@ -52,6 +52,7 @@ const LoginPage = () => {
         />
         <Button variant='primary' type='submit' size='full-width'>Login</Button>
         <Button variant='transparent' type='button' size='full-width' onClick={() => navigate('/register')}>Register</Button>
+        <Button variant='transparent' type='button' size='full-width' onClick={() => navigate('/request-password-reset')}>Forgot Password?</Button>
       </form>
     </div>
   );

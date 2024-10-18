@@ -150,9 +150,66 @@ const login = async (req, res) => {
   }
 };
 
+const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+
+  try {
+    const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+
+    if (!user || user.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    const url = `http://localhost:3000/reset-password/${token}`;
+    await transporter.sendMail({
+      from: '"Lyrikal Empire" <info@lyrikalempire.com>',
+      to: email,
+      subject: 'Reset your password',
+      html: `Click <a href="${url}">here</a> to reset your password.`,
+    });
+
+    res.status(200).json({ message: 'Password reset email sent. Please check your email.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  if (!password) {
+    return res.status(400).json({ error: 'Password is required' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { email } = decoded;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await handleQuery(
+      'UPDATE users SET password = ? WHERE email = ?',
+      [hashedPassword, email],
+      res,
+      'Password reset successfully'
+    );
+  } catch (error) {
+    res.status(400).json({ error: 'Invalid or expired token' });
+  }
+};
+
 module.exports = {
   register,
   confirmEmail,
   resendConfirmationEmail,
-  login
+  login,
+  requestPasswordReset,
+  resetPassword
 };
