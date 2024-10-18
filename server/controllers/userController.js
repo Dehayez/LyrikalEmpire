@@ -51,7 +51,7 @@ const register = async (req, res) => {
           <p>Or use the following link:</p>
           <p><a href="${url}">${url}</a></p>
           <p>If you did not register for an account, please ignore this email.</p>
-          <p>Best regards,<br>Lyrikal Empire Team</p>
+          <p>Kind regards,<br>Lyrikal Empire</p>
         </div>
       `,
     });
@@ -187,7 +187,7 @@ const requestPasswordReset = async (req, res) => {
           <p>Or use the following link:</p>
           <p><a href="${url}">${url}</a></p>
           <p>If you did not request a password reset, please ignore this email.</p>
-          <p>Best regards,<br>Lyrikal Empire Team</p>
+          <p>Kind regards,<br>Lyrikal Empire</p>
         </div>
       `,
     });
