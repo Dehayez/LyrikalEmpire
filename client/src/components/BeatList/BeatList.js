@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoOptionsSharp } from "react-icons/io5";
+import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoOptionsSharp, IoPersonSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
 import { usePlaylist, useBeat, useData } from '../../contexts';
@@ -346,6 +346,11 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
               </div>
             )}
           </div>
+
+          <IconButton className='beat-list__action-button--profile' onClick={() => console.log('profile')}>
+            <Tooltip text="Profile" position='left' />
+            <IoPersonSharp/>
+          </IconButton>
         </div>
       </div>
 
