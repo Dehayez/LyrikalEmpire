@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoOptionsSharp, IoPersonSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
-import { usePlaylist, useBeat, useData } from '../../contexts';
+import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
 import { isMobileOrTablet, getInitialState } from '../../utils';
 import { useHandleBeatClick, useBeatActions, useSort, useLocalStorageSync } from '../../hooks';
 import { getBeatsByAssociation } from '../../services/beatService';
@@ -22,6 +22,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const tableRef = useRef(null);
   const searchInputRef = useRef(null);
   const containerRef = useRef(null);
+  const { user } = useUser();
+  const { username } = user;
 
   const location = useLocation();
   const [searchText, setSearchText] = useState(() => getInitialState('searchText', ''));
@@ -348,7 +350,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
           </div>
 
           <IconButton className='beat-list__action-button--profile' onClick={() => console.log('profile')}>
-            <Tooltip text="Profile" position='left' />
+            <Tooltip text={username} position='left' />
             <IoPersonSharp/>
           </IconButton>
         </div>

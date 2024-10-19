@@ -6,7 +6,19 @@ const register = (userData) => {
 };
 
 const login = (userData) => {
-  return axios.post(`${API_BASE_URL}/api/users/login`, userData);
+  return axios.post(`${API_BASE_URL}/api/users/login`, userData)
+    .then(response => {
+      const { token, email, username } = response.data;
+      return { token, email, username };
+    });
+};
+
+const getUserDetails = (token) => {
+  return axios.get(`${API_BASE_URL}/api/users/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then(response => response.data);
 };
 
 const confirmEmail = (token) => {
@@ -32,6 +44,7 @@ const verifyToken = (token) => {
 export default {
   register,
   login,
+  getUserDetails,
   confirmEmail,
   resendConfirmationEmail,
   requestPasswordReset,
