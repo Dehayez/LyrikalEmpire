@@ -8,8 +8,7 @@ import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import { PlaylistProvider, BeatProvider, DataProvider, HeaderWidthProvider } from './contexts'; 
-import { UserProvider } from './contexts/UserContext';
+import { PlaylistProvider, BeatProvider, DataProvider, HeaderWidthProvider, UserProvider } from './contexts'; 
 
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);

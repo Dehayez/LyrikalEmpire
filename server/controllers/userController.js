@@ -153,7 +153,7 @@ const login = async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.json({ token });
+    res.json({ token, email: user[0].email, username: user[0].username });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -234,6 +234,20 @@ const verifyToken = async (req, res) => {
   }
 };
 
+const getUserDetails = async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const [user] = await db.query('SELECT email, username FROM users WHERE id = ?', [decoded.id]);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user[0]);
+  } catch (error) {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+};
+
 module.exports = {
   register,
   confirmEmail,
@@ -242,4 +256,5 @@ module.exports = {
   requestPasswordReset,
   resetPassword,
   verifyToken,
+  getUserDetails,
 };

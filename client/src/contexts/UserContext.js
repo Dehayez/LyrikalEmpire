@@ -7,6 +7,7 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState({ email: '', username: '' });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,6 +17,8 @@ export const UserProvider = ({ children }) => {
         const token = localStorage.getItem('token');
 
         if (token) {
+          const userDetails = await userService.getUserDetails(token);
+          setUser({ email: userDetails.email, username: userDetails.username });
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
@@ -35,8 +38,9 @@ export const UserProvider = ({ children }) => {
   const login = async (identifier, password) => {
     setIsLoading(true);
     try {
-      const response = await userService.login({ email: identifier, password });
-      localStorage.setItem('token', response.data.token);
+      const { token, email, username } = await userService.login({ email: identifier, password });
+      localStorage.setItem('token', token);
+      setUser({ email, username });
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
@@ -48,7 +52,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ isAuthenticated, isLoading, login }}>
+    <UserContext.Provider value={{ isAuthenticated, isLoading, login, user }}>
       {children}
     </UserContext.Provider>
   );
