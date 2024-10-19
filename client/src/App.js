@@ -5,7 +5,6 @@ import { ToastContainer } from 'react-toastify';
 import { isMobileOrTablet, getInitialState } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
 import { useBeat } from './contexts';
-import { useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, ConfirmWaitPage, RequestPasswordResetPage, ResetPasswordPage } from './pages';
@@ -33,12 +32,6 @@ function App() {
   const [shuffle, setShuffle] = useState(() => getInitialState('shuffle', false));
   const [repeat, setRepeat] = useState(() => getInitialState('repeat', 'Disabled Repeat'));
   const [lyricsModal, setLyricsModal] = useState(getInitialState('lyricsModal', false));
-
-  const { isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    console.log('App component: isAuthenticated =', isAuthenticated);
-  }, [isAuthenticated]);
 
   const {
     isLeftPanelVisible,

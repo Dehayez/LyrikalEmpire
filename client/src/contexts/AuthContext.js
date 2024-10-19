@@ -6,35 +6,48 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const token = localStorage.getItem('token');
-        console.log('Token from localStorage:', token);
 
         if (token) {
-          const response = await userService.verifyToken(token);
-          console.log('Token verification response:', response);
           setIsAuthenticated(true);
         } else {
-          console.log('No token found');
           setIsAuthenticated(false);
         }
       } catch (error) {
-        console.error('Error during token verification:', error);
         setIsAuthenticated(false);
         localStorage.removeItem('token');
         navigate('/login');
+      } finally {
+        setIsLoading(false);
       }
     };
 
     checkAuth();
   }, [navigate]);
 
+  const login = async (identifier, password) => {
+    setIsLoading(true);
+    try {
+      const response = await userService.login({ email: identifier, password });
+      localStorage.setItem('token', response.data.token);
+      setIsAuthenticated(true);
+      navigate('/');
+    } catch (error) {
+      setIsAuthenticated(false);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login }}>
       {children}
     </AuthContext.Provider>
   );

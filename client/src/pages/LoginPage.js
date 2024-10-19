@@ -5,19 +5,18 @@ import { IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
 import './Auth.scss';
 import { FormInput, Button } from '../components';
-import userService from '../services/userService';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await userService.login({ email: identifier, password });
-      localStorage.setItem('token', response.data.token);
-      navigate('/');
+      await login(identifier, password);
     } catch (error) {
       toast.dark(<div><strong>Invalid email/username or password</strong></div>, {
         autoClose: 3000,
