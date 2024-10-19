@@ -5,6 +5,8 @@ import { ToastContainer } from 'react-toastify';
 import { isMobileOrTablet, getInitialState } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
 import { useBeat } from './contexts';
+import { useAuth } from './contexts/AuthContext';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, ConfirmWaitPage, RequestPasswordResetPage, ResetPasswordPage } from './pages';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
@@ -31,6 +33,12 @@ function App() {
   const [shuffle, setShuffle] = useState(() => getInitialState('shuffle', false));
   const [repeat, setRepeat] = useState(() => getInitialState('repeat', 'Disabled Repeat'));
   const [lyricsModal, setLyricsModal] = useState(getInitialState('lyricsModal', false));
+
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    console.log('App component: isAuthenticated =', isAuthenticated);
+  }, [isAuthenticated]);
 
   const {
     isLeftPanelVisible,
@@ -203,21 +211,24 @@ function App() {
             <div className={`container__content__middle ${isMobileOrTablet() ? 'container__content__middle--mobile' : ''} ${isMobileOrTablet() && (isRightPanelVisible || isLeftPanelVisible) ? 'container__content__middle--hide' : ''}`}>
             <Routes>
               <Route path="/" element={
-                <>
-                <BeatList 
-                  onPlay={handlePlayWrapper} 
-                  selectedBeat={selectedBeat} 
-                  isPlaying={isPlaying} 
-                  currentBeat={currentBeat} 
-                  addToCustomQueue={addToCustomQueue}
-                  onBeatClick={handleBeatClick} 
-                  onUpdateBeat={updateBeat}
-                  onUpdate={onUpdate}
-                />
-                <AddBeatButton setIsOpen={setIsOpen} />
-                </>
+                <ProtectedRoute element={
+                  <>
+                    <BeatList 
+                      onPlay={handlePlayWrapper} 
+                      selectedBeat={selectedBeat} 
+                      isPlaying={isPlaying} 
+                      currentBeat={currentBeat} 
+                      addToCustomQueue={addToCustomQueue}
+                      onBeatClick={handleBeatClick} 
+                      onUpdateBeat={updateBeat}
+                      onUpdate={onUpdate}
+                    />
+                    <AddBeatButton setIsOpen={setIsOpen} />
+                  </>
+                } />
               } />
-                <Route path="/playlists/:id" element={
+              <Route path="/playlists/:id" element={
+                <ProtectedRoute element={
                   <PlaylistDetail
                     onPlay={handlePlayWrapper} 
                     selectedBeat={selectedBeat} 
@@ -228,23 +239,23 @@ function App() {
                     onBeatClick={handleBeatClick}  
                     onUpdate={onUpdate}
                   />
-                } 
-                />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/dashboard/beats" element={<BeatsPage />} />
-                <Route path="/dashboard/playlists" element={<PlaylistsPage />} />
-                <Route path="/dashboard/genres" element={<GenresPage />} />
-                <Route path="/dashboard/moods" element={<MoodsPage />} />
-                <Route path="/dashboard/keywords" element={<KeywordsPage />} />
-                <Route path="/dashboard/features" element={<FeaturesPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/confirm-wait" element={<ConfirmWaitPage />} />
-                <Route path="/confirm/:token" element={<ConfirmEmailPage />} />
-                <Route path="/request-password-reset" element={<RequestPasswordResetPage />} />
-                <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+                } />
+              } />
+              <Route path="/dashboard" element={<ProtectedRoute element={<DashboardPage />} />} />
+              <Route path="/dashboard/beats" element={<ProtectedRoute element={<BeatsPage />} />} />
+              <Route path="/dashboard/playlists" element={<ProtectedRoute element={<PlaylistsPage />} />} />
+              <Route path="/dashboard/genres" element={<ProtectedRoute element={<GenresPage />} />} />
+              <Route path="/dashboard/moods" element={<ProtectedRoute element={<MoodsPage />} />} />
+              <Route path="/dashboard/keywords" element={<ProtectedRoute element={<KeywordsPage />} />} />
+              <Route path="/dashboard/features" element={<ProtectedRoute element={<FeaturesPage />} />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/confirm-wait" element={<ConfirmWaitPage />} />
+              <Route path="/confirm/:token" element={<ConfirmEmailPage />} />
+              <Route path="/request-password-reset" element={<RequestPasswordResetPage />} />
+              <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
             </div>
             <div className={`container__content__right ${isMobileOrTablet() && isRightPanelVisible ? 'container__content__right--mobile' : ''} ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
               {isRightPanelVisible || isRightDivVisible ? (

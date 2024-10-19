@@ -9,6 +9,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { PlaylistProvider, BeatProvider, DataProvider, HeaderWidthProvider } from './contexts'; 
+import { AuthProvider } from './contexts/AuthContext';
 
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
@@ -16,17 +17,19 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <PlaylistProvider> 
-        <BeatProvider>
-          <DataProvider>
-            <HeaderWidthProvider>
-              <DndProvider backend={HTML5Backend}>
-                <App />
-              </DndProvider>
-            </HeaderWidthProvider>
-          </DataProvider>
-        </BeatProvider>
-      </PlaylistProvider>
+      <AuthProvider>
+        <PlaylistProvider> 
+          <BeatProvider>
+            <DataProvider>
+              <HeaderWidthProvider>
+                <DndProvider backend={HTML5Backend}>
+                  <App />
+                </DndProvider>
+              </HeaderWidthProvider>
+            </DataProvider>
+          </BeatProvider>
+        </PlaylistProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

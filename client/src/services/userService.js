@@ -25,6 +25,10 @@ const resetPassword = (token, password) => {
   return axios.post(`${API_BASE_URL}/api/users/reset-password/${token}`, { password });
 };
 
+const verifyToken = (token) => {
+  return axios.post(`${API_BASE_URL}/api/users/verify-token`, { token });
+};
+
 export default {
   register,
   login,
@@ -32,4 +36,5 @@ export default {
   resendConfirmationEmail,
   requestPasswordReset,
   resetPassword,
+  verifyToken,
 };
