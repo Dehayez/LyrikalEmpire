@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { isMobileOrTablet, getInitialState } from './utils';
+import { isMobileOrTablet, getInitialState, isAuthPage } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
 import { useBeat } from './contexts';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -16,7 +16,7 @@ import './App.scss';
 
 function App() {
   const location = useLocation();
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/confirm-wait' || location.pathname === '/confirm/:token';
+  const isAuthRoute = isAuthPage(location.pathname);
   const { beats, setBeats, setRefreshBeats } = useBeat();
   const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats);
 
@@ -161,7 +161,7 @@ function App() {
             Drop files to upload
           </div>
         )}
-        {!isMobileOrTablet() && (
+        {!isMobileOrTablet() && !isAuthRoute && (
           <>
             <div className="invisible-hover-panel invisible-hover-panel--left" onMouseEnter={handleMouseEnterLeft} onMouseLeave={handleMouseLeaveLeft}></div>
             <div className="invisible-hover-panel invisible-hover-panel--right" onMouseEnter={handleMouseEnterRight} onMouseLeave={handleMouseLeaveRight}></div>
@@ -186,7 +186,7 @@ function App() {
           handleMouseLeaveRight={handleMouseLeaveRight}
           isLeftDivVisible={isLeftDivVisible}
           isRightDivVisible={isRightDivVisible}
-          isAuthPage={isAuthPage}
+          isAuthPage={isAuthRoute}
         />
         <div className="container">
           <div className='container__content'>
@@ -292,7 +292,7 @@ function App() {
             clearDroppedFiles={clearDroppedFiles} 
           />
         </div>
-        {!isAuthPage &&
+        {!isAuthRoute &&
           <AudioPlayer 
             currentBeat={currentBeat} 
             setCurrentBeat={setCurrentBeat} 
