@@ -223,11 +223,23 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const verifyToken = async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.status(200).json({ valid: true, decoded });
+  } catch (error) {
+    res.status(401).json({ valid: false, error: 'Invalid or expired token' });
+  }
+};
+
 module.exports = {
   register,
   confirmEmail,
   resendConfirmationEmail,
   login,
   requestPasswordReset,
-  resetPassword
+  resetPassword,
+  verifyToken,
 };
