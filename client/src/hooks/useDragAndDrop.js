@@ -1,13 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { addBeat } from '../services';
+import { isAuthPage } from '../utils/isAuthPage';
 
 export const useDragAndDrop = (setRefreshBeats) => {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [activeUploads, setActiveUploads] = useState(0);
   const [showToast, setShowToast] = useState(false);
+  const location = useLocation();
 
   const getAudioDuration = useCallback((file) => {
     return new Promise((resolve, reject) => {
@@ -99,16 +102,18 @@ export const useDragAndDrop = (setRefreshBeats) => {
   }, []);
 
   useEffect(() => {
-    window.addEventListener('dragover', handleDragOver);
-    window.addEventListener('drop', handleDrop);
-    window.addEventListener('dragleave', handleDragLeave);
+    if (!isAuthPage(location.pathname)) {
+      window.addEventListener('dragover', handleDragOver);
+      window.addEventListener('drop', handleDrop);
+      window.addEventListener('dragleave', handleDragLeave);
+    }
 
     return () => {
       window.removeEventListener('dragover', handleDragOver);
       window.removeEventListener('drop', handleDrop);
       window.removeEventListener('dragleave', handleDragLeave);
     };
-  }, [handleDragOver, handleDrop, handleDragLeave]);
+  }, [handleDragOver, handleDrop, handleDragLeave, location.pathname]);
 
   return {
     isDraggingOver,
