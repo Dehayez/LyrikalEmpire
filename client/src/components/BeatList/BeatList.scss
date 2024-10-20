@@ -102,8 +102,10 @@
     width: max-content;
     margin-left: 6px;
 
-    & input {
-      padding-right: 28px;
+    &--active {
+      & input {
+        padding-right: 28px;
+      }
     }
   }
   

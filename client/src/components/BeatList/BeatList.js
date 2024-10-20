@@ -318,7 +318,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
             </>
             }
           </IconButton>
-          <div className='beat-list__search-container' onClick={(e) => e.stopPropagation()}>
+          <div className={`beat-list__search-container${isSearchVisible ? ' beat-list__search-container--active' : ''}`} onClick={(e) => e.stopPropagation()}>
           <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
             {!isMobileOrTablet() && (
               <Tooltip text="Search in tracks" position='left' />
