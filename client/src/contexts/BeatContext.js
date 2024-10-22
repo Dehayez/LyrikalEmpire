@@ -8,6 +8,7 @@ export const useBeat = () => useContext(BeatContext);
 export const BeatProvider = ({ children }) => {
   const [allBeats, setAllBeats] = useState([]);
   const [beats, setBeats] = useState([]);
+  const [currentBeats, setCurrentBeats] = useState([]);
   const [paginatedBeats, setPaginatedBeats] = useState([]);
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [refreshBeats, setRefreshBeats] = useState(false);
@@ -27,7 +28,7 @@ export const BeatProvider = ({ children }) => {
   }, [refreshBeats]);
 
   return (
-    <BeatContext.Provider value={{ allBeats, beats, setBeats, setGlobalBeats: setAllBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat, setRefreshBeats }}>
+    <BeatContext.Provider value={{ allBeats, beats, setBeats, setGlobalBeats: setAllBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat, setRefreshBeats, currentBeats, setCurrentBeats }}>
       {children}
     </BeatContext.Provider>
   );

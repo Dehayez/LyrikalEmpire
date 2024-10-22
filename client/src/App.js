@@ -17,7 +17,7 @@ import './App.scss';
 function App() {
   const location = useLocation();
   const isAuthRoute = isAuthPage(location.pathname);
-  const { beats, setBeats, setRefreshBeats } = useBeat();
+  const { beats, setBeats, setRefreshBeats, currentBeats } = useBeat();
   const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats);
 
   const [viewState, setViewState] = useState(() => getInitialState('lastView', 'queue'));

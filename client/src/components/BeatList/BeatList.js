@@ -38,9 +38,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const [selectedFeature, setSelectedFeature] = useState([]);
   
   const { setPlaylistId } = usePlaylist();
-  const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats } = useBeat();
+  const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats, setCurrentBeats } = useBeat();
   const beats = externalBeats || allBeats;
   const [filteredBeats, setFilteredBeats] = useState(beats);
+
+  useEffect(() => {
+    setCurrentBeats(filteredBeats)
+  }, [filteredBeats]);
   
   const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(filteredBeats);
 
