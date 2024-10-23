@@ -102,7 +102,7 @@ export const removeAllAssociationsFromBeat = async (beatId, associationType) => 
   }
 };
 
-export const getBeatsByAssociation = async (associationType, associationIds) => {
+export const getBeatsByAssociation = async (associationType, associationIds, allBeats) => {
   try {
     const response = await axios.get(API_URL, {
       params: {
@@ -110,7 +110,8 @@ export const getBeatsByAssociation = async (associationType, associationIds) => 
         associationIds: associationIds.join(',')
       }
     });
-    return response.data.reverse();
+    const fetchedBeats = response.data.reverse();
+    return allBeats ? fetchedBeats.filter(beat => allBeats.some(b => b.id === beat.id)) : fetchedBeats;
   } catch (error) {
     console.error(`Failed to fetch beats with ${associationType} and IDs ${associationIds}:`, error);
     throw error;

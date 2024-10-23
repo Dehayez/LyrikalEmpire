@@ -38,7 +38,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const [selectedFeature, setSelectedFeature] = useState([]);
   
   const { setPlaylistId } = usePlaylist();
-  const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats, setCurrentBeats } = useBeat();
+  const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats, currentBeats, setCurrentBeats } = useBeat();
   const beats = externalBeats || allBeats;
   const [filteredBeats, setFilteredBeats] = useState(beats);
 
@@ -216,7 +216,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
           const beatsByAssociations = await Promise.all(
             activeAssociations.map(async assoc => {
               const ids = assoc.selected.map(item => item.id);
-              return await getBeatsByAssociation(assoc.type, ids);
+              return await getBeatsByAssociation(assoc.type, ids, currentBeats);
             })
           );
   
