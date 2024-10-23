@@ -192,7 +192,7 @@ function App() {
         <div className="container">
           <div className='container__content'>
             <div className={`container__content__left ${isMobileOrTablet() && isLeftPanelVisible ? 'container__content__left--mobile' : ''} ${isLeftPanelVisible ? 'container__content__left--pinned' : ''}`}>
-              {isLeftPanelVisible || isLeftDivVisible ? (
+              {!isAuthRoute && (isLeftPanelVisible || isLeftDivVisible) ? (
                 <LeftSidePanel
                   isDivVisible={isLeftPanelVisible || (isLeftDivVisible && !isSidePanelInContent)}
                   className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
@@ -252,7 +252,7 @@ function App() {
             </Routes>
             </div>
             <div className={`container__content__right ${isMobileOrTablet() && isRightPanelVisible ? 'container__content__right--mobile' : ''} ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
-              {isRightPanelVisible || isRightDivVisible ? (
+              {!isAuthRoute && (isRightPanelVisible || isRightDivVisible) ? (
                 <RightSidePanel
                   isDivVisible={isRightPanelVisible || (isRightDivVisible && !isSidePanelInContent)}
                   className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
