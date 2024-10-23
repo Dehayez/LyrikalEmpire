@@ -49,23 +49,23 @@ function App() {
   
   useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig, lyricsModal });
   
-  const handlePlayWrapper = (beat, play, beats) => {
-    handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
+  const handlePlayWrapper = (beat, play) => {
+    handlePlay(beat, play, currentBeats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
     updateHistory(beat);
   };
-  
-  const handlePrevWrapper = () => handlePrev(beats, currentBeat, handlePlayWrapper, repeat, setRepeat);
+
+  const handlePrevWrapper = () => handlePrev(currentBeats, currentBeat, handlePlayWrapper, repeat, setRepeat);
 
   const handleNextWrapper = () => {
     if (customQueue.length > 0) {
       const nextCustomBeat = customQueue[0];
-      handlePlayWrapper(nextCustomBeat, true, beats);
+      handlePlayWrapper(nextCustomBeat, true, currentBeats);
       setCustomQueue(customQueue.slice(1));
     } else {
       const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
       const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
       const nextBeat = queue[nextIndex];
-      handlePlayWrapper(nextBeat, true, beats);
+      handlePlayWrapper(nextBeat, true, currentBeats);
     }
     if (repeat === 'Repeat One') {
       setRepeat('Repeat');
@@ -137,7 +137,6 @@ function App() {
     const updatedHistory = [playedBeat, ...history].slice(0, 100);
     localStorage.setItem('playedBeatsHistory', JSON.stringify(updatedHistory));
   };
-
 
   const handleBeatClick = (beat) => {
     setCurrentBeat(beat);
