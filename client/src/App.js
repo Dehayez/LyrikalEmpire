@@ -46,6 +46,15 @@ function App() {
     handleMouseLeaveRight,
     toggleSidePanel,
   } = usePanels();
+  
+  useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig, lyricsModal });
+  
+  const handlePlayWrapper = (beat, play, beats) => {
+    handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
+    updateHistory(beat);
+  };
+  
+  const handlePrevWrapper = () => handlePrev(beats, currentBeat, handlePlayWrapper, repeat, setRepeat);
 
   const handleNextWrapper = () => {
     if (customQueue.length > 0) {
@@ -62,8 +71,6 @@ function App() {
       setRepeat('Repeat');
     }
   };
-
-  const handlePrevWrapper = () => handlePrev(beats, currentBeat, handlePlayWrapper, repeat, setRepeat);
 
   const {
     handlePlay,
@@ -82,7 +89,6 @@ function App() {
     setRepeat,
   });
 
-  useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig, lyricsModal });
   
   const updateBeat = (id, newData) => {
     setBeats(currentBeats =>
@@ -132,10 +138,6 @@ function App() {
     localStorage.setItem('playedBeatsHistory', JSON.stringify(updatedHistory));
   };
 
-  const handlePlayWrapper = (beat, play, beats) => {
-    handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
-    updateHistory(beat);
-  };
 
   const handleBeatClick = (beat) => {
     setCurrentBeat(beat);
