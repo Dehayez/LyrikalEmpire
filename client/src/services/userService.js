@@ -14,6 +14,10 @@ const login = (userData) => {
 };
 
 const getUserDetails = (token) => {
+  if (!token) {
+    throw new Error('User is not logged in');
+  }
+
   return axios.get(`${API_BASE_URL}/api/users/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
