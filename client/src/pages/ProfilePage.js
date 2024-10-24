@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../contexts/UserContext';
 import userService from '../services/userService';
+import { FormInput, Button } from '../components';
 
 const ProfilePage = () => {
   const { user, setUser } = useUser();
@@ -34,26 +35,22 @@ const ProfilePage = () => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <div>
         <label>Email:</label>
-        {isEditing ? (
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        ) : (
           <p>{email}</p>
-        )}
       </div>
       <div>
         <label>Username:</label>
         {isEditing ? (
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <FormInput type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
         ) : (
-          <p>{username}</p>
+          <p style={{ margin: '0', padding: '12px 0' }}>{username}</p>
         )}
       </div>
       {isEditing ? (
-        <button onClick={handleSave} disabled={isLoading}>
+        <Button variant='primary' onClick={handleSave} disabled={isLoading}>
           {isLoading ? 'Saving...' : 'Save'}
-        </button>
+        </Button>
       ) : (
-        <button onClick={() => setIsEditing(true)}>Edit</button>
+        <Button variant='outline' onClick={() => setIsEditing(true)}>Edit</Button>
       )}
     </div>
   );

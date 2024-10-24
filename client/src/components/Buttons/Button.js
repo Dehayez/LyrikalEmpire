@@ -7,6 +7,7 @@ const Button = ({ className, onClick, children, text, type = 'button', variant, 
     className,
     variant === 'primary' && 'button--primary',
     variant === 'transparent' && 'button--transparent',
+    variant === 'outline' && 'button--outline',
     variant === 'warning' && 'button--warning',
     size && `button--${size}`
   ].filter(Boolean).join(' ');

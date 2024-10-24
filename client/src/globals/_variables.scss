@@ -70,6 +70,16 @@ $box-shadow-focus: 0 0 0 2px $color-gray;
     }
 }
 
+@mixin bg-border-hover-gray($text-color: $color-white, $bg-color: $color-gray-dark, $border: $color-gray-default, $hover-bg-color: $color-black, $hover-border: $color-gray-mid) {
+    color: $text-color;
+    background-color: $bg-color;
+    border: 1px solid $border;
+    &:hover {
+        background-color: $hover-bg-color;
+        border-color: $hover-border;
+    }
+}
+
 @mixin bg-border-warning($text-color: $color-white, $bg-color: $color-warning-bg, $border: $border-warning) {
     @include bg-border($text-color, $bg-color, $border);
 }
