@@ -248,6 +248,25 @@ const getUserDetails = async (req, res) => {
   }
 };
 
+const updateUserDetails = async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const { email, username } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    await handleQuery(
+      'UPDATE users SET email = ?, username = ? WHERE id = ?',
+      [email, username, userId],
+      res,
+      'User details updated successfully'
+    );
+  } catch (error) {
+    res.status(400).json({ error: 'Invalid or expired token' });
+  }
+};
+
 module.exports = {
   register,
   confirmEmail,
@@ -257,4 +276,5 @@ module.exports = {
   resetPassword,
   verifyToken,
   getUserDetails,
+  updateUserDetails,
 };

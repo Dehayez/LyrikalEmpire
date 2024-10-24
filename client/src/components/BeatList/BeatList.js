@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoOptionsSharp, IoPersonSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
@@ -24,6 +24,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const containerRef = useRef(null);
   const { user } = useUser();
   const { username } = user;
+  const navigate = useNavigate();
 
   const location = useLocation();
   const [searchText, setSearchText] = useState(() => getInitialState('searchText', ''));
@@ -353,7 +354,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
             )}
           </div>
 
-          <IconButton className='beat-list__action-button--profile' onClick={() => console.log('profile')}>
+          <IconButton className='beat-list__action-button--profile' onClick={() => navigate('/profile')}>
             <Tooltip text={username} position='left' />
             <IoPersonSharp/>
           </IconButton>

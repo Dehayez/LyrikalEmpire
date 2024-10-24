@@ -7,7 +7,7 @@ import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels
 import { useBeat } from './contexts';
 import ProtectedRoute from './routes/ProtectedRoute';
 
-import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, ConfirmWaitPage, RequestPasswordResetPage, ResetPasswordPage } from './pages';
+import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, ConfirmWaitPage, RequestPasswordResetPage, ResetPasswordPage, ProfilePage } from './pages';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
 import NotFound from './components/NotFound';
 
@@ -242,6 +242,7 @@ function App() {
               <Route path="/dashboard/moods" element={<ProtectedRoute element={<MoodsPage />} />} />
               <Route path="/dashboard/keywords" element={<ProtectedRoute element={<KeywordsPage />} />} />
               <Route path="/dashboard/features" element={<ProtectedRoute element={<FeaturesPage />} />} />
+              <Route path="/profile" element={<ProfilePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/confirm-wait" element={<ConfirmWaitPage />} />

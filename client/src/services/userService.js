@@ -1,3 +1,4 @@
+// client/src/services/userService.js
 import axios from 'axios';
 import API_BASE_URL from '../utils/apiConfig';
 
@@ -19,6 +20,19 @@ const getUserDetails = (token) => {
   }
 
   return axios.get(`${API_BASE_URL}/api/users/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then(response => response.data);
+};
+
+const updateUserDetails = (userData) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('User is not logged in');
+  }
+
+  return axios.put(`${API_BASE_URL}/api/users/me`, userData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -49,6 +63,7 @@ export default {
   register,
   login,
   getUserDetails,
+  updateUserDetails,
   confirmEmail,
   resendConfirmationEmail,
   requestPasswordReset,
