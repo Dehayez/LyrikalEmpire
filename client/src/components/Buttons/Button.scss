@@ -1,6 +1,9 @@
 @import '../../globals/variables';
 
 .button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: $color-gray-dark;
     color: white;
     border: none;
@@ -48,5 +51,9 @@
 
     &--full-width {
         width: 100%;
+    }
+
+    & svg {
+        padding: 0 8px;
     }
 }

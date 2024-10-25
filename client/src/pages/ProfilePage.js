@@ -1,8 +1,8 @@
-// client/src/pages/ProfilePage.js
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../contexts/UserContext';
 import userService from '../services/userService';
 import { FormInput, Button } from '../components';
+import { IoLogOutOutline } from "react-icons/io5";
 
 import './ProfilePage.scss';
 
@@ -69,7 +69,7 @@ const ProfilePage = () => {
         )}
         
       </div>
-      <Button variant='transparent' onClick={logout}>Logout</Button>
+      <Button className='profile-logout' variant='transparent' onClick={logout}>Log Out <IoLogOutOutline/></Button>
     </div>
   );
 };
