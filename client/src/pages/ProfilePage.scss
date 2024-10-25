@@ -6,6 +6,7 @@
     &-buttons {  
         margin-top: 20px;
         &-editing {
+            display: flex;
             margin-left: 8px;
             > *:nth-child(2) {
                 margin-left: 20px;
