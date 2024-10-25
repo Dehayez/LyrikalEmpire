@@ -130,8 +130,10 @@ input[type="number"] {
     flex-direction: column;
 
     &__input {
+        max-width: 400px;
         border-top: 3px solid transparent;
         border-bottom: 3px solid transparent;
+
         
         &--warning {
             border-bottom: 3px solid $color-warning-border;

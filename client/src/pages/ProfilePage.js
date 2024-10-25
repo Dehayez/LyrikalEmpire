@@ -3,6 +3,8 @@ import { useUser } from '../contexts/UserContext';
 import userService from '../services/userService';
 import { FormInput, Button } from '../components';
 
+import './ProfilePage.scss';
+
 const ProfilePage = () => {
   const { user, setUser } = useUser();
   const [email, setEmail] = useState(user.email);
@@ -29,29 +31,42 @@ const ProfilePage = () => {
     }
   };
 
+  const handleCancel = () => {
+    setEmail(user.email);
+    setUsername(user.username);
+    setIsEditing(false);
+  };
+
   return (
     <div>
       <h1>Profile Page</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p>{error}</p>}
       <div>
-        <label>Email:</label>
-          <p>{email}</p>
+        <p className='profile-label'>Email</p>
+        <p>{email}</p>
       </div>
       <div>
-        <label>Username:</label>
+        <p className='profile-label'>Username</p>
         {isEditing ? (
           <FormInput type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
         ) : (
           <p style={{ margin: '0', padding: '12px 0' }}>{username}</p>
         )}
       </div>
-      {isEditing ? (
-        <Button variant='primary' onClick={handleSave} disabled={isLoading}>
-          {isLoading ? 'Saving...' : 'Save'}
-        </Button>
-      ) : (
-        <Button variant='outline' onClick={() => setIsEditing(true)}>Edit</Button>
-      )}
+      <div className='profile-buttons'>
+        {isEditing ? (
+          <div className='profile-buttons-editing'>
+            <Button variant='transparent' onClick={handleCancel} disabled={isLoading}>
+              Cancel
+            </Button>
+            <Button variant='primary' onClick={handleSave} disabled={isLoading}>
+              {isLoading ? 'Saving...' : 'Save'}
+            </Button>
+          </div>
+        ) : (
+          <Button variant='outline' onClick={() => setIsEditing(true)}>Edit</Button>
+        )}
+      </div>
     </div>
   );
 };
