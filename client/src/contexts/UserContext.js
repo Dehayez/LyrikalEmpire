@@ -51,8 +51,15 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser({ email: '', username: '' });
+    setIsAuthenticated(false);
+    navigate('/login');
+  };
+
   return (
-    <UserContext.Provider value={{ isAuthenticated, isLoading, login, user, setUser }}>
+    <UserContext.Provider value={{ isAuthenticated, isLoading, login, logout, user, setUser }}>
       {children}
     </UserContext.Provider>
   );

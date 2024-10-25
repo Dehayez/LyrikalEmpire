@@ -1,3 +1,4 @@
+// client/src/pages/ProfilePage.js
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../contexts/UserContext';
 import userService from '../services/userService';
@@ -6,7 +7,7 @@ import { FormInput, Button } from '../components';
 import './ProfilePage.scss';
 
 const ProfilePage = () => {
-  const { user, setUser } = useUser();
+  const { user, setUser, logout } = useUser();
   const [email, setEmail] = useState(user.email);
   const [username, setUsername] = useState(user.username);
   const [isEditing, setIsEditing] = useState(false);
@@ -64,9 +65,11 @@ const ProfilePage = () => {
             </Button>
           </div>
         ) : (
-          <Button variant='outline' onClick={() => setIsEditing(true)}>Edit</Button>
+            <Button variant='outline' onClick={() => setIsEditing(true)}>Edit</Button>
         )}
+        
       </div>
+      <Button variant='transparent' onClick={logout}>Logout</Button>
     </div>
   );
 };
