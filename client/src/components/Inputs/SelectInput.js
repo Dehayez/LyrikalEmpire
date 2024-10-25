@@ -13,8 +13,8 @@ export const SelectInput = ({ id, name, label, selectedValue, onChange, options 
                 value={selectedValue} 
                 onChange={onChange}
                 onFocus={(e) => e.target.style.color = 'white'}
-                onBlur={(e) => e.target.style.color = selectedValue ? 'white' : '#B3B3B3'}
-                style={{color: selectedValue ? 'white' : '#B3B3B3'}}
+                onBlur={(e) => e.target.style.color = selectedValue ? 'white' : '#828282'}
+                style={{color: selectedValue ? 'white' : '#828282'}}
             >
                 {label && <option value="">{`Select ${label.toLowerCase()}`}</option>}
                 {options.map(option => (
