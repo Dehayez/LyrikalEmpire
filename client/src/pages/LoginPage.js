@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCheckmarkSharp } from "react-icons/io5";
+import { GoogleLogin } from 'react-google-login';
 import 'react-toastify/dist/ReactToastify.css';
 import './Auth.scss';
 import { FormInput, Button } from '../components';
 import { useUser } from '../contexts/UserContext';
+import userService from '../services/userService'; // Import userService
 
 const LoginPage = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useUser();
+  const { login, setUser } = useUser(); // Destructure setUser from useUser
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -25,6 +27,41 @@ const LoginPage = () => {
         className: "Toastify__toast--warning",
       });
     }
+  };
+
+  const loginWithGoogle = async (tokenId) => {
+    try {
+      const { token, email, username } = await userService.loginWithGoogle(tokenId);
+      localStorage.setItem('token', token);
+      setUser({ email, username }); // Use setUser to set user details
+      navigate('/');
+    } catch (error) {
+      throw new Error('Google login failed');
+    }
+  };
+
+  const handleGoogleSuccess = async (response) => {
+    try {
+      const { tokenId } = response;
+      await loginWithGoogle(tokenId);
+      navigate('/');
+    } catch (error) {
+      toast.dark(<div><strong>{error.message}</strong></div>, {
+        autoClose: 3000,
+        pauseOnFocusLoss: false,
+        icon: <IoCheckmarkSharp size={24} />,
+        className: "Toastify__toast--warning",
+      });
+    }
+  };
+
+  const handleGoogleFailure = (error) => {
+    toast.dark(<div><strong>Google Sign-In failed</strong></div>, {
+      autoClose: 3000,
+      pauseOnFocusLoss: false,
+      icon: <IoCheckmarkSharp size={24} />,
+      className: "Toastify__toast--error",
+    });
   };
 
   return (
@@ -54,6 +91,14 @@ const LoginPage = () => {
           <span className='link' onClick={() => navigate('/request-password-reset')}>Forgot Password?</span>
         </p>
         <Button className='auth-button' variant='primary' type='submit' size='full-width'>Login</Button>
+       {/*  <GoogleLogin
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+          buttonText="Login with Google"
+          onSuccess={handleGoogleSuccess}
+          onFailure={handleGoogleFailure}
+          cookiePolicy={'single_host_origin'}
+          className="google-login-button"
+        /> */}
         <p className='auth-link'>Don't have an account yet? <span className='link' onClick={() => navigate('/register')}>Register</span></p>
       </form>
     </div>

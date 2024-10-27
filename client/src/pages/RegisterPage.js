@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCheckmarkSharp } from "react-icons/io5";
+import { GoogleLogin } from 'react-google-login';
 import 'react-toastify/dist/ReactToastify.css';
 import './Auth.scss';
 import { FormInput, Button, Warning } from '../components';
@@ -110,6 +111,30 @@ const RegisterPage = () => {
     }
   };
 
+  const handleGoogleSuccess = async (response) => {
+    try {
+      const { tokenId } = response;
+      await userService.loginWithGoogle(tokenId);
+      navigate('/');
+    } catch (error) {
+      toast.dark(<div><strong>{error.message}</strong></div>, {
+        autoClose: 3000,
+        pauseOnFocusLoss: false,
+        icon: <IoCheckmarkSharp size={24} />,
+        className: "Toastify__toast--warning",
+      });
+    }
+  };
+
+  const handleGoogleFailure = (error) => {
+    toast.dark(<div><strong>Google Sign-In failed</strong></div>, {
+      autoClose: 3000,
+      pauseOnFocusLoss: false,
+      icon: <IoCheckmarkSharp size={24} />,
+      className: "Toastify__toast--error",
+    });
+  };
+
   return (
     <div className="auth-container">
       <h2>Create your account</h2>
@@ -158,6 +183,14 @@ const RegisterPage = () => {
           <Warning key={index} message={message} />
         ))}
         <Button className='auth-button' variant='primary' type='submit' size='full-width'>Register</Button>
+        {/* <GoogleLogin
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+          buttonText="Register with Google"
+          onSuccess={handleGoogleSuccess}
+          onFailure={handleGoogleFailure}
+          cookiePolicy={'single_host_origin'}
+          className="google-login-button"
+        /> */}
         <p className='auth-link'>Already have an account? <span className='link' onClick={() => navigate('/login')}>Log in</span></p>
       </form>
     </div>

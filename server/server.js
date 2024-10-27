@@ -1,14 +1,21 @@
 require('dotenv').config();
 
 const express = require('express');
+const session = require('express-session');
+const passport = require('./config/passport');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 
 const app = express();
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
+
+app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 const userRoutes = require('./routes/userRoute');
 const keywordRoutes = require('./routes/keywordRoute');

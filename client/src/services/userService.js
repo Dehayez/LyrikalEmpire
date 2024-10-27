@@ -27,6 +27,21 @@ const login = (userData) => {
     });
 };
 
+const loginWithGoogle = (tokenId) => {
+  return axios.post(`${API_BASE_URL}/api/users/auth/google`, { tokenId })
+    .then(response => {
+      const { token, email, username } = response.data;
+      return { token, email, username };
+    })
+    .catch(error => {
+      if (error.response) {
+        throw new Error(error.response.data.error);
+      } else {
+        throw new Error('An unexpected error occurred. Please try again later.');
+      }
+    });
+};
+
 const getUserDetails = (token) => {
   if (!token) {
     throw new Error('User is not logged in');
@@ -75,6 +90,7 @@ const verifyToken = (token) => {
 export default {
   register,
   login,
+  loginWithGoogle,
   getUserDetails,
   updateUserDetails,
   confirmEmail,
