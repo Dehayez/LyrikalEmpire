@@ -29,7 +29,7 @@ const LoginPage = () => {
 
   return (
     <div className="auth-container">
-      <h2>Login</h2>
+      <h2>Log into your account</h2>
       <form onSubmit={handleSubmit}>
         <FormInput
           id='identifier'
@@ -49,9 +49,12 @@ const LoginPage = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <Button variant='primary' type='submit' size='full-width'>Login</Button>
-        <Button variant='transparent' type='button' size='full-width' onClick={() => navigate('/register')}>Register</Button>
-        <Button variant='transparent' type='button' size='full-width' onClick={() => navigate('/request-password-reset')}>Forgot Password?</Button>
+
+        <p className='link-container'>
+          <span className='link' onClick={() => navigate('/request-password-reset')}>Forgot Password?</span>
+        </p>
+        <Button className='auth-button' variant='primary' type='submit' size='full-width'>Login</Button>
+        <p className='auth-link'>Don't have an account yet? <span className='link' onClick={() => navigate('/register')}>Register</span></p>
       </form>
     </div>
   );

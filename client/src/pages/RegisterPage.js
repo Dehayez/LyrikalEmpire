@@ -157,8 +157,8 @@ const RegisterPage = () => {
         {errorMessages.map((message, index) => (
           <Warning key={index} message={message} />
         ))}
-        <Button variant='primary' type='submit' size='full-width'>Register</Button>
-        <Button variant='transparent' type='button' size='full-width' onClick={() => navigate('/login')}>Login</Button>
+        <Button className='auth-button' variant='primary' type='submit' size='full-width'>Register</Button>
+        <p className='auth-link'>Already have an account? <span className='link' onClick={() => navigate('/login')}>Log in</span></p>
       </form>
     </div>
   );
