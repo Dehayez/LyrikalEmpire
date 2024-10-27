@@ -1,0 +1,47 @@
+@import '../../globals/variables';
+
+.file-input {
+    position: relative;
+    display: inline-block;
+
+    &__input {
+        display: none;
+    }
+
+    &__label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px;
+        background-color: $color-gray-dark;
+        color: $color-yellow;
+        white-space: nowrap;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        
+        &:hover {
+            background-color: $color-black;
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        &--no-margin {
+            margin-bottom: 0;
+        }
+    }
+
+    &__wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    &__name {
+        margin-left: 8px;
+        color: white;
+        text-overflow: ellipsis;
+    }
+}

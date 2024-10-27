@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { IoCloudUploadSharp } from 'react-icons/io5';
+import './FileInput.scss';
 
 export const FileInput = ({ fileName, onChange, fileObject, labelRef }) => {
     const fileInputRef = useRef(null);
@@ -22,11 +23,10 @@ export const FileInput = ({ fileName, onChange, fileObject, labelRef }) => {
 
     return (
         <div className="form-group">
-            <label htmlFor='file'>Audio</label>
             <div className="file-input">
                 <div className="file-input__wrapper">
                     <label htmlFor="file" className="file-input__label no-margin" tabIndex="0" ref={labelRef}>
-                        <IoCloudUploadSharp /> Upload File
+                        <IoCloudUploadSharp /> Upload file
                     </label>
                     <input type="file" id="file" className="file-input__input" onChange={handleChange} required accept="audio/*" ref={fileInputRef} />
                     <span id="file-name" className="file-input__name">{fileName}</span>

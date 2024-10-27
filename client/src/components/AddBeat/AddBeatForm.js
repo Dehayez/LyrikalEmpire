@@ -168,7 +168,6 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                         id="title" 
                         name="title" 
                         type="text" 
-                        placeholder='Enter title' 
                         value={title} 
                         onChange={(e) => {
                             setTitle(e.target.value);
@@ -178,13 +177,12 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                         spellCheck="false" 
                         isWarning={isTitleEmpty}
                     />
-                    <SelectableInput label="Genre" placeholder="Enter genre" associationType="genres" items={genres} newBeatId={beatId} isNewBeat={true}/>
+                    <SelectableInput label="Genre" associationType="genres" items={genres} newBeatId={beatId} isNewBeat={true}/>
                     <FormInput
                         id="bpm"
                         name="bpm"
                         label="BPM"
                         type="text"
-                        placeholder="Enter BPM"
                         value={bpm}
                         onChange={handleBpmChangeExtended}
                         onKeyDown={handleOnKeyDown}
@@ -209,9 +207,9 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                             { value: 'F', label: 'F' },
                         ]}
                     />
-                    <SelectableInput label="Moods" placeholder="Enter moods" associationType="moods" items={moods} newBeatId={beatId} isNewBeat={true}/>
-                    <SelectableInput label="Keywords" placeholder="Enter keywords" associationType="keywords" items={keywords} newBeatId={beatId} isNewBeat={true}/>
-                    <SelectableInput label="Features" placeholder="Enter features" associationType="features" items={features} newBeatId={beatId} isNewBeat={true}/>
+                    <SelectableInput label="Moods" associationType="moods" items={moods} newBeatId={beatId} isNewBeat={true}/>
+                    <SelectableInput label="Keywords" associationType="keywords" items={keywords} newBeatId={beatId} isNewBeat={true}/>
+                    <SelectableInput label="Features" associationType="features" items={features} newBeatId={beatId} isNewBeat={true}/>
                 </form>
         </DraggableModal>
     );
