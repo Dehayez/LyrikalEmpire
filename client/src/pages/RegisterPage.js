@@ -74,7 +74,14 @@ const RegisterPage = () => {
       });
       navigate('/confirm-wait', { state: { email } });
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
+      if (error.message === 'Database is not reachable. Please try again later.') {
+        toast.dark(<div><strong>{error.message}</strong></div>, {
+          autoClose: 3000,
+          pauseOnFocusLoss: false,
+          icon: <IoCheckmarkSharp size={24} />,
+          className: "Toastify__toast--error",
+        });
+      } else if (error.response && error.response.data && error.response.data.error) {
         const errorMessage = error.response.data.error;
         console.log('Received error message:', errorMessage);
         if (errorMessage.includes("Invalid email address")) {

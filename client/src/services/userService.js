@@ -1,9 +1,15 @@
-// client/src/services/userService.js
 import axios from 'axios';
 import API_BASE_URL from '../utils/apiConfig';
 
 const register = (userData) => {
-  return axios.post(`${API_BASE_URL}/api/users/register`, userData);
+  return axios.post(`${API_BASE_URL}/api/users/register`, userData)
+    .catch(error => {
+      if (error.response) {
+        throw new Error(error.response.data.error);
+      } else {
+        throw new Error('An unexpected error occurred. Please try again later.');
+      }
+    });
 };
 
 const login = (userData) => {
@@ -11,6 +17,13 @@ const login = (userData) => {
     .then(response => {
       const { token, email, username } = response.data;
       return { token, email, username };
+    })
+    .catch(error => {
+      if (error.response) {
+        throw new Error(error.response.data.error);
+      } else {
+        throw new Error('An unexpected error occurred. Please try again later.');
+      }
     });
 };
 

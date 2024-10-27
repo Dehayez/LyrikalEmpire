@@ -60,6 +60,9 @@ const register = async (req, res) => {
 
     res.status(200).json({ message: 'Registration successful. Please check your email to confirm your account.' });
   } catch (error) {
+    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+      return res.status(500).json({ error: 'Database is not reachable. Please try again later.' });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -155,6 +158,9 @@ const login = async (req, res) => {
 
     res.json({ token, email: user[0].email, username: user[0].username });
   } catch (error) {
+    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+      return res.status(500).json({ error: 'Database is not reachable. Please try again later.' });
+    }
     res.status(500).json({ error: 'Internal server error' });
   }
 };

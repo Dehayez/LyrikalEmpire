@@ -18,7 +18,7 @@ const LoginPage = () => {
     try {
       await login(identifier, password);
     } catch (error) {
-      toast.dark(<div><strong>Invalid email/username or password</strong></div>, {
+      toast.dark(<div><strong>{error.message}</strong></div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
         icon: <IoCheckmarkSharp size={24} />,
