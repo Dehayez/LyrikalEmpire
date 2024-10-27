@@ -147,6 +147,7 @@ function App() {
     setViewState(view);
     localStorage.setItem('lastView', view);
   };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       document.querySelector('.app').classList.remove('app--hidden');
@@ -154,6 +155,14 @@ function App() {
     
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (currentBeat) {
+      document.title = `${currentBeat.title} - Lyrikal Empire`;
+    } else {
+      document.title = 'Lyrikal Empire';
+    }
+  }, [currentBeat]);
 
   return (
       <div className="app app--hidden">
