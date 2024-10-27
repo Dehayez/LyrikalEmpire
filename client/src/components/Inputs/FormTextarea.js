@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './Inputs.scss';
+import './FormTextarea.scss';
 
 export const FormTextarea = ({ label, placeholder, value, onChange, required, rows, maxLength }) => {
     const textareaRef = useRef(null);

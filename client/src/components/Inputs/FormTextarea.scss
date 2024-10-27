@@ -1,0 +1,18 @@
+@import '../../globals/variables';
+
+.form-textarea {
+    position: relative;
+
+    &__input {
+        overflow: hidden;
+        resize: none;
+    }
+
+    &__remaining-chars {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        font-size: 14px;
+        color: $color-gray;
+    }
+}

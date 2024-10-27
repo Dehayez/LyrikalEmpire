@@ -85,7 +85,7 @@ input[type="number"] {
     &__label {
         position: absolute;
         top: 50%;
-        left: 8px;
+        left: 12px;
         transform: translateY(-50%);
         transition: all 0.2s ease;
         pointer-events: none;
@@ -104,16 +104,14 @@ input[type="number"] {
         max-width: 400px;
         background-color: $color-black;
         border: 1px solid $color-gray-mid;
-        padding: 12px !important;
-        //border-top: 3px solid transparent;
-        //border-bottom: 3px solid transparent;
+        padding: 12px;
 
         &:focus {
-            border: 1px solid $color-primary !important;
+            border: 1px solid $color-primary;
             box-shadow: none !important;
 
             ~ .form-group__label {
-                color: $color-primary !important;
+                color: $color-primary;
             }
         }
 
@@ -167,22 +165,5 @@ input[type="number"] {
             box-shadow: 0 0 0 1px $color-gray;
             transform: scale(1.02);
         }
-    }
-}
-
-.form-textarea {
-    position: relative;
-
-    &__input {
-        overflow: hidden;
-        resize: none;
-    }
-
-    &__remaining-chars {
-        position: absolute;
-        bottom: 12px;
-        right: 12px;
-        font-size: 14px;
-        color: $color-gray;
     }
 }
