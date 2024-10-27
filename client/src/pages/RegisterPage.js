@@ -112,13 +112,13 @@ const RegisterPage = () => {
 
   return (
     <div className="auth-container">
-      <h2>Register</h2>
+      <h2>Create your account</h2>
       <form onSubmit={handleSubmit}>
         <FormInput
           id='username'
           name='username'
           type='text'
-          placeholder='Username'
+          label='Username'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
@@ -128,7 +128,7 @@ const RegisterPage = () => {
           id='email'
           name='email'
           type='email'
-          placeholder='Email'
+          label='Email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -138,7 +138,7 @@ const RegisterPage = () => {
           id='password'
           name='password'
           type='password'
-          placeholder='Password'
+          label='Password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -148,7 +148,7 @@ const RegisterPage = () => {
           id='confirmPassword'
           name='confirmPassword'
           type='password'
-          placeholder='Confirm Password'
+          label='Confirm password'
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
