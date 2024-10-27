@@ -48,8 +48,23 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9",
+    "babel-jest": "^29.7.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
     "sass": "^1.77.4",
     "sass-loader": "^14.2.1",
+    "util": "^0.12.5",
     "webpack": "^5.92.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!axios)"
+    ]
   }
 }
