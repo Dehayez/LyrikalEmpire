@@ -35,7 +35,7 @@ const LoginPage = () => {
           id='identifier'
           name='identifier'
           type='text'
-          label='Email or username'
+          label='Email or username*'
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}
           required
@@ -44,7 +44,7 @@ const LoginPage = () => {
           id='password'
           name='password'
           type='password'
-          label='Password'
+          label='Password*'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required

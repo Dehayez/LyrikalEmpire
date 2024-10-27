@@ -118,7 +118,7 @@ const RegisterPage = () => {
           id='username'
           name='username'
           type='text'
-          label='Username'
+          label='Username*'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
@@ -128,7 +128,7 @@ const RegisterPage = () => {
           id='email'
           name='email'
           type='email'
-          label='Email'
+          label='Email*'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -138,7 +138,7 @@ const RegisterPage = () => {
           id='password'
           name='password'
           type='password'
-          label='Password'
+          label='Password*'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -148,7 +148,7 @@ const RegisterPage = () => {
           id='confirmPassword'
           name='confirmPassword'
           type='password'
-          label='Confirm password'
+          label='Confirm password*'
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required

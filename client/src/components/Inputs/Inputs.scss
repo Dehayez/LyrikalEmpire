@@ -64,7 +64,7 @@ input[type="number"] {
         position: relative;
         display: flex;
         flex-direction: column;
-        margin-bottom: 16px;
+        margin: 16px;
 
         label, span {
             margin-bottom: 8px;
@@ -129,45 +129,6 @@ input[type="number"] {
     display: flex;
     flex-direction: column;
 
-    &__label {
-        position: absolute;
-        top: 50%;
-        left: 8px;
-        transform: translateY(-50%);
-        transition: all 0.2s ease;
-        pointer-events: none;
-        color: $color-gray;
-        background-color: $color-black;
-
-        &--active {
-            top: -2px;
-            left: 8px;
-            font-size: 14px;
-            padding: 0 8px;
-        }
-    }
-
-    &__input {
-        max-width: 400px;
-        background-color: $color-black;
-        border: 1px solid $color-gray-mid;
-        padding: 12px !important;
-        //border-top: 3px solid transparent;
-        //border-bottom: 3px solid transparent;
-
-        &:focus {
-            border: 1px solid $color-primary !important;
-            box-shadow: none !important;
-
-            ~ .form-group__label {
-                color: $color-primary !important;
-            }
-        }
-
-        &--warning {
-            border-bottom: 3px solid $color-warning-border;
-        }
-    }
 
     input,
     select,
@@ -201,6 +162,61 @@ input[type="number"] {
         border: none;
         color: $color-white;
         caret-color: $color-white;
+    }
+
+    &__label {
+        position: absolute;
+        top: 50%;
+        left: 8px;
+        transform: translateY(-50%);
+        transition: all 0.2s ease;
+        pointer-events: none;
+        color: $color-gray-default;
+        background-color: $color-black;
+
+        &--active {
+            top: -2px;
+            left: 8px;
+            font-size: 14px;
+            padding: 0 4px;
+        }
+    }
+
+    &__input {
+        max-width: 400px;
+        background-color: $color-black;
+        border: 1px solid $color-gray-mid;
+        padding: 12px !important;
+        //border-top: 3px solid transparent;
+        //border-bottom: 3px solid transparent;
+
+        &:focus {
+            border: 1px solid $color-primary !important;
+            box-shadow: none !important;
+
+            ~ .form-group__label {
+                color: $color-primary !important;
+            }
+        }
+
+        &--warning {
+            border-bottom: 3px solid $color-warning-border;
+        }
+    }
+
+    &__toggle {
+        display: flex;
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        transition: all 0.2s ease;
+        cursor: pointer;
+        color: $color-gray-default;
+
+        &:hover {
+            color: $color-gray;
+        }
     }
 }
 
