@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { isMobileOrTablet, getInitialState, isAuthPage, setActivity } from './utils';
+import { isMobileOrTablet, getInitialState, isAuthPage } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
 import { useBeat } from './contexts';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -52,6 +52,10 @@ function App() {
   const handlePlayWrapper = (beat, play) => {
     handlePlay(beat, play, currentBeats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
     updateHistory(beat);
+    if (window.electron) {
+      console.log(`Calling setActivity with songTitle: ${beat.title}`);
+      window.electron.setActivity(beat.title);
+    }
   };
 
   const handlePrevWrapper = () => handlePrev(currentBeats, currentBeat, handlePlayWrapper, repeat, setRepeat);
@@ -165,10 +169,11 @@ function App() {
   }, [currentBeat]);
 
   useEffect(() => {
-    if (currentBeat) {
-      setActivity(currentBeat.title);
-    } else {
-      setActivity();
+    if (currentBeat && window.electron) {
+      console.log(`Calling setActivity with songTitle: ${currentBeat.title}`);
+      window.electron.setActivity(currentBeat.title);
+    } else if (window.electron) {
+      window.electron.setActivity();
     }
   }, [currentBeat]);
 

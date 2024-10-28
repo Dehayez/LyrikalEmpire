@@ -21,7 +21,6 @@
     "react-player": "^2.16.0",
     "react-resizable": "^3.0.5",
     "react-router-dom": "^6.25.1",
-    "react-scripts": "5.0.1",
     "react-toastify": "^10.0.5",
     "recharts": "^2.12.7",
     "timers-browserify": "^2.0.12",
@@ -29,9 +28,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "webpack serve --config config/webpack.config.js --mode development",
+    "build": "webpack --config config/webpack.config.js --mode production",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -57,12 +56,19 @@
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.25.9",
     "babel-jest": "^29.7.0",
+    "babel-loader": "^9.2.1",
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^7.1.2",
+    "electron": "^33.0.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
     "sass": "^1.77.4",
     "sass-loader": "^14.2.1",
+    "style-loader": "^4.0.0",
     "util": "^0.12.5",
-    "webpack": "^5.92.0"
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0"
   },
   "jest": {
     "transform": {
