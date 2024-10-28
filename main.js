@@ -44,7 +44,6 @@ app.on('ready', () => {
     rpc.setActivity({
       details: `Listening to ${songTitle}`,
       state: 'on Lyrikal Empire',
-      startTimestamp: Date.now(),
       largeImageKey: 'le_large',
       largeImageText: 'Lyrikal Empire',
       instance: false,
