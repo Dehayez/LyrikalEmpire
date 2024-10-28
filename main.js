@@ -33,6 +33,7 @@ app.on('ready', () => {
   rpc.login({ clientId }).catch(console.error);
 
   rpc.on('ready', () => {
+    console.log('Discord RPC connected');
   });
 
   ipcMain.on('set-activity', (event, songTitle) => {
@@ -42,11 +43,10 @@ app.on('ready', () => {
 
     rpc.setActivity({
       details: `Listening to ${songTitle}`,
+      state: 'on Lyrikal Empire',
       startTimestamp: Date.now(),
       largeImageKey: 'le_large',
       largeImageText: 'Lyrikal Empire',
-      smallImageKey: 'le_small',
-      smallImageText: 'Playing music',
       instance: false,
     }).catch(console.error);
   });
