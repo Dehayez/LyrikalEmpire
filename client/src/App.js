@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { isMobileOrTablet, getInitialState, isAuthPage } from './utils';
+import { isMobileOrTablet, getInitialState, isAuthPage, setActivity } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
 import { useBeat } from './contexts';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -161,6 +161,14 @@ function App() {
       document.title = `${currentBeat.title} - Lyrikal Empire`;
     } else {
       document.title = 'Lyrikal Empire';
+    }
+  }, [currentBeat]);
+
+  useEffect(() => {
+    if (currentBeat) {
+      setActivity(currentBeat.title);
+    } else {
+      setActivity();
     }
   }, [currentBeat]);
 
