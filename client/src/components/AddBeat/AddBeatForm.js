@@ -10,8 +10,6 @@ import DraggableModal from '../Modals/DraggableModal';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
 
-import './AddBeatForm.scss';
-
 const AddBeatForm = ({ isOpen, setIsOpen }) => {
     const { setRefreshBeats } = useBeat();
     const { genres, moods, keywords, features } = useData();
