@@ -45,5 +45,9 @@ module.exports = {
     compress: true,
     port: 3000,
     historyApiFallback: true,
+    allowedHosts: [
+      '.ngrok-free.app',
+    ],
+    host: '0.0.0.0',
   },
 };
