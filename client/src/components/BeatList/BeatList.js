@@ -68,7 +68,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const [headerOpacity, setHeaderOpacity] = useState(1);
   const [hoverPosition, setHoverPosition] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(() => getInitialState('searchText', '') !== '');
-  const [mode, setMode] = useState(() => getInitialState('mode', 'edit'));
+  const [mode, setMode] = useState(() => getInitialState('mode', 'listen'));
   const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(() => getInitialState('isFilterDropdownVisible', false));
 
   useLocalStorageSync({ 

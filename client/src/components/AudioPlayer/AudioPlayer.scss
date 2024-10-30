@@ -94,13 +94,14 @@ $indicator-half-size: math.div($indicator-size, 2);
 
 .smooth-progress-bar--mobile {
   position: absolute;
-  top: -40px;
+  top: -41px;
   left: 0;
   width: 100vw;
   padding: 0;
 
   .rhap_progress-container {
     margin: 0;
+    z-index: 3;
 
     .rhap_progress-indicator {
       opacity: 1;
