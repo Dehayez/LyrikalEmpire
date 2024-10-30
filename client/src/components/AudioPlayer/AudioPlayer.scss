@@ -30,6 +30,7 @@ $indicator-half-size: math.div($indicator-size, 2);
 
   .rhap_progress-container {
     position: relative;
+    touch-action: none;
   }
 
   .rhap_progress-section {
