@@ -146,7 +146,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       </div>
       <div style={{ flex: '3' }}>
         <H5AudioPlayer
-          className="smooth-progress-bar"
+          className="smooth-progress-bar smooth-progress-bar--desktop"
           autoPlayAfterSrcChange={true}
           src={audioSrc}
           ref={playerRef}

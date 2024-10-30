@@ -31,6 +31,7 @@ $indicator-half-size: math.div($indicator-size, 2);
   .rhap_progress-container {
     position: relative;
   }
+
   .rhap_progress-section {
     padding: 28px 0;
   }
@@ -75,7 +76,6 @@ $indicator-half-size: math.div($indicator-size, 2);
 
     .rhap_container {
       background-color: transparent;
-      pointer-events: none;
     }
 
     .rhap_progress-bar {
@@ -93,13 +93,18 @@ $indicator-half-size: math.div($indicator-size, 2);
 
 .smooth-progress-bar--mobile {
   position: absolute;
-  top: -40px;
+  top: -20px;
   left: 0;
   width: 100vw;
   padding: 0;
 
   .rhap_progress-container {
     margin: 0;
+    z-index: 1000;
+
+    .rhap_progress-indicator {
+      opacity: 1;
+    }
   }
 }
 
