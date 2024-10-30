@@ -49,5 +49,8 @@ module.exports = {
       '.ngrok-free.app',
     ],
     host: '0.0.0.0',
+    client: {
+      logging: 'none',
+    },
   },
 };
