@@ -58,11 +58,11 @@
   &__middle {
     position: relative;
     flex-grow: 1;
-    //padding-left: 16px;
     margin: 6px;
     border-radius: 4px;
     background-color: $color-black;
     overflow-x: auto;
+    @include hide-scrollbar;
 
     &--hide {
       display: none;

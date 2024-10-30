@@ -191,6 +191,6 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     handlePlay,
     handleNext,
     handlePrev,
-    currentTime, // Export currentTime state
+    currentTime,
   };
 };

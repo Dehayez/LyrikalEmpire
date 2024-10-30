@@ -51,7 +51,9 @@ $box-shadow-hover: 0 0 0 .5px $color-gray-default;
     &::-webkit-scrollbar {
         display: none; 
     }
+
     scrollbar-width: none;
+    -ms-overflow-style: none; 
 }
 
 @mixin bg-border($text-color: $color-white, $bg-color: $color-primary-bg, $border: $border-primary) {
