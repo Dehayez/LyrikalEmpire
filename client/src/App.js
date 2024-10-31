@@ -161,12 +161,12 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (currentBeat) {
+    if (currentBeat && isPlaying) {
       document.title = `${currentBeat.title} - Lyrikal Empire`;
     } else {
       document.title = 'Lyrikal Empire';
     }
-  }, [currentBeat]);
+  }, [currentBeat, isPlaying]);
 
   useEffect(() => {
     if (currentBeat && window.electron) {

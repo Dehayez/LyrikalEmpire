@@ -7,12 +7,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Auth.scss';
 import { FormInput, Button } from '../components';
 import { useUser } from '../contexts/UserContext';
-import userService from '../services/userService'; // Import userService
+import userService from '../services/userService'; 
 
 const LoginPage = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const { login, setUser } = useUser(); // Destructure setUser from useUser
+  const { login, setUser } = useUser();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -33,7 +33,7 @@ const LoginPage = () => {
     try {
       const { token, email, username } = await userService.loginWithGoogle(tokenId);
       localStorage.setItem('token', token);
-      setUser({ email, username }); // Use setUser to set user details
+      setUser({ email, username });
       navigate('/');
     } catch (error) {
       throw new Error('Google login failed');
