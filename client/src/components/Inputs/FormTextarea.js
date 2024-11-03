@@ -17,12 +17,14 @@ export const FormTextarea = ({ label, placeholder, value, onChange, required, ro
                 value={value}
                 onChange={(e) => {
                     onChange(e);
+                    setRemainingChars(maxLength - e.target.value.length);
                 }}
                 required={required}
                 rows={rows}
                 maxLength={maxLength}
-                onFocus={(e) => e.target.nextSibling.classList.add('form-group__label--active')}
-                onBlur={(e) => !e.target.value && e.target.nextSibling.classList.remove('form-group__label--active')}
+                placeholder={placeholder}
+                onFocus={(e) => label && e.target.nextSibling.classList.add('form-group__label--active')}
+                onBlur={(e) => label && !e.target.value && e.target.nextSibling.classList.remove('form-group__label--active')}
             />
             {label && (
                 <label className={`form-group__label ${value || document.activeElement === textareaRef.current ? 'form-group__label--active' : ''}`}>
