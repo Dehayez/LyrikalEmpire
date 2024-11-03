@@ -89,11 +89,11 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
 
   return (
     <Modal 
+      className="lyrics-modal"
       isOpen={lyricsModal} 
       onRequestClose={handleCancel} 
       style={modalStyle} 
       shouldCloseOnOverlayClick={false}
-      className="lyrics-modal"
     >
       <Draggable handle=".modal__title" nodeRef={draggableRef}>
         <div ref={draggableRef} className='modal'>
