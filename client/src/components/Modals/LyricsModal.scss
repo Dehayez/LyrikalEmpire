@@ -9,11 +9,13 @@
   }
 
   .modal-content {
-    border: 1px solid $color-gray-dark-active;
+    border: 1px solid $color-gray-mid;
     max-width: none !important; 
     resize: both;
     overflow: hidden;
     min-height: 200px;
+    padding-bottom: 0 !important;
+    box-shadow: $box-shadow;
   }
 
   .modal__title {
@@ -37,7 +39,7 @@
     &__input {
         padding: 0 !important;
         height: 100%;
-        min-height: 140px;
+        min-height: 150px;
         overflow: auto;
         border: none;
 
