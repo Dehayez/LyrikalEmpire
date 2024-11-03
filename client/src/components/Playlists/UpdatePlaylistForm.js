@@ -52,7 +52,16 @@ export const UpdatePlaylistForm = ({ playlist, onCancel, onConfirm, isOpen, setI
             onCancel={onCancel}
          >
             <div className="update-playlist__form">
-                <FormInput label="Title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} spellCheck="false" maxLength={100} />
+                <FormInput 
+                id='title'
+                name='title'
+                type='text' 
+                label='Title' 
+                value={title} 
+                onChange={(e) => setTitle(e.target.value)} 
+                spellCheck="false" 
+                maxLength={100} 
+                />
                 {isTitleEmpty && <Warning message="Title cannot be empty" />}
                 <FormTextarea label="Description" type="text" placeholder='Enter description' value={description} onChange={(e) => setDescription(e.target.value)} spellCheck="false" maxLength={400} />
             </div>
