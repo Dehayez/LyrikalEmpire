@@ -93,27 +93,27 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
 
   return (
     (isAuthRoute) ? null :
-    <Modal 
-      className="lyrics-modal"
-      isOpen={lyricsModal} 
-      onRequestClose={handleCancel} 
-      style={modalStyle} 
-      shouldCloseOnOverlayClick={false}
-    >
-      <Draggable handle=".modal__title" nodeRef={draggableRef}>
-        <div ref={draggableRef} className='modal'>
-          <ResizableBox width={400} height={300} minConstraints={[300, 200]} maxConstraints={[800, 600]}>
-            <div className='modal-content'>
-              <IconButton className="modal__close-button" onClick={handleCancel}>
-                <IoCloseSharp />
-              </IconButton>
-              <h2 className='modal__title'>{title}</h2>
-              <FormTextarea value={lyrics} onChange={handleLyricsChange}/>
-            </div>
-          </ResizableBox>
-        </div>
-      </Draggable>
-    </Modal>
+      <Modal 
+        className="lyrics-modal"
+        isOpen={lyricsModal} 
+        onRequestClose={handleCancel} 
+        style={modalStyle} 
+        shouldCloseOnOverlayClick={false}
+      >
+        <Draggable handle=".modal__title" nodeRef={draggableRef}>
+          <div ref={draggableRef} className='modal'>
+            <ResizableBox width={400} height={300} minConstraints={[300, 200]} maxConstraints={[800, 600]}>
+              <div className='modal-content'>
+                <IconButton className="modal__close-button" onClick={handleCancel}>
+                  <IoCloseSharp />
+                </IconButton>
+                <h2 className='modal__title'>{title}</h2>
+                <FormTextarea value={lyrics} onChange={handleLyricsChange}/>
+              </div>
+            </ResizableBox>
+          </div>
+        </Draggable>
+      </Modal>
   );
 };
 
