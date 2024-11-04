@@ -1,10 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
 import Modal from 'react-modal';
 import { IconButton } from '../Buttons';
 import { FormTextarea } from '../Inputs';
 import { IoCloseSharp } from 'react-icons/io5';
+import { isAuthPage } from '../../utils';
 import { getAssociationsByBeatId, addAssociationsToBeat } from '../../services/beatService';
 import { getLyricsById, updateLyricsById, createLyrics } from '../../services/lyricsService';
 import './LyricsModal.scss';
@@ -35,6 +37,8 @@ const modalStyle = {
 };
 
 const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
+  const location = useLocation();
+  const isAuthRoute = isAuthPage(location.pathname);
   const draggableRef = useRef(null);
   const [lyrics, setLyrics] = useState('');
   const [lyricsId, setLyricsId] = useState(null);
@@ -88,6 +92,7 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
   };
 
   return (
+    (isAuthRoute) ? null :
     <Modal 
       className="lyrics-modal"
       isOpen={lyricsModal} 
