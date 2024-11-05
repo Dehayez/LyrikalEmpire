@@ -12,7 +12,7 @@ export const useLocalStorageSync = ({
   shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible,
   isRightPanelVisible, viewState, customQueue, sortConfig,
   mode, isFilterDropdownVisible, searchText, urlKey, currentPage,
-  volume, currentTime, selectedItems, isDropdownOpen, lyricsModal
+  volume, currentTime, selectedItems, isDropdownOpen, lyricsModal, dimensions
 }) => {
   useLocalStorageEffect('shuffle', shuffle);
   useLocalStorageEffect('repeat', repeat);
@@ -32,4 +32,5 @@ export const useLocalStorageSync = ({
   useLocalStorageEffect('selectedItems', selectedItems);
   useLocalStorageEffect('isDropdownOpen', isDropdownOpen);
   useLocalStorageEffect('lyricsModal', lyricsModal);
+  useLocalStorageEffect('dimensions', dimensions);
 };

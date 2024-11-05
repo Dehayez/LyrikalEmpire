@@ -40,12 +40,28 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
   const location = useLocation();
   const isAuthRoute = isAuthPage(location.pathname);
   const draggableRef = useRef(null);
+  const modalRef = useRef(null);
   const [lyrics, setLyrics] = useState('');
   const [lyricsId, setLyricsId] = useState(null);
 
   const handleCancel = () => {
     setLyricsModal(false);
   };
+
+  /* useEffect(() => {
+    const updateDimensions = () => {
+      if (modalRef.current) {
+        const { offsetWidth, offsetHeight } = modalRef.current;
+        console.log(offsetWidth, offsetHeight);
+      }
+    };
+  
+    updateDimensions(); // Initial call to set dimensions
+  
+    const intervalId = setInterval(updateDimensions, 1000); // Update every second
+  
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []); */
 
   useEffect(() => {
     const fetchLyrics = async () => {
@@ -91,6 +107,44 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     }
   };
 
+  const updateDimensions = () => {
+    if (modalRef.current) {
+      const { offsetWidth, offsetHeight } = modalRef.current;
+      console.log('Modal dimensions:', offsetWidth, offsetHeight);
+    }
+  };
+
+  useEffect(() => {
+    updateDimensions(); // Initial call to set dimensions
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateDimensions();
+    });
+
+    const observeModal = () => {
+      if (modalRef.current instanceof Element) {
+        console.log('Observing modal:', modalRef.current);
+        resizeObserver.observe(modalRef.current);
+      } else {
+        console.warn('modalRef.current is null or not an Element');
+      }
+    };
+
+    // Delay observation to ensure modalRef.current is an Element
+    const timeoutId = setTimeout(observeModal, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (modalRef.current instanceof Element) {
+        console.log('Unobserving modal:', modalRef.current);
+        resizeObserver.unobserve(modalRef.current);
+      } else {
+        console.warn('modalRef.current is null or not an Element during unobserve');
+      }
+      resizeObserver.disconnect();
+    };
+  }, [updateDimensions]);
+
   return (
     (isAuthRoute) ? null :
       <Modal 
@@ -99,11 +153,12 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
         onRequestClose={handleCancel} 
         style={modalStyle} 
         shouldCloseOnOverlayClick={false}
+        ref={modalRef}
       >
         <Draggable handle=".modal__title" nodeRef={draggableRef}>
           <div ref={draggableRef} className='modal'>
-            <ResizableBox width={400} height={300} minConstraints={[300, 200]} maxConstraints={[800, 600]}>
-              <div className='modal-content'>
+            <ResizableBox width={400} height={300}>
+              <div className='modal-content' ref={modalRef}>
                 <IconButton className="modal__close-button" onClick={handleCancel}>
                   <IoCloseSharp />
                 </IconButton>
