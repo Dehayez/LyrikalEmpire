@@ -132,6 +132,21 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     }
   };
 
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const formGroupInput = document.querySelector('.lyrics-modal .form-group__input');
+      console.log('formGroupInput:', formGroupInput);
+      if (formGroupInput) {
+        formGroupInput.style.minHeight = `${dimensions.height - 70}px`;
+        observer.disconnect();
+      }
+    });
+  
+    observer.observe(document.body, { childList: true, subtree: true });
+  
+    return () => observer.disconnect();
+  }, []);
+
   return (
     (isAuthRoute) ? null :
       <Modal 
