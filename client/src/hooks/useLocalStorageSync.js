@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 const useLocalStorageEffect = (key, value) => {
   useEffect(() => {
     if (value !== undefined) {
-      localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
+      localStorage.setItem(key, JSON.stringify(value));
     }
   }, [key, value]);
 };

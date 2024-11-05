@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
@@ -7,6 +7,7 @@ import { IconButton } from '../Buttons';
 import { FormTextarea } from '../Inputs';
 import { IoCloseSharp } from 'react-icons/io5';
 import { isAuthPage } from '../../utils';
+import { useLocalStorageSync } from '../../hooks';
 import { getAssociationsByBeatId, addAssociationsToBeat } from '../../services/beatService';
 import { getLyricsById, updateLyricsById, createLyrics } from '../../services/lyricsService';
 import './LyricsModal.scss';
@@ -43,25 +44,49 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
   const modalRef = useRef(null);
   const [lyrics, setLyrics] = useState('');
   const [lyricsId, setLyricsId] = useState(null);
+  const [dimensions, setDimensions] = useState(() => {
+    const savedDimensions = localStorage.getItem('dimensions');
+    return savedDimensions ? JSON.parse(savedDimensions) : { width: 400, height: 300 };
+  });
 
   const handleCancel = () => {
     setLyricsModal(false);
   };
 
-  /* useEffect(() => {
-    const updateDimensions = () => {
-      if (modalRef.current) {
-        const { offsetWidth, offsetHeight } = modalRef.current;
-        console.log(offsetWidth, offsetHeight);
+  const updateDimensions = useCallback(() => {
+    if (modalRef.current) {
+      const { offsetWidth, offsetHeight } = modalRef.current;
+      setDimensions({ width: offsetWidth, height: offsetHeight });
+    }
+  }, []);
+
+  useEffect(() => {
+    updateDimensions(); 
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateDimensions();
+    });
+
+    const observeModal = () => {
+      if (modalRef.current instanceof Element) {
+        resizeObserver.observe(modalRef.current);
+      } else {
+        console.warn('modalRef.current is null or not an Element');
       }
     };
-  
-    updateDimensions(); // Initial call to set dimensions
-  
-    const intervalId = setInterval(updateDimensions, 1000); // Update every second
-  
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, []); */
+
+    const timeoutId = setTimeout(observeModal, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (modalRef.current instanceof Element) {
+        resizeObserver.unobserve(modalRef.current);
+      } 
+      resizeObserver.disconnect();
+    };
+  }, [updateDimensions]);
+
+  useLocalStorageSync({ dimensions });
 
   useEffect(() => {
     const fetchLyrics = async () => {
@@ -107,57 +132,24 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     }
   };
 
-  const updateDimensions = () => {
-    if (modalRef.current) {
-      const { offsetWidth, offsetHeight } = modalRef.current;
-      console.log('Modal dimensions:', offsetWidth, offsetHeight);
-    }
-  };
-
-  useEffect(() => {
-    updateDimensions(); // Initial call to set dimensions
-
-    const resizeObserver = new ResizeObserver(() => {
-      updateDimensions();
-    });
-
-    const observeModal = () => {
-      if (modalRef.current instanceof Element) {
-        console.log('Observing modal:', modalRef.current);
-        resizeObserver.observe(modalRef.current);
-      } else {
-        console.warn('modalRef.current is null or not an Element');
-      }
-    };
-
-    // Delay observation to ensure modalRef.current is an Element
-    const timeoutId = setTimeout(observeModal, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (modalRef.current instanceof Element) {
-        console.log('Unobserving modal:', modalRef.current);
-        resizeObserver.unobserve(modalRef.current);
-      } else {
-        console.warn('modalRef.current is null or not an Element during unobserve');
-      }
-      resizeObserver.disconnect();
-    };
-  }, [updateDimensions]);
-
   return (
     (isAuthRoute) ? null :
       <Modal 
         className="lyrics-modal"
         isOpen={lyricsModal} 
         onRequestClose={handleCancel} 
-        style={modalStyle} 
+        style={{ ...modalStyle, width: dimensions.width, height: dimensions.height }}
         shouldCloseOnOverlayClick={false}
-        ref={modalRef}
       >
         <Draggable handle=".modal__title" nodeRef={draggableRef}>
           <div ref={draggableRef} className='modal'>
-            <ResizableBox width={400} height={300}>
+            <ResizableBox
+              width={dimensions.width}
+              height={dimensions.height}
+              onResizeStop={(e, data) => {
+                setDimensions({ width: data.size.width, height: data.size.height });
+              }}
+            >
               <div className='modal-content' ref={modalRef}>
                 <IconButton className="modal__close-button" onClick={handleCancel}>
                   <IoCloseSharp />
