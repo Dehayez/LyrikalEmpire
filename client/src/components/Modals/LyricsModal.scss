@@ -7,7 +7,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    //height: 100%;
   }
 
   .modal-content {
@@ -15,7 +14,6 @@
     max-width: none !important; 
     resize: both;
     overflow: hidden;
-    //min-height: 200px;
     padding: 0 !important;
     box-shadow: $box-shadow;
   }
