@@ -11,10 +11,6 @@ export const UserProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(user);
-  }, [user]);
-
-  useEffect(() => {
     const checkAuth = async () => {
       setIsLoading(true);
       try {
