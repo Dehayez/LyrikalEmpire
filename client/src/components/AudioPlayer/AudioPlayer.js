@@ -116,13 +116,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, [currentTime]);
 
-  useEffect(() => {
-    const progressContainer = document.querySelector('.rhap_progress-container');
-    if (progressContainer && waveformRef.current) {
-      progressContainer.appendChild(waveformRef.current);
-    }
-  }, []);
-
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       <H5AudioPlayer
