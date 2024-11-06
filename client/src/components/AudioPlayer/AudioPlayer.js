@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import WaveSurfer from 'wavesurfer.js';
 import { LiaMicrophoneAltSolid } from "react-icons/lia";
+import { PiWaveform } from "react-icons/pi";
 
 import { isMobileOrTablet } from '../../utils';
 import { useAudioPlayer } from '../../hooks/useAudioPlayer';
@@ -30,6 +31,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const wavesurfer = useRef(null);
   const audioSrc = currentBeat ? `/uploads/${currentBeat.audio}` : '';
   const [isLoading, setIsLoading] = useState(true);
+  const [waveform, setWaveform] = useState(false)
 
   useEffect(() => {
     if (audioSrc) {
@@ -39,6 +41,10 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
 
   const toggleLyricsModal = () => {
     setLyricsModal(prevState => !prevState);
+  };
+
+  const toggleWaveform = () => {
+    setWaveform(prevState => !prevState);
   };
 
   useEffect(() => {
@@ -154,9 +160,13 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
             <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
           ]}
         />
-        <div ref={waveformRef} className="waveform"></div>
+        <div ref={waveformRef} className={`waveform ${waveform? 'waveform--active' : ''}`}></div>
       </div>
       <div className='audio-player__settings' style={{ flex: '1' }}>
+        <IconButton className='audio-player__icon-waveform' onClick={toggleWaveform}>
+          <PiWaveform fontSize={24} className={waveform ? 'icon-primary' : ''} />
+          {!isMobileOrTablet() && <Tooltip text={waveform ? "Hide waveform" : "Show waveform"} />}
+        </IconButton>
         <IconButton className='audio-player__icon-lyrics' onClick={toggleLyricsModal}>
           <LiaMicrophoneAltSolid fontSize={24} className={lyricsModal ? 'icon-primary' : ''} />
           {!isMobileOrTablet() && <Tooltip text={lyricsModal ? "Hide lyrics" : "Show lyrics"} />}

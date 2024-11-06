@@ -45,6 +45,10 @@ $indicator-half-size: math.div($indicator-size, 2);
     height: 100%;
     z-index: 0;
     pointer-events: none;
+
+    &--active {
+      opacity: .4 !important;
+    }
   }
 
   &__title {
