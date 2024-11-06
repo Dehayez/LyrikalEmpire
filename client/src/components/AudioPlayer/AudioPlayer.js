@@ -163,11 +163,11 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         <div ref={waveformRef} className={`waveform ${waveform? 'waveform--active' : ''}`}></div>
       </div>
       <div className='audio-player__settings' style={{ flex: '1' }}>
-        <IconButton className='audio-player__icon-waveform' onClick={toggleWaveform}>
+        <IconButton className='audio-player__icon' onClick={toggleWaveform}>
           <PiWaveform fontSize={24} className={waveform ? 'icon-primary' : ''} />
           {!isMobileOrTablet() && <Tooltip text={waveform ? "Hide waveform" : "Show waveform"} />}
         </IconButton>
-        <IconButton className='audio-player__icon-lyrics' onClick={toggleLyricsModal}>
+        <IconButton className='audio-player__icon' onClick={toggleLyricsModal}>
           <LiaMicrophoneAltSolid fontSize={24} className={lyricsModal ? 'icon-primary' : ''} />
           {!isMobileOrTablet() && <Tooltip text={lyricsModal ? "Hide lyrics" : "Show lyrics"} />}
         </IconButton>
