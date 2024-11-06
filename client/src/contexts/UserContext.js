@@ -7,8 +7,12 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState({ email: '', username: '' });
+  const [user, setUser] = useState({ id: '', email: '', username: '' });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -18,7 +22,7 @@ export const UserProvider = ({ children }) => {
 
         if (token) {
           const userDetails = await userService.getUserDetails(token);
-          setUser({ email: userDetails.email, username: userDetails.username });
+          setUser({ id: userDetails.id, email: userDetails.email, username: userDetails.username });
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
@@ -38,9 +42,9 @@ export const UserProvider = ({ children }) => {
   const login = async (identifier, password) => {
     setIsLoading(true);
     try {
-      const { token, email, username } = await userService.login({ email: identifier, password });
+      const { token, email, username, id } = await userService.login({ email: identifier, password });
       localStorage.setItem('token', token);
-      setUser({ email, username });
+      setUser({ id, email, username });
       setIsAuthenticated(true);
       navigate('/');
     } catch (error) {
@@ -53,7 +57,7 @@ export const UserProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
-    setUser({ email: '', username: '' });
+    setUser({ id: '', email: '', username: '' });
     setIsAuthenticated(false);
     navigate('/login');
   };

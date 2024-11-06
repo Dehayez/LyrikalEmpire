@@ -15,8 +15,8 @@ const register = (userData) => {
 const login = (userData) => {
   return axios.post(`${API_BASE_URL}/api/users/login`, userData)
     .then(response => {
-      const { token, email, username } = response.data;
-      return { token, email, username };
+      const { token, email, username, id } = response.data;
+      return { token, email, username, id };
     })
     .catch(error => {
       if (error.response) {
@@ -51,7 +51,10 @@ const getUserDetails = (token) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  }).then(response => response.data);
+  }).then(response => {
+    const { email, username, id } = response.data;
+    return { email, username, id };
+  });
 };
 
 const updateUserDetails = (userData) => {

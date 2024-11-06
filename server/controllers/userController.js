@@ -133,22 +133,19 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email/Username and password are required' });
+    return res.status(400).json({ error: 'Email and password are required' });
   }
 
   try {
-    const [user] = await db.query(
-      'SELECT * FROM users WHERE email = ? OR username = ?',
-      [email, email]
-    );
+    const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
 
     if (!user || user.length === 0) {
       return res.status(401).json({ error: 'Invalid email/username or password' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user[0].password);
+    const isValidPassword = await bcrypt.compare(password, user[0].password);
 
-    if (!isPasswordValid) {
+    if (!isValidPassword) {
       return res.status(401).json({ error: 'Invalid email/username or password' });
     }
 
@@ -156,7 +153,7 @@ const login = async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.json({ token, email: user[0].email, username: user[0].username });
+    res.json({ token, email: user[0].email, username: user[0].username, id: user[0].id });
   } catch (error) {
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
       return res.status(500).json({ error: 'Database is not reachable. Please try again later.' });
@@ -241,16 +238,18 @@ const verifyToken = async (req, res) => {
 };
 
 const getUserDetails = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
   try {
+    const token = req.headers.authorization.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const [user] = await db.query('SELECT email, username FROM users WHERE id = ?', [decoded.id]);
-    if (!user) {
+    const [user] = await db.query('SELECT * FROM users WHERE id = ?', [decoded.id]);
+
+    if (!user || user.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-    res.json(user[0]);
+
+    res.json({ email: user[0].email, username: user[0].username, id: user[0].id });
   } catch (error) {
-    res.status(401).json({ error: 'Unauthorized' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
