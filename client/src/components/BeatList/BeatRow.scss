@@ -174,4 +174,7 @@
 
 .icon-button--menu {
     opacity: 1;
+    &--mobile {
+      opacity: 1 !important;
+    }
 }
