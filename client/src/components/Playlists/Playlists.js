@@ -5,7 +5,7 @@ import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp, IoAlb
 
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus } from '../../utils';
-import { getPlaylistById, createPlaylist, deletePlaylist } from '../../services';
+import { getPlaylistById, deletePlaylist } from '../../services';
 
 import { Button, IconButton } from '../Buttons';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
@@ -17,7 +17,7 @@ import './Playlists.scss';
 
 const Playlists = ({ isPlaying }) => {
   const navigate = useNavigate();
-  const { playlists, playedPlaylistId, currentPlaylistId, updatePlaylist } = usePlaylist();
+  const { playlists, playedPlaylistId, currentPlaylistId, updatePlaylist, handleAddPlaylist } = usePlaylist();
 
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuX, setContextMenuX] = useState(0);
@@ -29,20 +29,10 @@ const Playlists = ({ isPlaying }) => {
   const [playlistToUpdate, setPlaylistToUpdate] = useState(null);
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
 
-  const handleAddPlaylist = async () => {
-    const newPlaylistTitle = `Playlist #${playlists.length + 1}`;
-    try {
-      await createPlaylist({ title: newPlaylistTitle, description: null });
-      eventBus.emit('playlistAdded');
-    } catch (error) {
-      console.error('Error adding new playlist:', error);
-    }
-  };
-
   const handleDeletePlaylist = async (playlistId) => {
     try {
       await deletePlaylist(playlistId);
-     setIsOpenDelete(false);
+      setIsOpenDelete(false);
       eventBus.emit('playlistDeleted', playlistId);
     } catch (error) {
       console.error(`Error deleting playlist with ID ${playlistId}:`, error);
@@ -82,7 +72,7 @@ const Playlists = ({ isPlaying }) => {
       return;
     }
     setPlaylistToDelete(playlist);
-   setIsOpenDelete(true);
+    setIsOpenDelete(true);
   };
 
   useEffect(() => {
@@ -110,7 +100,7 @@ const Playlists = ({ isPlaying }) => {
           </Link>
           <h2 className="playlists__title">Playlists</h2>
         </div>
-        <button className='icon-button' onClick={handleAddPlaylist}>
+        <button className='icon-button' onClick={() => handleAddPlaylist(`Playlist #${playlists.length + 1}`, null)}>
           <Tooltip text="Add playlist" position='left' />
           <IoAddSharp />
         </button>
@@ -118,7 +108,7 @@ const Playlists = ({ isPlaying }) => {
       {playlists.length === 0 ? (
         <div className="playlists__empty-message">
           <p>Your playlist is empty. Create a new playlist to get started!</p>
-          <Button text="Create New Playlist" variant="primary" onClick={handleAddPlaylist} />
+          <Button text="Create New Playlist" variant="primary" onClick={() => handleAddPlaylist(`Playlist #${playlists.length + 1}`, null)} />
         </div>
       ) : (
       <ul className='playlists__list'>

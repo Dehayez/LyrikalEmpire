@@ -2,9 +2,11 @@ const dbHelpers = require('../helpers/dbHelpers');
 
 const createPlaylist = (req, res) => {
   const { title, description } = req.body;
+  const { user_id } = req.body;
+
   dbHelpers.handleQuery(
-    'INSERT INTO playlists (title, description) VALUES (?, ?)',
-    [title, description],
+    'INSERT INTO playlists (title, description, user_id) VALUES (?, ?, ?)',
+    [title, description, user_id],
     res,
     'Playlist created successfully',
     false

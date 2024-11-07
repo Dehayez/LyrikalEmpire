@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { eventBus } from '../utils';
-import { getPlaylists } from '../services';
+import { getPlaylists, createPlaylist } from '../services';
 import { useUser } from '../contexts';
 
 const PlaylistContext = createContext();
@@ -10,8 +10,9 @@ export const usePlaylist = () => useContext(PlaylistContext);
 
 export const PlaylistProvider = ({ children }) => {
   const [playlists, setPlaylists] = useState([]);
-  const [playedPlaylistId, setPlayedPlaylistId] = useState(() => {return localStorage.getItem('playedPlaylistId');
-});
+  const [playedPlaylistId, setPlayedPlaylistId] = useState(() => {
+    return localStorage.getItem('playedPlaylistId');
+  });
   const [currentPlaylistId, setCurrentPlaylistId] = useState(null);
   const [isSamePlaylist, setIsSamePlaylist] = useState(false);
   const location = useLocation();
@@ -27,6 +28,16 @@ export const PlaylistProvider = ({ children }) => {
         playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
       );
     });
+  };
+
+  const handleAddPlaylist = async (title, description) => {
+    try {
+      const newPlaylist = await createPlaylist({ title, description }, user.id);
+      setPlaylists((prevPlaylists) => [...prevPlaylists, newPlaylist]);
+      eventBus.emit('playlistAdded');
+    } catch (error) {
+      console.error('Error adding new playlist:', error);
+    }
   };
 
   useEffect(() => {
@@ -91,7 +102,7 @@ export const PlaylistProvider = ({ children }) => {
   }, [user.id]);
 
   return (
-    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId, isSamePlaylist, playlists, updatePlaylist }}>
+    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId, isSamePlaylist, playlists, updatePlaylist, handleAddPlaylist }}>
       {children}
     </PlaylistContext.Provider>
   );

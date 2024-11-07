@@ -3,9 +3,9 @@ import API_BASE_URL from '../utils/apiConfig';
 
 const API_URL = `${API_BASE_URL}/api/playlists`;
 
-const createPlaylist = async (playlistData) => {
+const createPlaylist = async (playlistData, user_id) => {
   try {
-    const response = await axios.post(API_URL, playlistData);
+    const response = await axios.post(API_URL, { ...playlistData, user_id });
     return response.data;
   } catch (error) {
     console.error('Failed to create playlist:', error);
