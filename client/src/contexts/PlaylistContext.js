@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { eventBus } from '../utils';
-import { getPlaylists } from '../services/playlistService';
 import { useLocation } from 'react-router-dom';
+import { eventBus } from '../utils';
+import { getPlaylists } from '../services';
+import { useUser } from '../contexts';
 
 const PlaylistContext = createContext();
 
@@ -14,6 +15,7 @@ export const PlaylistProvider = ({ children }) => {
   const [currentPlaylistId, setCurrentPlaylistId] = useState(null);
   const [isSamePlaylist, setIsSamePlaylist] = useState(false);
   const location = useLocation();
+  const { user } = useUser();
 
   const setPlaylistId = (id) => {
     setPlayedPlaylistId(id);
@@ -48,14 +50,16 @@ export const PlaylistProvider = ({ children }) => {
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
-        const data = await getPlaylists();
+        const data = await getPlaylists(user.id);
         setPlaylists(data);
       } catch (error) {
         console.error('Error fetching playlists:', error);
       }
     };
 
-    fetchPlaylists();
+    if (user.id) {
+      fetchPlaylists();
+    }
 
     const handlePlaylistAdded = () => {
       fetchPlaylists();
@@ -84,7 +88,7 @@ export const PlaylistProvider = ({ children }) => {
       eventBus.off('playlistDeleted', handlePlaylistDeleted);
       eventBus.off('playlistUpdated', handlePlaylistUpdated);
     };
-  }, []);
+  }, [user.id]);
 
   return (
     <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId, isSamePlaylist, playlists, updatePlaylist }}>

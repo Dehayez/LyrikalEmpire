@@ -12,9 +12,10 @@ const createPlaylist = (req, res) => {
 };
 
 const getPlaylists = (req, res) => {
+  const { user_id } = req.query;
   dbHelpers.handleQuery(
-    'SELECT * FROM playlists ORDER BY created_at DESC',
-    [],
+    'SELECT * FROM playlists WHERE user_id = ? ORDER BY created_at DESC',
+    [user_id],
     res,
     null,
     true
