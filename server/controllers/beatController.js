@@ -21,7 +21,7 @@ const getTableName = (association_type, res) => {
 };
 
 const getBeats = (req, res) => {
-  const { associationType, associationIds } = req.query;
+  const { associationType, associationIds, user_id } = req.query;
 
   if (associationType && associationIds) {
     const tableName = getTableName(associationType, res);
@@ -33,12 +33,12 @@ const getBeats = (req, res) => {
     const query = `
       SELECT b.* FROM beats b
       JOIN ${tableName} bg ON b.id = bg.beat_id
-      WHERE bg.${associationType.slice(0, -1)}_id IN (${placeholders})
+      WHERE bg.${associationType.slice(0, -1)}_id IN (${placeholders}) AND b.user_id = ?
     `;
 
-    handleQuery(query, ids, res, `Beats with ${associationType} fetched successfully`, true);
+    handleQuery(query, [...ids, user_id], res, `Beats with ${associationType} fetched successfully`, true);
   } else {
-    handleQuery('SELECT * FROM beats ORDER BY created_at DESC', [], res, 'Beats fetched successfully', true);
+    handleQuery('SELECT * FROM beats WHERE user_id = ? ORDER BY created_at DESC', [user_id], res, 'Beats fetched successfully', true);
   }
 };
 

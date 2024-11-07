@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getBeats } from '../services';
+import { useUser } from '../contexts';
 
 const BeatContext = createContext();
 
@@ -12,11 +13,12 @@ export const BeatProvider = ({ children }) => {
   const [paginatedBeats, setPaginatedBeats] = useState([]);
   const [hoveredBeat, setHoveredBeat] = useState(null);
   const [refreshBeats, setRefreshBeats] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchBeats = async () => {
       try {
-        const data = await getBeats();
+        const data = await getBeats(user.id);
         setAllBeats(data);
         setBeats(data);
       } catch (error) {
@@ -24,8 +26,10 @@ export const BeatProvider = ({ children }) => {
       }
     };
 
-    fetchBeats();
-  }, [refreshBeats]);
+    if (user.id) {
+      fetchBeats();
+    }
+  }, [refreshBeats, user.id]);
 
   return (
     <BeatContext.Provider value={{ allBeats, beats, setBeats, setGlobalBeats: setAllBeats, paginatedBeats, setPaginatedBeats, hoveredBeat, setHoveredBeat, setRefreshBeats, currentBeats, setCurrentBeats }}>
