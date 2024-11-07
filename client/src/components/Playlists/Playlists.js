@@ -118,7 +118,7 @@ const Playlists = ({ isPlaying }) => {
       {playlists.length === 0 ? (
         <div className="playlists__empty-message">
           <p>Your playlist is empty. Create a new playlist to get started!</p>
-          <Button text="Create New Playlist" onClick={handleAddPlaylist} />
+          <Button text="Create New Playlist" variant="primary" onClick={handleAddPlaylist} />
         </div>
       ) : (
       <ul className='playlists__list'>
