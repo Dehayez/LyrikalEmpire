@@ -133,19 +133,22 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+    return res.status(400).json({ error: 'Email/Username and password are required' });
   }
 
   try {
-    const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    const [user] = await db.query(
+      'SELECT * FROM users WHERE email = ? OR username = ?',
+      [email, email]
+    );
 
     if (!user || user.length === 0) {
       return res.status(401).json({ error: 'Invalid email/username or password' });
     }
 
-    const isValidPassword = await bcrypt.compare(password, user[0].password);
+    const isPasswordValid = await bcrypt.compare(password, user[0].password);
 
-    if (!isValidPassword) {
+    if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid email/username or password' });
     }
 
