@@ -5,7 +5,7 @@ import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { addBeat } from '../services';
 import { isAuthPage } from '../utils/isAuthPage';
 
-export const useDragAndDrop = (setRefreshBeats) => {
+export const useDragAndDrop = (setRefreshBeats, user_id) => {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [activeUploads, setActiveUploads] = useState(0);
@@ -24,7 +24,7 @@ export const useDragAndDrop = (setRefreshBeats) => {
     });
   }, []);
 
-  const autoSubmitFiles = useCallback(async (files) => {
+  const autoSubmitFiles = useCallback(async (files, user_id) => {
     setActiveUploads(activeUploads => activeUploads + files.length);
     files.forEach(async (file) => {
       try {
@@ -33,7 +33,7 @@ export const useDragAndDrop = (setRefreshBeats) => {
           title: file.name.replace(/\.[^/.]+$/, ""),
           duration: duration,
         };
-        await addBeat(beat, file);
+        await addBeat(beat, file, user_id);
         setShowToast(true);
         toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
           autoClose: 3000,
@@ -76,7 +76,7 @@ export const useDragAndDrop = (setRefreshBeats) => {
       const audioFiles = files.filter(file => file.type.startsWith('audio/'));
       const nonAudioFiles = files.filter(file => !file.type.startsWith('audio/'));
 
-      autoSubmitFiles(audioFiles);
+      autoSubmitFiles(audioFiles, user_id);
 
       if (nonAudioFiles.length > 0) {
         setShowToast(true);
@@ -94,7 +94,7 @@ export const useDragAndDrop = (setRefreshBeats) => {
         );
       }
     }
-  }, [autoSubmitFiles]);
+  }, [autoSubmitFiles, user_id]);
 
   const handleDragLeave = useCallback((e) => {
     e.preventDefault();

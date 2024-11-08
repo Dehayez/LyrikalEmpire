@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 
 import { isMobileOrTablet, getInitialState, isAuthPage } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
-import { useBeat } from './contexts';
+import { useBeat, useUser } from './contexts';
 import ProtectedRoute from './routes/ProtectedRoute';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, ConfirmWaitPage, RequestPasswordResetPage, ResetPasswordPage, ProfilePage } from './pages';
@@ -18,7 +18,8 @@ function App() {
   const location = useLocation();
   const isAuthRoute = isAuthPage(location.pathname);
   const { beats, setBeats, setRefreshBeats, currentBeats } = useBeat();
-  const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats);
+  const { user } = useUser();
+  const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats, user.id);
 
   const [viewState, setViewState] = useState(() => getInitialState('lastView', 'queue'));
   const [currentBeat, setCurrentBeat] = useState(() => getInitialState('currentBeat', null));
