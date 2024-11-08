@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { IoCheckmarkSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
 
-import { useData, useBeat } from '../../contexts';
+import { useData, useBeat, useUser } from '../../contexts';
 import { useBpmHandlers } from '../../hooks';
 import { addBeat } from '../../services';
 
@@ -12,6 +12,7 @@ import { Warning } from '../Warning';
 
 const AddBeatForm = ({ isOpen, setIsOpen }) => {
     const { setRefreshBeats } = useBeat();
+    const { user } = useUser();
     const { genres, moods, keywords, features } = useData();
     
     const labelRef = useRef(null);
@@ -79,7 +80,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                 audio
             };
 
-            const addedBeat = await addBeat(beatData);
+            const addedBeat = await addBeat(beatData, audio, user.id);
             const beatId = addedBeat.insertId;
             setBeatId(beatId)
     

@@ -10,18 +10,20 @@ export const getBeats = async (user_id) => {
   return data;
 };
 
-export const addBeat = async (beat, audioFile) => {
+export const addBeat = async (beat, audioFile, user_id) => {
   const formData = new FormData();
 
   for (const key in beat) {
-    if (beat[key] !== null) {
-        formData.append(key, beat[key]);
+    if (beat[key] !== null && key !== 'audio') {
+      formData.append(key, beat[key]);
     }
   }
 
   if (audioFile) {
     formData.append('audio', audioFile, audioFile.name);
   }
+
+  formData.append('user_id', user_id);
 
   const { data } = await axios.post(API_URL, formData, {
     headers: {
