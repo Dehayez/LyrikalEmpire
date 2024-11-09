@@ -24,7 +24,16 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,
@@ -38,6 +47,7 @@ module.exports = {
       template: './public/index.html',
     }),
   ],
+  devtool: 'source-map',
   devServer: {
     static: {
       directory: path.join(__dirname, '../public'),
