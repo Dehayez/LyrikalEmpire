@@ -106,12 +106,13 @@ export const removeAllAssociationsFromBeat = async (beatId, associationType) => 
   }
 };
 
-export const getBeatsByAssociation = async (associationType, associationIds, allBeats) => {
+export const getBeatsByAssociation = async (associationType, associationIds, allBeats, user_id) => {
   try {
     const response = await axios.get(API_URL, {
       params: {
         associationType,
-        associationIds: associationIds.join(',')
+        associationIds: associationIds.join(','),
+        user_id
       }
     });
     const fetchedBeats = response.data.reverse();

@@ -217,7 +217,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
           const beatsByAssociations = await Promise.all(
             activeAssociations.map(async assoc => {
               const ids = assoc.selected.map(item => item.id);
-              return await getBeatsByAssociation(assoc.type, ids, currentBeats);
+              return await getBeatsByAssociation(assoc.type, ids, currentBeats, user.id);
             })
           );
   
@@ -232,7 +232,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
     };
   
     fetchBeatsByAssociation();
-  }, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, beats]);
+  }, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, beats, user.id]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
