@@ -1,21 +1,20 @@
-import axios from 'axios';
 import API_BASE_URL from '../utils/apiConfig';
+import { apiRequest } from '../utils/apiUtils';
 
 const API_URL = `${API_BASE_URL}/api/keywords`;
 
 export const getKeywords = async () => {
-  const { data } = await axios.get(API_URL);
-  return data;
+  return await apiRequest('get', '', API_URL);
 };
 
 export const addKeyword = async (name) => {
-  const response = await axios.post(API_URL, { name });
-  return response.data;
+  return await apiRequest('post', '', API_URL, { name });
 };
 
 export const updateKeyword = async (id, data) => {
-  const response = await axios.put(`${API_URL}/${id}`, data);
-  return response.data;
+  return await apiRequest('put', `/${id}`, API_URL, data);
 };
 
-export const deleteKeyword = (id) => axios.delete(`${API_URL}/${id}`);
+export const deleteKeyword = async (id) => {
+  return await apiRequest('delete', `/${id}`, API_URL);
+};
