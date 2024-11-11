@@ -2,6 +2,7 @@ import axios from 'axios';
 import { getAuthHeaders } from './authUtils';
 
 const handleApiError = (error) => {
+  console.error('API request error:', error);
   if (error.response) {
     throw new Error(error.response.data.error);
   } else {
@@ -9,12 +10,12 @@ const handleApiError = (error) => {
   }
 };
 
-export const apiRequest = async (method, url, baseURL, data = null, params = null) => {
+export const apiRequest = async (method, url, baseURL, data = null, params = null, auth = true) => {
   try {
     const config = {
       method,
       url: `${baseURL}${url}`,
-      ...getAuthHeaders(),
+      ...(auth && getAuthHeaders()),
       ...(data && { data }),
       ...(params && { params }),
     };
