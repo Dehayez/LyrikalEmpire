@@ -10,7 +10,7 @@ const handleApiError = (error) => {
   }
 };
 
-export const apiRequest = async (method, url, baseURL, data = null, params = null, auth = true) => {
+export const apiRequest = async (method, url, baseURL, data = null, params = null, auth = true, headers = {}) => {
   try {
     const config = {
       method,
@@ -18,6 +18,10 @@ export const apiRequest = async (method, url, baseURL, data = null, params = nul
       ...(auth && getAuthHeaders()),
       ...(data && { data }),
       ...(params && { params }),
+      headers: {
+        ...headers,
+        ...(auth && getAuthHeaders().headers),
+      },
     };
     const response = await axios(config);
     return response.data;
