@@ -1,98 +1,63 @@
-import axios from 'axios';
 import API_BASE_URL from '../utils/apiConfig';
+import { apiRequest } from '../utils/apiUtils';
+
+const API_URL = `${API_BASE_URL}/api/users`;
 
 const register = (userData) => {
-  return axios.post(`${API_BASE_URL}/api/users/register`, userData)
-    .catch(error => {
-      if (error.response) {
-        throw new Error(error.response.data.error);
-      } else {
-        throw new Error('An unexpected error occurred. Please try again later.');
-      }
-    });
+  return apiRequest('post', '/register', API_URL, userData);
 };
 
 const login = (userData) => {
-  return axios.post(`${API_BASE_URL}/api/users/login`, userData)
+  return apiRequest('post', '/login', API_URL, userData)
     .then(response => {
-      const { accessToken, refreshToken, email, username, id } = response.data;
+      const { accessToken, refreshToken, email, username, id } = response;
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       return { accessToken, refreshToken, email, username, id };
-    })
-    .catch(error => {
-      if (error.response) {
-        throw new Error(error.response.data.error);
-      } else {
-        throw new Error('An unexpected error occurred. Please try again later.');
-      }
     });
 };
 
 const loginWithGoogle = (tokenId) => {
-  return axios.post(`${API_BASE_URL}/api/users/auth/google`, { tokenId })
+  return apiRequest('post', '/auth/google', API_URL, { tokenId })
     .then(response => {
-      const { accessToken, refreshToken, email, username } = response.data;
+      const { accessToken, refreshToken, email, username } = response;
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       return { accessToken, refreshToken, email, username };
-    })
-    .catch(error => {
-      if (error.response) {
-        throw new Error(error.response.data.error);
-      } else {
-        throw new Error('An unexpected error occurred. Please try again later.');
-      }
     });
 };
 
 const getUserDetails = () => {
-  const token = localStorage.getItem('accessToken');
-  if (!token) {
-    throw new Error('User is not logged in');
-  }
-
-  return axios.get(`${API_BASE_URL}/api/users/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).then(response => {
-    const { email, username, id } = response.data;
-    return { email, username, id };
-  });
+  return apiRequest('get', '/me', API_URL)
+    .then(response => {
+      const { email, username, id } = response;
+      return { email, username, id };
+    });
 };
 
 const updateUserDetails = (userData) => {
-  const token = localStorage.getItem('accessToken');
-  if (!token) {
-    throw new Error('User is not logged in');
-  }
-
-  return axios.put(`${API_BASE_URL}/api/users/me`, userData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).then(response => response.data);
+  return apiRequest('put', '/me', API_URL, userData)
+    .then(response => response);
 };
 
 const confirmEmail = (token) => {
-  return axios.get(`${API_BASE_URL}/api/users/confirm/${token}`);
+  return apiRequest('get', `/confirm/${token}`, API_URL);
 };
 
 const resendConfirmationEmail = (email) => {
-  return axios.post(`${API_BASE_URL}/api/users/resend-confirmation`, { email });
+  return apiRequest('post', '/resend-confirmation', API_URL, { email });
 };
 
 const requestPasswordReset = (email) => {
-  return axios.post(`${API_BASE_URL}/api/users/request-password-reset`, { email });
+  return apiRequest('post', '/request-password-reset', API_URL, { email });
 };
 
 const resetPassword = (token, password) => {
-  return axios.post(`${API_BASE_URL}/api/users/reset-password/${token}`, { password });
+  return apiRequest('post', `/reset-password/${token}`, API_URL, { password });
 };
 
 const verifyToken = (token) => {
-  return axios.post(`${API_BASE_URL}/api/users/verify-token`, { token });
+  return apiRequest('post', '/verify-token', API_URL, { token });
 };
 
 const refreshToken = () => {
@@ -101,9 +66,9 @@ const refreshToken = () => {
     throw new Error('No refresh token available');
   }
 
-  return axios.post(`${API_BASE_URL}/api/users/refresh-token`, { token: refreshToken })
+  return apiRequest('post', '/refresh-token', API_URL, { token: refreshToken })
     .then(response => {
-      const { accessToken } = response.data;
+      const { accessToken } = response;
       localStorage.setItem('accessToken', accessToken);
       return accessToken;
     })

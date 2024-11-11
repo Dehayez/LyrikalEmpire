@@ -1,6 +1,14 @@
 import axios from 'axios';
 import { getAuthHeaders } from './authUtils';
 
+const handleApiError = (error) => {
+  if (error.response) {
+    throw new Error(error.response.data.error);
+  } else {
+    throw new Error('An unexpected error occurred. Please try again later.');
+  }
+};
+
 export const apiRequest = async (method, url, baseURL, data = null, params = null) => {
   try {
     const config = {
@@ -13,7 +21,6 @@ export const apiRequest = async (method, url, baseURL, data = null, params = nul
     const response = await axios(config);
     return response.data;
   } catch (error) {
-    console.error(`Failed to ${method} ${url}:`, error);
-    throw error;
+    handleApiError(error);
   }
 };
