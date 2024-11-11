@@ -6,6 +6,14 @@ const db = require('../config/db');
 
 const resendAttempts = {};
 
+const generateAccessToken = (user) => {
+  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '15m' });
+};
+
+const generateRefreshToken = (user) => {
+  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+};
+
 const register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -152,11 +160,10 @@ const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid email/username or password' });
     }
 
-    const token = jwt.sign({ id: user[0].id, email: user[0].email }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const accessToken = generateAccessToken(user[0]);
+    const refreshToken = generateRefreshToken(user[0]);
 
-    res.json({ token, email: user[0].email, username: user[0].username, id: user[0].id });
+    res.json({ accessToken, refreshToken, email: user[0].email, username: user[0].username, id: user[0].id });
   } catch (error) {
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
       return res.status(500).json({ error: 'Database is not reachable. Please try again later.' });
@@ -240,6 +247,23 @@ const verifyToken = async (req, res) => {
   }
 };
 
+const refreshToken = async (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(401).json({ error: 'Refresh token is required' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    const accessToken = generateAccessToken({ id: decoded.id, email: decoded.email });
+
+    res.json({ accessToken });
+  } catch (error) {
+    res.status(403).json({ error: 'Invalid or expired refresh token' });
+  }
+};
+
 const getUserDetails = async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
@@ -266,7 +290,7 @@ const updateUserDetails = async (req, res) => {
 
     await handleQuery(
       'UPDATE users SET username = ? WHERE id = ?',
-      [email, username, userId],
+      [username, userId],
       res,
       'User details updated successfully'
     );
@@ -285,4 +309,5 @@ module.exports = {
   verifyToken,
   getUserDetails,
   updateUserDetails,
+  refreshToken,
 };

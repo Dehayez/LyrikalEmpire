@@ -15,8 +15,10 @@ const register = (userData) => {
 const login = (userData) => {
   return axios.post(`${API_BASE_URL}/api/users/login`, userData)
     .then(response => {
-      const { token, email, username, id } = response.data;
-      return { token, email, username, id };
+      const { accessToken, refreshToken, email, username, id } = response.data;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      return { accessToken, refreshToken, email, username, id };
     })
     .catch(error => {
       if (error.response) {
@@ -30,8 +32,10 @@ const login = (userData) => {
 const loginWithGoogle = (tokenId) => {
   return axios.post(`${API_BASE_URL}/api/users/auth/google`, { tokenId })
     .then(response => {
-      const { token, email, username } = response.data;
-      return { token, email, username };
+      const { accessToken, refreshToken, email, username } = response.data;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      return { accessToken, refreshToken, email, username };
     })
     .catch(error => {
       if (error.response) {
@@ -42,7 +46,8 @@ const loginWithGoogle = (tokenId) => {
     });
 };
 
-const getUserDetails = (token) => {
+const getUserDetails = () => {
+  const token = localStorage.getItem('accessToken');
   if (!token) {
     throw new Error('User is not logged in');
   }
@@ -58,7 +63,7 @@ const getUserDetails = (token) => {
 };
 
 const updateUserDetails = (userData) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('accessToken');
   if (!token) {
     throw new Error('User is not logged in');
   }
@@ -90,6 +95,27 @@ const verifyToken = (token) => {
   return axios.post(`${API_BASE_URL}/api/users/verify-token`, { token });
 };
 
+const refreshToken = () => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) {
+    throw new Error('No refresh token available');
+  }
+
+  return axios.post(`${API_BASE_URL}/api/users/refresh-token`, { token: refreshToken })
+    .then(response => {
+      const { accessToken } = response.data;
+      localStorage.setItem('accessToken', accessToken);
+      return accessToken;
+    })
+    .catch(error => {
+      if (error.response) {
+        throw new Error(error.response.data.error);
+      } else {
+        throw new Error('An unexpected error occurred. Please try again later.');
+      }
+    });
+};
+
 export default {
   register,
   login,
@@ -101,4 +127,5 @@ export default {
   requestPasswordReset,
   resetPassword,
   verifyToken,
+  refreshToken,
 };
