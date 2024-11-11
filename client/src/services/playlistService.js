@@ -1,112 +1,50 @@
-import axios from 'axios';
 import API_BASE_URL from '../utils/apiConfig';
+import { apiRequest } from '../utils/apiUtils';
 
 const API_URL = `${API_BASE_URL}/api/playlists`;
 
 const createPlaylist = async (playlistData, user_id) => {
-  try {
-    const response = await axios.post(API_URL, { ...playlistData, user_id });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to create playlist:', error);
-    throw error;
-  }
+  return apiRequest('post', '', API_URL, { ...playlistData, user_id });
 };
 
 const getPlaylists = async (user_id) => {
-  try {
-    const response = await axios.get(API_URL, {
-      params: { user_id }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch playlists:', error);
-    throw error;
-  }
+  return apiRequest('get', '', API_URL, null, { user_id });
 };
 
 const updatePlaylist = async (id, playlistData) => {
-  try {
-    const response = await axios.put(`${API_URL}/${id}`, playlistData);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to update playlist:', error);
-    throw error;
-  }
+  return apiRequest('put', `/${id}`, API_URL, playlistData);
 };
 
 const deletePlaylist = async (id) => {
-  try {
-    await removeAllBeatsFromPlaylist(id);
-    const response = await axios.delete(`${API_URL}/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to delete playlist:', error);
-    throw error;
-  }
+  await removeAllBeatsFromPlaylist(id);
+  return apiRequest('delete', `/${id}`, API_URL);
 };
 
 const addBeatsToPlaylist = async (playlistId, beatIds) => {
-  try {
-    if (!Array.isArray(beatIds)) {
-      beatIds = [beatIds];
-    }
-    const response = await axios.post(`${API_URL}/${playlistId}/beats`, { beatIds });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to add beats to playlist:', error);
-    throw error;
+  if (!Array.isArray(beatIds)) {
+    beatIds = [beatIds];
   }
+  return apiRequest('post', `/${playlistId}/beats`, API_URL, { beatIds });
 };
 
 const removeBeatFromPlaylist = async (playlistId, beatId) => {
-  try {
-    const response = await axios.delete(`${API_URL}/${playlistId}/beats/${beatId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to remove beat from playlist:', error);
-    throw error;
-  }
+  return apiRequest('delete', `/${playlistId}/beats/${beatId}`, API_URL);
 };
 
 const getBeatsByPlaylistId = async (playlistId) => {
-  try {
-    const response = await axios.get(`${API_URL}/${playlistId}/beats`);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch beats for playlist:', error);
-    throw error;
-  }
+  return apiRequest('get', `/${playlistId}/beats`, API_URL);
 };
 
 const removeAllBeatsFromPlaylist = async (playlistId) => {
-  try {
-    const response = await axios.delete(`${API_URL}/${playlistId}/beats`);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to remove all beats from playlist:', error);
-    throw error;
-  }
+  return apiRequest('delete', `/${playlistId}/beats`, API_URL);
 };
 
 const getPlaylistById = async (id) => {
-  try {
-    const response = await axios.get(`${API_URL}/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch playlist by ID:', error);
-    throw error;
-  }
+  return apiRequest('get', `/${id}`, API_URL);
 };
 
 const updateBeatOrder = async (playlistId, beatOrders) => {
-  try {
-    const response = await axios.put(`${API_URL}/${playlistId}/beats/order`, { beatOrders });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to update beat order:', error);
-    throw error;
-  }
+  return apiRequest('put', `/${playlistId}/beats/order`, API_URL, { beatOrders });
 };
 
 export {
@@ -119,5 +57,5 @@ export {
   removeBeatFromPlaylist,
   getPlaylistById,
   removeAllBeatsFromPlaylist,
-  updateBeatOrder
+  updateBeatOrder,
 };
