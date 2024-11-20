@@ -63,7 +63,7 @@ export const UpdatePlaylistForm = ({ playlist, onCancel, onConfirm, isOpen, setI
                 maxLength={100} 
                 />
                 {isTitleEmpty && <Warning message="Title cannot be empty" />}
-                <FormTextarea label="Description" type="text" placeholder='Enter description' value={description} onChange={(e) => setDescription(e.target.value)} spellCheck="false" maxLength={400} />
+                <FormTextarea label="Description" type="text" value={description} onChange={(e) => setDescription(e.target.value)} spellCheck="false" maxLength={400} />
             </div>
         </DraggableModal>
     );
