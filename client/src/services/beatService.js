@@ -70,6 +70,12 @@ export const replaceAudio = async (beatId, audioFile) => {
   });
 };
 
-export const addAssociationsToBeat = async (beatId, associations) => {
-  return await apiRequest('post', `/${beatId}/associations`, API_URL, { associations });
+export const addAssociationsToBeat = async (beatId, associationType, associationId) => {
+  try {
+    const response = await apiRequest('post', `/${beatId}/${associationType}`, API_URL, { association_id: associationId });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to add ${associationType} to beat:`, error);
+    throw error;
+  }
 };
