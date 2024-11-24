@@ -4,6 +4,17 @@ const getKeywords = (req, res) => {
   handleQuery('SELECT * FROM keywords', [], res, null, true);
 };
 
+const getKeywordsWithCounts = (req, res) => {
+  const query = `
+    SELECT k.id, k.name, COUNT(bk.beat_id) as count
+    FROM keywords k
+    LEFT JOIN beats_keywords bk ON k.id = bk.keyword_id
+    GROUP BY k.id, k.name
+    ORDER BY count DESC
+  `;
+  handleQuery(query, [], res, 'Keywords with counts fetched successfully', true);
+};
+
 const createKeyword = (req, res) => {
   const { name } = req.body;
 
@@ -27,7 +38,8 @@ const deleteKeyword = (req, res) => {
 
 module.exports = {
   getKeywords,
+  getKeywordsWithCounts,
   createKeyword,
   updateKeyword,
-  deleteKeyword
+  deleteKeyword,
 };

@@ -4,6 +4,17 @@ const getFeatures = (req, res) => {
   handleQuery('SELECT * FROM features', [], res, null, true);
 };
 
+const getFeaturesWithCounts = (req, res) => {
+  const query = `
+    SELECT f.id, f.name, COUNT(bf.beat_id) as count
+    FROM features f
+    LEFT JOIN beats_features bf ON f.id = bf.feature_id
+    GROUP BY f.id, f.name
+    ORDER BY count DESC
+  `;
+  handleQuery(query, [], res, 'Features with counts fetched successfully', true);
+};
+
 const createFeature = (req, res) => {
   const { name } = req.body;
 
@@ -27,7 +38,8 @@ const deleteFeature = (req, res) => {
 
 module.exports = {
   getFeatures,
+  getFeaturesWithCounts,
   createFeature,
   updateFeature,
-  deleteFeature
+  deleteFeature,
 };

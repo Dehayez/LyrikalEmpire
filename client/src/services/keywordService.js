@@ -7,6 +7,10 @@ export const getKeywords = async () => {
   return await apiRequest('get', '', API_URL);
 };
 
+export const getKeywordsWithCounts = async () => {
+  return await apiRequest('get', '/with-counts', API_URL);
+};
+
 export const addKeyword = async (name) => {
   return await apiRequest('post', '', API_URL, { name });
 };

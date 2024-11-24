@@ -3,6 +3,7 @@ const router = express.Router();
 const keywordController = require('../controllers/keywordController');
 
 router.get('/', keywordController.getKeywords);
+router.get('/with-counts', keywordController.getKeywordsWithCounts);
 router.post('/', keywordController.createKeyword);
 router.put('/:id', keywordController.updateKeyword);
 router.delete('/:id', keywordController.deleteKeyword);

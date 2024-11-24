@@ -7,6 +7,10 @@ export const getMoods = async () => {
   return await apiRequest('get', '', API_URL);
 };
 
+export const getMoodsWithCounts = async () => {
+  return await apiRequest('get', '/with-counts', API_URL);
+};
+
 export const addMood = async (name) => {
   return await apiRequest('post', '', API_URL, { name });
 };

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
-import { getGenresWithCounts, getMoods, getKeywords, getFeatures } from '../services';
+import { getGenresWithCounts, getMoodsWithCounts, getFeaturesWithCounts, getKeywordsWithCounts, getMoods, getKeywords, getFeatures } from '../services';
 
 const DataContext = createContext();
 
@@ -23,7 +23,7 @@ export const DataProvider = ({ children }) => {
 
   const fetchMoods = async () => {
     try {
-      const moodsData = await getMoods();
+      const moodsData = await getMoodsWithCounts();
       setMoods(moodsData);
     } catch (err) {
       console.error('Error fetching moods:', err);
@@ -33,7 +33,7 @@ export const DataProvider = ({ children }) => {
 
   const fetchKeywords = async () => {
     try {
-      const keywordsData = await getKeywords();
+      const keywordsData = await getKeywordsWithCounts();
       setKeywords(keywordsData);
     } catch (err) {
       console.error('Error fetching keywords:', err);
@@ -43,7 +43,7 @@ export const DataProvider = ({ children }) => {
 
   const fetchFeatures = async () => {
     try {
-      const featuresData = await getFeatures();
+      const featuresData = await getFeaturesWithCounts();
       setFeatures(featuresData);
     } catch (err) {
       console.error('Error fetching features:', err);
@@ -55,9 +55,9 @@ export const DataProvider = ({ children }) => {
     try {
       const [genresData, moodsData, keywordsData, featuresData] = await Promise.all([
         getGenresWithCounts(),
-        getMoods(),
-        getKeywords(),
-        getFeatures()
+        getMoodsWithCounts(),
+        getKeywordsWithCounts(),
+        getFeaturesWithCounts()
       ]);
       setGenres(genresData);
       setMoods(moodsData);

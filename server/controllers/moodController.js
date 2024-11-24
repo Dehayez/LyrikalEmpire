@@ -4,6 +4,17 @@ const getMoods = (req, res) => {
   handleQuery('SELECT * FROM moods', [], res, null, true);
 };
 
+const getMoodsWithCounts = (req, res) => {
+  const query = `
+    SELECT m.id, m.name, COUNT(bm.beat_id) as count
+    FROM moods m
+    LEFT JOIN beats_moods bm ON m.id = bm.mood_id
+    GROUP BY m.id, m.name
+    ORDER BY count DESC
+  `;
+  handleQuery(query, [], res, 'Moods with counts fetched successfully', true);
+};
+
 const createMood = (req, res) => {
   const { name } = req.body;
 
@@ -27,7 +38,8 @@ const deleteMood = (req, res) => {
 
 module.exports = {
   getMoods,
+  getMoodsWithCounts,
   createMood,
   updateMood,
-  deleteMood
+  deleteMood,
 };
