@@ -4,6 +4,17 @@ const getGenres = (req, res) => {
   handleQuery('SELECT * FROM genres', [], res, null, true);
 };
 
+const getGenresWithCounts = (req, res) => {
+  const query = `
+    SELECT g.id, g.name, COUNT(bg.beat_id) as count
+    FROM genres g
+    LEFT JOIN beats_genres bg ON g.id = bg.genre_id
+    GROUP BY g.id, g.name
+    ORDER BY count DESC
+  `;
+  handleQuery(query, [], res, 'Genres with counts fetched successfully', true);
+};
+
 const createGenre = (req, res) => {
   const { name } = req.body;
 
@@ -27,7 +38,8 @@ const deleteGenre = (req, res) => {
 
 module.exports = {
   getGenres,
+  getGenresWithCounts,
   createGenre,
   updateGenre,
-  deleteGenre
+  deleteGenre,
 };

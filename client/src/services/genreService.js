@@ -7,6 +7,10 @@ export const getGenres = async () => {
   return await apiRequest('get', '', API_URL);
 };
 
+export const getGenresWithCounts = async () => {
+  return await apiRequest('get', '/with-counts', API_URL);
+};
+
 export const addGenre = async (name) => {
   return await apiRequest('post', '', API_URL, { name });
 };

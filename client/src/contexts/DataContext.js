@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
-import { getGenres, getMoods, getKeywords, getFeatures } from '../services';
+import { getGenresWithCounts, getMoods, getKeywords, getFeatures } from '../services';
 
 const DataContext = createContext();
 
@@ -13,7 +13,7 @@ export const DataProvider = ({ children }) => {
 
   const fetchGenres = async () => {
     try {
-      const genresData = await getGenres();
+      const genresData = await getGenresWithCounts();
       setGenres(genresData);
     } catch (err) {
       console.error('Error fetching genres:', err);
@@ -54,7 +54,7 @@ export const DataProvider = ({ children }) => {
   const fetchData = async () => {
     try {
       const [genresData, moodsData, keywordsData, featuresData] = await Promise.all([
-        getGenres(),
+        getGenresWithCounts(),
         getMoods(),
         getKeywords(),
         getFeatures()
