@@ -96,7 +96,9 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
                           onChange={() => handleSelect(name, option)}
                           className="filter-dropdown__option-input"
                         />
-                        <span onClick={() => handleSelect(name, option)} className="filter-dropdown__option-text">{option.name}</span>
+                        <span onClick={() => handleSelect(name, option)} className="filter-dropdown__option-text">
+                          {option.name} <span className="filter-dropdown__option-text-count">{option.count}</span>
+                        </span>
                       </div>
                     );
                   })}

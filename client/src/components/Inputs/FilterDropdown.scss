@@ -22,10 +22,17 @@
       border: 1px solid $color-gray;
     }
   }
+
   &__option {
     display: flex;
     align-items: center;
+
+    &-text-count {
+      color: $color-gray-light;
+      margin-left: 4px;
+    }
   }
+
   input[type="checkbox"] {
     padding: 7px;
     position: relative;
