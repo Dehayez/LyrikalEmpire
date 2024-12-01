@@ -1,35 +1,11 @@
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const transporter = require('../config/emailConfig');
 const { handleQuery } = require('../helpers/dbHelpers');
 const db = require('../config/db');
+const { generateAccessToken, generateRefreshToken } = require('./tokenController');
 
 const resendAttempts = {};
-
-const generateAccessToken = (user) => {
-  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '15m' });
-};
-
-const generateRefreshToken = (user) => {
-  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
-};
-
-const refreshToken = async (req, res) => {
-  const { token } = req.body;
-
-  if (!token) {
-    return res.status(401).json({ error: 'Refresh token is required' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-    const accessToken = generateAccessToken({ id: decoded.id, email: decoded.email });
-
-    res.json({ accessToken });
-  } catch (error) {
-    res.status(403).json({ error: 'Invalid or expired refresh token' });
-  }
-};
 
 const verifyToken = async (req, res) => {
   const { token } = req.body;
@@ -309,5 +285,4 @@ module.exports = {
   verifyToken,
   getUserDetails,
   updateUserDetails,
-  refreshToken,
 };

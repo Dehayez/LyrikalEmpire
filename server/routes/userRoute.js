@@ -1,6 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const { register, confirmEmail, login, resendConfirmationEmail, requestPasswordReset, resetPassword, verifyToken, getUserDetails, updateUserDetails } = require('../controllers/userController');
+const tokenRoutes = require('./tokenRoute');
 const router = express.Router();
 
 router.post('/register', register);
@@ -17,5 +18,7 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
   res.redirect('/');
 });
+
+router.use('/token', tokenRoutes);
 
 module.exports = router;
