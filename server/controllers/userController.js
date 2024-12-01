@@ -14,6 +14,34 @@ const generateRefreshToken = (user) => {
   return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 };
 
+const refreshToken = async (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(401).json({ error: 'Refresh token is required' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    const accessToken = generateAccessToken({ id: decoded.id, email: decoded.email });
+
+    res.json({ accessToken });
+  } catch (error) {
+    res.status(403).json({ error: 'Invalid or expired refresh token' });
+  }
+};
+
+const verifyToken = async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.status(200).json({ valid: true, decoded });
+  } catch (error) {
+    res.status(401).json({ valid: false, error: 'Invalid or expired token' });
+  }
+};
+
 const register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -233,34 +261,6 @@ const resetPassword = async (req, res) => {
     );
   } catch (error) {
     res.status(400).json({ error: 'Invalid or expired token' });
-  }
-};
-
-const verifyToken = async (req, res) => {
-  const { token } = req.body;
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.status(200).json({ valid: true, decoded });
-  } catch (error) {
-    res.status(401).json({ valid: false, error: 'Invalid or expired token' });
-  }
-};
-
-const refreshToken = async (req, res) => {
-  const { token } = req.body;
-
-  if (!token) {
-    return res.status(401).json({ error: 'Refresh token is required' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-    const accessToken = generateAccessToken({ id: decoded.id, email: decoded.email });
-
-    res.json({ accessToken });
-  } catch (error) {
-    res.status(403).json({ error: 'Invalid or expired refresh token' });
   }
 };
 
