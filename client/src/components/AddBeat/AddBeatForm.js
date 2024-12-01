@@ -192,11 +192,11 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                     <SelectInput 
                         id="tierlist"
                         name="tierlist"
-                        label="Tierlist"
+                        placeholder="Tierlist"
                         selectedValue={tierlist} 
                         onChange={(e) => setTierlist(e.target.value)} 
                         options={[
-                            { value: 'G', label: 'G' },
+                            { value: '', label: 'No tierlist' },
                             { value: 'S', label: 'S' },
                             { value: 'A', label: 'A' },
                             { value: 'B', label: 'B' },

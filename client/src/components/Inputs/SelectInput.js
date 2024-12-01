@@ -1,27 +1,53 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IoChevronDownSharp } from "react-icons/io5";
 import './Inputs.scss';
+import './SelectInput.scss';
 
-export const SelectInput = ({ id, name, label, selectedValue, onChange, options }) => (
-    <div className="form-group">
-        {label ? <label htmlFor={id}>{label}</label> : null}
-        <div className="select-wrapper">
-            <select 
-                id={id}
-                name={name}
-                className="select-wrapper__select" 
-                value={selectedValue} 
-                onChange={onChange}
-                onFocus={(e) => e.target.style.color = 'white'}
-                onBlur={(e) => e.target.style.color = selectedValue ? 'white' : '#828282'}
-                style={{color: selectedValue ? 'white' : '#828282'}}
-            >
-                {label && <option value="">{`Select ${label.toLowerCase()}`}</option>}
-                {options.map(option => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                ))}
-            </select>
-            <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
+export const SelectInput = ({ id, name, placeholder, selectedValue, onChange, options }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(selectedValue);
+    const dropdownRef = useRef(null);
+
+    const handleSelect = (option) => {
+        setSelectedOption(option.value);
+        onChange({ target: { name, value: option.value } });
+        setIsOpen(false);
+    };
+
+    const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    return (
+        <div className="form-group" ref={dropdownRef}>
+            <div className="select-wrapper" onClick={() => setIsOpen(!isOpen)}>
+                <div className="select-wrapper__selected" style={{ color: selectedOption ? 'white' : '#828282' }}>
+                    {selectedOption ? options.find(option => option.value === selectedOption).label : placeholder}
+                </div>
+                <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
+                {isOpen && (
+                    <div className="select-wrapper__options">
+                        {options.map(option => (
+                            <div
+                                key={option.value}
+                                className="select-wrapper__option"
+                                onClick={() => handleSelect(option)}
+                            >
+                                {option.label}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
-    </div>
-);
+    );
+};
