@@ -43,18 +43,19 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const beats = externalBeats || allBeats;
   const [filteredBeats, setFilteredBeats] = useState(beats);
 
-  useEffect(() => {
-    setCurrentBeats(filteredBeats)
-  }, [filteredBeats]);
   
   const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(filteredBeats);
-
+  
   const filteredAndSortedBeats = useMemo(() => {
     return sortedBeats.filter(beat => {
       const fieldsToSearch = [beat.title];
       return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
     });
   }, [sortedBeats, searchText]);
+
+  useEffect(() => {
+    setCurrentBeats(filteredAndSortedBeats)
+  }, [filteredAndSortedBeats]);
 
   const { selectedBeats, handleBeatClick } = useHandleBeatClick(beats, tableRef, currentBeat);
   const { handleUpdate, handleDelete } = useBeatActions();
