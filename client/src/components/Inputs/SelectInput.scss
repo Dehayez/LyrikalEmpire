@@ -1,12 +1,14 @@
+@import '../../globals/variables';
+
 .select-wrapper {
     position: relative;
     cursor: pointer;
 
     &__selected {
-        padding: 10px;
-        border: 1px solid #828282;
+        padding: 12px;
         border-radius: 4px;
-        background-color: transparent;
+        background-color: $color-black;
+        border: 1px solid $color-gray-mid;
     }
 
     &__options {
@@ -16,15 +18,13 @@
         width: 100%;
         max-height: 200px;
         overflow-y: auto;
-        background-color: #333;
-        border: 1px solid #828282;
+        background-color: $color-gray-dark; 
         border-radius: 4px;
         z-index: 10;
     }
 
     &__option {
         padding: 10px;
-        background-color: #333;
         color: white;
         cursor: pointer;
 
