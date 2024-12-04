@@ -12,7 +12,7 @@ export const FormInput = ({ id, name, label, type, placeholder, value, onChange,
     return (
         <div className={`form-group ${className || ''}`}>
             <input 
-                className={`form-group__input poopie ${isWarning ? 'form-group__input--warning' : ''}`} 
+                className={`form-group__input ${isWarning ? 'form-group__input--warning' : ''}`} 
                 id={id} 
                 name={name} 
                 type={isPasswordVisible && type === 'password' ? 'text' : type} 

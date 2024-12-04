@@ -10,6 +10,8 @@ import DraggableModal from '../Modals/DraggableModal';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
 import { Warning } from '../Warning';
 
+import './AddBeatForm.scss';
+
 const AddBeatForm = ({ isOpen, setIsOpen }) => {
     const { setRefreshBeats } = useBeat();
     const { user } = useUser();
@@ -160,7 +162,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                 ) : warningMessage && (
                     <Warning message={warningMessage} />
                 )}
-                <form className='form' onSubmit={handleSubmit} noValidate>
+                <form className='form add-beat-form' onSubmit={handleSubmit} noValidate>
                     <FileInput fileName={fileName} onChange={handleFileChange} fileObject={audio} labelRef={labelRef} />
                     <FormInput 
                         label="Title" 
