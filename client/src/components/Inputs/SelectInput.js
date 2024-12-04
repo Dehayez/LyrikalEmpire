@@ -33,7 +33,15 @@ export const SelectInput = ({ id, name, placeholder, selectedValue, onChange, op
                 <div className="select-wrapper__selected" style={{ color: selectedOption ? 'white' : '#828282' }}>
                     {selectedOption ? options.find(option => option.value === selectedOption).label : placeholder}
                 </div>
-                <IoChevronDownSharp style={{ position: 'absolute', top: '50%', right: '5px', transform: 'translateY(-50%)' }} />
+                <IoChevronDownSharp 
+                    style={{ 
+                        position: 'absolute', 
+                        top: '50%', 
+                        right: '12px', 
+                        transform: `translateY(-50%) rotate(${isOpen ? '180deg' : '0deg'})`, 
+                        transition: 'transform 0.2s ease-in-out' 
+                    }} 
+                />
                 {isOpen && (
                     <div className="select-wrapper__options">
                         {options.map(option => (
