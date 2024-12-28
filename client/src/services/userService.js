@@ -74,7 +74,7 @@ const startTokenRefresh = () => {
       const accessToken = await refreshToken();
       const decodedToken = jwtDecode(accessToken);
       const now = Math.floor(Date.now() / 1000);
-      const timeLeft = decodedToken.exp - now - 60; // Refresh 1 minute before expiry
+      const timeLeft = decodedToken.exp - now - 60;
       console.log(`[INFO] Next token refresh in ${timeLeft} seconds`);
       setTimeout(refresh, timeLeft * 1000);
     } catch (error) {
