@@ -2,14 +2,15 @@
   "name": "lyrikalempire",
   "version": "1.0.0",
   "main": "main.js",
-"scripts": {
-  "start": "open-cli /Applications/MAMP/MAMP.app && wait-on http://localhost:8888 && concurrently \"yarn --cwd ./server start\" \"yarn --cwd ./client start\"",
-  "electron": "wait-on http://localhost:3000 && electron ."
-},
+  "scripts": {
+    "start": "open-cli /Applications/MAMP/MAMP.app && wait-on http://localhost:8888 && concurrently \"yarn --cwd ./server start\" \"yarn --cwd ./client start\"",
+    "electron": "wait-on http://localhost:3000 && electron ."
+  },
   "license": "ISC",
   "dependencies": {
     "discord-rpc": "^4.0.1",
-    "electron": "^33.0.2"
+    "electron": "^33.0.2",
+    "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

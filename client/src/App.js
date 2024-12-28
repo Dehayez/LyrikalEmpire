@@ -6,6 +6,7 @@ import { isMobileOrTablet, getInitialState, isAuthPage } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
 import { useBeat, useUser } from './contexts';
 import ProtectedRoute from './routes/ProtectedRoute';
+import userService from './services/userService';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, ConfirmWaitPage, RequestPasswordResetPage, ResetPasswordPage, ProfilePage } from './pages';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
@@ -33,6 +34,10 @@ function App() {
   const [shuffle, setShuffle] = useState(() => getInitialState('shuffle', false));
   const [repeat, setRepeat] = useState(() => getInitialState('repeat', 'Disabled Repeat'));
   const [lyricsModal, setLyricsModal] = useState(getInitialState('lyricsModal', false));
+
+  useEffect(() => {
+    userService.startTokenRefresh();
+  }, []);
 
   const {
     isLeftPanelVisible,

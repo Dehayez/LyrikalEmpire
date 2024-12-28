@@ -1,5 +1,6 @@
 import API_BASE_URL from '../utils/apiConfig';
 import { apiRequest } from '../utils/apiUtils';
+import { jwtDecode } from 'jwt-decode';
 
 const API_URL = `${API_BASE_URL}/api/users`;
 
@@ -59,10 +60,29 @@ const refreshToken = async () => {
     throw new Error('No refresh token available');
   }
 
-  const response = await apiRequest('post', '/refresh-token', API_URL, { token: refreshToken }, null, false);
+  const response = await apiRequest('post', '/token/refresh-token', API_URL, { token: refreshToken }, null, false);
   const { accessToken } = response;
   localStorage.setItem('accessToken', accessToken);
+  console.log(`[INFO] Access Token refreshed: ${accessToken}`);
   return accessToken;
+};
+
+const startTokenRefresh = () => {
+  const refresh = async () => {
+    try {
+      console.log('[INFO] Refreshing token...');
+      const accessToken = await refreshToken();
+      const decodedToken = jwtDecode(accessToken);
+      const now = Math.floor(Date.now() / 1000);
+      const timeLeft = decodedToken.exp - now - 60; // Refresh 1 minute before expiry
+      console.log(`[INFO] Next token refresh in ${timeLeft} seconds`);
+      setTimeout(refresh, timeLeft * 1000);
+    } catch (error) {
+      console.error('[ERROR] Failed to refresh token:', error);
+    }
+  };
+
+  refresh();
 };
 
 export default {
@@ -77,4 +97,5 @@ export default {
   resetPassword,
   verifyToken,
   refreshToken,
+  startTokenRefresh,
 };
