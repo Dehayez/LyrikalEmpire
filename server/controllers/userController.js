@@ -1,9 +1,26 @@
+console.log('Loading bcrypt...');
 const bcrypt = require('bcryptjs');
+console.log('bcrypt loaded');
+
+console.log('Loading jwt...');
 const jwt = require('jsonwebtoken');
+console.log('jwt loaded');
+
+console.log('Loading transporter...');
 const transporter = require('../config/emailConfig');
+console.log('transporter loaded');
+
+console.log('Loading handleQuery...');
 const { handleQuery } = require('../helpers/dbHelpers');
+console.log('handleQuery loaded');
+
+console.log('Loading db...');
 const db = require('../config/db');
+console.log('db loaded');
+
+console.log('Loading tokenController...');
 const { generateAccessToken, generateRefreshToken } = require('./tokenController');
+console.log('tokenController loaded');
 
 const resendAttempts = {};
 
