@@ -1,33 +1,19 @@
-require('dotenv').config();
-
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const userService = require('../services/userService');
 
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'http://localhost:4000/auth/google/callback'
-}, async (accessToken, refreshToken, profile, done) => {
-  try {
-    const user = await userService.findOrCreateUser(profile);
-    done(null, user);
-  } catch (error) {
-    done(error, null);
-  }
-}));
+// Remove the following lines if they exist
+// const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await userService.findUserById(id);
-    done(null, user);
-  } catch (error) {
-    done(error, null);
-  }
-});
+// Remove the GoogleStrategy configuration if it exists
+// passport.use(new GoogleStrategy({
+//     clientID: process.env.GOOGLE_CLIENT_ID,
+//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//     callbackURL: "http://www.example.com/auth/google/callback"
+//   },
+//   function(accessToken, refreshToken, profile, done) {
+//     // User.findOrCreate({ googleId: profile.id }, function (err, user) {
+//     //   return done(err, user);
+//     // });
+//   }
+// ));
 
 module.exports = passport;
