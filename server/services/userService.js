@@ -1,6 +1,5 @@
 const db = require('../config/db');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const findOrCreateUser = async (profile) => {
   const { id, displayName, emails } = profile;
