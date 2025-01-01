@@ -70,12 +70,22 @@ const refreshToken = async () => {
 const startTokenRefresh = () => {
   const refresh = async () => {
     try {
-      console.log('[INFO] Refreshing token...');
-      const accessToken = await refreshToken();
-      const decodedToken = jwtDecode(accessToken);
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        const decodedToken = jwtDecode(accessToken);
+        const now = Math.floor(Date.now() / 1000);
+        const timeLeft = decodedToken.exp - now - 60;
+
+        if (timeLeft > 0) {
+          setTimeout(refresh, timeLeft * 1000);
+          return;
+        }
+      }
+
+      const newAccessToken = await refreshToken();
+      const newDecodedToken = jwtDecode(newAccessToken);
       const now = Math.floor(Date.now() / 1000);
-      const timeLeft = decodedToken.exp - now - 60;
-      console.log(`[INFO] Next token refresh in ${timeLeft} seconds`);
+      const timeLeft = newDecodedToken.exp - now - 60;
       setTimeout(refresh, timeLeft * 1000);
     } catch (error) {
       console.error('[ERROR] Failed to refresh token:', error);
