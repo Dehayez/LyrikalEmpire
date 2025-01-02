@@ -23,6 +23,7 @@ export const apiRequest = async (method, url, baseURL, data = null, params = nul
         ...(auth && getAuthHeaders().headers),
       },
     };
+    console.log('API Request Config:', config);
     const response = await axios(config);
     return response.data;
   } catch (error) {
