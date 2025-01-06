@@ -148,7 +148,7 @@ const login = async (req, res) => {
     return res.status(400).json({ error: 'Email/Username and password are required' });
   }
 
-  try {
+try {
     const [user] = await db.query(
       'SELECT * FROM users WHERE email = ? OR username = ?',
       [email, email]
@@ -169,10 +169,13 @@ const login = async (req, res) => {
 
     res.json({ accessToken, refreshToken, email: user[0].email, username: user[0].username, id: user[0].id });
   } catch (error) {
+    console.error('Error during login process:', error);
+
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
       return res.status(500).json({ error: 'Database is not reachable. Please try again later.' });
     }
-    res.status(500).json({ error: 'Internal server error' });
+
+    res.status(500).json({ error: 'Internal server error', message: error.message, stack: error.stack });
   }
 };
 
