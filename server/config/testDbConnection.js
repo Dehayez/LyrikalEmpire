@@ -15,4 +15,7 @@ const db = mysql.createPool({
   port: process.env.DB_PORT
 });
 
+console.log('DB:', db);
+console.log('DB:', db());
+
 module.exports = db;
