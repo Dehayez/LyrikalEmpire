@@ -13,6 +13,8 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
 
+app.use(express.static(path.join(__dirname, '../client/build')));
+
 app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -34,6 +36,10 @@ app.use('/api/playlists', playlistRoutes);
 app.use('/api/beats', beatRoutes);
 app.use('/api/genres', genreRoutes);
 app.use('/api/lyrics', lyricsRoutes);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 const PORT = process.env.PORT || 4000;
 
