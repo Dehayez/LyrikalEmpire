@@ -54,7 +54,7 @@ module.exports = {
           from: path.resolve(__dirname, '../public'), 
           to: path.resolve(__dirname, '../build'), 
           globOptions: { 
-            ignore: ['**/index.html', '**/uploads/**'] 
+            ignore: ['**/uploads/**', '**/index.html'],
           } 
         },
       ],
