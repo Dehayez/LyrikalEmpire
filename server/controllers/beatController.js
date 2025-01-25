@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { handleTransaction, handleQuery } = require('../helpers/dbHelpers');
 const db = require('../config/db');
+const { uploadToBackblaze } = require('../config/multer');
 
 const tableMap = {
   genres: 'beats_genres',
@@ -86,11 +87,20 @@ const deleteBeat = async (req, res) => {
     const filePath = results[0]?.audio;
 
     if (filePath) {
-      const fullPath = path.join(__dirname, '../../client/public/uploads', filePath);
-      fs.unlink(fullPath, (err) => {
-        if (err) {
-          console.error(`Failed to delete audio file at path: ${fullPath}`, err);
-        }
+      // Comment out local file deletion
+      // const fullPath = path.join(__dirname, '../../client/public/uploads', filePath);
+      // fs.unlink(fullPath, (err) => {
+      //   if (err) {
+      //     console.error(`Failed to delete audio file at path: ${fullPath}`, err);
+      //   }
+      // });
+
+      // Delete file from Backblaze B2
+      await b2.authorize();
+      const fileName = filePath.split('/').pop();
+      await b2.deleteFileVersion({
+        fileName: fileName,
+        fileId: filePath.split('/').pop(),
       });
     }
 
@@ -123,19 +133,29 @@ const replaceAudio = async (req, res) => {
     const oldFilePath = results[0]?.audio;
 
     if (oldFilePath) {
-      const fullPath = path.join(__dirname, '../../client/public/uploads', oldFilePath);
-      fs.unlink(fullPath, (err) => {
-        if (err) {
-          console.error(`Failed to delete old audio file at path: ${fullPath}`, err);
-        }
+      // Comment out local file deletion
+      // const fullPath = path.join(__dirname, '../../client/public/uploads', oldFilePath);
+      // fs.unlink(fullPath, (err) => {
+      //   if (err) {
+      //     console.error(`Failed to delete old audio file at path: ${fullPath}`, err);
+      //   }
+      // });
+
+      // Delete old file from Backblaze B2
+      await b2.authorize();
+      const fileName = oldFilePath.split('/').pop();
+      await b2.deleteFileVersion({
+        fileName: fileName,
+        fileId: oldFilePath.split('/').pop(),
       });
     }
 
-    const newFilePath = `${newAudioFile.filename}`;
+    const newFileUrl = await uploadToBackblaze(newAudioFile);
     const query = 'UPDATE beats SET audio = ? WHERE id = ?';
-    const params = [newFilePath, id];
+    const params = [newFileUrl, id];
 
     await db.query(query, params);
+    res.status(200).json({ message: 'Audio replaced successfully', fileUrl: newFileUrl });
   } catch (error) {
     console.error(`Failed to replace audio for beat with id: ${id}`, error);
     res.status(500).json({ error: 'An error occurred while replacing the audio' });

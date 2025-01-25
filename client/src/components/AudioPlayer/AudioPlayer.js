@@ -29,7 +29,9 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   } = useAudioPlayer({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat });
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
-  const audioSrc = currentBeat ? `/uploads/${currentBeat.audio}` : '';
+  //const audioSrc = currentBeat ? `/uploads/${currentBeat.audio}` : '';
+  const bucketUrl = 'https://f000.backblazeb2.com/file/your-bucket-name';
+  const audioSrc = currentBeat ? `${bucketUrl}/${currentBeat.audio}` : '';
   const [isLoading, setIsLoading] = useState(true);
   const [waveform, setWaveform] = useState(false)
 
