@@ -1,5 +1,5 @@
 const b2 = require('./backblaze');
-
+require('dotenv').config({ path: '../.env' });
 const testBackblazeConnection = async () => {
   try {
     // Authorize with Backblaze B2

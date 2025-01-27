@@ -43,12 +43,34 @@ const getBeats = (req, res) => {
   }
 };
 
-const createBeat = (req, res) => {
-  const { title, bpm, tierlist, filePath, duration, user_id } = req.body;
+const createBeat = async (req, res) => {
+  console.log('Starting createBeat'); // Log the start of the function
+  console.log('Request body:', req.body); // Log the request body
+  console.log('Uploaded file:', req.file); // Log the uploaded file
+
+  const { title, bpm, tierlist, duration, user_id } = req.body;
   const createdAt = new Date();
-  const query = 'INSERT INTO beats (title, audio, bpm, tierlist, created_at, duration, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  const params = [title, filePath, bpm, tierlist, createdAt, duration, user_id];
-  handleQuery(query, params, res, 'Beat added successfully');
+
+  try {
+    if (!req.file) {
+      throw new Error('No file uploaded');
+    }
+
+    const audioUrl = await uploadToBackblaze(req.file);
+
+    console.log('Audio URL:', audioUrl); // Log the audio URL for debugging
+
+    const query = 'INSERT INTO beats (title, audio, bpm, tierlist, created_at, duration, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const params = [title, audioUrl, bpm, tierlist, createdAt, duration, user_id];
+
+    console.log('Query:', query); // Log the query
+    console.log('Params:', params); // Log the query parameters
+
+    handleQuery(query, params, res, 'Beat added successfully');
+  } catch (error) {
+    console.error('Error creating beat:', error);
+    res.status(500).json({ error: 'An error occurred while creating the beat' });
+  }
 };
 
 const getBeatById = (req, res) => {
