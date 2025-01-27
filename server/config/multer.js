@@ -1,5 +1,6 @@
 const multer = require('multer');
 const B2 = require('backblaze-b2');
+const path = require('path');
 
 const b2 = new B2({
   applicationKeyId: process.env.B2_APPLICATION_KEY_ID,
@@ -15,6 +16,10 @@ const uploadToBackblaze = async (file) => {
     // Authorize
     await b2.authorize();
 
+    // Generate a unique file name
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const newFileName = `${uniqueSuffix}-${file.originalname}`;
+
     // Get Upload URL
     const uploadUrlResponse = await b2.getUploadUrl({
       bucketId: process.env.B2_BUCKET_ID,
@@ -25,7 +30,7 @@ const uploadToBackblaze = async (file) => {
     const uploadResponse = await b2.uploadFile({
       uploadUrl,
       uploadAuthToken: authorizationToken,
-      fileName: file.originalname,
+      fileName: newFileName,
       data: file.buffer,
     });
 
@@ -33,13 +38,7 @@ const uploadToBackblaze = async (file) => {
       throw new Error('Response data is undefined');
     }
 
-    const fileUrl = `https://f000.backblazeb2.com/file/${process.env.B2_BUCKET_NAME}/${uploadResponse.data.fileName}`;
-
-    if (!fileUrl) {
-      throw new Error('File URL is undefined');
-    }
-
-    return fileUrl;
+    return uploadResponse.data.fileName;
   } catch (error) {
     console.error('Error uploading to Backblaze:', error);
     throw error;

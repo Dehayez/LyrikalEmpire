@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const { handleTransaction, handleQuery } = require('../helpers/dbHelpers');
 const db = require('../config/db');
 const { uploadToBackblaze } = require('../config/multer');
@@ -52,10 +50,10 @@ const createBeat = async (req, res) => {
       throw new Error('No file uploaded');
     }
 
-    const audioUrl = await uploadToBackblaze(req.file);
+    const audioFileName = await uploadToBackblaze(req.file);
 
     const query = 'INSERT INTO beats (title, audio, bpm, tierlist, created_at, duration, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    const params = [title, audioUrl, bpm, tierlist, createdAt, duration, user_id];
+    const params = [title, audioFileName, bpm, tierlist, createdAt, duration, user_id];
 
     handleQuery(query, params, res, 'Beat added successfully');
   } catch (error) {
