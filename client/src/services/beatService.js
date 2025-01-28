@@ -1,7 +1,13 @@
+import axios from 'axios';
 import API_BASE_URL from '../utils/apiConfig';
 import { apiRequest } from '../utils/apiUtils';
 
 const API_URL = `${API_BASE_URL}/api/beats`;
+
+export const getSignedUrl = async (fileName) => {
+  const response = await axios.get(`/api/beats/signed-url/${fileName}`);
+  return response.data.signedUrl;
+};
 
 export const getBeats = async (user_id) => {
   return await apiRequest('get', '', API_URL, null, { user_id });

@@ -1,6 +1,11 @@
 const { handleTransaction, handleQuery } = require('../helpers/dbHelpers');
 const db = require('../config/db');
 const { uploadToBackblaze } = require('../config/multer');
+const B2 = require('backblaze-b2');
+const b2 = new B2({
+  applicationKeyId: process.env.B2_APPLICATION_KEY_ID,
+  applicationKey: process.env.B2_APPLICATION_KEY,
+});
 
 const tableMap = {
   genres: 'beats_genres',
@@ -8,6 +13,25 @@ const tableMap = {
   keywords: 'beats_keywords',
   features: 'beats_features',
   lyrics: 'beats_lyrics'
+};
+
+const getSignedUrl = async (req, res) => {
+  const { fileName } = req.params;
+
+  try {
+    await b2.authorize();
+    const response = await b2.getDownloadAuthorization({
+      bucketId: process.env.B2_BUCKET_ID,
+      fileNamePrefix: fileName,
+      validDurationInSeconds: 3600,
+    });
+
+    const signedUrl = `https://f003.backblazeb2.com/file/${process.env.B2_BUCKET_NAME}/${fileName}?Authorization=${response.data.authorizationToken}`;
+    res.status(200).json({ signedUrl });
+  } catch (error) {
+    console.error('Error generating signed URL:', error);
+    res.status(500).json({ error: 'Failed to generate signed URL' });
+  }
 };
 
 const getTableName = (association_type, res) => {
@@ -237,5 +261,6 @@ module.exports = {
   removeAssociation,
   getAssociations,
   removeAllAssociations,
-  replaceAudio
+  replaceAudio,
+  getSignedUrl
 };

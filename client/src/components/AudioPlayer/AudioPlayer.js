@@ -6,6 +6,7 @@ import { PiWaveform } from "react-icons/pi";
 
 import { isMobileOrTablet } from '../../utils';
 import { useAudioPlayer } from '../../hooks/useAudioPlayer';
+import { getSignedUrl } from '../../services/beatService';
 
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
 import { IconButton } from '../Buttons';
@@ -34,6 +35,24 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const audioSrc = currentBeat && currentBeat.audio ? `${bucketUrl}/${currentBeat.audio}` : '';
   const [isLoading, setIsLoading] = useState(true);
   const [waveform, setWaveform] = useState(false)
+
+  useEffect(() => {
+    const fetchSignedUrl = async () => {
+      if (currentBeat && currentBeat.audio) {
+        try {
+          console.log('Fetching signed URL for:', currentBeat.audio);
+          const signedUrl = await getSignedUrl(currentBeat.audio);
+          console.log('Signed URL:', signedUrl);
+          setAudioSrc(signedUrl);
+          setIsLoading(false);
+        } catch (error) {
+          console.error('Error fetching signed URL:', error);
+        }
+      }
+    };
+
+    fetchSignedUrl();
+  }, [currentBeat]);
 
   useEffect(() => {
     if (audioSrc) {
