@@ -16,13 +16,7 @@ const refreshToken = async (req, res) => {
   const token = req?.body?.token || storedRefreshToken;
 
   if (!token) {
-    const errorMessage = 'Refresh token is required';
-    if (res) {
-      return res.status(401).json({ error: errorMessage });
-    } else {
-      console.error(`[ERROR] ${errorMessage}`);
-      return;
-    }
+    return res.status(401).json({ error: 'Refresh token is required' });
   }
 
   try {
@@ -31,29 +25,19 @@ const refreshToken = async (req, res) => {
     const exp = decoded.exp;
     const oneDayInSeconds = 24 * 60 * 60;
 
-    console.log(`[INFO] Checking refresh token expiry: now=${now}, exp=${exp}, time left=${exp - now} seconds`);
-
-    let newRefreshToken = token;
+    // Log only when the refresh token is about to expire
     if (exp - now < oneDayInSeconds) {
-      newRefreshToken = generateRefreshToken({ id: decoded.id, email: decoded.email });
+      console.log(`[INFO] Refresh token is about to expire. Time left: ${exp - now} seconds`);
+      const newRefreshToken = generateRefreshToken({ id: decoded.id, email: decoded.email });
       storedRefreshToken = newRefreshToken;
-      console.log(`[INFO] Refresh Token refreshed: ${newRefreshToken}`);
+      console.log(`[INFO] Refresh Token refreshed`);
     }
 
     const accessToken = generateAccessToken({ id: decoded.id, email: decoded.email });
-
-    if (res) {
-      res.json({ accessToken, refreshToken: newRefreshToken });
-    } else {
-      console.log(`[INFO] Access Token refreshed: ${accessToken}`);
-    }
+    res.json({ accessToken, refreshToken: storedRefreshToken || token });
   } catch (error) {
-    const errorMessage = 'Invalid or expired refresh token';
-    if (res) {
-      res.status(403).json({ error: errorMessage });
-    } else {
-      console.error(`[ERROR] ${errorMessage}`);
-    }
+    console.error('[ERROR] Invalid or expired refresh token');
+    res.status(403).json({ error: 'Invalid or expired refresh token' });
   }
 };
 

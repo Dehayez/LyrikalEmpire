@@ -10,7 +10,13 @@ const path = require('path');
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors());
+const corsOptions = {
+  origin: ['http://localhost:3000', 'http://lyrikalempire.com', 'http://174.138.4.195:4000'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
 //app.use('/uploads', express.static(path.join(__dirname, '../client/public/uploads')));
 
 app.use(express.static(path.join(__dirname, '../client/build')));
