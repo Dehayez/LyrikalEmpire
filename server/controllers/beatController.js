@@ -122,20 +122,26 @@ const deleteBeat = async (req, res) => {
     const filePath = results[0]?.audio;
 
     if (filePath) {
-      // Comment out local file deletion
-      // const fullPath = path.join(__dirname, '../../client/public/uploads', filePath);
-      // fs.unlink(fullPath, (err) => {
-      //   if (err) {
-      //     console.error(`Failed to delete audio file at path: ${fullPath}`, err);
-      //   }
-      // });
-
       // Delete file from Backblaze B2
       await b2.authorize();
       const fileName = filePath.split('/').pop();
+
+      // Retrieve the fileId from Backblaze B2
+      const fileListResponse = await b2.listFileNames({
+        bucketId: process.env.B2_BUCKET_ID,
+        prefix: fileName,
+        maxFileCount: 1,
+      });
+
+      if (fileListResponse.data.files.length === 0) {
+        throw new Error(`File not found: ${fileName}`);
+      }
+
+      const fileId = fileListResponse.data.files[0].fileId;
+
       await b2.deleteFileVersion({
         fileName: fileName,
-        fileId: filePath.split('/').pop(),
+        fileId: fileId,
       });
     }
 

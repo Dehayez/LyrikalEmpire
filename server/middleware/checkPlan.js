@@ -22,14 +22,10 @@ const checkPlan = (requiredPlan) => {
       return res.status(401).json({ error: 'Invalid or expired token' });
     }
 
-    console.log(`[DEBUG] Decoded token: ${JSON.stringify(decoded)}`);
-
     if (!decoded.plan_type) {
       console.error('[ERROR] Plan type is missing in the token');
       return res.status(403).json({ error: 'Plan type is missing in the token' });
     }
-
-    console.log(`[DEBUG] User ID: ${decoded.id}, Plan Type: ${decoded.plan_type}`);
 
     if (decoded.plan_type !== requiredPlan) {
       console.warn(`[WARN] Access denied for user ID: ${decoded.id}. Required plan: ${requiredPlan}, User plan: ${decoded.plan_type}`);
