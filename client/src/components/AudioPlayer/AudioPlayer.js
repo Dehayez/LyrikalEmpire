@@ -30,9 +30,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   } = useAudioPlayer({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat });
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
-  //const audioSrc = currentBeat ? `/uploads/${currentBeat.audio}` : '';
-  const bucketUrl = 'https://f003.backblazeb2.com/file/LyrikalEmpire';
-  const audioSrc = currentBeat && currentBeat.audio ? `${bucketUrl}/${currentBeat.audio}` : '';
+  const [audioSrc, setAudioSrc] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [waveform, setWaveform] = useState(false)
 
@@ -40,9 +38,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     const fetchSignedUrl = async () => {
       if (currentBeat && currentBeat.audio) {
         try {
-          console.log('Fetching signed URL for:', currentBeat.audio);
           const signedUrl = await getSignedUrl(currentBeat.audio);
-          console.log('Signed URL:', signedUrl);
           setAudioSrc(signedUrl);
           setIsLoading(false);
         } catch (error) {

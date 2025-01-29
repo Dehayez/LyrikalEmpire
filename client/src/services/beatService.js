@@ -5,8 +5,12 @@ import { apiRequest } from '../utils/apiUtils';
 const API_URL = `${API_BASE_URL}/api/beats`;
 
 export const getSignedUrl = async (fileName) => {
-  const response = await axios.get(`/api/beats/signed-url/${fileName}`);
-  return response.data.signedUrl;
+  try {
+    const response = await axios.get(`${API_URL}/signed-url/${fileName}`);
+    return response.data.signedUrl;
+  } catch (error) {
+    throw new Error('Error fetching signed URL');
+  }
 };
 
 export const getBeats = async (user_id) => {
