@@ -18,15 +18,23 @@ const tableMap = {
 const getSignedUrl = async (req, res) => {
   const { fileName } = req.params;
 
+  console.log(`Received request to generate signed URL for file: ${fileName}`);
+
   try {
     await b2.authorize();
+    console.log('Backblaze B2 authorization successful');
+
     const response = await b2.getDownloadAuthorization({
       bucketId: process.env.B2_BUCKET_ID,
       fileNamePrefix: fileName,
       validDurationInSeconds: 3600,
     });
 
+    console.log('Backblaze B2 getDownloadAuthorization response:', response.data);
+
     const signedUrl = `https://f003.backblazeb2.com/file/${process.env.B2_BUCKET_NAME}/${fileName}?Authorization=${response.data.authorizationToken}`;
+    console.log('Generated signed URL:', signedUrl);
+
     res.status(200).json({ signedUrl });
   } catch (error) {
     console.error('Error generating signed URL:', error);
