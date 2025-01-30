@@ -4,6 +4,7 @@ const transporter = require('../config/emailConfig');
 const { handleQuery } = require('../helpers/dbHelpers');
 const db = require('../config/db');
 const { generateAccessToken, generateRefreshToken } = require('./tokenController');
+require('dotenv').config();
 
 const resendAttempts = {};
 
@@ -51,7 +52,7 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const token = jwt.sign({ username, email, password: hashedPassword }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    const url = `http://localhost:3000/confirm/${token}`;
+    const url = `${process.env.BASE_URL}/confirm/${token}`;
     await transporter.sendMail({
       from: '"Lyrikal Empire" <info@lyrikalempire.com>',
       to: email,
@@ -125,7 +126,7 @@ const resendConfirmationEmail = async (req, res) => {
 
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    const url = `http://localhost:3000/confirm/${token}`;
+    const url = `${process.env.BASE_URL}/confirm/${token}`;
     await transporter.sendMail({
       from: '"Lyrikal Empire" <info@lyrikalempire.com>',
       to: email,
@@ -195,7 +196,7 @@ const requestPasswordReset = async (req, res) => {
 
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    const url = `http://localhost:3000/reset-password/${token}`;
+    const url = `${process.env.BASE_URL}/reset-password/${token}`;
     await transporter.sendMail({
       from: '"Lyrikal Empire" <info@lyrikalempire.com>',
       to: email,
