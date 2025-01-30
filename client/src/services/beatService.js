@@ -6,9 +6,7 @@ const API_URL = `${API_BASE_URL}/api/beats`;
 
 export const getSignedUrl = async (fileName) => {
   try {
-    console.log(`Requesting signed URL for file: ${fileName}`);
     const response = await axios.get(`${API_URL}/signed-url/${fileName}`);
-    console.log('Received signed URL response:', response.data);
     return response.data.signedUrl;
   } catch (error) {
     console.error('Error fetching signed URL:', error);

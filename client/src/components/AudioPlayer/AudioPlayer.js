@@ -52,7 +52,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
 
   useEffect(() => {
     if (audioSrc) {
-      console.log('audioSrc:', audioSrc);
       setIsLoading(false);
     }
   }, [audioSrc]);
