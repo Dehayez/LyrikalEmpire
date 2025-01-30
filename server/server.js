@@ -11,8 +11,9 @@ const app = express();
 
 app.use(bodyParser.json());
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://lyrikalempire.com', 'http://174.138.4.195:4000', 'http://174.138.4.195'],
+  origin: ['http://localhost:3000', 'http://lyrikalempire.com', 'http://174.138.4.195:4000', 'http://174.138.4.195', 'https://www.lyrikalempire.com'],
   optionsSuccessStatus: 200,
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
