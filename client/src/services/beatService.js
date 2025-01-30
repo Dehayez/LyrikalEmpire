@@ -2,7 +2,7 @@ import axios from 'axios';
 import API_BASE_URL from '../utils/apiConfig';
 import { apiRequest } from '../utils/apiUtils';
 
-const API_URL = `${API_BASE_URL}/api/beats`;
+const API_URL = `${API_BASE_URL}/beats`;
 
 export const getSignedUrl = async (fileName) => {
   try {

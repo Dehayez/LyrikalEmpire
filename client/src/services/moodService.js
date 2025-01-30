@@ -1,7 +1,7 @@
 import API_BASE_URL from '../utils/apiConfig';
 import { apiRequest } from '../utils/apiUtils';
 
-const API_URL = `${API_BASE_URL}/api/moods`;
+const API_URL = `${API_BASE_URL}/moods`;
 
 export const getMoods = async () => {
   return await apiRequest('get', '', API_URL);

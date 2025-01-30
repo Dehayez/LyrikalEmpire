@@ -1,7 +1,7 @@
 import API_BASE_URL from '../utils/apiConfig';
 import { apiRequest } from '../utils/apiUtils';
 
-const API_URL = `${API_BASE_URL}/api/playlists`;
+const API_URL = `${API_BASE_URL}/playlists`;
 
 const createPlaylist = async (playlistData, user_id) => {
   return apiRequest('post', '', API_URL, { ...playlistData, user_id });

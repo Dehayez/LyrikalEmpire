@@ -2,7 +2,7 @@ import API_BASE_URL from '../utils/apiConfig';
 import { apiRequest } from '../utils/apiUtils';
 import { jwtDecode } from 'jwt-decode';
 
-const API_URL = `${API_BASE_URL}/api/users`;
+const API_URL = `${API_BASE_URL}/users`;
 
 const register = async (userData) => {
   return await apiRequest('post', '/register', API_URL, userData, null, false);
