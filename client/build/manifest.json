@@ -33,11 +33,6 @@
       "type": "image/png"
     },
     {
-      "src": "mstile-150x150.png",
-      "sizes": "150x150",
-      "type": "image/png"
-    },
-    {
       "src": "favicon-16x16.png",
       "sizes": "16x16",
       "type": "image/png"
