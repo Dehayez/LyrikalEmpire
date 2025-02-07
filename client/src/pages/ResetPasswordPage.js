@@ -80,7 +80,7 @@ const ResetPasswordPage = () => {
           id='password'
           name='password'
           type='password'
-          placeholder='New Password'
+          label='New Password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -89,7 +89,7 @@ const ResetPasswordPage = () => {
           id='confirmPassword'
           name='confirmPassword'
           type='password'
-          placeholder='Confirm New Password'
+          label='Confirm New Password'
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required

@@ -200,7 +200,7 @@ const requestPasswordReset = async (req, res) => {
     }
 
     const resetCode = generateResetCode();
-    const expirationTime = new Date(Date.now() + 3600000); // 1 hour from now
+    const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
 
     await db.query('UPDATE users SET reset_code = ?, reset_code_expires = ? WHERE email = ?', [resetCode, expirationTime, email]);
 
@@ -213,7 +213,7 @@ const requestPasswordReset = async (req, res) => {
 
     res.status(200).json({ message: 'Password reset code sent. Please check your email.' });
   } catch (error) {
-    console.error('Error in requestPasswordReset:', error); // Log the error
+    console.error('Error in requestPasswordReset:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
