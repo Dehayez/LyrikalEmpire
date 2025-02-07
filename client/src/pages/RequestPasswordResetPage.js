@@ -34,7 +34,7 @@ const RequestPasswordResetPage = () => {
 
   return (
     <div className="auth-container">
-      <h2>Request Password Reset</h2>
+      <h2>Reset Your Password</h2>
       <form onSubmit={handleSubmit}>
         <FormInput
           id='email'

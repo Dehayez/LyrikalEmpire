@@ -79,7 +79,7 @@ const ResetPasswordPage = () => {
 
   return (
     <div className="auth-container">
-      <h2>Reset Password</h2>
+      <h2>{isCodeValid ? 'Enter New Password' : 'Enter Reset Code'}</h2>
       {!isCodeValid ? (
         <form onSubmit={handleCodeSubmit}>
           <CodeInput value={resetCode} onChange={setResetCode} />
