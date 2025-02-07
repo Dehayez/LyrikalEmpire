@@ -1,25 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { IoCheckmarkSharp } from "react-icons/io5";
+import { IoCheckmarkSharp, IoCloseSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
 import './Auth.scss';
-import { FormInput, Button } from '../components';
+import { FormInput, Button, CodeInput } from '../components';
 import userService from '../services/userService';
 
 const ResetPasswordPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { email } = location.state || {};
-  const [resetCode, setResetCode] = useState('');
+  const [resetCode, setResetCode] = useState(new Array(6).fill(''));
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isCodeValid, setIsCodeValid] = useState(false);
 
+  useEffect(() => {
+    if (resetCode.every(val => val !== '')) {
+      handleCodeSubmit();
+    }
+  }, [resetCode]);
+
   const handleCodeSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+    const code = resetCode.join('');
     try {
-      await userService.verifyResetCode(email, resetCode);
+      await userService.verifyResetCode(email, code);
       setIsCodeValid(true);
       toast.dark(<div><strong>Reset code validated</strong></div>, {
         autoClose: 3000,
@@ -31,8 +38,8 @@ const ResetPasswordPage = () => {
       toast.dark(<div><strong>Invalid reset code</strong></div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
-        icon: <IoCheckmarkSharp size={24} />,
-        className: "Toastify__toast--error",
+        icon: <IoCloseSharp size={24} />,
+        className: "Toastify__toast--warning",
       });
     }
   };
@@ -44,14 +51,15 @@ const ResetPasswordPage = () => {
       toast.dark(<div><strong>Passwords do not match</strong></div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
-        icon: <IoCheckmarkSharp size={24} />,
+        icon: <IoCloseSharp size={24} />,
         className: "Toastify__toast--warning",
       });
       return;
     }
 
     try {
-      await userService.resetPassword(email, resetCode, password);
+      const code = resetCode.join('');
+      await userService.resetPassword(email, code, password);
       toast.dark(<div><strong>Password reset successfully</strong></div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
@@ -63,7 +71,7 @@ const ResetPasswordPage = () => {
       toast.dark(<div><strong>Error resetting password</strong></div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
-        icon: <IoCheckmarkSharp size={24} />,
+        icon: <IoCloseSharp size={24} />,
         className: "Toastify__toast--error",
       });
     }
@@ -74,15 +82,7 @@ const ResetPasswordPage = () => {
       <h2>Reset Password</h2>
       {!isCodeValid ? (
         <form onSubmit={handleCodeSubmit}>
-          <FormInput
-            id='resetCode'
-            name='resetCode'
-            type='text'
-            placeholder='Reset Code'
-            value={resetCode}
-            onChange={(e) => setResetCode(e.target.value)}
-            required
-          />
+          <CodeInput value={resetCode} onChange={setResetCode} />
           <Button variant='primary' type='submit' size='full-width'>Validate Code</Button>
         </form>
       ) : (

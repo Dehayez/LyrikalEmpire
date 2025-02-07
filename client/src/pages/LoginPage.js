@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { IoCheckmarkSharp } from "react-icons/io5";
+import { IoCheckmarkSharp, IoCloseSharp } from "react-icons/io5";
 import { GoogleLogin } from 'react-google-login';
 import 'react-toastify/dist/ReactToastify.css';
 import './Auth.scss';
@@ -23,7 +23,7 @@ const LoginPage = () => {
       toast.dark(<div><strong>{error.message}</strong></div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
-        icon: <IoCheckmarkSharp size={24} />,
+        icon: <IoCloseSharp size={24} />,
         className: "Toastify__toast--warning",
       });
     }
@@ -49,7 +49,7 @@ const LoginPage = () => {
       toast.dark(<div><strong>{error.message}</strong></div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
-        icon: <IoCheckmarkSharp size={24} />,
+        icon: <IoCloseSharp size={24} />,
         className: "Toastify__toast--warning",
       });
     }
@@ -59,8 +59,8 @@ const LoginPage = () => {
     toast.dark(<div><strong>Google Sign-In failed</strong></div>, {
       autoClose: 3000,
       pauseOnFocusLoss: false,
-      icon: <IoCheckmarkSharp size={24} />,
-      className: "Toastify__toast--error",
+      icon: <IoCloseSharp size={24} />,
+      className: "Toastify__toast--warning",
     });
   };
 

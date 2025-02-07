@@ -1,3 +1,4 @@
+export { CodeInput } from './CodeInput';
 export { FileInput } from './FileInput';
 export { FilterDropdown } from './FilterDropdown';
 export { FormInput } from './FormInput';
