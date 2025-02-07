@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,14 +14,31 @@ const ResetPasswordPage = () => {
   const [resetCode, setResetCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isCodeValid, setIsCodeValid] = useState(false);
 
-  useEffect(() => {
-    if (!email) {
-      navigate('/request-password-reset'); // Redirect to request password reset if email is not provided
+  const handleCodeSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Validate the reset code
+      await userService.verifyResetCode(email, resetCode);
+      setIsCodeValid(true);
+      toast.dark(<div><strong>Reset code validated</strong></div>, {
+        autoClose: 3000,
+        pauseOnFocusLoss: false,
+        icon: <IoCheckmarkSharp size={24} />,
+        className: "Toastify__toast--success",
+      });
+    } catch (error) {
+      toast.dark(<div><strong>Invalid reset code</strong></div>, {
+        autoClose: 3000,
+        pauseOnFocusLoss: false,
+        icon: <IoCheckmarkSharp size={24} />,
+        className: "Toastify__toast--error",
+      });
     }
-  }, [email, navigate]);
+  };
 
-  const handleSubmit = async (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -56,46 +73,42 @@ const ResetPasswordPage = () => {
   return (
     <div className="auth-container">
       <h2>Reset Password</h2>
-      <form onSubmit={handleSubmit}>
-        <FormInput
-          id='email'
-          name='email'
-          type='email'
-          placeholder='Email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled // Disable email input as it is passed from the previous page
-        />
-        <FormInput
-          id='resetCode'
-          name='resetCode'
-          type='text'
-          placeholder='Reset Code'
-          value={resetCode}
-          onChange={(e) => setResetCode(e.target.value)}
-          required
-        />
-        <FormInput
-          id='password'
-          name='password'
-          type='password'
-          label='New Password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <FormInput
-          id='confirmPassword'
-          name='confirmPassword'
-          type='password'
-          label='Confirm New Password'
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
-        <Button variant='primary' type='submit' size='full-width'>Reset Password</Button>
-      </form>
+      {!isCodeValid ? (
+        <form onSubmit={handleCodeSubmit}>
+          <FormInput
+            id='resetCode'
+            name='resetCode'
+            type='text'
+            placeholder='Reset Code'
+            value={resetCode}
+            onChange={(e) => setResetCode(e.target.value)}
+            required
+          />
+          <Button variant='primary' type='submit' size='full-width'>Validate Code</Button>
+        </form>
+      ) : (
+        <form onSubmit={handlePasswordSubmit}>
+          <FormInput
+            id='password'
+            name='password'
+            type='password'
+            label='New Password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <FormInput
+            id='confirmPassword'
+            name='confirmPassword'
+            type='password'
+            label='Confirm New Password'
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          <Button variant='primary' type='submit' size='full-width'>Reset Password</Button>
+        </form>
+      )}
     </div>
   );
 };

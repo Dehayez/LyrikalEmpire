@@ -46,6 +46,10 @@ const requestPasswordReset = async (email) => {
   return await apiRequest('post', '/request-password-reset', API_URL, { email }, null, false);
 };
 
+const verifyResetCode = async (email, resetCode) => {
+  return await apiRequest('post', '/verify-reset-code', API_URL, { email, resetCode }, null, false);
+};
+
 const resetPassword = async (email, resetCode, password) => {
   return await apiRequest('post', '/reset-password', API_URL, { email, resetCode, password }, null, false);
 };
@@ -104,6 +108,7 @@ export default {
   confirmEmail,
   resendConfirmationEmail,
   requestPasswordReset,
+  verifyResetCode,
   resetPassword,
   verifyToken,
   refreshToken,

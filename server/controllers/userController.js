@@ -218,6 +218,30 @@ const requestPasswordReset = async (req, res) => {
   }
 };
 
+const verifyResetCode = async (req, res) => {
+  const { email, resetCode } = req.body;
+
+  if (!email || !resetCode) {
+    return res.status(400).json({ error: 'Email and reset code are required' });
+  }
+
+  try {
+    const [user] = await db.query('SELECT * FROM users WHERE email = ? AND reset_code = ?', [email, resetCode]);
+
+    if (!user || user.length === 0) {
+      return res.status(400).json({ error: 'Invalid email or reset code' });
+    }
+
+    if (new Date() > new Date(user[0].reset_code_expires)) {
+      return res.status(400).json({ error: 'Reset code has expired' });
+    }
+
+    res.status(200).json({ message: 'Reset code validated' });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
 const resetPassword = async (req, res) => {
   const { email, resetCode, password } = req.body;
 
@@ -287,6 +311,7 @@ module.exports = {
   resendConfirmationEmail,
   login,
   requestPasswordReset,
+  verifyResetCode,
   resetPassword,
   verifyToken,
   getUserDetails,
