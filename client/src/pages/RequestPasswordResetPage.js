@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,6 +9,7 @@ import userService from '../services/userService';
 
 const RequestPasswordResetPage = () => {
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +21,7 @@ const RequestPasswordResetPage = () => {
         icon: <IoCheckmarkSharp size={24} />,
         className: "Toastify__toast--success",
       });
+      navigate('/reset-password', { state: { email } }); // Navigate to ResetPasswordPage with email state
     } catch (error) {
       toast.dark(<div><strong>Error sending password reset code</strong></div>, {
         autoClose: 3000,

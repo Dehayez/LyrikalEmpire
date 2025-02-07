@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,10 +8,18 @@ import { FormInput, Button } from '../components';
 import userService from '../services/userService';
 
 const ResetPasswordPage = () => {
-  const [email, setEmail] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { email } = location.state || {};
   const [resetCode, setResetCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  useEffect(() => {
+    if (!email) {
+      navigate('/request-password-reset'); // Redirect to request password reset if email is not provided
+    }
+  }, [email, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +42,7 @@ const ResetPasswordPage = () => {
         icon: <IoCheckmarkSharp size={24} />,
         className: "Toastify__toast--success",
       });
+      navigate('/login');
     } catch (error) {
       toast.dark(<div><strong>Error resetting password</strong></div>, {
         autoClose: 3000,
@@ -55,6 +65,7 @@ const ResetPasswordPage = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          disabled // Disable email input as it is passed from the previous page
         />
         <FormInput
           id='resetCode'

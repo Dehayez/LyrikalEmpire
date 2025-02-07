@@ -213,6 +213,7 @@ const requestPasswordReset = async (req, res) => {
 
     res.status(200).json({ message: 'Password reset code sent. Please check your email.' });
   } catch (error) {
+    console.error('Error in requestPasswordReset:', error); // Log the error
     res.status(500).json({ error: 'Server error' });
   }
 };
