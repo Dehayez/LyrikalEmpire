@@ -276,7 +276,7 @@ function App() {
               <Route path="/confirm-wait" element={<ConfirmWaitPage />} />
               <Route path="/confirm/:token" element={<ConfirmEmailPage />} />
               <Route path="/request-password-reset" element={<RequestPasswordResetPage />} />
-              <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             </div>

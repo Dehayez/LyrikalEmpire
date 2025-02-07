@@ -9,7 +9,7 @@ router.get('/confirm/:token', confirmEmail);
 router.post('/login', login);
 router.post('/resend-confirmation', resendConfirmationEmail);
 router.post('/request-password-reset', requestPasswordReset);
-router.post('/reset-password/:token', resetPassword);
+router.post('/reset-password', resetPassword);
 router.post('/verify-token', verifyToken);
 router.get('/me', getUserDetails);
 router.put('/me', updateUserDetails);

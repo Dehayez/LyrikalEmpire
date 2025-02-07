@@ -13,14 +13,14 @@ const RequestPasswordResetPage = () => {
     e.preventDefault();
     try {
       await userService.requestPasswordReset(email);
-      toast.dark(<div><strong>Password reset email sent</strong>. Please check your email.</div>, {
+      toast.dark(<div><strong>Password reset code sent</strong>. Please check your email.</div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
         icon: <IoCheckmarkSharp size={24} />,
         className: "Toastify__toast--success",
       });
     } catch (error) {
-      toast.dark(<div><strong>Error sending password reset email</strong></div>, {
+      toast.dark(<div><strong>Error sending password reset code</strong></div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
         icon: <IoCheckmarkSharp size={24} />,
@@ -42,7 +42,7 @@ const RequestPasswordResetPage = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <Button variant='primary' type='submit' size='full-width'>Send Reset Email</Button>
+        <Button variant='primary' type='submit' size='full-width'>Send Reset Code</Button>
       </form>
     </div>
   );

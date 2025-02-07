@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCheckmarkSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,10 +7,10 @@ import { FormInput, Button } from '../components';
 import userService from '../services/userService';
 
 const ResetPasswordPage = () => {
+  const [email, setEmail] = useState('');
+  const [resetCode, setResetCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const { token } = useParams();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,14 +26,13 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      await userService.resetPassword(token, password);
+      await userService.resetPassword(email, resetCode, password);
       toast.dark(<div><strong>Password reset successfully</strong></div>, {
         autoClose: 3000,
         pauseOnFocusLoss: false,
         icon: <IoCheckmarkSharp size={24} />,
         className: "Toastify__toast--success",
       });
-      navigate('/login');
     } catch (error) {
       toast.dark(<div><strong>Error resetting password</strong></div>, {
         autoClose: 3000,
@@ -49,6 +47,24 @@ const ResetPasswordPage = () => {
     <div className="auth-container">
       <h2>Reset Password</h2>
       <form onSubmit={handleSubmit}>
+        <FormInput
+          id='email'
+          name='email'
+          type='email'
+          placeholder='Email'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <FormInput
+          id='resetCode'
+          name='resetCode'
+          type='text'
+          placeholder='Reset Code'
+          value={resetCode}
+          onChange={(e) => setResetCode(e.target.value)}
+          required
+        />
         <FormInput
           id='password'
           name='password'

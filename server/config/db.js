@@ -1,9 +1,9 @@
 const mysql = require('mysql2/promise');
 // Local Server
-//require('dotenv').config({ path: '../.env' });
+require('dotenv').config({ path: '../.env' });
 
 // Third Server
-require('dotenv').config();
+//require('dotenv').config();
 
 const db = mysql.createPool({
   host: process.env.DB_HOST,

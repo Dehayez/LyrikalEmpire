@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const transporter = require('../config/emailConfig');
 const { handleQuery } = require('../helpers/dbHelpers');
 const db = require('../config/db');
@@ -180,6 +181,10 @@ try {
   }
 };
 
+const generateResetCode = () => {
+  return crypto.randomInt(100000, 999999).toString();
+};
+
 const requestPasswordReset = async (req, res) => {
   const { email } = req.body;
 
@@ -194,53 +199,49 @@ const requestPasswordReset = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const resetCode = generateResetCode();
+    const expirationTime = new Date(Date.now() + 3600000); // 1 hour from now
 
-    const url = `${process.env.BASE_URL}/reset-password/${token}`;
+    await db.query('UPDATE users SET reset_code = ?, reset_code_expires = ? WHERE email = ?', [resetCode, expirationTime, email]);
+
     await transporter.sendMail({
       from: '"Lyrikal Empire" <info@lyrikalempire.com>',
       to: email,
       subject: 'Reset your password',
-      html: `
-        <div>
-          <p>Hi ${user[0].username},</p>
-          <p>We received a request to reset your password. Please click <a href="${url}">here</a> to reset your password.</p>
-          <p>Or use the following link:</p>
-          <p><a href="${url}">${url}</a></p>
-          <p>If you did not request a password reset, please ignore this email.</p>
-          <p>Kind regards,<br>Lyrikal Empire</p>
-        </div>
-      `,
+      html: `Your password reset code is: <strong>${resetCode}</strong>`,
     });
 
-    res.status(200).json({ message: 'Password reset email sent. Please check your email.' });
+    res.status(200).json({ message: 'Password reset code sent. Please check your email.' });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
 };
 
 const resetPassword = async (req, res) => {
-  const { token } = req.params;
-  const { password } = req.body;
+  const { email, resetCode, password } = req.body;
 
-  if (!password) {
-    return res.status(400).json({ error: 'Password is required' });
+  if (!email || !resetCode || !password) {
+    return res.status(400).json({ error: 'Email, reset code, and password are required' });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { email } = decoded;
+    const [user] = await db.query('SELECT * FROM users WHERE email = ? AND reset_code = ?', [email, resetCode]);
+
+    if (!user || user.length === 0) {
+      return res.status(400).json({ error: 'Invalid email or reset code' });
+    }
+
+    if (new Date() > new Date(user[0].reset_code_expires)) {
+      return res.status(400).json({ error: 'Reset code has expired' });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await handleQuery(
-      'UPDATE users SET password = ? WHERE email = ?',
-      [hashedPassword, email],
-      res,
-      'Password reset successfully'
-    );
+    await db.query('UPDATE users SET password = ?, reset_code = NULL, reset_code_expires = NULL WHERE email = ?', [hashedPassword, email]);
+
+    res.status(200).json({ message: 'Password reset successfully' });
   } catch (error) {
-    res.status(400).json({ error: 'Invalid or expired token' });
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
