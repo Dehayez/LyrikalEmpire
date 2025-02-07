@@ -37,7 +37,7 @@ const RequestPasswordResetPage = () => {
           id='email'
           name='email'
           type='email'
-          placeholder='Email'
+          label='Email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
