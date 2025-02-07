@@ -21,7 +21,7 @@ const RequestPasswordResetPage = () => {
         icon: <IoCheckmarkSharp size={24} />,
         className: "Toastify__toast--success",
       });
-      navigate('/reset-password', { state: { email } }); // Navigate to ResetPasswordPage with email state
+      navigate('/reset-password', { state: { email } });
     } catch (error) {
       toast.dark(<div><strong>Error sending password reset code</strong></div>, {
         autoClose: 3000,

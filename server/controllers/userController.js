@@ -199,22 +199,121 @@ const requestPasswordReset = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    const username = user[0].username; // Assuming the username is stored in the 'username' field
     const resetCode = generateResetCode();
-    const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
+    const expirationTime = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
 
     await db.query('UPDATE users SET reset_code = ?, reset_code_expires = ? WHERE email = ?', [resetCode, expirationTime, email]);
 
     await transporter.sendMail({
       from: '"Lyrikal Empire" <info@lyrikalempire.com>',
       to: email,
-      subject: 'Reset your password',
-      html: `Your password reset code is: <strong>${resetCode}</strong>`,
+      subject: 'Reset Your Password',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            /* Importing Google Fonts (Raleway) */
+            @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&display=swap');
+
+            /* General Email Styles */
+            body {
+              background-color: #141414;
+              color: #FFFFFF;
+              font-family: 'Raleway', Trebuchet MS, Arial, sans-serif;
+              margin: 0;
+              padding: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+            }
+
+            /* Logo styles */
+            .logo {
+              max-width: 36px;
+              margin: 24px 0;
+            }
+
+            /* Content container */
+            .content {
+              background-color: #181818;
+              padding: 40px 60px;
+              max-width: 600px;
+              border-radius: 6px;
+              text-align: left; /* Change to left-align the content */
+            }
+
+            /* Reset Code styles */
+            .reset-code {
+              color: #FFCC44;
+              background-color: #202020;
+              padding: 20px;
+              margin: 20px 0;
+              border-radius: 4px;
+              text-align: center;
+            }
+
+            .reset-code p {
+              font-size: 40px;
+              font-weight: bold;
+              margin: 0;
+            }
+
+            /* Expiration notice */
+            .expiration {
+              font-weight: 300;
+              color: #828282;
+            }
+
+            /* Footer */
+            .footer {
+              font-size: 14px;
+              color: #828282;
+              font-weight: 300;
+              text-align: center;
+              margin: 20px 0;
+            }
+          </style>
+        </head>
+        <body>
+          <!-- Logo with link -->
+          <a href="https://lyrikalempire.com" target="_blank" rel="noopener noreferrer">
+            <img src="https://lyrikalempire.com/android-chrome-192x192.png" alt="Lyrikal Empire Logo" class="logo">
+          </a>
+          
+          <!-- Content Section -->
+          <div class="content">
+            <h2 style="font-weight: 600;">Hi ${username},</h2>
+            <p style="line-height: 1.8; font-weight: 300;">
+              We received a request to reset your Lyrikal Empire password.<br>
+              Use the code below to reset it:<br>
+            </p>
+
+            <!-- Reset Code Section -->
+            <div class="reset-code">
+              <p>${resetCode}</p>
+            </div>
+
+            <!-- Expiration Notice -->
+            <p class="expiration">
+              Please note that this code will expire in 10 minutes.
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <p class="footer">Sent by Lyrikal Empire</p>
+        </body>
+        </html>
+
+      `,
     });
 
     res.status(200).json({ message: 'Password reset code sent. Please check your email.' });
   } catch (error) {
     console.error('Error in requestPasswordReset:', error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Internal server error', message: error.message, stack: error.stack });
   }
 };
 

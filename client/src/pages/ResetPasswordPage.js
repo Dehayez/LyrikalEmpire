@@ -19,7 +19,6 @@ const ResetPasswordPage = () => {
   const handleCodeSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Validate the reset code
       await userService.verifyResetCode(email, resetCode);
       setIsCodeValid(true);
       toast.dark(<div><strong>Reset code validated</strong></div>, {
