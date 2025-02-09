@@ -273,7 +273,7 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path="/confirm" element={<ConfirmEmailPage />} />
+              <Route path="/confirm-email" element={<ConfirmEmailPage />} />
               <Route path="/request-password-reset" element={<RequestPasswordResetPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="*" element={<NotFound />} />

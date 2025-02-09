@@ -12,7 +12,7 @@ require('dotenv').config();
 
 const resendAttempts = {};
 
-const generateResetCode = () => {
+const generateCode = () => {
   return crypto.randomInt(100000, 999999).toString();
 };
 
@@ -90,7 +90,7 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const confirmationCode = generateConfirmationCode();
+    const confirmationCode = generateCode();
     const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
 
     await db.query('INSERT INTO temp_users (username, email, password, confirmation_code, confirmation_code_expires) VALUES (?, ?, ?, ?, ?)', [username, email, hashedPassword, confirmationCode, expirationTime]);
@@ -129,7 +129,7 @@ const verifyConfirmationCode = async (req, res) => {
 
     res.status(200).json({ message: 'Email confirmed successfully' });
   } catch (error) {
-    console.error('Error in verifyEmailConfirmationCode:', error);
+    console.error('Error in verifyConfirmationCode:', error);
     res.status(500).json({ error: 'Internal server error', message: error.message, stack: error.stack });
   }
 };
@@ -211,7 +211,7 @@ const requestPasswordReset = async (req, res) => {
     }
 
     const username = user[0].username;
-    const resetCode = generateResetCode();
+    const resetCode = generateCode();
     const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
 
     await db.query('UPDATE users SET reset_code = ?, reset_code_expires = ? WHERE email = ?', [resetCode, expirationTime, email]);

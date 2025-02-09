@@ -73,7 +73,7 @@ const RegisterPage = () => {
         icon: <IoCheckmarkSharp size={24} />,
         className: "Toastify__toast--success",
       });
-      navigate('/confirm-wait', { state: { email } });
+      navigate('/confirm-email', { state: { email } });
     } catch (error) {
       if (error.message === 'Database is not reachable. Please try again later.') {
         toast.dark(<div><strong>{error.message}</strong></div>, {
