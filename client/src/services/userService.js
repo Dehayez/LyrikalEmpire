@@ -34,16 +34,16 @@ const updateUserDetails = async (userData) => {
   return await apiRequest('put', '/me', API_URL, userData);
 };
 
-const confirmEmail = async (token) => {
-  return await apiRequest('get', `/confirm/${token}`, API_URL, null, null, false);
-};
-
 const resendConfirmationEmail = async (email) => {
   return await apiRequest('post', '/resend-confirmation', API_URL, { email }, null, false);
 };
 
 const requestPasswordReset = async (email) => {
   return await apiRequest('post', '/request-password-reset', API_URL, { email }, null, false);
+};
+
+const verifyConfirmationCode = async (email, confirmationCode) => {
+  return await apiRequest('post', '/verify-confirmation-code', API_URL, { email, confirmationCode }, null, false);
 };
 
 const verifyResetCode = async (email, resetCode) => {
@@ -105,8 +105,7 @@ export default {
   loginWithGoogle,
   getUserDetails,
   updateUserDetails,
-  confirmEmail,
-  resendConfirmationEmail,
+  verifyConfirmationCode,
   requestPasswordReset,
   verifyResetCode,
   resetPassword,

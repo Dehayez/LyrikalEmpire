@@ -8,7 +8,7 @@ import { useBeat, useUser } from './contexts';
 import ProtectedRoute from './routes/ProtectedRoute';
 import userService from './services/userService';
 
-import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, ConfirmWaitPage, RequestPasswordResetPage, ResetPasswordPage, ProfilePage } from './pages';
+import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, RequestPasswordResetPage, ResetPasswordPage, ProfilePage } from './pages';
 import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
 import NotFound from './components/NotFound';
 
@@ -273,8 +273,7 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path="/confirm-wait" element={<ConfirmWaitPage />} />
-              <Route path="/confirm/:token" element={<ConfirmEmailPage />} />
+              <Route path="/confirm" element={<ConfirmEmailPage />} />
               <Route path="/request-password-reset" element={<RequestPasswordResetPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="*" element={<NotFound />} />

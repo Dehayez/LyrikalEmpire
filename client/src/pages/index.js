@@ -8,7 +8,6 @@ export { default as KeywordsPage } from './KeywordsPage';
 export { default as LoginPage } from './LoginPage';
 export { default as RegisterPage } from './RegisterPage';
 export { default as ConfirmEmailPage } from './ConfirmEmailPage';
-export { default as ConfirmWaitPage } from './ConfirmWaitPage';
 export { default as RequestPasswordResetPage } from './RequestPasswordResetPage';
 export { default as ResetPasswordPage } from './ResetPasswordPage';
 export { default as ProfilePage } from './ProfilePage';

@@ -1,15 +1,14 @@
 const express = require('express');
 const passport = require('passport');
-const { register, confirmEmail, login, resendConfirmationEmail, requestPasswordReset, verifyResetCode,resetPassword, verifyToken, getUserDetails, updateUserDetails } = require('../controllers/userController');
+const { register, login, requestPasswordReset, verifyConfirmationCode, verifyResetCode, resetPassword, verifyToken, getUserDetails, updateUserDetails } = require('../controllers/userController');
 const tokenRoutes = require('./tokenRoute');
 const router = express.Router();
 
 router.post('/register', register);
-router.get('/confirm/:token', confirmEmail);
+router.post('/verify-confirmation-code', verifyConfirmationCode);
+router.post('/verify-reset-code', verifyResetCode); 
 router.post('/login', login);
-router.post('/resend-confirmation', resendConfirmationEmail);
 router.post('/request-password-reset', requestPasswordReset);
-router.post('/verify-reset-code', verifyResetCode)
 router.post('/reset-password', resetPassword);
 router.post('/verify-token', verifyToken);
 router.get('/me', getUserDetails);

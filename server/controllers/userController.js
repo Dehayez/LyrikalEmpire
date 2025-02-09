@@ -12,6 +12,10 @@ require('dotenv').config();
 
 const resendAttempts = {};
 
+const generateResetCode = () => {
+  return crypto.randomInt(100000, 999999).toString();
+};
+
 const readHTMLFile = (filePath) => {
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, { encoding: 'utf-8' }, (err, html) => {
@@ -86,93 +90,69 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const token = jwt.sign({ username, email, password: hashedPassword }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const confirmationCode = generateConfirmationCode();
+    const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
 
-    const url = `${process.env.BASE_URL}/confirm/${token}`;
-    await transporter.sendMail({
-      from: '"Lyrikal Empire" <info@lyrikalempire.com>',
-      to: email,
-      subject: 'Confirm your email',
-      html: `
-        <div>
-          <p>Hi ${username},</p>
-          <p>Please click <a href="${url}">here</a> to confirm your email address.</p>
-          <p>Or use the following link:</p>
-          <p><a href="${url}">${url}</a></p>
-          <p>If you did not register for an account, please ignore this email.</p>
-          <p>Kind regards,<br>Lyrikal Empire</p>
-        </div>
-      `,
-    });
+    await db.query('INSERT INTO temp_users (username, email, password, confirmation_code, confirmation_code_expires) VALUES (?, ?, ?, ?, ?)', [username, email, hashedPassword, confirmationCode, expirationTime]);
 
-    resendAttempts[email] = { lastResend: new Date() };
+    await sendEmail(email, 'Confirm Your Email', 'confirmEmail', { username, confirmationCode });
 
-    res.status(200).json({ message: 'Registration successful. Please check your email to confirm your account.' });
+    res.status(200).json({ message: 'Registration successful. Please check your email to confirm your account.', email });
   } catch (error) {
-    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
-      return res.status(500).json({ error: 'Database is not reachable. Please try again later.' });
-    }
-    res.status(500).json({ error: 'Server error' });
+    console.error('Error during registration:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message, stack: error.stack });
   }
 };
 
-const confirmEmail = async (req, res) => {
-  const { token } = req.params;
+const verifyConfirmationCode = async (req, res) => {
+  const { email, confirmationCode } = req.body;
+
+  if (!email || !confirmationCode) {
+    return res.status(400).json({ error: 'Email and confirmation code are required' });
+  }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { username, email, password } = decoded;
+    const [tempUser] = await db.query('SELECT * FROM temp_users WHERE email = ? AND confirmation_code = ?', [email, confirmationCode]);
 
-    const existingUserQuery = 'SELECT * FROM users WHERE username = ? OR email = ?';
-    const existingUserParams = [username, email];
-    const [existingUser] = await db.query(existingUserQuery, existingUserParams);
-
-    if (existingUser.length > 0) {
-      return res.status(400).json({ error: 'User already exists' });
+    if (!tempUser || tempUser.length === 0) {
+      return res.status(400).json({ error: 'Invalid email or confirmation code' });
     }
 
-    await handleQuery(
-      'INSERT INTO users (username, email, password, confirmed) VALUES (?, ?, ?, ?)',
-      [username, email, password, true],
-      res,
-      'Email confirmed successfully'
-    );
+    if (new Date() > new Date(tempUser[0].confirmation_code_expires)) {
+      await db.query('DELETE FROM temp_users WHERE email = ?', [email]);
+      return res.status(400).json({ error: 'Confirmation code has expired' });
+    }
 
-    delete resendAttempts[email];
+    const { username, password } = tempUser[0];
+    await db.query('INSERT INTO users (username, email, password, confirmed) VALUES (?, ?, ?, ?)', [username, email, password, true]);
+    await db.query('DELETE FROM temp_users WHERE email = ?', [email]);
+
+    res.status(200).json({ message: 'Email confirmed successfully' });
   } catch (error) {
-    res.status(400).json({ error: 'Invalid or expired token' });
+    console.error('Error in verifyEmailConfirmationCode:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message, stack: error.stack });
   }
 };
 
-const resendConfirmationEmail = async (req, res) => {
-  const { email } = req.body;
+const verifyResetCode = async (req, res) => {
+  const { email, resetCode } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ error: 'Email is required' });
+  if (!email || !resetCode) {
+    return res.status(400).json({ error: 'Email and reset code are required' });
   }
 
   try {
-    const now = new Date();
-    const bufferPeriod = 9 * 1000;
+    const [user] = await db.query('SELECT * FROM users WHERE email = ? AND reset_code = ?', [email, resetCode]);
 
-    if (resendAttempts[email] && now - new Date(resendAttempts[email].lastResend) < bufferPeriod) {
-      const waitTime = Math.ceil((bufferPeriod - (now - new Date(resendAttempts[email].lastResend))) / 1000);
-      return res.status(429).json({ error: `Please wait ${waitTime} seconds before resending the confirmation email.`, waitTime });
+    if (!user || user.length === 0) {
+      return res.status(400).json({ error: 'Invalid email or reset code' });
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    if (new Date() > new Date(user[0].reset_code_expires)) {
+      return res.status(400).json({ error: 'Reset code has expired' });
+    }
 
-    const url = `${process.env.BASE_URL}/confirm/${token}`;
-    await transporter.sendMail({
-      from: '"Lyrikal Empire" <info@lyrikalempire.com>',
-      to: email,
-      subject: 'Confirm your email',
-      html: `Click <a href="${url}">here</a> to confirm your email.`,
-    });
-
-    resendAttempts[email] = { lastResend: now };
-
-    res.status(200).json({ message: 'Confirmation email resent. Please check your email.' });
+    res.status(200).json({ message: 'Reset code validated' });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
@@ -216,10 +196,6 @@ try {
   }
 };
 
-const generateResetCode = () => {
-  return crypto.randomInt(100000, 999999).toString();
-};
-
 const requestPasswordReset = async (req, res) => {
   const { email } = req.body;
 
@@ -234,9 +210,9 @@ const requestPasswordReset = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const username = user[0].username; // Assuming the username is stored in the 'username' field
+    const username = user[0].username;
     const resetCode = generateResetCode();
-    const expirationTime = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+    const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
 
     await db.query('UPDATE users SET reset_code = ?, reset_code_expires = ? WHERE email = ?', [resetCode, expirationTime, email]);
 
@@ -246,30 +222,6 @@ const requestPasswordReset = async (req, res) => {
   } catch (error) {
     console.error('Error in requestPasswordReset:', error);
     res.status(500).json({ error: 'Internal server error', message: error.message, stack: error.stack });
-  }
-};
-
-const verifyResetCode = async (req, res) => {
-  const { email, resetCode } = req.body;
-
-  if (!email || !resetCode) {
-    return res.status(400).json({ error: 'Email and reset code are required' });
-  }
-
-  try {
-    const [user] = await db.query('SELECT * FROM users WHERE email = ? AND reset_code = ?', [email, resetCode]);
-
-    if (!user || user.length === 0) {
-      return res.status(400).json({ error: 'Invalid email or reset code' });
-    }
-
-    if (new Date() > new Date(user[0].reset_code_expires)) {
-      return res.status(400).json({ error: 'Reset code has expired' });
-    }
-
-    res.status(200).json({ message: 'Reset code validated' });
-  } catch (error) {
-    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -338,8 +290,7 @@ const updateUserDetails = async (req, res) => {
 
 module.exports = {
   register,
-  confirmEmail,
-  resendConfirmationEmail,
+  verifyConfirmationCode,
   login,
   requestPasswordReset,
   verifyResetCode,
