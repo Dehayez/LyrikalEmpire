@@ -11,14 +11,24 @@ const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
-const uploadToBackblaze = async (file) => {
+const uploadToBackblaze = async (file, userId, trackId) => {
   try {
-    // Authorize
     await b2.authorize();
 
-    // Generate a unique file name
+    // Generate a unique identifier
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const newFileName = `${uniqueSuffix}-${file.originalname}`;
+
+    // Extract the original file name and extension
+    const originalFileName = path.basename(file.originalname, path.extname(file.originalname));
+    const fileExtension = path.extname(file.originalname);
+
+    // Construct the new file name with the unique identifier
+    const newFileName = `${uniqueSuffix}-${originalFileName}${fileExtension}`;
+
+    // Define the file path with folders
+    const filePath = `audio/users/${userId}/${newFileName}`;
+
+    console.log('Uploading file to Backblaze B2:', filePath);
 
     // Get Upload URL
     const uploadUrlResponse = await b2.getUploadUrl({
@@ -30,13 +40,15 @@ const uploadToBackblaze = async (file) => {
     const uploadResponse = await b2.uploadFile({
       uploadUrl,
       uploadAuthToken: authorizationToken,
-      fileName: newFileName,
+      fileName: filePath,
       data: file.buffer,
     });
 
     if (!uploadResponse.data) {
       throw new Error('Response data is undefined');
     }
+
+    console.log('Upload response:', uploadResponse.data);
 
     return uploadResponse.data.fileName;
   } catch (error) {

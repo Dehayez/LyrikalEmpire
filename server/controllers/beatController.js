@@ -76,8 +76,7 @@ const createBeat = async (req, res) => {
       throw new Error('No file uploaded');
     }
 
-    const audioFileName = await uploadToBackblaze(req.file);
-
+    const audioFileName = await uploadToBackblaze(req.file, user_id, new Date().getTime());
     const query = 'INSERT INTO beats (title, audio, bpm, tierlist, created_at, duration, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
     const params = [title, audioFileName, bpm, tierlist, createdAt, duration, user_id];
 
