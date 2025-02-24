@@ -11,7 +11,7 @@ const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
-const uploadToBackblaze = async (file, userId, trackId) => {
+const uploadToBackblaze = async (file, userId) => {
   try {
     await b2.authorize();
 
@@ -50,7 +50,8 @@ const uploadToBackblaze = async (file, userId, trackId) => {
 
     console.log('Upload response:', uploadResponse.data);
 
-    return uploadResponse.data.fileName;
+    // Return only the file name
+    return newFileName;
   } catch (error) {
     console.error('Error uploading to Backblaze:', error);
     throw error;

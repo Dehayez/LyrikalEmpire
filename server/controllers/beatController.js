@@ -17,22 +17,34 @@ const tableMap = {
 
 const getSignedUrl = async (req, res) => {
   const { fileName } = req.params;
+  const { userId } = req.query;
 
   try {
     await b2.authorize();
 
+    const filePath = `audio/users/${userId}/${fileName}`;
+    console.log('Getting signed URL for file:', filePath);
+
     const response = await b2.getDownloadAuthorization({
       bucketId: process.env.B2_BUCKET_ID,
-      fileNamePrefix: fileName,
+      fileNamePrefix: filePath,
       validDurationInSeconds: 3600,
     });
 
-    const signedUrl = `https://f003.backblazeb2.com/file/${process.env.B2_BUCKET_NAME}/${fileName}?Authorization=${response.data.authorizationToken}`;
+    console.log('Backblaze response:', response.data);
+
+    if (!response.data.authorizationToken) {
+      throw new Error('Authorization token is missing in the response');
+    }
+
+    const signedUrl = `https://f003.backblazeb2.com/file/${process.env.B2_BUCKET_NAME}/${filePath}?Authorization=${response.data.authorizationToken}`;
+
+    console.log('Generated signed URL:', signedUrl);
 
     res.status(200).json({ signedUrl });
   } catch (error) {
-    console.error('Error generating signed URL:', error);
-    res.status(500).json({ error: 'Failed to generate signed URL' });
+    console.error('Error getting signed URL:', error);
+    res.status(500).json({ error: 'An error occurred while getting the signed URL', details: error.message });
   }
 };
 
@@ -76,7 +88,7 @@ const createBeat = async (req, res) => {
       throw new Error('No file uploaded');
     }
 
-    const audioFileName = await uploadToBackblaze(req.file, user_id, new Date().getTime());
+    const audioFileName = await uploadToBackblaze(req.file, user_id);
     const query = 'INSERT INTO beats (title, audio, bpm, tierlist, created_at, duration, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
     const params = [title, audioFileName, bpm, tierlist, createdAt, duration, user_id];
 

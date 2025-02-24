@@ -38,7 +38,9 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     const fetchSignedUrl = async () => {
       if (currentBeat && currentBeat.audio) {
         try {
-          const signedUrl = await getSignedUrl(currentBeat.audio);
+          console.log('Fetching signed URL for beat:', currentBeat);
+          const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
+          console.log('Signed URL fetched:', signedUrl);
           setAudioSrc(signedUrl);
           setIsLoading(false);
         } catch (error) {
@@ -46,10 +48,10 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         }
       }
     };
-
+  
     fetchSignedUrl();
   }, [currentBeat]);
-
+  
   useEffect(() => {
     if (audioSrc) {
       setIsLoading(false);
