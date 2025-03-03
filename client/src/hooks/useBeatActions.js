@@ -1,8 +1,10 @@
 import { useBeat } from '../contexts/BeatContext';
 import { updateBeat, deleteBeat } from '../services';
+import { useUser } from '../contexts/UserContext';
 
 export const useBeatActions = () => {
   const { beats, setBeats, setGlobalBeats } = useBeat();
+  const { user } = useUser();
 
   const handleUpdateAll = (newBeats) => {
     setBeats(newBeats);
@@ -23,7 +25,7 @@ export const useBeatActions = () => {
   };
 
   const handleDelete = async (id) => {
-    await deleteBeat(id);
+    await deleteBeat(id, user.id);
     const updatedBeats = beats.filter(beat => beat.id !== id);
     setBeats(updatedBeats);
     setGlobalBeats(updatedBeats);

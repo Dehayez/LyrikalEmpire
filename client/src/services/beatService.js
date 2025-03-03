@@ -6,12 +6,9 @@ const API_URL = `${API_BASE_URL}/beats`;
 
 export const getSignedUrl = async (userId, fileName) => {
   try {
-    console.log('Fetching signed URL for:', userId, fileName);
     const response = await axios.get(`${API_URL}/signed-url/${fileName}`, {
       params: { userId }
     });
-    console.log('Signed URL response:', response);
-    console.log('Signed URL fetched:', response.data.signedUrl);
     return response.data.signedUrl;
   } catch (error) {
     console.error('Error fetching signed URL:', error);
@@ -47,8 +44,8 @@ export const updateBeat = async (beatId, beatData) => {
   return await apiRequest('put', `/${beatId}`, API_URL, beatData);
 };
 
-export const deleteBeat = async (beatId) => {
-  return await apiRequest('delete', `/${beatId}`, API_URL);
+export const deleteBeat = async (beatId, userId) => {
+  return await apiRequest('delete', `/${beatId}`, API_URL, null, { userId });
 };
 
 export const addAssociationToBeat = async (beatId, associationType, associationId) => {

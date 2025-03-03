@@ -23,7 +23,6 @@ const getSignedUrl = async (req, res) => {
     await b2.authorize();
 
     const filePath = `audio/users/${userId}/${fileName}`;
-    console.log('Getting signed URL for file:', filePath);
 
     const response = await b2.getDownloadAuthorization({
       bucketId: process.env.B2_BUCKET_ID,
@@ -31,15 +30,11 @@ const getSignedUrl = async (req, res) => {
       validDurationInSeconds: 3600,
     });
 
-    console.log('Backblaze response:', response.data);
-
     if (!response.data.authorizationToken) {
       throw new Error('Authorization token is missing in the response');
     }
 
     const signedUrl = `https://f003.backblazeb2.com/file/${process.env.B2_BUCKET_NAME}/${filePath}?Authorization=${response.data.authorizationToken}`;
-
-    console.log('Generated signed URL:', signedUrl);
 
     res.status(200).json({ signedUrl });
   } catch (error) {
@@ -129,31 +124,38 @@ const updateBeat = (req, res) => {
 
 const deleteBeat = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req.query;
 
   try {
     const [results] = await db.query('SELECT audio FROM beats WHERE id = ?', [id]);
-    const filePath = results[0]?.audio;
+    const fileName = results[0]?.audio;
 
-    if (filePath) {
+    if (fileName) {
+      // Construct the file path
+      const filePath = `audio/users/${userId}/${fileName}`;
+      console.log(`Deleting file at path: ${filePath}`);
+
       // Delete file from Backblaze B2
       await b2.authorize();
-      const fileName = filePath.split('/').pop();
 
       // Retrieve the fileId from Backblaze B2
       const fileListResponse = await b2.listFileNames({
         bucketId: process.env.B2_BUCKET_ID,
-        prefix: fileName,
+        prefix: filePath,
         maxFileCount: 1,
       });
+
+      console.log(`File list response: ${JSON.stringify(fileListResponse.data.files)}`);
 
       if (fileListResponse.data.files.length === 0) {
         throw new Error(`File not found: ${fileName}`);
       }
 
       const fileId = fileListResponse.data.files[0].fileId;
+      console.log(`Deleting file with ID: ${fileId}`);
 
       await b2.deleteFileVersion({
-        fileName: fileName,
+        fileName: filePath,
         fileId: fileId,
       });
     }
