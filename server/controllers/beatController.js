@@ -179,9 +179,22 @@ const deleteBeat = async (req, res) => {
 const replaceAudio = async (req, res) => {
   const { id } = req.params;
   const newAudioFile = req.file;
+  const { userId } = req.body;
+
+  console.log('Received replace audio request with payload:', {
+    id,
+    newAudioFile: newAudioFile ? newAudioFile.originalname : null,
+    userId,
+  });
 
   if (!newAudioFile) {
+    console.error('No audio file provided');
     return res.status(400).json({ error: 'No audio file provided' });
+  }
+
+  if (!userId) {
+    console.error('User ID is required');
+    return res.status(400).json({ error: 'User ID is required' });
   }
 
   try {
@@ -189,24 +202,33 @@ const replaceAudio = async (req, res) => {
     const oldFilePath = results[0]?.audio;
 
     if (oldFilePath) {
-      // Comment out local file deletion
-      // const fullPath = path.join(__dirname, '../../client/public/uploads', oldFilePath);
-      // fs.unlink(fullPath, (err) => {
-      //   if (err) {
-      //     console.error(`Failed to delete old audio file at path: ${fullPath}`, err);
-      //   }
-      // });
-
       // Delete old file from Backblaze B2
       await b2.authorize();
       const fileName = oldFilePath.split('/').pop();
+      console.log(`Deleting old file from Backblaze B2: ${fileName}`);
+
+      const fileListResponse = await b2.listFileNames({
+        bucketId: process.env.B2_BUCKET_ID,
+        prefix: `audio/users/${userId}/${fileName}`,
+        maxFileCount: 1,
+      });
+
+      if (fileListResponse.data.files.length === 0) {
+        throw new Error(`File not found: ${fileName}`);
+      }
+
+      const fileId = fileListResponse.data.files[0].fileId;
+      console.log(`Deleting file with ID: ${fileId}`);
+
       await b2.deleteFileVersion({
-        fileName: fileName,
-        fileId: oldFilePath.split('/').pop(),
+        fileName: `audio/users/${userId}/${fileName}`,
+        fileId: fileId,
       });
     }
 
-    const newFileUrl = await uploadToBackblaze(newAudioFile);
+    const newFileUrl = await uploadToBackblaze(newAudioFile, userId);
+    console.log(`Uploaded new file to Backblaze B2: ${newFileUrl}`);
+
     const query = 'UPDATE beats SET audio = ? WHERE id = ?';
     const params = [newFileUrl, id];
 

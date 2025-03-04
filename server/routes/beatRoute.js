@@ -15,7 +15,7 @@ router.put('/:id', checkPlan('paid'), upload.single('audio'), beatController.upd
 router.delete('/:id', checkPlan('paid'), beatController.deleteBeat);
 
 // Audio operations
-router.put('/:id/audio', checkPlan('paid'), upload.single('audio'), beatController.replaceAudio);
+router.post('/:id/replace-audio', checkPlan('paid'), upload.single('audio'), beatController.replaceAudio);
 
 // Association operations
 router.post('/:beat_id/:association_type', checkPlan('paid'), beatController.addAssociation);

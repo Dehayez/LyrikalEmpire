@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { useBpmHandlers } from '../../hooks';
 import { addBeatsToPlaylist, getBeatsByPlaylistId, replaceAudio } from '../../services';
 import { isMobileOrTablet, formatDuration } from '../../utils';
-import { usePlaylist, useBeat, useData } from '../../contexts';
+import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
 
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
@@ -24,6 +24,7 @@ const BeatRow = ({
 }) => {
   const ref = useRef(null);
   const location = useLocation();
+  const { user } = useUser();
   const { genres, moods, keywords, features } = useData();
   const { setHoveredBeat } = useBeat();
   const { playlists,isSamePlaylist } = usePlaylist();
@@ -209,16 +210,16 @@ const BeatRow = ({
 
   const handleReplaceAudio = async () => {
     const newAudioFile = await selectNewAudioFile();
+  
     if (newAudioFile) {
       try {
-        await replaceAudio(beat.id, newAudioFile);
+        await replaceAudio(beat.id, newAudioFile, user.id);
         console.log('Audio replaced successfully');
       } catch (error) {
         console.error('Failed to replace audio:', error);
       }
     }
   };
-
   const selectNewAudioFile = () => {
     return new Promise((resolve) => {
       const input = document.createElement('input');

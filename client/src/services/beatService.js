@@ -74,11 +74,18 @@ export const getBeatsByAssociation = async (associationType, associationIds, all
   return allBeats ? fetchedBeats.filter(beat => allBeats.some(b => b.id === beat.id)) : fetchedBeats;
 };
 
-export const replaceAudio = async (beatId, audioFile) => {
+export const replaceAudio = async (beatId, audioFile, userId) => {
   const formData = new FormData();
   formData.append('audio', audioFile, audioFile.name);
+  formData.append('userId', userId);
 
-  return await apiRequest('post', `/${beatId}/replace-audio`, API_URL, formData, null, true, {
+  console.log('Sending replace audio request with payload:', {
+    beatId,
+    audioFile: audioFile.name,
+    userId,
+  });
+
+  return await apiRequest('put', `/${beatId}/audio`, API_URL, formData, null, true, {
     'Content-Type': 'multipart/form-data'
   });
 };
