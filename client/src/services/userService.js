@@ -13,6 +13,7 @@ const login = async (userData) => {
   const { accessToken, refreshToken, email, username, id } = response;
   localStorage.setItem('accessToken', accessToken);
   localStorage.setItem('refreshToken', refreshToken);
+  startTokenRefresh();
   return { accessToken, refreshToken, email, username, id };
 };
 
@@ -21,6 +22,7 @@ const loginWithGoogle = async (tokenId) => {
   const { accessToken, refreshToken, email, username } = response;
   localStorage.setItem('accessToken', accessToken);
   localStorage.setItem('refreshToken', refreshToken);
+  startTokenRefresh();
   return { accessToken, refreshToken, email, username };
 };
 
@@ -32,10 +34,6 @@ const getUserDetails = async () => {
 
 const updateUserDetails = async (userData) => {
   return await apiRequest('put', '/me', API_URL, userData);
-};
-
-const resendConfirmationEmail = async (email) => {
-  return await apiRequest('post', '/resend-confirmation', API_URL, { email }, null, false);
 };
 
 const requestPasswordReset = async (email) => {
@@ -65,9 +63,11 @@ const refreshToken = async () => {
   }
 
   const response = await apiRequest('post', '/token/refresh-token', API_URL, { token: refreshToken }, null, false);
-  const { accessToken } = response;
+  const { accessToken, refreshToken: newRefreshToken } = response;
   localStorage.setItem('accessToken', accessToken);
+  localStorage.setItem('refreshToken', newRefreshToken);
   console.log(`[INFO] Access Token refreshed: ${accessToken}`);
+  console.log(`[INFO] Refresh Token refreshed: ${newRefreshToken}`);
   return accessToken;
 };
 

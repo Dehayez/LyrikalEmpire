@@ -25,18 +25,15 @@ const refreshToken = async (req, res) => {
     const exp = decoded.exp;
     const oneDayInSeconds = 24 * 60 * 60;
 
-    // Log only when the refresh token is about to expire
     if (exp - now < oneDayInSeconds) {
-      console.log(`[INFO] Refresh token is about to expire. Time left: ${exp - now} seconds`);
-      const newRefreshToken = generateRefreshToken({ id: decoded.id, email: decoded.email });
+      const newRefreshToken = generateRefreshToken({ id: decoded.id, email: decoded.email, plan_type: decoded.plan_type });
       storedRefreshToken = newRefreshToken;
-      console.log(`[INFO] Refresh Token refreshed`);
     }
 
-    const accessToken = generateAccessToken({ id: decoded.id, email: decoded.email });
+    const accessToken = generateAccessToken({ id: decoded.id, email: decoded.email, plan_type: decoded.plan_type });
     res.json({ accessToken, refreshToken: storedRefreshToken || token });
   } catch (error) {
-    console.error('[ERROR] Invalid or expired refresh token');
+    console.error('[ERROR] Invalid or expired refresh token', error);
     res.status(403).json({ error: 'Invalid or expired refresh token' });
   }
 };
