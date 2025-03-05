@@ -85,7 +85,7 @@ export const replaceAudio = async (beatId, audioFile, userId) => {
     userId,
   });
 
-  return await apiRequest('put', `/${beatId}/audio`, API_URL, formData, null, true, {
+  return await apiRequest('put', `/${beatId}/replace-audio`, API_URL, formData, null, true, {
     'Content-Type': 'multipart/form-data'
   });
 };
