@@ -56,7 +56,7 @@ const verifyToken = async (token) => {
   return await apiRequest('post', '/verify-token', API_URL, { token }, null, false);
 };
 
-const refreshToken = async () => {
+const refreshTokenFunction = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) {
     return null;
@@ -77,13 +77,14 @@ const startTokenRefresh = () => {
       const accessToken = localStorage.getItem('accessToken');
       const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) {
-        return null;
+        console.error('No refresh token available');
+        return;
       }
 
       if (accessToken) {
         const decodedToken = jwtDecode(accessToken);
         const now = Math.floor(Date.now() / 1000);
-        const timeLeft = decodedToken.exp - now - 60;
+        const timeLeft = decodedToken.exp - now - 60; 
 
         if (timeLeft > 0) {
           setTimeout(refresh, timeLeft * 1000);
@@ -91,11 +92,11 @@ const startTokenRefresh = () => {
         }
       }
 
-      const newAccessToken = await refreshToken();
+      const newAccessToken = await refreshTokenFunction();
       if (newAccessToken) {
         const newDecodedToken = jwtDecode(newAccessToken);
         const now = Math.floor(Date.now() / 1000);
-        const timeLeft = newDecodedToken.exp - now - 60;
+        const timeLeft = newDecodedToken.exp - now - 60; 
         setTimeout(refresh, timeLeft * 1000);
       }
     } catch (error) {
@@ -117,6 +118,6 @@ export default {
   verifyResetCode,
   resetPassword,
   verifyToken,
-  refreshToken,
+  refreshToken: refreshTokenFunction,
   startTokenRefresh,
 };
