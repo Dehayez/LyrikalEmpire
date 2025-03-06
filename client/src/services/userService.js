@@ -77,7 +77,7 @@ const startTokenRefresh = () => {
       const accessToken = localStorage.getItem('accessToken');
       const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) {
-        return;
+        return null;
       }
 
       if (accessToken) {
