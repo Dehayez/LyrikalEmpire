@@ -1,9 +1,9 @@
 const nodemailer = require('nodemailer');
 // Local Server
-require('dotenv').config({ path: '../.env' });
+//require('dotenv').config({ path: '../.env' });
 
 // Third Server
-//require('dotenv').config();
+require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
   host: 'cloudemail.be',
