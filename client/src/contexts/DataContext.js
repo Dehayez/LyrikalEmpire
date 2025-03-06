@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
-import { getGenresWithCounts, getMoodsWithCounts, getFeaturesWithCounts, getKeywordsWithCounts, getMoods, getKeywords, getFeatures } from '../services';
+import { getGenresWithCounts, getMoodsWithCounts, getFeaturesWithCounts, getKeywordsWithCounts } from '../services';
+import { useUser } from './UserContext'; // Import the useUser hook
 
 const DataContext = createContext();
 
@@ -10,6 +11,7 @@ export const DataProvider = ({ children }) => {
   const [features, setFeatures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useUser(); // Get the user context
 
   const fetchGenres = async () => {
     try {
@@ -51,7 +53,12 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (user) => {
+    if (!user || !user.id) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const [genresData, moodsData, keywordsData, featuresData] = await Promise.all([
         getGenresWithCounts(),
@@ -72,8 +79,8 @@ export const DataProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(user);
+  }, [user]);
 
   const value = useMemo(() => ({
     genres,
@@ -82,12 +89,12 @@ export const DataProvider = ({ children }) => {
     features,
     loading,
     error,
-    refetch: fetchData,
+    refetch: () => fetchData(user),
     fetchGenres,
     fetchMoods,
     fetchKeywords,
     fetchFeatures,
-  }), [genres, moods, keywords, features, loading, error]);
+  }), [genres, moods, keywords, features, loading, error, user]);
 
   return (
     <DataContext.Provider value={value}>

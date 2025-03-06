@@ -59,7 +59,7 @@ const verifyToken = async (token) => {
 const refreshToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) {
-    throw new Error('No refresh token available');
+    return null;
   }
 
   const response = await apiRequest('post', '/token/refresh-token', API_URL, { token: refreshToken }, null, false);
@@ -75,6 +75,11 @@ const startTokenRefresh = () => {
   const refresh = async () => {
     try {
       const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) {
+        return;
+      }
+
       if (accessToken) {
         const decodedToken = jwtDecode(accessToken);
         const now = Math.floor(Date.now() / 1000);
@@ -87,10 +92,12 @@ const startTokenRefresh = () => {
       }
 
       const newAccessToken = await refreshToken();
-      const newDecodedToken = jwtDecode(newAccessToken);
-      const now = Math.floor(Date.now() / 1000);
-      const timeLeft = newDecodedToken.exp - now - 60;
-      setTimeout(refresh, timeLeft * 1000);
+      if (newAccessToken) {
+        const newDecodedToken = jwtDecode(newAccessToken);
+        const now = Math.floor(Date.now() / 1000);
+        const timeLeft = newDecodedToken.exp - now - 60;
+        setTimeout(refresh, timeLeft * 1000);
+      }
     } catch (error) {
       console.error('[ERROR] Failed to refresh token:', error);
     }
