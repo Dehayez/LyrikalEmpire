@@ -68,11 +68,10 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     });
 
     const observeModal = () => {
-      if (modalRef.current instanceof Element) {
-        resizeObserver.observe(modalRef.current);
-      } else {
-        console.warn('modalRef.current is null or not an Element');
+      if (!(modalRef.current instanceof Element)) {
+        return;
       }
+      resizeObserver.observe(modalRef.current);
     };
 
     const timeoutId = setTimeout(observeModal, 0);
