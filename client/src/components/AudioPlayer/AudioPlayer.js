@@ -34,6 +34,14 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const [isLoading, setIsLoading] = useState(true);
   const [waveform, setWaveform] = useState(false)
 
+  const toggleLyricsModal = () => {
+    setLyricsModal(prevState => !prevState);
+  };
+
+  const toggleWaveform = () => {
+    setWaveform(prevState => !prevState);
+  };
+
 /*   useEffect(() => {
     const fetchSignedUrl = async () => {
       if (currentBeat && currentBeat.audio) {
@@ -155,14 +163,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, [audioSrc]);
 
-  const toggleLyricsModal = () => {
-    setLyricsModal(prevState => !prevState);
-  };
-
-  const toggleWaveform = () => {
-    setWaveform(prevState => !prevState);
-  };
-
   useEffect(() => {
     const progressContainer = document.querySelector('.rhap_progress-container');
     if (progressContainer && waveformRef.current && !progressContainer.contains(waveformRef.current)) {
@@ -216,8 +216,8 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           autoPlayAfterSrcChange={true}
           src={audioSrc}
           ref={playerRef}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
+          /* onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)} */
           customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
           customControlsSection={[
             <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
