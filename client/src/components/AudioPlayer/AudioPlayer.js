@@ -34,7 +34,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const [isLoading, setIsLoading] = useState(true);
   const [waveform, setWaveform] = useState(false)
 
-  useEffect(() => {
+/*   useEffect(() => {
     const fetchSignedUrl = async () => {
       if (currentBeat && currentBeat.audio) {
         try {
@@ -48,25 +48,26 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     };
   
     fetchSignedUrl();
-  }, [currentBeat]);
-  
+  }, [currentBeat]); */
+
   useEffect(() => {
-    if (audioSrc) {
+    console.log(isPlaying);
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (currentBeat && currentBeat.audio) {
+      const localAudioSrc = `/uploads/${currentBeat.audio}`;
+      setAudioSrc(localAudioSrc);
       setIsLoading(false);
     }
-  }, [audioSrc]);
-
-  const toggleLyricsModal = () => {
-    setLyricsModal(prevState => !prevState);
-  };
-
-  const toggleWaveform = () => {
-    setWaveform(prevState => !prevState);
-  };
+  }, [currentBeat]);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+  
     const timer = setTimeout(() => {
-      if (!isLoading && waveformRef.current) {
+      if (!isLoading && waveformRef.current && audioSrc) {
         while (waveformRef.current.firstChild) {
           waveformRef.current.removeChild(waveformRef.current.firstChild);
         }
@@ -83,17 +84,51 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           cursorWidth: 0,
         });
   
-        wavesurfer.current.load(audioSrc);
-        wavesurfer.current.setVolume(0);
+        // Add logging for various events
+        wavesurfer.current.on('error', (error) => {
+          console.error('WaveSurfer error:', error);
+        });
+  
+        wavesurfer.current.on('loading', (percent) => {
+          console.log(`WaveSurfer loading: ${percent}%`);
+        });
   
         wavesurfer.current.on('ready', () => {
-          const duration = wavesurfer.current.getDuration();
-          if (!isNaN(currentTime) && duration > 0) {
-            wavesurfer.current.seekTo(currentTime / duration);
-          }
+          console.log('WaveSurfer ready');
         });
+  
+        wavesurfer.current.on('destroy', () => {
+          console.log('WaveSurfer destroyed');
+        });
+  
+        fetch(audioSrc, { signal })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.blob();
+          })
+          .then(blob => {
+            const url = URL.createObjectURL(blob);
+            wavesurfer.current.load(url);
+            wavesurfer.current.setVolume(0);
+  
+            wavesurfer.current.on('ready', () => {
+              const duration = wavesurfer.current.getDuration();
+              if (!isNaN(currentTime) && duration > 0) {
+                wavesurfer.current.seekTo(currentTime / duration);
+              }
+            });
+          })
+          .catch(error => {
+            if (error.name === 'AbortError') {
+              console.log('Fetch aborted');
+            } else {
+              console.error("Error loading audio source:", error);
+            }
+          });
       }
-    }, 100);
+    }, 100); // Add a delay of 100ms
   
     return () => {
       clearTimeout(timer);
@@ -111,7 +146,22 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         }
       }
     };
-  }, [currentBeat]);
+  }, [isLoading]);
+  
+  useEffect(() => {
+    if (audioSrc) {
+      setIsLoading(false);
+      console.log('audioSrc:', audioSrc);
+    }
+  }, [audioSrc]);
+
+  const toggleLyricsModal = () => {
+    setLyricsModal(prevState => !prevState);
+  };
+
+  const toggleWaveform = () => {
+    setWaveform(prevState => !prevState);
+  };
 
   useEffect(() => {
     const progressContainer = document.querySelector('.rhap_progress-container');
@@ -120,7 +170,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, []);
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (wavesurfer.current) {
       if (isPlaying) {
         wavesurfer.current.play();
@@ -128,7 +178,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         wavesurfer.current.pause();
       }
     }
-  }, [isPlaying]);
+  }, [isPlaying]); */
 
   useEffect(() => {
     if (wavesurfer.current) {
