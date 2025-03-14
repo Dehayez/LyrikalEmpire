@@ -154,7 +154,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         }
       }
     };
-  }, [isLoading]);
+  }, [isLoading, audioSrc]);
   
   useEffect(() => {
     if (audioSrc) {
