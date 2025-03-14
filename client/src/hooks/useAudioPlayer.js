@@ -146,7 +146,7 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
       setIsPlaying(play);
     } else {
       setCurrentBeat(beat);
-      setIsPlaying(true);
+      setTimeout(() => setIsPlaying(true), 0);
     }
   };
 
