@@ -42,7 +42,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     setWaveform(prevState => !prevState);
   };
 
-/*   useEffect(() => {
+  useEffect(() => {
     const fetchSignedUrl = async () => {
       if (currentBeat && currentBeat.audio) {
         try {
@@ -56,15 +56,17 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     };
   
     fetchSignedUrl();
-  }, [currentBeat]); */
+  }, [currentBeat]);
 
-  useEffect(() => {
+  // Local Audiofiles
+
+/*   useEffect(() => {
     if (currentBeat && currentBeat.audio) {
       const localAudioSrc = `/uploads/${currentBeat.audio}`;
       setAudioSrc(localAudioSrc);
       setIsLoading(false);
     }
-  }, [currentBeat]);
+  }, [currentBeat]); */
 
   useEffect(() => {
     const controller = new AbortController();
