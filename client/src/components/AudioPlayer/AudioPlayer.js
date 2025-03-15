@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import WaveSurfer from 'wavesurfer.js';
 import { LiaMicrophoneAltSolid } from "react-icons/lia";
-import { PiWaveform } from "react-icons/pi";
+import { PiSelectionDuotone, PiWaveform } from "react-icons/pi";
 
 import { isMobileOrTablet } from '../../utils';
 import { useAudioPlayer } from '../../hooks/useAudioPlayer';
@@ -31,8 +31,9 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
   const [audioSrc, setAudioSrc] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
   const [waveform, setWaveform] = useState(false)
+  const [autoPlay, setAutoPlay] = useState(false);
+
 
   const toggleLyricsModal = () => {
     setLyricsModal(prevState => !prevState);
@@ -42,13 +43,12 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     setWaveform(prevState => !prevState);
   };
 
-  useEffect(() => {
+/*   useEffect(() => {
     const fetchSignedUrl = async () => {
       if (currentBeat && currentBeat.audio) {
         try {
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
-          setIsLoading(false);
         } catch (error) {
           console.error('Error fetching signed URL:', error);
         }
@@ -56,24 +56,32 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     };
   
     fetchSignedUrl();
-  }, [currentBeat]);
+  }, [currentBeat]); */
+
+  useEffect(() => {
+    if (audioSrc) {
+      const timer = setTimeout(() => {
+        setAutoPlay(true);
+      }, 1000);
+  
+      return () => clearTimeout(timer);
+    }
+  }, [audioSrc]);
 
   // Local Audiofiles
-
-/*   useEffect(() => {
+  useEffect(() => {
     if (currentBeat && currentBeat.audio) {
       const localAudioSrc = `/uploads/${currentBeat.audio}`;
       setAudioSrc(localAudioSrc);
-      setIsLoading(false);
     }
-  }, [currentBeat]); */
+  }, [currentBeat]);
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
   
     const timer = setTimeout(() => {
-      if (!isLoading && waveformRef.current && audioSrc) {
+      if (waveformRef.current && audioSrc) {
         while (waveformRef.current.firstChild) {
           waveformRef.current.removeChild(waveformRef.current.firstChild);
         }
@@ -135,12 +143,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         }
       }
     };
-  }, [isLoading, audioSrc]);
-  
-  useEffect(() => {
-    if (audioSrc) {
-      setIsLoading(false);
-    }
   }, [audioSrc]);
 
   useEffect(() => {
@@ -173,9 +175,11 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     <div className="audio-player audio-player--mobile" id="audio-player">
       <H5AudioPlayer
           className="smooth-progress-bar smooth-progress-bar--mobile"
-          autoPlayAfterSrcChange={true}
+          autoPlayAfterSrcChange={autoPlay}
           src={audioSrc}
           ref={playerRef}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
           customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
         />
       {currentBeat && (
@@ -193,11 +197,11 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       <div style={{ flex: '3' }}>
         <H5AudioPlayer
           className="smooth-progress-bar smooth-progress-bar--desktop"
-          autoPlayAfterSrcChange={true}
+          autoPlayAfterSrcChange={autoPlay}
           src={audioSrc}
           ref={playerRef}
-          /* onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)} */
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
           customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
           customControlsSection={[
             <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
