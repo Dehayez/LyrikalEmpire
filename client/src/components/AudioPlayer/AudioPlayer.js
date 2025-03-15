@@ -59,10 +59,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   }, [currentBeat]); */
 
   useEffect(() => {
-    console.log(isPlaying);
-  }, [isPlaying]);
-
-  useEffect(() => {
     if (currentBeat && currentBeat.audio) {
       const localAudioSrc = `/uploads/${currentBeat.audio}`;
       setAudioSrc(localAudioSrc);
@@ -91,24 +87,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           cursorColor: '#FFCC44', 
           cursorWidth: 0,
         });
-  
-        // Add logging for various events
-        wavesurfer.current.on('error', (error) => {
-          console.error('WaveSurfer error:', error);
-        });
-  
-        wavesurfer.current.on('loading', (percent) => {
-          console.log(`WaveSurfer loading: ${percent}%`);
-        });
-  
-        wavesurfer.current.on('ready', () => {
-          console.log('WaveSurfer ready');
-        });
-  
-        wavesurfer.current.on('destroy', () => {
-          console.log('WaveSurfer destroyed');
-        });
-  
+
         fetch(audioSrc, { signal })
           .then(response => {
             if (!response.ok) {
@@ -136,7 +115,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
             }
           });
       }
-    }, 100); // Add a delay of 100ms
+    }, 100);
   
     return () => {
       clearTimeout(timer);
@@ -159,7 +138,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   useEffect(() => {
     if (audioSrc) {
       setIsLoading(false);
-      console.log('audioSrc:', audioSrc);
     }
   }, [audioSrc]);
 
