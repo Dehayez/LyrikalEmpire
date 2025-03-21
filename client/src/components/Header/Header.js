@@ -8,7 +8,7 @@ import { Tooltip } from '../Tooltip';
 
 import './Header.scss';
 
-const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, handleMouseEnterLeft, handleMouseLeaveLeft, handleMouseEnterRight, handleMouseLeaveRight, isLeftDivVisible, isRightDivVisible, isAuthPage }) => {
+const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, handleMouseEnterLeft, handleMouseLeaveLeft, handleMouseEnterRight, handleMouseLeaveRight, isLeftDivVisible, isRightDivVisible, isAuthPage, closeSidePanel }) => {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
 
@@ -27,9 +27,9 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
   };
 
   const handleHomepageClick = () => {
-    if (isMobileOrTablet()) {
-      toggleSidePanel('both');
-    }
+      if (!isMobileOrTablet) {
+        closeSidePanel('both');
+      }
   };
 
   return (

@@ -44,12 +44,12 @@ function App() {
     isRightPanelVisible,
     isLeftDivVisible,
     isRightDivVisible,
-    isSidePanelInContent,
     handleMouseEnterLeft,
     handleMouseLeaveLeft,
     handleMouseEnterRight,
     handleMouseLeaveRight,
     toggleSidePanel,
+    closeSidePanel,
   } = usePanels();
   
   useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig, lyricsModal });
@@ -215,17 +215,18 @@ function App() {
           isLeftDivVisible={isLeftDivVisible}
           isRightDivVisible={isRightDivVisible}
           isAuthPage={isAuthRoute}
+          closeSidePanel={closeSidePanel}
         />
         <div className="container">
           <div className='container__content'>
             <div className={`container__content__left ${isMobileOrTablet() && isLeftPanelVisible ? 'container__content__left--mobile' : ''} ${isLeftPanelVisible ? 'container__content__left--pinned' : ''}`}>
               {!isAuthRoute && (isLeftPanelVisible || isLeftDivVisible) ? (
                 <LeftSidePanel
-                  isDivVisible={isLeftPanelVisible || (isLeftDivVisible && !isSidePanelInContent)}
+                  isDivVisible={isLeftPanelVisible || isLeftDivVisible}
                   className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
                   {...(isLeftDivVisible && !isLeftPanelVisible && { handleMouseEnter: handleMouseEnterLeft, handleMouseLeave: handleMouseLeaveLeft })}
                 >
-                  <Playlists isPlaying={isPlaying} toggleSidePanel={toggleSidePanel} />
+                  <Playlists isPlaying={isPlaying} closeSidePanel={closeSidePanel} />
                 </LeftSidePanel>
               ) : null}
             </div>
@@ -281,7 +282,7 @@ function App() {
             <div className={`container__content__right ${isMobileOrTablet() && isRightPanelVisible ? 'container__content__right--mobile' : ''} ${isRightPanelVisible ? 'container__content__right--pinned' : ''}`}>
               {!isAuthRoute && (isRightPanelVisible || isRightDivVisible) ? (
                 <RightSidePanel
-                  isDivVisible={isRightPanelVisible || (isRightDivVisible && !isSidePanelInContent)}
+                  isDivVisible={isRightPanelVisible || isRightDivVisible}
                   className={isRightPanelVisible ? 'right-side-panel--pinned' : (isRightDivVisible ? 'right-side-panel--hover' : '')}
                   {...(isRightDivVisible && !isRightPanelVisible && { handleMouseEnter: handleMouseEnterRight, handleMouseLeave: handleMouseLeaveRight })}
                 >

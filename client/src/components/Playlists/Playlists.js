@@ -15,7 +15,7 @@ import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 
 import './Playlists.scss';
 
-const Playlists = ({ isPlaying, toggleSidePanel }) => {
+const Playlists = ({ isPlaying, closeSidePanel }) => {
   const navigate = useNavigate();
   const { playlists, playedPlaylistId, currentPlaylistId, updatePlaylist, handleAddPlaylist } = usePlaylist();
 
@@ -51,7 +51,7 @@ const Playlists = ({ isPlaying, toggleSidePanel }) => {
 
   const handleLeftClick = (playlistId) => {
     if (!isMobileOrTablet) {
-        toggleSidePanel('left');
+      closeSidePanel('left');
     }
     navigate(`/playlists/${playlistId}`);
   };

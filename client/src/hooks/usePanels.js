@@ -55,6 +55,26 @@ export const usePanels = () => {
     }, 200);
   };
 
+  const closeSidePanel = (panel) => {
+    if (panel === 'left' && isLeftPanelVisible) {
+      setIsLeftPanelVisible(false);
+      setIsLeftDivVisible(false);
+      console.log('left');
+    } else if (panel === 'right' && isRightPanelVisible) {
+      setIsRightPanelVisible(false);
+      setIsRightDivVisible(false);
+    } else if (panel === 'both') {
+      setIsLeftPanelVisible(false);
+      setIsLeftDivVisible(false);
+      setIsRightPanelVisible(false);
+      setIsRightDivVisible(false);
+    }
+    setAllowHover(false);
+    setTimeout(() => {
+      setAllowHover(true);
+    }, 200);
+  };
+
   return {
     isLeftPanelVisible,
     isRightPanelVisible,
@@ -65,5 +85,6 @@ export const usePanels = () => {
     handleMouseEnterRight,
     handleMouseLeaveRight,
     toggleSidePanel,
+    closeSidePanel,
   };
 };
