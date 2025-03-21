@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp, IoAlbums } from "react-icons/io5";
 
 import { usePlaylist } from '../../contexts/PlaylistContext';
-import { eventBus } from '../../utils';
+import { eventBus, isMobileOrTablet } from '../../utils';
 import { getPlaylistById, deletePlaylist } from '../../services';
 
 import { Button, IconButton } from '../Buttons';
@@ -15,7 +15,7 @@ import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 
 import './Playlists.scss';
 
-const Playlists = ({ isPlaying }) => {
+const Playlists = ({ isPlaying, toggleSidePanel }) => {
   const navigate = useNavigate();
   const { playlists, playedPlaylistId, currentPlaylistId, updatePlaylist, handleAddPlaylist } = usePlaylist();
 
@@ -50,8 +50,10 @@ const Playlists = ({ isPlaying }) => {
   };
 
   const handleLeftClick = (playlistId) => {
+    if (!isMobileOrTablet) {
+        toggleSidePanel('left');
+    }
     navigate(`/playlists/${playlistId}`);
-    //close leftsidepanel
   };
 
   const handleRightClick = (e, playlist, index) => {

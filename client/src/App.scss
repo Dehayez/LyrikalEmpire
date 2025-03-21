@@ -111,22 +111,6 @@
   }
 }
 
-.invisible-hover-panel {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  width: 12px;
-  z-index: 10;
-  opacity: 1;
-
-  &--left {
-    left: 0;
-  }
-  &--right {
-    right: 0;
-  }
-}
-
 .view-toggle-container {
   display: flex;
   &__title {
