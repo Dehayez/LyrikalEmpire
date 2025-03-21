@@ -43,6 +43,11 @@ export const usePanels = () => {
     } else if (panel === 'right') {
       setIsRightPanelVisible(!isRightPanelVisible);
       setIsRightDivVisible(!isRightPanelVisible);
+    } else if (panel === 'both') {
+      setIsLeftPanelVisible(!isLeftPanelVisible);
+      setIsLeftDivVisible(!isLeftPanelVisible);
+      setIsRightPanelVisible(!isRightPanelVisible);
+      setIsRightDivVisible(!isRightPanelVisible);
     }
     setAllowHover(false);
     setTimeout(() => {

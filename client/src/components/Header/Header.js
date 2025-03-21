@@ -26,6 +26,12 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
     toggleSidePanel('right');
   };
 
+  const handleHomepageClick = () => {
+    if (isMobileOrTablet()) {
+      toggleSidePanel('both');
+    }
+  };
+
   return (
     <header className="header">
       {!isAuthPage && 
@@ -57,7 +63,7 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
         </>
       )}
       
-      <div className="header__nav-group">
+      <div className="header__nav-group" onClick={handleHomepageClick}>
         <Link to="/">
           <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
         </Link>
