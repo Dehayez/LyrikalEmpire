@@ -7,8 +7,6 @@ export const usePanels = () => {
   const [isLeftDivVisible, setIsLeftDivVisible] = useState(false);
   const [isRightDivVisible, setIsRightDivVisible] = useState(false);
   const [allowHover, setAllowHover] = useState(true);
-  const [isSidePanelInContent, setIsSidePanelInContent] = useState(false);
-
   const hoverRefLeft = useRef(false);
   const hoverRefRight = useRef(false);
 
@@ -57,8 +55,6 @@ export const usePanels = () => {
     isRightPanelVisible,
     isLeftDivVisible,
     isRightDivVisible,
-    isSidePanelInContent,
-    setIsSidePanelInContent,
     handleMouseEnterLeft,
     handleMouseLeaveLeft,
     handleMouseEnterRight,

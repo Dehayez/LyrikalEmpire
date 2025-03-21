@@ -51,6 +51,7 @@ const Playlists = ({ isPlaying }) => {
 
   const handleLeftClick = (playlistId) => {
     navigate(`/playlists/${playlistId}`);
+    //close leftsidepanel
   };
 
   const handleRightClick = (e, playlist, index) => {

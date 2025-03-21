@@ -45,7 +45,6 @@ function App() {
     isLeftDivVisible,
     isRightDivVisible,
     isSidePanelInContent,
-    setIsSidePanelInContent,
     handleMouseEnterLeft,
     handleMouseLeaveLeft,
     handleMouseEnterRight,
