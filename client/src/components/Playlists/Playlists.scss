@@ -8,16 +8,9 @@
     &__header {
         display: flex;
         justify-content: space-between;
-
-        &-left {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
     }
 
     &__title {
-        color:$color-gray;
         margin-left: 12px;
         font-weight: 700;
     }
