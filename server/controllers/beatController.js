@@ -90,17 +90,13 @@ const createBeat = async (req, res) => {
     const inputBuffer = req.file.buffer;
     const originalNameWithoutExt = path.parse(req.file.originalname).name;
     const inputFormat = path.extname(req.file.originalname).slice(1); // Get the file extension without the dot
-    const outputPath = path.join(__dirname, '../uploads', `${Date.now()}-${originalNameWithoutExt}.aac`);
-
-    console.log('Received file:', req.file.originalname);
-    console.log('Output Path:', outputPath);
-    console.log('Input Format:', inputFormat);
+    const outputPath = path.join(__dirname, '../uploads', `${originalNameWithoutExt}.aac`);
 
     // Convert the audio file to AAC format
     await convertToAAC(inputBuffer, outputPath, inputFormat);
 
     // Upload the converted file to Backblaze
-    const audioFileName = await uploadToBackblaze({ path: outputPath, originalname: `${Date.now()}-${originalNameWithoutExt}.aac` }, user_id);
+    const audioFileName = await uploadToBackblaze({ path: outputPath, originalname: `${originalNameWithoutExt}.aac` }, user_id);
 
     // Delete the temporary file
     fs.unlinkSync(outputPath);
@@ -123,27 +119,14 @@ const convertToAAC = (inputBuffer, outputPath, inputFormat) => {
     // Write the input buffer to a temporary file
     fs.writeFile(tempInputPath, inputBuffer, (writeErr) => {
       if (writeErr) {
-        console.error('Error writing temporary input file:', writeErr);
         return reject(writeErr);
       }
-
-      console.log('Starting conversion to AAC');
-      console.log('Temporary input path:', tempInputPath);
-      console.log('Output path:', outputPath);
 
       ffmpeg()
         .input(tempInputPath)
         .audioCodec('aac')
         .toFormat('adts')
-        .on('start', (commandLine) => {
-          console.log('Spawned Ffmpeg with command:', commandLine);
-        })
-        .on('progress', (progress) => {
-          console.log('Processing:', progress);
-        })
         .on('end', () => {
-          console.log('Conversion to AAC completed');
-          
           // Clean up the temporary input file
           fs.unlink(tempInputPath, (unlinkErr) => {
             if (unlinkErr) {
@@ -154,8 +137,6 @@ const convertToAAC = (inputBuffer, outputPath, inputFormat) => {
           resolve(outputPath);
         })
         .on('error', (err) => {
-          console.error('Error during conversion to AAC:', err);
-          
           // Clean up the temporary input file in case of error
           fs.unlink(tempInputPath, (unlinkErr) => {
             if (unlinkErr) {
