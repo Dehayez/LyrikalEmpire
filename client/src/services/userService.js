@@ -66,8 +66,6 @@ const refreshTokenFunction = async () => {
   const { accessToken, refreshToken: newRefreshToken } = response;
   localStorage.setItem('accessToken', accessToken);
   localStorage.setItem('refreshToken', newRefreshToken);
-  console.log(`[INFO] Access Token refreshed: ${accessToken}`);
-  console.log(`[INFO] Refresh Token refreshed: ${newRefreshToken}`);
   return accessToken;
 };
 
