@@ -1,6 +1,7 @@
 const multer = require('multer');
 const B2 = require('backblaze-b2');
 const path = require('path');
+const fs = require('fs');
 
 const b2 = new B2({
   applicationKeyId: process.env.B2_APPLICATION_KEY_ID,
@@ -36,12 +37,15 @@ const uploadToBackblaze = async (file, userId) => {
     });
     const { uploadUrl, authorizationToken } = uploadUrlResponse.data;
 
+    // Read the file buffer
+    const fileBuffer = fs.readFileSync(file.path);
+
     // Upload File
     const uploadResponse = await b2.uploadFile({
       uploadUrl,
       uploadAuthToken: authorizationToken,
       fileName: filePath,
-      data: file.buffer,
+      data: fileBuffer,
     });
 
     if (!uploadResponse.data) {
