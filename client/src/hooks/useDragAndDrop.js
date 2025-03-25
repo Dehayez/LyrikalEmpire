@@ -28,6 +28,9 @@ export const useDragAndDrop = (setRefreshBeats, user_id) => {
     setActiveUploads(activeUploads => activeUploads + files.length);
     files.forEach(async (file) => {
       try {
+        if (file.type === 'audio/aiff') {
+          throw new Error('AIF files are not supported');
+        }
         const duration = await getAudioDuration(file);
         const beat = {
           title: file.name.replace(/\.[^/.]+$/, ""),
