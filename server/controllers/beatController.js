@@ -1,7 +1,11 @@
 const { handleTransaction, handleQuery } = require('../helpers/dbHelpers');
 const db = require('../config/db');
 const { uploadToBackblaze } = require('../config/multer');
+const fs = require('fs');
+const ffmpeg = require('fluent-ffmpeg');
+const path = require('path');
 const B2 = require('backblaze-b2');
+
 const b2 = new B2({
   applicationKeyId: process.env.B2_APPLICATION_KEY_ID,
   applicationKey: process.env.B2_APPLICATION_KEY,
@@ -83,7 +87,24 @@ const createBeat = async (req, res) => {
       throw new Error('No file uploaded');
     }
 
-    const audioFileName = await uploadToBackblaze(req.file, user_id);
+    const inputBuffer = req.file.buffer;
+    const originalNameWithoutExt = path.parse(req.file.originalname).name;
+    const inputFormat = path.extname(req.file.originalname).slice(1); // Get the file extension without the dot
+    const outputPath = path.join(__dirname, '../uploads', `${Date.now()}-${originalNameWithoutExt}.aac`);
+
+    console.log('Received file:', req.file.originalname);
+    console.log('Output Path:', outputPath);
+    console.log('Input Format:', inputFormat);
+
+    // Convert the audio file to AAC format
+    await convertToAAC(inputBuffer, outputPath, inputFormat);
+
+    // Upload the converted file to Backblaze
+    const audioFileName = await uploadToBackblaze({ path: outputPath, originalname: `${Date.now()}-${originalNameWithoutExt}.aac` }, user_id);
+
+    // Delete the temporary file
+    fs.unlinkSync(outputPath);
+
     const query = 'INSERT INTO beats (title, audio, bpm, tierlist, created_at, duration, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
     const params = [title, audioFileName, bpm, tierlist, createdAt, duration, user_id];
 
@@ -92,6 +113,61 @@ const createBeat = async (req, res) => {
     console.error('Error creating beat:', error);
     res.status(500).json({ error: 'An error occurred while creating the beat' });
   }
+};
+
+const convertToAAC = (inputBuffer, outputPath, inputFormat) => {
+  // Create a temporary input file path
+  const tempInputPath = path.join(__dirname, '../uploads', `temp-${Date.now()}.${inputFormat}`);
+
+  return new Promise((resolve, reject) => {
+    // Write the input buffer to a temporary file
+    fs.writeFile(tempInputPath, inputBuffer, (writeErr) => {
+      if (writeErr) {
+        console.error('Error writing temporary input file:', writeErr);
+        return reject(writeErr);
+      }
+
+      console.log('Starting conversion to AAC');
+      console.log('Temporary input path:', tempInputPath);
+      console.log('Output path:', outputPath);
+
+      ffmpeg()
+        .input(tempInputPath)
+        .audioCodec('aac')
+        .toFormat('adts')
+        .on('start', (commandLine) => {
+          console.log('Spawned Ffmpeg with command:', commandLine);
+        })
+        .on('progress', (progress) => {
+          console.log('Processing:', progress);
+        })
+        .on('end', () => {
+          console.log('Conversion to AAC completed');
+          
+          // Clean up the temporary input file
+          fs.unlink(tempInputPath, (unlinkErr) => {
+            if (unlinkErr) {
+              console.error('Error deleting temporary input file:', unlinkErr);
+            }
+          });
+          
+          resolve(outputPath);
+        })
+        .on('error', (err) => {
+          console.error('Error during conversion to AAC:', err);
+          
+          // Clean up the temporary input file in case of error
+          fs.unlink(tempInputPath, (unlinkErr) => {
+            if (unlinkErr) {
+              console.error('Error deleting temporary input file:', unlinkErr);
+            }
+          });
+          
+          reject(err);
+        })
+        .save(outputPath);
+    });
+  });
 };
 
 const getBeatById = (req, res) => {
@@ -226,8 +302,18 @@ const replaceAudio = async (req, res) => {
       });
     }
 
-    const newFileUrl = await uploadToBackblaze(newAudioFile, userId);
-    console.log(`Uploaded new file to Backblaze B2: ${newFileUrl}`);
+    const inputPath = newAudioFile.path;
+    const outputPath = path.join(__dirname, '../uploads', `${newAudioFile.filename}.aac`);
+
+    // Convert the audio file to AAC format
+    await convertToAAC(inputPath, outputPath);
+
+    // Upload the converted file to Backblaze
+    const newFileUrl = await uploadToBackblaze({ path: outputPath, originalname: `${newAudioFile.filename}.aac` }, userId);
+
+    // Delete the temporary files
+    fs.unlinkSync(inputPath);
+    fs.unlinkSync(outputPath);
 
     const query = 'UPDATE beats SET audio = ? WHERE id = ?';
     const params = [newFileUrl, id];
