@@ -125,6 +125,7 @@ const convertToAAC = (inputBuffer, outputPath, inputFormat) => {
       ffmpeg()
         .input(tempInputPath)
         .audioCodec('aac')
+        .audioBitrate('192k')
         .toFormat('adts')
         .on('end', () => {
           // Clean up the temporary input file
