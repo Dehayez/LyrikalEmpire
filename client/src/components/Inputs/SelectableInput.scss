@@ -43,6 +43,10 @@
         @include hide-scrollbar;
         min-width: 100px;
 
+        &--disabled {
+            cursor: default;
+        }
+
         &--new-beat {
             border: 1px solid $color-gray-mid;
             &:hover {
@@ -81,7 +85,6 @@
         border: none !important;
         font-size: 16px;
         min-height: 20px;
-        cursor: pointer;
         width: auto;
         transition: width 0.2s ease, overflow 0.2s ease;
 

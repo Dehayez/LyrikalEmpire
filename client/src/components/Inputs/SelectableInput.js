@@ -162,7 +162,10 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
 <div className={`selectable-input-container `}>
   <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
     <div
-      className={`selectable-input__input-container ${isFocused ? 'selectable-input__input-container--focused' : ''} ${isNewBeat ? 'selectable-input__input-container--new-beat' : ''}`}
+      className={`selectable-input__input-container 
+        ${isFocused ? 'selectable-input__input-container--focused' : ''} 
+        ${isNewBeat ? 'selectable-input__input-container--new-beat' : ''} 
+        ${disableFocus ? 'selectable-input__input-container--disabled' : ''}`}
       onClick={handleContainerClick}
       ref={inputContainerRef}
     >
@@ -187,6 +190,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onClick={(e) => e.stopPropagation()}
+        disabled={disableFocus}
         autoComplete="off"
       />
       <label htmlFor={`selectable-input-${associationType}-${beatId}-${headerIndex}`} className={`form-group__label ${inputValue || isFocused || selectedItems.length > 0 ? 'form-group__label--active' : ''}`}>
