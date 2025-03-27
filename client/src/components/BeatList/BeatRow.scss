@@ -78,20 +78,15 @@
     padding: 8px 0;
   }
 
-  &--focused {
-    background-color: $color-gray-dark-active;
+  &--playing {
+    background-color: $color-primary-bg;
+    &:hover {
+      background-color: $color-primary-bg;
+    }
   }
 
-  &--playing {
-    color: $color-yellow;
-
-    .beat-row__index-number, .beat-row__input--title {
-      color: $color-yellow;
-    }
-
-    .beat-row__input--title:focus {
-      color: $color-white;
-    }
+  &--focused {
+    background-color: $color-gray-dark-active;
   }
 
   &__tooltip {

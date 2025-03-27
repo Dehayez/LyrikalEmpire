@@ -47,37 +47,6 @@ const BeatRow = ({
   const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
   const itemsPerPage = 7;
 
-  const deleteText = selectedBeats.length > 1
-    ? deleteMode === 'playlist'
-        ? `Remove ${selectedBeats.length} tracks`
-        : `Delete ${selectedBeats.length} tracks`
-    : deleteMode === 'playlist'
-        ? 'Remove from playlist'
-        : 'Delete this track';
-
-  const beatRowClasses = classNames({
-    'beat-row': true,
-    'beat-row--selected-middle': isSelected && isMiddle,
-    'beat-row--selected-bottom': isSelected && !isMiddle && hasSelectedBefore,
-    'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
-    'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
-    'beat-row--playing': currentBeat && beat.id === currentBeat.id && isSamePlaylist,
-  });
-
-  const fetchBeats = async (playlistId, setBeats) => {
-    try {
-      const beatsData = await getBeatsByPlaylistId(playlistId);
-      const sortedBeats = beatsData.sort((a, b) => a.beat_order - b.beat_order);
-      setBeats(sortedBeats);
-    } catch (error) {
-      console.error('Error fetching beats:', error);
-    }
-  };
-
-  const calculateActualIndex = (index) => {
-    return (currentPage - 1) * itemsPerPage + index;
-  };
-
   const [{ isDragging }, drag] = useDrag({
     type: 'BEAT',
     item: { type: 'BEAT', id: beat.id, index },
@@ -138,6 +107,40 @@ const BeatRow = ({
   if (toDragAndDrop) {
     drag(drop(ref));
   }
+
+  const deleteText = selectedBeats.length > 1
+    ? deleteMode === 'playlist'
+        ? `Remove ${selectedBeats.length} tracks`
+        : `Delete ${selectedBeats.length} tracks`
+    : deleteMode === 'playlist'
+        ? 'Remove from playlist'
+        : 'Delete this track';
+
+  const beatRowClasses = classNames({
+    'beat-row': true,
+    'beat-row--selected-middle': isSelected && isMiddle,
+    'beat-row--selected-bottom': isSelected && !isMiddle && hasSelectedBefore,
+    'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
+    'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
+    'beat-row--playing': currentBeat && beat.id === currentBeat.id && isSamePlaylist,
+    'beat-row--focused': isInputFocused,
+    'beat-row--selected': isDragging,
+  });
+
+  const fetchBeats = async (playlistId, setBeats) => {
+    try {
+      const beatsData = await getBeatsByPlaylistId(playlistId);
+      const sortedBeats = beatsData.sort((a, b) => a.beat_order - b.beat_order);
+      setBeats(sortedBeats);
+    } catch (error) {
+      console.error('Error fetching beats:', error);
+    }
+  };
+
+  const calculateActualIndex = (index) => {
+    return (currentPage - 1) * itemsPerPage + index;
+  };
+
 
   const handleAddToCustomQueueClick = () => {
     addToCustomQueue(selectedBeats);
@@ -275,7 +278,7 @@ const BeatRow = ({
   return (
     <tr
       ref={ref} 
-      className={`${beatRowClasses} ${isInputFocused ? 'beat-row--focused' : ''}${isDragging ? 'beat-row--selected' : ''}`}
+      className={beatRowClasses}
       key={beatRowClasses}
       onClick={mode !== "edit" ? (isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)) : undefined}
       onMouseEnter={(e) => { 

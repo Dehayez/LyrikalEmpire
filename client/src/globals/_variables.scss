@@ -2,7 +2,7 @@ $color-yellow: #FFCC44;
 $color-red: #CC3344;
 $color-black-dark: #141414;
 $color-black: #181818;
-$color-gray-dark: #202020;
+$color-gray-dark: #232323;
 $color-gray-dark-active: #2C2C2C;
 $color-gray-dark-hover: #383838;
 $color-gray-mid: #505050;
@@ -11,18 +11,18 @@ $color-gray-light: #B3B3B3;
 $color-gray: #CCC;
 $color-white: #FFFFFF;
 
+
 $color-primary: $color-yellow;
-$color-warning: $color-red;
-
 $color-primary-bg: rgba($color-primary, 0.2);
-$color-primary-bg-hover: rgba($color-primary, 0.1);
+$color-primary-bg-hover: rgba($color-primary, 0.3);
 $color-primary-border: rgba($color-primary, 0.8);
-$color-primary-border-hover: rgba($color-primary, 0.4);
+$color-primary-border-hover: rgba($color-primary, 0.9);
 
+$color-warning: $color-red;
 $color-warning-bg: rgba($color-warning, 0.2);
-$color-warning-bg-hover: rgba($color-warning, 0.1);
+$color-warning-bg-hover: rgba($color-warning, 0.3);
 $color-warning-border: rgba($color-warning, 0.8);
-$color-warning-border-hover: rgba($color-warning, 0.4);
+$color-warning-border-hover: rgba($color-warning, 0.9);
 
 $color-yellow-light: #FFE066;
 $color-yellow-dark: #CC9900;
