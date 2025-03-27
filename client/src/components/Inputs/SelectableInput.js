@@ -197,7 +197,9 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
       <input
         ref={inputRef}
         id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
-        className={`form-group__input selectable-input__input ${!isFocused ? 'selectable-input__input--hidden' : ''}`}
+        className={`form-group__input selectable-input__input 
+          ${!isFocused ? 'selectable-input__input--hidden' : ''} 
+          ${disableFocus ? 'selectable-input__input--disabled' : ''}`}
         placeholder={selectedItems.length === 0 ? placeholder : ''}
         type="text"
         value={inputValue}

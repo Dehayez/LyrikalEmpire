@@ -87,6 +87,7 @@
         min-height: 20px;
         width: auto;
         transition: width 0.2s ease, overflow 0.2s ease;
+        cursor: pointer;
 
         &:focus {
           outline: none;
@@ -96,6 +97,10 @@
         &--hidden {
             width: 0;
             overflow: hidden;
+        }
+
+        &--disabled {
+            cursor: default;
         }
     }
 

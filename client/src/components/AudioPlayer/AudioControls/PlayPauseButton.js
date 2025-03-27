@@ -40,7 +40,7 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
         togglePlayPause();
       }
     };
-
+    
     window.addEventListener('keydown', handleKeyDown);
     setMediaSession();
 
