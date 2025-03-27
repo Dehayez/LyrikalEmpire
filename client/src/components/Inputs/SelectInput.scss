@@ -3,6 +3,12 @@
 .select-wrapper {
     position: relative;
     cursor: pointer;
+    border-radius: 5px;
+
+    &:hover {
+        border: 1px solid $color-gray-light;
+        background-color: $color-gray-dark-hover;
+    }
 
     &__selected {
         padding: 12px;
