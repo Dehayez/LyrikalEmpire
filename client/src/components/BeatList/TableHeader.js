@@ -17,7 +17,7 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
   const [showForm, setShowForm] = useState(false);
   const [formType, setFormType] = useState('');
   const { fetchGenres, fetchMoods, fetchKeywords, fetchFeatures, genres, moods, keywords, features } = useData();
-  const columns = ['title', 'genre', 'bpm', 'tierlist', 'mood', 'keyword', 'feature'];
+  const columns = ['title', 'bpm', 'tierlist', 'genre', 'mood', 'keyword', 'feature'];
 
   useResizableColumns(tableRef, mode, setIsDragging);
 

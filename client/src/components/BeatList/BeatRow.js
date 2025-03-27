@@ -347,15 +347,6 @@ const BeatRow = ({
       {mode !== 'lock' && (
         <>
           <td className="beat-row__data">
-             <SelectableInput
-              associationType="genres"
-              items={genres}
-              beatId={beat.id}
-              headerIndex='2'
-              disableFocus={disableFocus}
-            />
-          </td>
-          <td className="beat-row__data">
             {mode === 'edit' ? 
               <input 
                 id={`beat-bpm-input-${beat.id}`}
@@ -407,6 +398,15 @@ const BeatRow = ({
             : 
               <div className='beat-row__input beat-row__input--static'>{beat.tierlist}</div> 
             }
+          </td>
+          <td className="beat-row__data">
+             <SelectableInput
+              associationType="genres"
+              items={genres}
+              beatId={beat.id}
+              headerIndex='2'
+              disableFocus={disableFocus}
+            />
           </td>
           <td className="beat-row__data">
               <SelectableInput
