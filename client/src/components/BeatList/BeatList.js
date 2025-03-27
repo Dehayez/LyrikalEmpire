@@ -294,7 +294,7 @@ useEffect(() => {
     scrollTimeout = setTimeout(() => {
       container.style.overflowX = 'auto';
       container.style.overflowY = 'auto';
-    }, 150); // Adjust the timeout duration as needed
+    }, 100);
   };
 
   container.addEventListener('scroll', handleScroll);
