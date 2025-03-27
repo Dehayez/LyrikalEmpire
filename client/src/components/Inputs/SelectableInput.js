@@ -106,13 +106,29 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     }
   };
 
+  const scrollToFocusedItem = (index) => {
+    const listItems = containerRef.current.querySelectorAll('.selectable-input__list-item');
+    if (listItems[index]) {
+      listItems[index].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowDown') {
-      setFocusedIndex((prevIndex) => (prevIndex + 1) % associationItems.length);
+      setFocusedIndex((prevIndex) => {
+        const newIndex = (prevIndex + 1) % associationItems.length;
+        scrollToFocusedItem(newIndex);
+        return newIndex;
+      });
     } else if (e.key === 'ArrowUp') {
-      setFocusedIndex((prevIndex) =>
-        prevIndex - 1 < 0 ? associationItems.length - 1 : prevIndex - 1
-      );
+      setFocusedIndex((prevIndex) => {
+        const newIndex = prevIndex - 1 < 0 ? associationItems.length - 1 : prevIndex - 1;
+        scrollToFocusedItem(newIndex);
+        return newIndex;
+      });
     } else if (e.key === 'Enter' && focusedIndex >= 0) {
       handleItemSelect(associationItems[focusedIndex]);
     }
@@ -207,7 +223,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     </div>
     {isFocused && (
       <ul className="selectable-input__list">
-      {associationItems.map((item, index) => { // Add index as the second parameter
+      {associationItems.map((item, index) => {
         const isSelected = isItemSelected(item);
         return (
           <li
