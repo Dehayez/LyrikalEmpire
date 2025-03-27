@@ -23,6 +23,11 @@
     font-size: 16px;
     cursor: pointer;
 
+    &:hover {
+        border: 1px solid $color-gray-light;
+        background-color: $color-gray-dark-hover;
+    }
+
     &:focus {
       outline: none;
       border: 1px solid $color-primary;
@@ -33,6 +38,11 @@
       padding: 10px;
       text-align: left;
       cursor: default;
+
+      &:hover {
+        border: 1px solid transparent;
+        background-color: transparent;
+      }
 
       &-select {
         padding: 10px 8px;
