@@ -167,7 +167,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   };
   
   const toggleEdit = () => {
-    const newState = mode === 'edit' ? 'listen' : mode === 'listen' ? 'lock' : 'edit';
+    const newState = mode === 'listen' ? 'edit' : mode === 'edit' ? 'lock' : 'listen';
     setMode(newState);
   
     toast.dismiss();
@@ -175,17 +175,17 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
     setTimeout(() => {
       let message, icon;
       switch (newState) {
-        case 'edit':
-          message = 'Edit Mode Enabled';
-          icon = <IoPencil/>;
-          break;
         case 'listen':
           message = 'Listen Mode Enabled';
-          icon = <IoHeadsetSharp/>;
+          icon = <IoHeadsetSharp />;
+          break;
+        case 'edit':
+          message = 'Edit Mode Enabled';
+          icon = <IoPencil />;
           break;
         case 'lock':
           message = 'Lock Mode Enabled';
-          icon = <IoLockClosedSharp/>;
+          icon = <IoLockClosedSharp />;
           break;
       }
   
