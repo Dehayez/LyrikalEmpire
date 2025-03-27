@@ -223,21 +223,22 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     </div>
     {isFocused && (
       <ul className="selectable-input__list">
-      {associationItems.map((item, index) => {
-        const isSelected = isItemSelected(item);
-        return (
-          <li
-            key={item.id}
-            className={`selectable-input__list-item 
-              ${isSelected ? 'selectable-input__list-item--selected' : ''} 
-              ${focusedIndex === index ? 'selectable-input__list-item--focused' : ''}`}
-            onClick={() => handleItemSelect(item)}
-          >
-            {item.name}
-          </li>
-        );
-      })}
-    </ul>
+        {associationItems.map((item, index) => {
+          const isSelected = isItemSelected(item);
+          return (
+            <li
+              key={item.id}
+              className={`selectable-input__list-item 
+                ${isSelected ? 'selectable-input__list-item--selected' : ''} 
+                ${focusedIndex === index ? 'selectable-input__list-item--focused' : ''}`}
+              onClick={() => handleItemSelect(item)}
+              onMouseEnter={() => setFocusedIndex(index)}
+            >
+              {item.name}
+            </li>
+          );
+        })}
+      </ul>
     )}
   </div>
 </div>
