@@ -95,44 +95,6 @@
   }
 }
 
-.form-group {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-
-  .select-wrapper {
-    position: relative;
-    display: inline-block;
-
-    select, input {
-      appearance: none;
-      outline: none;
-      box-shadow: none;
-      border: none;
-      width: 100%;
-      padding: 10px;
-      border-radius: 4px;
-      font-size: 16px;
-      background-color: transparent;
-      color: $color-white;
-
-      &:hover {
-        cursor: pointer;
-        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      &:focus {
-        background-color: $color-gray-dark-hover;
-        box-shadow: $box-shadow-focus;
-      }
-    }
-
-    select {
-      padding-right: 30px;
-    }
-  }
-}
-
 .beat-row--selected, .beat-row--selected-top, .beat-row--selected-bottom, .beat-row--selected-middle {
   background-color: $color-primary-bg-hover;
 
