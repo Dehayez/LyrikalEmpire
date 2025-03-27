@@ -16,6 +16,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
   const [isFocused, setIsFocused] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [pendingAssociations, setPendingAssociations] = useState([]);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
 
   const items = {
     moods,
@@ -54,6 +55,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
 
   const handleBlur = (e) => {
     e.preventDefault();
+    setFocusedIndex(-1);
     if (inputContainerRef.current && !isFocused) {
       inputContainerRef.current.scrollLeft = 0;
     }
@@ -105,8 +107,14 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      inputRef.current.blur();
+    if (e.key === 'ArrowDown') {
+      setFocusedIndex((prevIndex) => (prevIndex + 1) % associationItems.length);
+    } else if (e.key === 'ArrowUp') {
+      setFocusedIndex((prevIndex) =>
+        prevIndex - 1 < 0 ? associationItems.length - 1 : prevIndex - 1
+      );
+    } else if (e.key === 'Enter' && focusedIndex >= 0) {
+      handleItemSelect(associationItems[focusedIndex]);
     }
   };
 
@@ -199,19 +207,21 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     </div>
     {isFocused && (
       <ul className="selectable-input__list">
-        {associationItems.map(item => {
-          const isSelected = isItemSelected(item);
-          return (
-            <li
-              key={item.id}
-              className={`selectable-input__list-item ${isSelected ? 'selectable-input__list-item--selected' : ''}`}
-              onClick={() => handleItemSelect(item)}
-            >
-              {item.name}
-            </li>
-          );
-        })}
-      </ul>
+      {associationItems.map((item, index) => { // Add index as the second parameter
+        const isSelected = isItemSelected(item);
+        return (
+          <li
+            key={item.id}
+            className={`selectable-input__list-item 
+              ${isSelected ? 'selectable-input__list-item--selected' : ''} 
+              ${focusedIndex === index ? 'selectable-input__list-item--focused' : ''}`}
+            onClick={() => handleItemSelect(item)}
+          >
+            {item.name}
+          </li>
+        );
+      })}
+    </ul>
     )}
   </div>
 </div>
