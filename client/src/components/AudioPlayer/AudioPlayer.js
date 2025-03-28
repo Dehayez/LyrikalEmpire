@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import WaveSurfer from 'wavesurfer.js';
 import { LiaMicrophoneAltSolid } from "react-icons/lia";
-import { PiSelectionDuotone, PiWaveform } from "react-icons/pi";
+import { PiWaveform } from "react-icons/pi";
 
 import { isMobileOrTablet } from '../../utils';
-import { useAudioPlayer } from '../../hooks/useAudioPlayer';
+import { useAudioPlayer, useLocalStorageSync } from '../../hooks';
 import { getSignedUrl } from '../../services/beatService';
 
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
@@ -31,9 +31,13 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
   const [audioSrc, setAudioSrc] = useState('');
-  const [waveform, setWaveform] = useState(false)
   const [autoPlay, setAutoPlay] = useState(false);
+  const [waveform, setWaveform] = useState(() => {
+    const savedWaveform = JSON.parse(localStorage.getItem('waveform'));
+    return savedWaveform !== null ? savedWaveform : false;
+  });
 
+  useLocalStorageSync({ waveform });
 
   const toggleLyricsModal = () => {
     setLyricsModal(prevState => !prevState);
