@@ -4,7 +4,7 @@ import { useHeaderWidths, useData } from '../../contexts';
 import { SelectedList } from './SelectedList';
 import './SelectableInput.scss';
 
-export const SelectableInput = ({ beatId, associationType, headerIndex, label, placeholder, disableFocus, isNewBeat, newBeatId }) => {
+export const SelectableInput = ({ beatId, associationType, headerIndex, label, placeholder, disableFocus, isNewBeat, newBeatId, mode }) => {
   const { headerWidths } = useHeaderWidths();
   const { genres, moods, keywords, features } = useData();
 
@@ -190,7 +190,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
         ${isFocused ? 'selectable-input__input-container--focused' : ''} 
         ${isNewBeat ? 'selectable-input__input-container--new-beat' : ''} 
         ${disableFocus ? 'selectable-input__input-container--disabled' : ''}`}
-      onClick={handleContainerClick}
+        {...(mode === 'edit' && { onClick: handleContainerClick })}
       ref={inputContainerRef}
     >
       <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />

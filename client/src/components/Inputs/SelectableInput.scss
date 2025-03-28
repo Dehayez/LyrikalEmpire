@@ -52,7 +52,7 @@
             cursor: default;
 
             &:hover {
-                border: none;
+                border: 1px solid transparent;
                 background-color: transparent;
             }
         }

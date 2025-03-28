@@ -404,7 +404,8 @@ const BeatRow = ({
               associationType="genres"
               items={genres}
               beatId={beat.id}
-              headerIndex='2'
+              headerIndex='4'
+              mode={mode}
               disableFocus={disableFocus}
             />
           </td>
@@ -414,6 +415,7 @@ const BeatRow = ({
                 items={moods}
                 beatId={beat.id}
                 headerIndex='5'
+                mode={mode}
                 disableFocus={disableFocus}
               />
           </td>
@@ -423,6 +425,7 @@ const BeatRow = ({
                 items={keywords}
                 beatId={beat.id}
                 headerIndex='6'
+                mode={mode}
                 disableFocus={disableFocus}
               />
           </td> 
@@ -432,6 +435,7 @@ const BeatRow = ({
                 items={features}
                 beatId={beat.id}
                 headerIndex='7'
+                mode={mode}
                 disableFocus={disableFocus}
               />
           </td>
