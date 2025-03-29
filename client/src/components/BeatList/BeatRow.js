@@ -280,7 +280,7 @@ const BeatRow = ({
       ref={ref} 
       className={beatRowClasses}
       key={beatRowClasses}
-      onClick={mode !== "edit" ? (isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)) : undefined}
+      /* onClick={mode !== "edit" ? (isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)) : undefined} */
       onMouseEnter={(e) => { 
         if (!isMobileOrTablet()) { 
           e.currentTarget.querySelectorAll('.interactive-button').forEach(button => { 
