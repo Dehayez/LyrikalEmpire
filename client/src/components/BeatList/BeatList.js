@@ -192,7 +192,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   
       toast(<>{message}</>, {
         position: "bottom-center",
-        autoClose: 60000,
+        autoClose: 600,
         hideProgressBar: true,
         closeButton: false,
         pauseOnFocusLoss: true,
