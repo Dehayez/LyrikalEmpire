@@ -97,9 +97,9 @@
     
     &__input {
         background-color: transparent;
-        border: none !important;
+        border: 1px solid transparent;
         font-size: 16px;
-        min-height: 20px;
+        height: 24px;
         width: auto;
         transition: width 0.2s ease, overflow 0.2s ease;
         cursor: pointer;

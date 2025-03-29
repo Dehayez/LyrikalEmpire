@@ -12,10 +12,13 @@
     }
 
     &__selected {
-        padding: 12px;
-        border-radius: 4px;
-        background-color: $color-black;
-        border: 1px solid $color-gray-mid;
+      display: flex;
+      align-items: center;
+      height: 24px;
+      padding: 12px;
+      border-radius: 4px;
+      background-color: $color-black;
+      border: 1px solid $color-gray-mid;
     }
 
     &__options {
