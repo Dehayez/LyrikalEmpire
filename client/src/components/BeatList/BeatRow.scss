@@ -35,6 +35,10 @@
       outline: none;
       border: 1px solid $color-primary;
       cursor: text;
+
+      &:hover {
+        background-color: transparent;
+      }
     }
 
     &--static {
