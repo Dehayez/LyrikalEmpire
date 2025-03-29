@@ -141,6 +141,10 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
         setIsOpen(false); 
     };
 
+    const onCloseNoReset = () => {
+        setIsOpen(false); 
+    };
+
     useEffect(() => {
         const handleKeyDown = (event) => isOpen && event.key === 'Enter' && handleSubmit(event);
         document.addEventListener('keydown', handleKeyDown);
@@ -154,6 +158,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
             title="Add Track"
             onConfirm={handleSubmit}
             onCancel={onClose}
+            onCloseNoReset={onCloseNoReset}
             confirmButtonText="Add"
             cancelButtonText="Cancel"
         >

@@ -28,7 +28,7 @@ const modalStyle = {
   }
 };
 
-const DraggableModal = ({ isOpen, setIsOpen, title, children, onConfirm, onCancel, confirmButtonText="Save", cancelButtonText="Cancel", cancelButtonType="transparent", confirmButtonType="primary" }) => {
+const DraggableModal = ({ isOpen, setIsOpen, title, children, onConfirm, onCancel, onCloseNoReset, confirmButtonText="Save", cancelButtonText="Cancel", cancelButtonType="transparent", confirmButtonType="primary" }) => {
   const draggableRef = useRef(null);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const DraggableModal = ({ isOpen, setIsOpen, title, children, onConfirm, onCance
   };
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={handleCancel} style={modalStyle}>
+    <Modal isOpen={isOpen} onRequestClose={onCloseNoReset} style={modalStyle}>
       <Draggable handle=".modal__title" nodeRef={draggableRef}>
         <div ref={draggableRef} className='modal'>
           <div className='modal-content'>
