@@ -192,15 +192,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   
       toast(<>{message}</>, {
         position: "bottom-center",
-        autoClose: 400,
+        autoClose: 60000,
         hideProgressBar: true,
         closeButton: false,
-        pauseOnFocusLoss: false,
+        pauseOnFocusLoss: true,
         className: `toaster--mode ${!isMobileOrTablet() ? 'toaster--mode--desktop' : ''}`,
         icon: icon,
         transition: Slide,
       });
-    }, 250);
+    }, 50);
   };
 
   useEffect(() => {
