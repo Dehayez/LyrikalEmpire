@@ -62,7 +62,7 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
       onClick={handlePlayPauseClick}
     >
       <Tooltip text={isPlaying ? 'Pause' : 'Play'} />
-      {isPlaying ? <IoPauseSharp size={24} /> : <IoPlaySharp size={24} />}
+      {isPlaying ? <IoPauseSharp size={24} /> : <IoPlaySharp size={24} className="play-icon" />}
     </button>
   );
 };
