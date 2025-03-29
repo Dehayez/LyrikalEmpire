@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import classNames from 'classnames';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoOptionsSharp, IoPersonSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
@@ -374,8 +375,24 @@ useEffect(() => {
             </>
             }
           </IconButton>
-          <div className={`beat-list__search-container${isSearchVisible ? ' beat-list__search-container--active' : ''}`} onClick={(e) => e.stopPropagation()}>
-          <div className={`beat-list__action-button beat-list__action-button--search icon-button ${searchText && !isSearchVisible ? 'beat-list__action-button--search--active' : ''} ${!isSearchVisible ? 'beat-list__action-button--search--closed' : ''}`} onClick={toggleSearchVisibility}>
+          <div
+            className={classNames('beat-list__search-container', {
+              'beat-list__search-container--active': isSearchVisible,
+            })}
+            onClick={(e) => e.stopPropagation()}
+          >
+          <div
+            className={classNames(
+              'beat-list__action-button',
+              'beat-list__action-button--search',
+              'icon-button',
+              {
+                'beat-list__action-button--search--active': searchText && !isSearchVisible,
+                'beat-list__action-button--search--closed': !isSearchVisible,
+              }
+            )}
+            onClick={toggleSearchVisibility}
+          >
             {!isMobileOrTablet() && (
               <Tooltip text="Search in tracks" position='left' />
             )}

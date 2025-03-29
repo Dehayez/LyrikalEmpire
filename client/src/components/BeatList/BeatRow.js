@@ -329,7 +329,6 @@ const BeatRow = ({
             className='beat-row__input beat-row__input--title'
             type="text"
             defaultValue={beat.title} 
-            /* onFocus={handleFocus} */
             onBlur={(e) => {
               handleInputChange('title', e.target.value);
               handleBlur(beat.id, 'title', e.target.value);

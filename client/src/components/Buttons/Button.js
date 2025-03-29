@@ -1,19 +1,22 @@
 import React from 'react';
+import classNames from 'classnames';
 import './Button.scss';
 
 const Button = ({ className, onClick, children, text, type = 'button', variant, size }) => {
-  const buttonClass = [
+  const buttonClass = classNames(
     'button',
     className,
-    variant === 'primary' && 'button--primary',
-    variant === 'transparent' && 'button--transparent',
-    variant === 'outline' && 'button--outline',
-    variant === 'warning' && 'button--warning',
-    size && `button--${size}`
-  ].filter(Boolean).join(' ');
+    {
+      'button--primary': variant === 'primary',
+      'button--transparent': variant === 'transparent',
+      'button--outline': variant === 'outline',
+      'button--warning': variant === 'warning',
+      [`button--${size}`]: size,
+    }
+  );
 
   return (
-    <button className={buttonClass.trim()} onClick={onClick} type={type}>
+    <button className={buttonClass} onClick={onClick} type={type}>
       {text}
       {children}
     </button>

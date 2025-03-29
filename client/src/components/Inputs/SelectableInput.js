@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import classNames from 'classnames';
 import { addAssociationsToBeat, removeAssociationFromBeat, getAssociationsByBeatId } from '../../services';
 import { useHeaderWidths, useData } from '../../contexts';
 import { SelectedList } from './SelectedList';
@@ -186,20 +187,21 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     <div className='selectable-input-container'>
       <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
         <div
-          className={`selectable-input__input-container 
-            ${isFocused ? 'selectable-input__input-container--focused' : ''} 
-            ${form ? 'selectable-input__input-container--form' : ''} 
-            ${disableFocus ? 'selectable-input__input-container--disabled' : ''}`}
-            {...(mode === 'edit' && { onClick: handleContainerClick })}
+          className={classNames('selectable-input__input-container', {
+            'selectable-input__input-container--focused': isFocused,
+            'selectable-input__input-container--form': form,
+            'selectable-input__input-container--disabled': disableFocus,
+          })}
           ref={inputContainerRef}
         >
           <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />
           <input
             ref={inputRef}
             id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
-            className={`form-group__input selectable-input__input 
-              ${!isFocused ? 'selectable-input__input--hidden' : ''} 
-              ${disableFocus ? 'selectable-input__input--disabled' : ''}`}
+            className={classNames('form-group__input', 'selectable-input__input', {
+              'selectable-input__input--hidden': !isFocused,
+              'selectable-input__input--disabled': disableFocus,
+            })}
             placeholder={selectedItems.length === 0 ? placeholder : ''}
             type="text"
             value={inputValue}
@@ -230,9 +232,10 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
               return (
                 <li
                   key={item.id}
-                  className={`selectable-input__list-item 
-                    ${isSelected ? 'selectable-input__list-item--selected' : ''} 
-                    ${focusedIndex === index ? 'selectable-input__list-item--focused' : ''}`.trim()}
+                  className={classNames('selectable-input__list-item', {
+                    'selectable-input__list-item--selected': isSelected,
+                    'selectable-input__list-item--focused': focusedIndex === index,
+                  })}
                   onClick={() => handleItemSelect(item)}
                   onMouseEnter={() => setFocusedIndex(index)}
                 >
