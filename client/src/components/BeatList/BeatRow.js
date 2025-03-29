@@ -40,7 +40,7 @@ const BeatRow = ({
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const toDragAndDrop = location.pathname !== '/' && (mode === 'lock' || mode === 'listen');
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
-  const [isInputFocused, setInputFocused] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
   const [disableFocus, setDisableFocus] = useState(false);
   
   const urlKey = `currentPage_${location.pathname}`;
@@ -123,7 +123,7 @@ const BeatRow = ({
     'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
     'beat-row--playing': currentBeat && beat.id === currentBeat.id && isSamePlaylist,
-    'beat-row--focused': isInputFocused,
+    'beat-row--focused': inputFocused,
     'beat-row--selected': isDragging,
   });
 
@@ -158,6 +158,10 @@ const BeatRow = ({
 
   const handleFocus = () => setInputFocused(true);
 
+  useEffect(() => {
+    console.log(inputFocused);
+  }, [inputFocused]);
+
   const handleBlur = (id, field, value) => {
     setInputFocused(false);
     handleUpdate(id, field, value);
@@ -175,6 +179,10 @@ const BeatRow = ({
       handleBeatClick(beat, e);
     }
   };
+
+  useEffect(() => {
+    console.log(inputFocused);
+  }, [inputFocused]);
 
   const handleMenuButtonClick = (e, beat) => {
     e.stopPropagation();
@@ -280,7 +288,7 @@ const BeatRow = ({
       ref={ref} 
       className={beatRowClasses}
       key={beatRowClasses}
-      /* onClick={mode !== "edit" ? (isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)) : undefined} */
+      onClick={mode !== "edit" ? (isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)) : undefined}
       onMouseEnter={(e) => { 
         if (!isMobileOrTablet()) { 
           e.currentTarget.querySelectorAll('.interactive-button').forEach(button => { 
@@ -324,14 +332,14 @@ const BeatRow = ({
         </td>
       )}
       <td className="beat-row__data">
-        {!isInputFocused && <Highlight text={beat.title} highlight={searchText} />}
+        {!inputFocused && <Highlight text={beat.title} highlight={searchText} />}
         {mode === 'edit' ? 
           <input 
             id={`beat-title-input-${beat.id}`}
             className='beat-row__input beat-row__input--title'
             type="text"
             defaultValue={beat.title} 
-            onFocus={handleFocus}
+            /* onFocus={handleFocus} */
             onBlur={(e) => {
               handleInputChange('title', e.target.value);
               handleBlur(beat.id, 'title', e.target.value);

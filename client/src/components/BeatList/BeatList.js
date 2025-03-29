@@ -39,7 +39,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const [selectedFeature, setSelectedFeature] = useState([]);
   
   const { setPlaylistId } = usePlaylist();
-  const { allBeats, paginatedBeats, isInputFocused, setRefreshBeats, currentBeats, setCurrentBeats } = useBeat();
+  const { allBeats, paginatedBeats, inputFocused, setRefreshBeats, currentBeats, setCurrentBeats } = useBeat();
   const beats = externalBeats || allBeats;
   const [filteredBeats, setFilteredBeats] = useState(beats);
 
@@ -326,13 +326,13 @@ useEffect(() => {
       if (event.key === 'Enter' && selectedBeats.length > 0) {
         handlePlayPause(selectedBeats[0]);
       }
-      if (!isInputFocused && (event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
+      if (!inputFocused && (event.key === 'Delete' || event.key === 'Backspace') && selectedBeats.length > 0) {
         openConfirmModal();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBeats, handlePlayPause, isInputFocused]);
+  }, [selectedBeats, handlePlayPause, inputFocused]);
 
   return (
     <div ref={containerRef} className="beat-list">
