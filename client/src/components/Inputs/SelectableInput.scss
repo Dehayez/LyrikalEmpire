@@ -44,17 +44,9 @@
         min-width: 100px;
 
         &:hover {
-            border: 1px solid $color-gray-light ;
+            border: $border-gray-light-hover;
             background-color: $color-gray-dark-hover;
         }
-
-       /*  &--beat-row {
-            &:hover {
-                border: 1px solid $color-gray-light ;
-                background-color: $color-gray-dark-hover;
-            }
-
-        } */
 
         &--disabled {
             cursor: default;

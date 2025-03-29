@@ -19,7 +19,7 @@
       background-color: $color-gray-mid;
     }
     &--active {
-      border: 1px solid $color-gray;
+      border: $border-gray-light-hover;
     }
   }
 
