@@ -156,12 +156,6 @@ const BeatRow = ({
     handleUpdate(beat.id, 'tierlist', newTierlist);
   };
 
-  const handleFocus = () => setInputFocused(true);
-
-  useEffect(() => {
-    console.log(inputFocused);
-  }, [inputFocused]);
-
   const handleBlur = (id, field, value) => {
     setInputFocused(false);
     handleUpdate(id, field, value);
@@ -179,10 +173,6 @@ const BeatRow = ({
       handleBeatClick(beat, e);
     }
   };
-
-  useEffect(() => {
-    console.log(inputFocused);
-  }, [inputFocused]);
 
   const handleMenuButtonClick = (e, beat) => {
     e.stopPropagation();

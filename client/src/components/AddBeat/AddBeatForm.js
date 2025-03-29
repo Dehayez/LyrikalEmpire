@@ -178,7 +178,7 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                         spellCheck="false" 
                         isWarning={isTitleEmpty}
                     />
-                    <SelectableInput label="Genre" associationType="genres" items={genres} newBeatId={beatId} isNewBeat={true}/>
+                    <SelectableInput label="Genre" associationType="genres" items={genres} newBeatId={beatId} form/>
                     <FormInput
                         id="bpm"
                         name="bpm"
@@ -208,9 +208,9 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                             { value: 'F', label: 'F' },
                         ]}
                     />
-                    <SelectableInput label="Moods" associationType="moods" items={moods} newBeatId={beatId} isNewBeat={true}/>
-                    <SelectableInput label="Keywords" associationType="keywords" items={keywords} newBeatId={beatId} isNewBeat={true}/>
-                    <SelectableInput label="Features" associationType="features" items={features} newBeatId={beatId} isNewBeat={true}/>
+                    <SelectableInput label="Moods" associationType="moods" items={moods} newBeatId={beatId} form/>
+                    <SelectableInput label="Keywords" associationType="keywords" items={keywords} newBeatId={beatId} form/>
+                    <SelectableInput label="Features" associationType="features" items={features} newBeatId={beatId} form/>
                 </form>
         </DraggableModal>
     );

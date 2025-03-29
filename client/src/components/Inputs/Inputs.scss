@@ -66,17 +66,15 @@ input[type="number"] {
         color: $color-white;
         caret-color: $color-white;
         outline: none;
-        transition: background-color 0.4s ease, box-shadow 0.4s ease;
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
         
         &:hover {
-            box-shadow: $box-shadow-hover;
+            border: $border-gray-hover;
         }
         
         &:focus {
-            box-shadow: $box-shadow-focus;
-        
             &:hover {
-                box-shadow: $box-shadow-focus;
+                border: $border-primary;
             }
         }
     }

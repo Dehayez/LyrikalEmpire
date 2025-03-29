@@ -4,7 +4,7 @@ import { useHeaderWidths, useData } from '../../contexts';
 import { SelectedList } from './SelectedList';
 import './SelectableInput.scss';
 
-export const SelectableInput = ({ beatId, associationType, headerIndex, label, placeholder, disableFocus, isNewBeat, newBeatId, mode }) => {
+export const SelectableInput = ({ beatId, associationType, headerIndex, label, placeholder, disableFocus, form, newBeatId, mode }) => {
   const { headerWidths } = useHeaderWidths();
   const { genres, moods, keywords, features } = useData();
 
@@ -75,7 +75,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     if (isSelected) {
       await handleRemoveAssociation(newAssociation);
     } else {
-      if (isNewBeat) {
+      if (form) {
         setSelectedItems(prevItems => [...prevItems, newAssociation]);
         setPendingAssociations(prevItems => [...prevItems, associationId]);
       } else {
@@ -93,7 +93,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
 
   const handleRemoveAssociation = async (item) => {
     const associationId = item[`${singularAssociationType}_id`];
-    if (isNewBeat) {
+    if (form) {
       setSelectedItems(prevItems => prevItems.filter(item => item[`${singularAssociationType}_id`] !== associationId));
       setPendingAssociations(prevItems => prevItems.filter(id => id !== associationId));
     } else {
@@ -168,7 +168,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
   }, [headerWidths]);
 
   useEffect(() => {
-    if (isNewBeat && newBeatId && pendingAssociations.length > 0) {
+    if (form && newBeatId && pendingAssociations.length > 0) {
       const uploadPendingAssociations = async () => {
         try {
           await addAssociationsToBeat(newBeatId, associationType, pendingAssociations);
@@ -180,69 +180,69 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
   
       uploadPendingAssociations();
     }
-  }, [newBeatId, isNewBeat, associationType, pendingAssociations]);
+  }, [newBeatId, form, associationType, pendingAssociations]);
 
   return (
-<div className={`selectable-input-container `}>
-  <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
-    <div
-      className={`selectable-input__input-container 
-        ${isFocused ? 'selectable-input__input-container--focused' : ''} 
-        ${isNewBeat ? 'selectable-input__input-container--new-beat' : ''} 
-        ${disableFocus ? 'selectable-input__input-container--disabled' : ''}`}
-        {...(mode === 'edit' && { onClick: handleContainerClick })}
-      ref={inputContainerRef}
-    >
-      <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />
-      <input
-        ref={inputRef}
-        id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
-        className={`form-group__input selectable-input__input 
-          ${!isFocused ? 'selectable-input__input--hidden' : ''} 
-          ${disableFocus ? 'selectable-input__input--disabled' : ''}`}
-        placeholder={selectedItems.length === 0 ? placeholder : ''}
-        type="text"
-        value={inputValue}
-        onFocus={(e) => {
-          handleFocus();
-          e.target.nextSibling.classList.add('form-group__label--active');
-        }}
-        onBlur={(e) => {
-          handleBlur(e);
-          if (!inputValue && selectedItems.length === 0) {
-            e.target.nextSibling.classList.remove('form-group__label--active');
-          }
-        }}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        onClick={(e) => e.stopPropagation()}
-        disabled={disableFocus}
-        autoComplete="off"
-      />
-      <label htmlFor={`selectable-input-${associationType}-${beatId}-${headerIndex}`} className={`form-group__label ${inputValue || isFocused || selectedItems.length > 0 ? 'form-group__label--active' : ''}`}>
-        {label}
-      </label>
+    <div className='selectable-input-container'>
+      <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
+        <div
+          className={`selectable-input__input-container 
+            ${isFocused ? 'selectable-input__input-container--focused' : ''} 
+            ${form ? 'selectable-input__input-container--form' : ''} 
+            ${disableFocus ? 'selectable-input__input-container--disabled' : ''}`}
+            {...(mode === 'edit' && { onClick: handleContainerClick })}
+          ref={inputContainerRef}
+        >
+          <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />
+          <input
+            ref={inputRef}
+            id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
+            className={`form-group__input selectable-input__input 
+              ${!isFocused ? 'selectable-input__input--hidden' : ''} 
+              ${disableFocus ? 'selectable-input__input--disabled' : ''}`}
+            placeholder={selectedItems.length === 0 ? placeholder : ''}
+            type="text"
+            value={inputValue}
+            onFocus={(e) => {
+              handleFocus();
+              e.target.nextSibling.classList.add('form-group__label--active');
+            }}
+            onBlur={(e) => {
+              handleBlur(e);
+              if (!inputValue && selectedItems.length === 0) {
+                e.target.nextSibling.classList.remove('form-group__label--active');
+              }
+            }}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onClick={(e) => e.stopPropagation()}
+            disabled={disableFocus}
+            autoComplete="off"
+          />
+          <label htmlFor={`selectable-input-${associationType}-${beatId}-${headerIndex}`} className={`form-group__label ${inputValue || isFocused || selectedItems.length > 0 ? 'form-group__label--active' : ''}`}>
+            {label}
+          </label>
+        </div>
+        {isFocused && (
+          <ul className="selectable-input__list">
+            {associationItems.map((item, index) => {
+              const isSelected = isItemSelected(item);
+              return (
+                <li
+                  key={item.id}
+                  className={`selectable-input__list-item 
+                    ${isSelected ? 'selectable-input__list-item--selected' : ''} 
+                    ${focusedIndex === index ? 'selectable-input__list-item--focused' : ''}`.trim()}
+                  onClick={() => handleItemSelect(item)}
+                  onMouseEnter={() => setFocusedIndex(index)}
+                >
+                  {item.name}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
     </div>
-    {isFocused && (
-      <ul className="selectable-input__list">
-        {associationItems.map((item, index) => {
-          const isSelected = isItemSelected(item);
-          return (
-            <li
-              key={item.id}
-              className={`selectable-input__list-item 
-                ${isSelected ? 'selectable-input__list-item--selected' : ''} 
-                ${focusedIndex === index ? 'selectable-input__list-item--focused' : ''}`}
-              onClick={() => handleItemSelect(item)}
-              onMouseEnter={() => setFocusedIndex(index)}
-            >
-              {item.name}
-            </li>
-          );
-        })}
-      </ul>
-    )}
-  </div>
-</div>
   );
 };
