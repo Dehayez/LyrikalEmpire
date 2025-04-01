@@ -16,6 +16,7 @@ import { IconButton } from '../Buttons';
 import PaginationControls from './PaginationControls';
 import TableHeader from './TableHeader';
 import { Tooltip } from '../Tooltip';
+import { SearchInput } from '../Inputs/SearchInput';
 
 import './BeatList.scss';
 
@@ -364,52 +365,16 @@ useEffect(() => {
               </>
               }
           </IconButton>
-          <div
-            className={classNames('beat-list__search-container', {
-              'beat-list__search-container--active': isSearchVisible,
-            })}
-            onClick={(e) => e.stopPropagation()}
-          >
-          <div
-            className={classNames(
-              'beat-list__action-button',
-              'beat-list__action-button--search',
-              'icon-button',
-              {
-                'beat-list__action-button--search--active': searchText && !isSearchVisible,
-                'beat-list__action-button--search--closed': !isSearchVisible,
-              }
-            )}
-            onClick={toggleSearchVisibility}
-          >
-            {!isMobileOrTablet() && (
-              <Tooltip text="Search in tracks" position='left' />
-            )}
-              <IoSearchSharp />
-            </div>
-            <input
-              id='search-input'
-              ref={searchInputRef}
-              type="text"
-              placeholder={isSearchVisible ? "Search tracks" : ""}
-              value={searchText}
-              onChange={handleSearchChange}
-              className={`beat-list__search-input ${isSearchVisible ? 'visible' : ''}`}
-              autoComplete="off"
-            />
-           {isSearchVisible && searchText && (
-              <div 
-                className="beat-list__action-button beat-list__action-button--clear" 
-                onClick={() => {
-                  setSearchText('');
-                  localStorage.setItem('searchText', '');
-                  searchInputRef.current?.focus();
-                  setCurrentPage(previousPage);
-              }}>
-                <IoCloseSharp />
-              </div>
-            )}
-          </div>
+          <SearchInput
+            searchText={searchText}
+            setSearchText={setSearchText}
+            isSearchVisible={isSearchVisible}
+            setIsSearchVisible={setIsSearchVisible}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            previousPage={previousPage}
+            setPreviousPage={setPreviousPage}
+          />
 
           <IconButton className='beat-list__action-button--profile' onClick={() => navigate('/profile')}>
             <Tooltip text={username} position='left' />
