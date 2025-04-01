@@ -95,7 +95,14 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
   return (
     <div className="playlists">
       <div className="playlists__header">
-        <h2 className="playlists__title">Playlists</h2>
+        <div className="playlists__header-left">
+          <Link to="/" className="button-homepage">
+            <IconButton>
+              <IoAlbums />
+            </IconButton>
+          </Link>
+          <h2 className="playlists__title">Playlists</h2>
+        </div>
         <button className='icon-button' onClick={() => handleAddPlaylist(`Playlist #${playlists.length + 1}`, null)}>
           <Tooltip text="Add playlist" position='left' />
           <IoAddSharp />

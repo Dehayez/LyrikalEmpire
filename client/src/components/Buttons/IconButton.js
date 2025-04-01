@@ -1,11 +1,16 @@
 import React from 'react';
+import classNames from 'classnames';
 import { isMobileOrTablet } from '../../utils';
 import './IconButton.scss';
 
-const IconButton = ({ className, onClick, children }) => {
+const IconButton = ({ className = null, onClick, children }) => {
+  const classes = classNames('icon-button', className, {
+    'icon-button--mobile': isMobileOrTablet(),
+  });
+
   return (
-    <div className={`icon-button ${className} ${isMobileOrTablet() ? 'icon-button--mobile' : ''}`} onClick={onClick}>
-        {children}
+    <div className={classes} onClick={onClick}>
+      {children}
     </div>
   );
 };
