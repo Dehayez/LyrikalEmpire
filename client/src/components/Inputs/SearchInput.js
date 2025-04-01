@@ -1,10 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { IoSearchSharp, IoCloseSharp } from "react-icons/io5";
-import { getInitialState } from '../../utils';
-
 import classNames from 'classnames';
+import { getInitialState, isMobileOrTablet } from '../../utils';
 import { Tooltip } from '../Tooltip';
-import { isMobileOrTablet } from '../../utils';
+
 import '../BeatList/BeatList.scss';
 
 export const SearchInput = ({
@@ -17,29 +16,29 @@ export const SearchInput = ({
 }) => {
   const searchInputRef = useRef(null);
   const [isSearchVisible, setIsSearchVisible] = useState(() => getInitialState('searchText', '') !== '');
-  
 
-useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event) => {
-    if (searchInputRef.current && !searchInputRef.current.contains(event.target) && isSearchVisible && !searchText) {
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target) &&
+        isSearchVisible &&
+        !searchText
+      ) {
         setIsSearchVisible(false);
-    }
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-    };
-}, [isSearchVisible, searchText]);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isSearchVisible, searchText]);
 
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
     setIsSearchVisible(willBeVisible);
+
     if (willBeVisible) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 200);
+      setTimeout(() => searchInputRef.current?.focus(), 200);
     }
   };
 
