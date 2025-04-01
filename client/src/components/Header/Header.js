@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { isMobileOrTablet } from '../../utils';
 import { IoMenuSharp, IoListSharp, IoLockOpen, IoLockClosed } from 'react-icons/io5';
@@ -8,53 +8,89 @@ import { Tooltip } from '../Tooltip';
 
 import './Header.scss';
 
-const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, handleMouseEnterLeft, handleMouseLeaveLeft, handleMouseEnterRight, handleMouseLeaveRight, isLeftDivVisible, isRightDivVisible, isAuthPage, closeSidePanel }) => {
+const PanelToggle = ({
+  isPanelVisible,
+  isDivVisible,
+  isHovered,
+  setHovered,
+  handleMouseEnter,
+  handleMouseLeave,
+  handleClick,
+  position,
+}) => {
+  const tooltipPosition = position === 'left' ? 'right' : 'left';
+  const hoverClass = isMobileOrTablet() ? 'icon-button--mobile' : '';
+
+  return (
+    <div
+      {...(!isMobileOrTablet() ? { onMouseEnter: () => { setHovered(true); handleMouseEnter(); }, onMouseLeave: () => { setHovered(false); handleMouseLeave(); } } : {})}
+      onClick={handleClick}
+      className={`header__nav-menu-${position}`}
+    >
+      {isPanelVisible ? (
+        <IconButton className={hoverClass}>
+          {isHovered ? <IoLockOpen /> : <IoLockClosed />}
+          {!isMobileOrTablet() && <Tooltip text={isHovered ? 'Unlock Panel' : 'Lock Panel'} position={tooltipPosition} />}
+        </IconButton>
+      ) : isDivVisible ? (
+        <IconButton>
+          {isHovered ? <IoLockClosed /> : <IoLockOpen />}
+          {!isMobileOrTablet() && <Tooltip text={isHovered ? 'Lock Panel' : 'Unlock Panel'} position={tooltipPosition} />}
+        </IconButton>
+      ) : (
+        <IconButton className={hoverClass}>
+          {position === 'left' ? <IoMenuSharp /> : <IoListSharp />}
+        </IconButton>
+      )}
+    </div>
+  );
+};
+
+const Header = ({
+  isLeftPanelVisible,
+  isRightPanelVisible,
+  toggleSidePanel,
+  handleMouseEnterLeft,
+  handleMouseLeaveLeft,
+  handleMouseEnterRight,
+  handleMouseLeaveRight,
+  isLeftDivVisible,
+  isRightDivVisible,
+  isAuthPage,
+  closeSidePanel,
+}) => {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
 
-  const handleClickLeft = () => {
-    if (isMobileOrTablet() && isRightPanelVisible) {
-      toggleSidePanel('right');
-    }
-    toggleSidePanel('left');
-  };
+  const [isLeftHovered, setIsLeftHovered] = useState(false);
+  const [isRightHovered, setIsRightHovered] = useState(false);
 
-  const handleClickRight = () => {
-    if (isMobileOrTablet() && isLeftPanelVisible) {
-      toggleSidePanel('left');
+  const handleClickPanel = (panel) => {
+    if (isMobileOrTablet()) {
+      if (panel === 'left' && isRightPanelVisible) toggleSidePanel('right');
+      if (panel === 'right' && isLeftPanelVisible) toggleSidePanel('left');
     }
-    toggleSidePanel('right');
+    toggleSidePanel(panel);
   };
 
   const handleHomepageClick = () => {
-      if (!isMobileOrTablet) {
-        closeSidePanel('both');
-      }
+    if (!isMobileOrTablet()) closeSidePanel('both');
   };
 
   return (
     <header className="header">
-      {!isAuthPage && 
-        <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterLeft, onMouseLeave: handleMouseLeaveLeft } : {})} onClick={handleClickLeft} className="header__nav-menu-left">
-          {
-            isLeftPanelVisible ? (
-              <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-                <IoLockClosed />
-                {!isMobileOrTablet() && <Tooltip text="Unlock Panel" position="right" />}
-              </IconButton>
-            ) : isLeftDivVisible ? (
-              <IconButton>
-                <IoLockOpen />
-                {!isMobileOrTablet() && <Tooltip text="Lock Panel" position="right" />}
-              </IconButton>
-            ) : (
-              <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-                <IoMenuSharp />
-              </IconButton>
-            )
-          }
-        </div>
-    }
+      {!isAuthPage && (
+        <PanelToggle
+          isPanelVisible={isLeftPanelVisible}
+          isDivVisible={isLeftDivVisible}
+          isHovered={isLeftHovered}
+          setHovered={setIsLeftHovered}
+          handleMouseEnter={handleMouseEnterLeft}
+          handleMouseLeave={handleMouseLeaveLeft}
+          handleClick={() => handleClickPanel('left')}
+          position="left"
+        />
+      )}
 
       {isDashboard && (
         <>
@@ -62,35 +98,26 @@ const Header = ({ isLeftPanelVisible, isRightPanelVisible, toggleSidePanel, hand
           <Breadcrumb />
         </>
       )}
-      
+
       <div className="header__nav-group" onClick={handleHomepageClick}>
         <Link to="/">
           <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
         </Link>
       </div>
 
-      {!isAuthPage && 
-        <div {...(!isMobileOrTablet() ? { onMouseEnter: handleMouseEnterRight, onMouseLeave: handleMouseLeaveRight } : {})} onClick={handleClickRight} className="header__nav-menu-right">
-          {
-            isRightPanelVisible ? (
-              <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-                <IoLockClosed />
-                {!isMobileOrTablet() && <Tooltip text="Unlock Panel" position="left" />}
-              </IconButton>
-            ) : isRightDivVisible ? (
-              <IconButton>
-                <IoLockOpen />
-                {!isMobileOrTablet() && <Tooltip text="Lock Panel" position="left" />}
-              </IconButton>
-            ) : (
-              <IconButton className={isMobileOrTablet() ? 'icon-button--mobile' : ''}>
-                <IoListSharp />
-              </IconButton>
-            )
-          }
-        </div>
-      }
-  </header>
+      {!isAuthPage && (
+        <PanelToggle
+          isPanelVisible={isRightPanelVisible}
+          isDivVisible={isRightDivVisible}
+          isHovered={isRightHovered}
+          setHovered={setIsRightHovered}
+          handleMouseEnter={handleMouseEnterRight}
+          handleMouseLeave={handleMouseLeaveRight}
+          handleClick={() => handleClickPanel('right')}
+          position="right"
+        />
+      )}
+    </header>
   );
 };
 
