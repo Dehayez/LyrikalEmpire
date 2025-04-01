@@ -9,17 +9,6 @@
   background-color: $color-black;
   border-radius: 4px;
 
-  & .icon-button {
-    padding: 6px;
-    z-index: 10;
-
-    &--mobile {
-      &:hover {
-        background-color: transparent;
-      }
-    }
-  }
-
   &__nav-group {
     display: flex;
     justify-content: center;
@@ -33,21 +22,5 @@
 
   &__nav-logo {
     width: 30px;
-  }
-
-  &__nav-menu-left, &__nav-menu-right {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    margin: 20px;
-  }
-
-  &__nav-menu-left {
-    left: 0;
-  }
-
-  &__nav-menu-right {
-    right: 0;
   }
 }

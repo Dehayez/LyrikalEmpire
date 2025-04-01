@@ -1,0 +1,28 @@
+@import '../../globals/variables';
+
+.panel-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  margin: 20px;
+
+  &--left {
+    left: 0;
+  }
+
+  &--right {
+    right: 0;
+  }
+
+  .icon-button {
+    padding: 6px;
+    z-index: 10;
+
+    &--mobile {
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+}
