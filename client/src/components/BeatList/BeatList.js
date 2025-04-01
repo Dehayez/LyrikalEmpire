@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoLockClosedSharp, IoOptionsSharp, IoPersonSharp } from "react-icons/io5";
+import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoPersonSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
 import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
@@ -168,40 +168,36 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   };
   
   const toggleEdit = () => {
-    const newState = mode === 'listen' ? 'edit' : mode === 'edit' ? 'lock' : 'listen';
+    const newState = mode === 'listen' ? 'edit' : 'listen';
     setMode(newState);
-  
+
     toast.dismiss();
-  
+
     setTimeout(() => {
-      let message, icon;
-      switch (newState) {
-        case 'listen':
-          message = 'Listen Mode Enabled';
-          icon = <IoHeadsetSharp />;
-          break;
-        case 'edit':
-          message = 'Edit Mode Enabled';
-          icon = <IoPencil />;
-          break;
-        case 'lock':
-          message = 'Lock Mode Enabled';
-          icon = <IoLockClosedSharp />;
-          break;
-      }
-  
-      toast(<>{message}</>, {
-        position: "bottom-center",
-        autoClose: 600,
-        hideProgressBar: true,
-        closeButton: false,
-        pauseOnFocusLoss: true,
-        className: `toaster--mode ${!isMobileOrTablet() ? 'toaster--mode--desktop' : ''}`,
-        icon: icon,
-        transition: Slide,
-      });
+        let message, icon;
+        switch (newState) {
+            case 'listen':
+                message = 'Listen Mode Enabled';
+                icon = <IoHeadsetSharp />;
+                break;
+            case 'edit':
+                message = 'Edit Mode Enabled';
+                icon = <IoPencil />;
+                break;
+        }
+
+        toast(<>{message}</>, {
+            position: "bottom-center",
+            autoClose: 600,
+            hideProgressBar: true,
+            closeButton: false,
+            pauseOnFocusLoss: true,
+            className: `toaster--mode ${!isMobileOrTablet() ? 'toaster--mode--desktop' : ''}`,
+            icon: icon,
+            transition: Slide,
+        });
     }, 50);
-  };
+};
 
   useEffect(() => {
     const fetchBeatsByAssociation = async () => {
@@ -347,33 +343,22 @@ useEffect(() => {
           )
         }
         <div className='beat-list__actions'>
-          <IconButton className={`beat-list__action-button--options${isFilterDropdownVisible ? ' active' : ''}`} onClick={toggleFilterDropdown}>
-              <Tooltip text={isFilterDropdownVisible ? "Hide Filter" : "Show Filter"} position='left' />
-            <IoOptionsSharp/>
-          </IconButton>
           <IconButton className='beat-list__action-button--edit' onClick={toggleEdit}>
-            {mode === 'edit' ? 
-            <>
-              {!isMobileOrTablet() && (
-                <Tooltip text="Switch to Listen Mode" position='left' />
-              )}
-              <IoPencil/> 
-            </>
-            : mode === 'listen' ?
-            <>
-              {!isMobileOrTablet() && (
-              <Tooltip text="Switch to Lock Mode" position='left' />
-            )}
-              <IoHeadsetSharp/>
-            </>
-            :
-            <>
-              {!isMobileOrTablet() && (
-              <Tooltip text="Switch to Edit Mode" position='left' />
-            )}
-              <IoLockClosedSharp/>
-            </>
-            }
+              {mode === 'edit' ? 
+              <>
+                  {!isMobileOrTablet() && (
+                      <Tooltip text="Switch to Listen Mode" position='left' />
+                  )}
+                  <IoPencil/> 
+              </>
+              : 
+              <>
+                  {!isMobileOrTablet() && (
+                      <Tooltip text="Switch to Edit Mode" position='left' />
+                  )}
+                  <IoHeadsetSharp/>
+              </>
+              }
           </IconButton>
           <div
             className={classNames('beat-list__search-container', {
@@ -448,7 +433,7 @@ useEffect(() => {
           <div className="placeholder-text">No tracks found</div>
         ) : (
           <div className='beat-list__table-container'>
-            <table className={`beat-list__table ${mode === 'lock' ? 'beat-list__table--lock' : ''}`} ref={tableRef}>
+            <table className="beat-list__table" ref={tableRef}>
               <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
 
               <tbody>
