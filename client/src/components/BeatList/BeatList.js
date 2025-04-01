@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import classNames from 'classnames';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoOptionsSharp, IoPersonSharp } from "react-icons/io5";
+import { IoPencil, IoHeadsetSharp, IoOptionsSharp, IoPersonSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
 import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
@@ -22,7 +21,6 @@ import './BeatList.scss';
 
 const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addToCustomQueue, onBeatClick, externalBeats, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
   const tableRef = useRef(null);
-  const searchInputRef = useRef(null);
   const containerRef = useRef(null);
   const { user } = useUser();
   const { username } = user;
@@ -67,10 +65,8 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const [isOpen, setIsOpen] = useState(false);
   const [beatsToDelete, setBeatsToDelete] = useState([]);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
-  const [isHovering, setIsHovering] = useState(false);
   const [headerOpacity, setHeaderOpacity] = useState(1);
   const [hoverPosition, setHoverPosition] = useState(null);
-  const [isSearchVisible, setIsSearchVisible] = useState(() => getInitialState('searchText', '') !== '');
   const [mode, setMode] = useState(() => getInitialState('mode', 'listen'));
   const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(() => getInitialState('isFilterDropdownVisible', false));
 
@@ -108,30 +104,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
     onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats);
     setPlaylistId(playlistId);
   }, [selectedBeat, isPlaying, onPlay, beats, playlistId, setPlaylistId]);
-
-  const toggleSearchVisibility = () => {
-    const willBeVisible = !isSearchVisible;
-    setIsSearchVisible(willBeVisible);
-    if (willBeVisible) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 200);
-    } else if (!isHovering) {
-      setIsSearchVisible(false);
-    }
-  };
-
-  const handleSearchChange = (e) => {
-    const newValue = e.target.value;
-    setSearchText(newValue);
-  
-    if (newValue && searchText === '') {
-      setPreviousPage(currentPage);
-      setCurrentPage(1);
-    } else if (!newValue) {
-      setCurrentPage(previousPage);
-    }
-  };
 
   const handleConfirm = async () => {
     if (beatsToDelete.length > 0) {
@@ -306,20 +278,6 @@ useEffect(() => {
 }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchInputRef.current && !searchInputRef.current.contains(event.target) && isSearchVisible && !searchText) {
-        setIsSearchVisible(false);
-      }
-    };
-  
-    document.addEventListener('mousedown', handleClickOutside);
-  
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSearchVisible, searchText]);
-
-  useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Enter' && selectedBeats.length > 0) {
         handlePlayPause(selectedBeats[0]);
@@ -368,8 +326,6 @@ useEffect(() => {
           <SearchInput
             searchText={searchText}
             setSearchText={setSearchText}
-            isSearchVisible={isSearchVisible}
-            setIsSearchVisible={setIsSearchVisible}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             previousPage={previousPage}

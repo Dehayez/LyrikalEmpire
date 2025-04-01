@@ -1,5 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { IoSearchSharp, IoCloseSharp } from "react-icons/io5";
+import { getInitialState } from '../../utils';
+
 import classNames from 'classnames';
 import { Tooltip } from '../Tooltip';
 import { isMobileOrTablet } from '../../utils';
@@ -8,14 +10,28 @@ import '../BeatList/BeatList.scss';
 export const SearchInput = ({
   searchText,
   setSearchText,
-  isSearchVisible,
-  setIsSearchVisible,
   currentPage,
   setCurrentPage,
   previousPage,
   setPreviousPage,
 }) => {
   const searchInputRef = useRef(null);
+  const [isSearchVisible, setIsSearchVisible] = useState(() => getInitialState('searchText', '') !== '');
+  
+
+useEffect(() => {
+    const handleClickOutside = (event) => {
+    if (searchInputRef.current && !searchInputRef.current.contains(event.target) && isSearchVisible && !searchText) {
+        setIsSearchVisible(false);
+    }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+    };
+}, [isSearchVisible, searchText]);
 
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
