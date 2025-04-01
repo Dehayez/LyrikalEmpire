@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoPersonSharp } from "react-icons/io5";
+import { IoSearchSharp, IoCloseSharp, IoPencil, IoHeadsetSharp, IoOptionsSharp, IoPersonSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
 import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
@@ -343,6 +343,10 @@ useEffect(() => {
           )
         }
         <div className='beat-list__actions'>
+          <IconButton className={`beat-list__action-button--options${isFilterDropdownVisible ? ' active' : ''}`} onClick={toggleFilterDropdown}>
+              <Tooltip text={isFilterDropdownVisible ? "Hide Filter" : "Show Filter"} position='left' />
+            <IoOptionsSharp/>
+          </IconButton>
           <IconButton className='beat-list__action-button--edit' onClick={toggleEdit}>
               {mode === 'edit' ? 
               <>
