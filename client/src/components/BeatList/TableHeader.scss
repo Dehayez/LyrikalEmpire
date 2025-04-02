@@ -1,107 +1,104 @@
 @import '../../globals/variables.scss';
+
 .table-header {
     position: sticky;
     top: 70px;
     background-color: $color-black;
     text-align: left;
     z-index: 3;
-  
+
+    &:hover {
+        .table-header__cell.resizable-header::after {
+            background-color: $color-gray-dark-hover;
+        }
+    }
+    
     &__cell {
-      position: relative;
-      box-sizing: border-box;
-      padding: 12px 8px;
-      min-width: 60px;
-      color: $color-gray-default;
-      font-weight: 500;
-      padding-right: 36px;
-      cursor: default;
-
-      &-left {
-        display: inline-flex;
-
-        &:hover {
-          .table-header__cell-icon,
-          .table-header__cell-text {
-            color: $color-gray;
-          }
-  
-          .table-header__cell-icon {
-           opacity: 1;
-          }
-        }}
-
-      &-text {
-        color: $color-gray-default;
-        transition: all .2s ease-in-out;
-
-        &.active {
-          color: $color-white !important;
-        }
-      }
-
-      &-icon {
-        font-size: 20px;
-        transform: translateX(50%);
-        transition: all .2s ease-in-out;
-        opacity: 0;
-
-        &.active {
-          color: $color-primary !important;
-          opacity: 1;
-        }
-        &:hover {
-          color: $color-primary;
-        }
-      }
-
-      &.resizable-header {
         position: relative;
-        &::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          width: 1px;
-          cursor: col-resize;
-          background-color: transparent;
-          transition: background-color .2s ease-in-out;
-        }
-        .hover-target {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          width: 4px;
-          cursor: col-resize;
-          background-color: transparent;
-          z-index: 1;
-        }
-        &.hovered::after {
-          background-color: $color-gray;
-        }
-      }
+        box-sizing: border-box;
+        margin: 12px 8px;
+        padding: 0 8px;
+        min-width: 60px;
+        color: $color-gray-default;
+        font-weight: 500;
+        padding-right: 36px;
+        cursor: default;
 
-      &.non-draggable {
-        width: 50px !important;
-        &::after {
-          display: none;
+        &-left {
+            display: inline-flex;
+
+            &:hover {
+                .table-header__cell-icon,
+                .table-header__cell-text {
+                    color: $color-gray;
+                }
+
+                .table-header__cell-icon {
+                    opacity: 1;
+                }
+            }
         }
-      }
 
-      &--center {
-        text-align: center;
-        width: 50px;
-        padding: 0;
-      }
+        &-text {
+            color: $color-gray-default;
+            transition: all 0.2s ease-in-out;
 
+            &.active {
+                color: $color-white !important;
+            }
+        }
 
-      &.no-transition {
-          transition: none;
-      }
+        &-icon {
+            font-size: 20px;
+            transform: translateX(50%);
+            transition: all 0.2s ease-in-out;
+            opacity: 0;
+
+            &.active {
+                color: $color-primary !important;
+                opacity: 1;
+            }
+            &:hover {
+                color: $color-primary;
+            }
+        }
+
+        &.resizable-header {
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 1px;
+                cursor: col-resize;
+                background-color: transparent;
+                transition: background-color 0.2s ease-in-out;
+            }
+        }
+
+        &.non-draggable {
+            width: 50px !important;
+
+            &::after {
+                display: none;
+            }
+        }
+
+        &--center {
+            text-align: center;
+            width: 50px;
+            padding: 0;
+        }
+
+        &.no-transition {
+            transition: none;
+        }
     }
 }
 
 .hide-column {
-  visibility: hidden;
+    visibility: hidden;
 }
