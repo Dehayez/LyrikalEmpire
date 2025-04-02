@@ -59,8 +59,16 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     const fetchSignedUrl = async () => {
       if (currentBeat && currentBeat.audio) {
         try {
+          // Clear the current audio source and disable autoplay
+          setAudioSrc('');
+          setAutoPlay(false);
+  
+          // Fetch the signed URL for the next track
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
+  
+          // Re-enable autoplay after the new track is loaded
+          setAutoPlay(true);
         } catch (error) {
           console.error('Error fetching signed URL:', error);
         }
