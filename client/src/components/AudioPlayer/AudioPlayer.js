@@ -103,11 +103,14 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           waveColor: '#828282',
           progressColor: '#FFCC44',
           height: 80,
-          barWidth: 2,
           responsive: true,
           interact: false,
           cursorColor: '#FFCC44', 
           cursorWidth: 0,
+          partialRender: true,
+          barWidth: 1,
+          barGap: 2,
+          barRadius: 0,
         });
 
         fetch(audioSrc, { signal })
