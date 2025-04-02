@@ -13,6 +13,7 @@ $color-white: #FFFFFF;
 
 
 $color-primary: $color-yellow;
+$color-primary-light: rgba($color-primary, 0.1);
 $color-primary-bg: rgba($color-primary, 0.2);
 $color-primary-bg-hover: rgba($color-primary, 0.3);
 $color-primary-border: rgba($color-primary, 0.8);
