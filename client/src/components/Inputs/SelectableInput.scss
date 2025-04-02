@@ -41,6 +41,7 @@
         scroll-behavior: smooth;
         @include hide-scrollbar;
         min-width: 100px;
+        box-sizing: border-box;
 
         &:hover {
             border: $border-gray-light-hover;
