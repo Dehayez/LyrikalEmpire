@@ -191,6 +191,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
             'selectable-input__input-container--focused': isFocused,
             'selectable-input__input-container--form': form,
             'selectable-input__input-container--disabled': disableFocus,
+            'selectable-input__input-container--edit': mode === 'edit',
           })}
           {...(mode === 'edit' && { onClick: handleContainerClick })}
           ref={inputContainerRef}
