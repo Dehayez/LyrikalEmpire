@@ -192,6 +192,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
             'selectable-input__input-container--form': form,
             'selectable-input__input-container--disabled': disableFocus,
           })}
+          {...(mode === 'edit' && { onClick: handleContainerClick })}
           ref={inputContainerRef}
         >
           <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />
