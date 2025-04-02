@@ -183,10 +183,6 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     }
   }, [newBeatId, form, associationType, pendingAssociations]);
 
-  useEffect(() => {
-    console.log(isFocused);
-  }, [isFocused]);
-
   return (
     <div className='selectable-input-container'>
       <div className={`selectable-input ${label ? 'selectable-input--label' : ''}`} ref={containerRef}>
