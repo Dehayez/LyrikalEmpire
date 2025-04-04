@@ -41,6 +41,16 @@
       }
     }
 
+    &--focused {
+      border: 1px solid $color-primary;
+
+      &:hover {
+          border: 1px solid $color-primary;
+          background-color: transparent;
+      }
+
+    }
+
     &--static {
       padding: 12px;
       text-align: left;
@@ -99,6 +109,13 @@
     background-color: $color-primary-bg;
     &:hover {
       background-color: $color-primary-bg;
+    }
+
+    & .beat-row__input, & .select-wrapper__select{
+      &:hover {
+        background-color: $color-primary-light;
+        border: 1px solid $color-primary;
+      }
     }
   }
 

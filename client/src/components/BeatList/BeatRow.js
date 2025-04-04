@@ -40,7 +40,6 @@ const BeatRow = ({
   const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const toDragAndDrop = location.pathname !== '/' && (mode === 'lock' || mode === 'listen');
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
-  const [inputFocused, setInputFocused] = useState(false);
   const [disableFocus, setDisableFocus] = useState(false);
   
   const urlKey = `currentPage_${location.pathname}`;
@@ -123,7 +122,6 @@ const BeatRow = ({
     'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
     'beat-row--playing': currentBeat && beat.id === currentBeat.id && isSamePlaylist,
-    'beat-row--focused': inputFocused,
     'beat-row--selected': isDragging,
   });
 
@@ -157,7 +155,6 @@ const BeatRow = ({
   };
 
   const handleBlur = (id, field, value) => {
-    setInputFocused(false);
     handleUpdate(id, field, value);
   };
 
@@ -322,7 +319,7 @@ const BeatRow = ({
         </td>
       )}
       <td className="beat-row__data">
-        {!inputFocused && <Highlight text={beat.title} highlight={searchText} />}
+        <Highlight text={beat.title} highlight={searchText} />
         {mode === 'edit' ? 
           <input 
             id={`beat-title-input-${beat.id}`}
@@ -347,7 +344,7 @@ const BeatRow = ({
             {mode === 'edit' ? 
               <input 
                 id={`beat-bpm-input-${beat.id}`}
-                className='beat-row__input beat-row__input--bpm' 
+                className='beat-row__input beat-row__input--bpm'
                 type="text" 
                 defaultValue={beat.bpm} 
                 onKeyDown={handleOnKeyDown}

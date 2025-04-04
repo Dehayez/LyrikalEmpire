@@ -3,13 +3,6 @@
 .select-wrapper {
     position: relative;
     cursor: pointer;
-    border-radius: 5px;
-    border: 1px solid transparent;
-
-    &:hover {
-        border: $border-gray-light-hover;
-        background-color: $color-gray-dark-hover;
-    }
 
     &__selected {
       display: flex;
@@ -39,7 +32,7 @@
         cursor: pointer;
 
         &:hover {
-            background-color: #444;
+            background-color: $color-gray-dark-hover;
         }
     }
 }
@@ -52,14 +45,22 @@
     .select-wrapper {
       position: relative;
       display: inline-block;
+
+      &__select {
+        min-height: 45px;
+        border: 1px solid transparent;
+
+        &:hover {
+            border: $border-gray-light-hover;
+            background-color: $color-gray-dark-hover;
+        }
+      }
   
       select, input {
         appearance: none;
         outline: none;
         box-shadow: none;
-        border: none;
         width: 100%;
-        padding: 10px;
         border-radius: 4px;
         font-size: 16px;
         background-color: transparent;
@@ -72,7 +73,6 @@
   
       select {
         padding: 12px;
-        padding-right: 30px;
       }
     }
   }
