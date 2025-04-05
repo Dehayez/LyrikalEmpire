@@ -2,11 +2,7 @@ import axios from 'axios';
 import { getAuthHeaders } from './authUtils';
 
 const handleApiError = (error) => {
-  // Optionally log the error to a monitoring service
-  // logErrorToMonitoringService(error);
-
   if (error.response) {
-    // Server responded with a status other than 2xx
     const { status, data } = error.response;
     switch (status) {
       case 400:
@@ -23,10 +19,8 @@ const handleApiError = (error) => {
         throw new Error(data.error || 'An unexpected error occurred. Please try again later.');
     }
   } else if (error.request) {
-    // Request was made but no response was received
     throw new Error('No response received from the server. Please check your internet connection and try again.');
   } else {
-    // Something happened in setting up the request
     throw new Error('An unexpected error occurred. Please try again later.');
   }
 };
