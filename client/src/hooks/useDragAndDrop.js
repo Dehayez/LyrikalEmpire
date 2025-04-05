@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCloseSharp } from "react-icons/io5";
-import { isAuthPage, uploadBeatWithToast } from '../utils';
+import { isAuthPage, uploadBeatWithToast, errorUploadToast } from '../utils';
 
 export const useDragAndDrop = (setRefreshBeats, user_id) => {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
