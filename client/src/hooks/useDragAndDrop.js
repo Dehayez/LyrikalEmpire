@@ -25,29 +25,74 @@ export const useDragAndDrop = (setRefreshBeats, user_id) => {
   }, []);
 
   const autoSubmitFiles = useCallback(async (files, user_id) => {
-    setActiveUploads(activeUploads => activeUploads + files.length);
+    setActiveUploads((activeUploads) => activeUploads + files.length);
+  
     files.forEach(async (file) => {
       try {
         if (file.type === 'audio/aiff') {
           throw new Error('AIF files are not supported');
         }
+  
         const duration = await getAudioDuration(file);
         const beat = {
           title: file.name.replace(/\.[^/.]+$/, ""),
           duration: duration,
         };
-        await addBeat(beat, file, user_id);
-        setShowToast(true);
-        toast.dark(<div><strong>{beat.title}</strong> added successfully!</div>, {
-          autoClose: 3000,
-          pauseOnFocusLoss: false,
-          icon: <IoCheckmarkSharp size={24} />,
-          className: "Toastify__toast--success",
+  
+        console.log(`Starting upload for ${file.name}...`);
+        const startTime = Date.now();
+  
+        // Show initial toast with 0% progress
+        const toastId = toast.dark(
+          <div>
+            <strong>Uploading:</strong> {file.name}
+          </div>,
+          {
+            autoClose: false,
+            closeOnClick: false,
+            pauseOnFocusLoss: false,
+            icon: <IoCheckmarkSharp size={24} />,
+            className: "Toastify__toast--info",
+            progress: 0, // Start with 0% progress
+          }
+        );
+  
+        await addBeat(beat, file, user_id, (percentage) => {
+          const elapsedTime = Date.now() - startTime;
+  
+          // Update the toast with the current progress
+          toast.update(toastId, {
+            render: (
+              <div>
+                <strong>Uploading:</strong> {file.name} ({percentage}%)
+                <br />
+                <small>Elapsed time: {elapsedTime}ms</small>
+              </div>
+            ),
+            progress: percentage / 100, // Update the progress bar
+          });
         });
-        setRefreshBeats(prev => !prev);
+  
+        // Mark the toast as complete
+        toast.update(toastId, {
+          render: (
+            <div>
+              <strong>{beat.title}</strong> uploaded successfully!
+            </div>
+          ),
+          type: toast.TYPE.SUCCESS,
+          autoClose: 3000, // Close after 3 seconds
+          progress: 1, // Set progress to 100%
+        });
+  
+        setRefreshBeats((prev) => !prev);
       } catch (error) {
+        // Show error toast
         toast.dark(
-          <div><strong>Error:</strong> {error.message}</div>, {
+          <div>
+            <strong>Error:</strong> {error.message}
+          </div>,
+          {
             autoClose: 5000,
             pauseOnFocusLoss: false,
             icon: <IoCloseSharp size={24} />,
@@ -55,7 +100,7 @@ export const useDragAndDrop = (setRefreshBeats, user_id) => {
           }
         );
       } finally {
-        setActiveUploads(activeUploads => activeUploads - 1);
+        setActiveUploads((activeUploads) => activeUploads - 1);
       }
     });
   }, [getAudioDuration, setRefreshBeats]);

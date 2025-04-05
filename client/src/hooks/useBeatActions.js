@@ -6,9 +6,16 @@ export const useBeatActions = () => {
   const { beats, setBeats, setGlobalBeats } = useBeat();
   const { user } = useUser();
 
-  const handleUpdateAll = (newBeats) => {
-    setBeats(newBeats);
-    setGlobalBeats(newBeats);
+  const handleUpload = async (beat, audioFile, userId) => {
+    console.log('Starting upload...');
+    const startTime = Date.now();
+
+    await addBeat(beat, audioFile, userId, (percentage) => {
+      const elapsedTime = Date.now() - startTime;
+      console.log(`Upload progress: ${percentage}% (Elapsed time: ${elapsedTime}ms)`);
+    });
+
+    console.log('Upload complete');
   };
 
   const handleUpdate = async (id, key, value) => {
@@ -31,5 +38,10 @@ export const useBeatActions = () => {
     setGlobalBeats(updatedBeats);
   };
 
-  return { beats, handleUpdate, handleDelete, handleUpdateAll };
+  const handleUpdateAll = (newBeats) => {
+    setBeats(newBeats);
+    setGlobalBeats(newBeats);
+  };
+
+  return { beats, handleUpdate, handleDelete, handleUpdateAll, handleUpload };
 };

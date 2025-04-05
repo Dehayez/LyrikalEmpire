@@ -3,7 +3,7 @@ import { IoCheckmarkSharp } from "react-icons/io5";
 import { toast } from 'react-toastify';
 
 import { useData, useBeat, useUser } from '../../contexts';
-import { useBpmHandlers } from '../../hooks';
+import { useBpmHandlers, useBeatActions} from '../../hooks';
 import { addBeat } from '../../services';
 
 import DraggableModal from '../Modals/DraggableModal';
@@ -81,10 +81,17 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                 features,
                 audio
             };
-
-            const addedBeat = await addBeat(beatData, audio, user.id);
+    
+            console.log('Starting upload...');
+            const startTime = Date.now();
+    
+            const addedBeat = await addBeat(beatData, audio, user.id, (percentage) => {
+                const elapsedTime = Date.now() - startTime;
+                console.log(`Upload progress: ${percentage}% (Elapsed time: ${elapsedTime}ms)`);
+            });
+    
             const beatId = addedBeat.insertId;
-            setBeatId(beatId)
+            setBeatId(beatId);
     
             setRefreshBeats(prev => !prev);
     
@@ -97,6 +104,8 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                 className: "Toastify__toast--success",
             });
             setTimeout(() => setShowToast(false), 3000);
+    
+            console.log('Upload complete');
         } catch (error) {
             console.error('An error occurred while uploading the track.', error);
             setWarningMessage('An error occurred while uploading the track.');
