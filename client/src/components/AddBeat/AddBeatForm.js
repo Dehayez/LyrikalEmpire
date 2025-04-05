@@ -5,6 +5,12 @@ import { toast } from 'react-toastify';
 import { useData, useBeat, useUser } from '../../contexts';
 import { useBpmHandlers, useBeatActions} from '../../hooks';
 import { addBeat } from '../../services';
+import {
+    createUploadToast,
+    updateUploadToast,
+    completeUploadToast,
+    errorUploadToast,
+  } from '../../utils';
 
 import DraggableModal from '../Modals/DraggableModal';
 import { FileInput, FormInput, SelectableInput, SelectInput } from '../Inputs';
@@ -46,71 +52,64 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+      
         if (!audio) {
-            setWarningMessage('Audio file is required.');
-            return;
+          setWarningMessage('Audio file is required.');
+          return;
         }
-    
+      
         const bpmValue = bpm ? Math.round(parseFloat(bpm.replace(',', '.'))) : null;
-    
+      
         setIsTitleEmpty(!title.trim());
         setIsBpmInvalid(bpm && (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240));
-    
+      
         if (!title.trim()) {
-            setWarningMessage('Title is required.');
-            return;
+          setWarningMessage('Title is required.');
+          return;
         }
-    
+      
         if (bpm && (isNaN(bpmValue) || bpmValue <= 0 || bpmValue > 240)) {
-            setWarningMessage('Please enter a valid BPM (1-240).');
-            return;
+          setWarningMessage('Please enter a valid BPM (1-240).');
+          return;
         } else if (bpm) {
-            setWarningMessage('');
+          setWarningMessage('');
         }
-    
+      
         try {
-            const beatData = {
-                title,
-                bpm: bpmValue,
-                tierlist,
-                duration,
-                genres,
-                moods,
-                keywords,
-                features,
-                audio
-            };
-    
-            console.log('Starting upload...');
-            const startTime = Date.now();
-    
-            const addedBeat = await addBeat(beatData, audio, user.id, (percentage) => {
-                const elapsedTime = Date.now() - startTime;
-                console.log(`Upload progress: ${percentage}% (Elapsed time: ${elapsedTime}ms)`);
-            });
-    
-            const beatId = addedBeat.insertId;
-            setBeatId(beatId);
-    
-            setRefreshBeats(prev => !prev);
-    
-            resetForm();
-            setIsOpen(false);
-            toast.dark(<div><strong>{title}</strong> has been added!</div>, {
-                autoClose: 3000,
-                pauseOnFocusLoss: false,
-                icon: <IoCheckmarkSharp size={24} />,
-                className: "Toastify__toast--success",
-            });
-            setTimeout(() => setShowToast(false), 3000);
-    
-            console.log('Upload complete');
+          const beatData = {
+            title,
+            bpm: bpmValue,
+            tierlist,
+            duration,
+            genres,
+            moods,
+            keywords,
+            features,
+            audio,
+          };
+      
+          const startTime = Date.now();
+      
+          // Create the initial toast
+          const toastId = createUploadToast(audio.name);
+      
+          const addedBeat = await addBeat(beatData, audio, user.id, (percentage) => {
+            const elapsedTime = Date.now() - startTime;
+      
+            updateUploadToast(toastId, audio.name, percentage, elapsedTime);
+          });
+      
+          completeUploadToast(toastId, title);
+      
+          setRefreshBeats((prev) => !prev);
+      
+          resetForm();
+          setIsOpen(false);
         } catch (error) {
-            console.error('An error occurred while uploading the track.', error);
-            setWarningMessage('An error occurred while uploading the track.');
+          errorUploadToast('An error occurred while uploading the track.');
+          setWarningMessage('An error occurred while uploading the track.');
         }
-    };
+      };
 
     const handleFileChange = e => {
         const file = e.target.files[0];

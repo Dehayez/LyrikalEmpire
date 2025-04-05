@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { IoCloseSharp, IoCheckmarkSharp } from "react-icons/io5";
+import { IoCloseSharp } from "react-icons/io5";
 import { addBeat } from '../services';
-import { isAuthPage } from '../utils/isAuthPage';
+import { isAuthPage,
+  createUploadToast,
+  updateUploadToast,
+  completeUploadToast,
+  errorUploadToast, } from '../utils';
 
 export const useDragAndDrop = (setRefreshBeats, user_id) => {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -39,66 +43,21 @@ export const useDragAndDrop = (setRefreshBeats, user_id) => {
           duration: duration,
         };
   
-        console.log(`Starting upload for ${file.name}...`);
         const startTime = Date.now();
   
-        // Show initial toast with 0% progress
-        const toastId = toast.dark(
-          <div>
-            <strong>Uploading:</strong> {file.name}
-          </div>,
-          {
-            autoClose: false,
-            closeOnClick: false,
-            pauseOnFocusLoss: false,
-            icon: <IoCheckmarkSharp size={24} />,
-            className: "Toastify__toast--info",
-            progress: 0, // Start with 0% progress
-          }
-        );
+        const toastId = createUploadToast(file.name);
   
         await addBeat(beat, file, user_id, (percentage) => {
           const elapsedTime = Date.now() - startTime;
   
-          // Update the toast with the current progress
-          toast.update(toastId, {
-            render: (
-              <div>
-                <strong>Uploading:</strong> {file.name} ({percentage}%)
-                <br />
-                <small>Elapsed time: {elapsedTime}ms</small>
-              </div>
-            ),
-            progress: percentage / 100, // Update the progress bar
-          });
+          updateUploadToast(toastId, file.name, percentage, elapsedTime);
         });
   
-        // Mark the toast as complete
-        toast.update(toastId, {
-          render: (
-            <div>
-              <strong>{beat.title}</strong> uploaded successfully!
-            </div>
-          ),
-          type: toast.TYPE.SUCCESS,
-          autoClose: 3000, // Close after 3 seconds
-          progress: 1, // Set progress to 100%
-        });
+        completeUploadToast(toastId, beat.title);
   
         setRefreshBeats((prev) => !prev);
       } catch (error) {
-        // Show error toast
-        toast.dark(
-          <div>
-            <strong>Error:</strong> {error.message}
-          </div>,
-          {
-            autoClose: 5000,
-            pauseOnFocusLoss: false,
-            icon: <IoCloseSharp size={24} />,
-            className: "Toastify__toast--warning",
-          }
-        );
+        errorUploadToast(error.message);
       } finally {
         setActiveUploads((activeUploads) => activeUploads - 1);
       }
