@@ -38,7 +38,6 @@ export const completeUploadToast = (toastId, title) => {
         <strong>{title}</strong> uploaded successfully!
       </div>
     ),
-    type: toast.TYPE.SUCCESS,
     icon: <IoCheckmarkSharp size={24} />,
     autoClose: 3000,
     progress: 1,

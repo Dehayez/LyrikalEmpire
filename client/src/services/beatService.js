@@ -33,15 +33,17 @@ export const addBeat = async (beat, audioFile, user_id, onProgress) => {
     formData.append('audio', audioFile, audioFile.name);
   }
 
-  return await axios.post(`${API_URL}`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-    onUploadProgress: (progressEvent) => {
+  formData.append('user_id', user_id);
+
+  return await apiRequest('post', '',API_URL, formData, null, true, 
+    {'Content-Type': 'multipart/form-data'},
+    (progressEvent) => {
       if (onProgress) {
         const percentage = Math.round((progressEvent.loaded / progressEvent.total) * 100);
         onProgress(percentage);
       }
-    },
-  });
+    }
+  );
 };
 
 export const updateBeat = async (beatId, beatData) => {

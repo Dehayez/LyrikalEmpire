@@ -31,7 +31,7 @@ const handleApiError = (error) => {
   }
 };
 
-export const apiRequest = async (method, url = '', baseURL, data = null, params = null, auth = true, headers = {}) => {
+export const apiRequest = async (method, url = '', baseURL, data = null, params = null, auth = true, headers = {}, onUploadProgress = null) => {
   try {
     const config = {
       method,
@@ -43,6 +43,7 @@ export const apiRequest = async (method, url = '', baseURL, data = null, params 
         ...headers,
         ...(auth && getAuthHeaders().headers),
       },
+      ...(onUploadProgress && { onUploadProgress }), // Add onUploadProgress if provided
     };
     const response = await axios(config);
     return response.data;

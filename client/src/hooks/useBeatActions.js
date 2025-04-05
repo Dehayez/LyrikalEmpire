@@ -7,15 +7,12 @@ export const useBeatActions = () => {
   const { user } = useUser();
 
   const handleUpload = async (beat, audioFile, userId) => {
-    console.log('Starting upload...');
     const startTime = Date.now();
 
     await addBeat(beat, audioFile, userId, (percentage) => {
       const elapsedTime = Date.now() - startTime;
-      console.log(`Upload progress: ${percentage}% (Elapsed time: ${elapsedTime}ms)`);
     });
 
-    console.log('Upload complete');
   };
 
   const handleUpdate = async (id, key, value) => {
