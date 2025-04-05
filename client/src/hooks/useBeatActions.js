@@ -6,15 +6,6 @@ export const useBeatActions = () => {
   const { beats, setBeats, setGlobalBeats } = useBeat();
   const { user } = useUser();
 
-  const handleUpload = async (beat, audioFile, userId) => {
-    const startTime = Date.now();
-
-    await addBeat(beat, audioFile, userId, (percentage) => {
-      const elapsedTime = Date.now() - startTime;
-    });
-
-  };
-
   const handleUpdate = async (id, key, value) => {
     const updatedValue = key === 'created_at' || key === 'edited_at' 
       ? new Date(value).toISOString().replace('T', ' ').replace('.000Z', '') 
@@ -40,5 +31,5 @@ export const useBeatActions = () => {
     setGlobalBeats(newBeats);
   };
 
-  return { beats, handleUpdate, handleDelete, handleUpdateAll, handleUpload };
+  return { beats, handleUpdate, handleDelete, handleUpdateAll };
 };

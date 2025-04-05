@@ -7,9 +7,8 @@ export const uploadBeatWithToast = async (beat, file, userId, setRefreshBeats) =
 
   try {
     await addBeat(beat, file, userId, (percentage) => {
-      const elapsedTime = Date.now() - startTime;
-      updateUploadToast(toastId, file.name, percentage, elapsedTime);
-    });
+        updateUploadToast(toastId, file.name, percentage);
+      });
 
     completeUploadToast(toastId, beat.title);
 

@@ -43,7 +43,7 @@ export const apiRequest = async (method, url = '', baseURL, data = null, params 
         ...headers,
         ...(auth && getAuthHeaders().headers),
       },
-      ...(onUploadProgress && { onUploadProgress }), // Add onUploadProgress if provided
+      ...(onUploadProgress && { onUploadProgress }),
     };
     const response = await axios(config);
     return response.data;

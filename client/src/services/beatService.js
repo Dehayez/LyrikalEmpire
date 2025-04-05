@@ -35,7 +35,7 @@ export const addBeat = async (beat, audioFile, user_id, onProgress) => {
 
   formData.append('user_id', user_id);
 
-  return await apiRequest('post', '',API_URL, formData, null, true, 
+  return await apiRequest('post', '', API_URL, formData, null, true, 
     {'Content-Type': 'multipart/form-data'},
     (progressEvent) => {
       if (onProgress) {
