@@ -9,3 +9,4 @@ export { isAuthPage } from './isAuthPage';
 export { sortBeats } from './sortBeats';
 export * from './stateUtils';
 export * from './toastUtils';
+export * from './uploadUtils';

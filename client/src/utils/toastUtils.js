@@ -1,6 +1,6 @@
 import React from 'react';
 import { toast } from 'react-toastify';
-import { IoCheckmarkSharp, IoCloseSharp } from "react-icons/io5";
+import { IoCheckmarkSharp, IoCloseSharp, IoCloudUploadSharp } from "react-icons/io5";
 
 export const createUploadToast = (fileName) => {
   const toastId = toast.dark(
@@ -11,8 +11,8 @@ export const createUploadToast = (fileName) => {
       autoClose: false,
       closeOnClick: false,
       pauseOnFocusLoss: false,
-      icon: <IoCheckmarkSharp size={24} />,
-      className: "Toastify__toast--info",
+      icon: <IoCloudUploadSharp size={24} />,
+      className: "Toastify__toast--success",
       progress: 0,
     }
   );
@@ -20,9 +20,7 @@ export const createUploadToast = (fileName) => {
   return toastId;
 };
 
-export const updateUploadToast = (toastId, fileName, percentage, elapsedTime) => {
-    const elapsedTimeInSeconds = (elapsedTime / 1000).toFixed(2);
-  
+export const updateUploadToast = (toastId, fileName, percentage) => {
     toast.update(toastId, {
       render: (
         <div>
@@ -41,6 +39,7 @@ export const completeUploadToast = (toastId, title) => {
       </div>
     ),
     type: toast.TYPE.SUCCESS,
+    icon: <IoCheckmarkSharp size={24} />,
     autoClose: 3000,
     progress: 1,
   });

@@ -33,7 +33,7 @@ export const addBeat = async (beat, audioFile, user_id, onProgress) => {
     formData.append('audio', audioFile, audioFile.name);
   }
 
-  return await axios.post(`${API_URL}/add`, formData, {
+  return await axios.post(`${API_URL}`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
     onUploadProgress: (progressEvent) => {
       if (onProgress) {

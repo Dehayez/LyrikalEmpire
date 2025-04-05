@@ -2,12 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { IoCloseSharp } from "react-icons/io5";
-import { addBeat } from '../services';
-import { isAuthPage,
-  createUploadToast,
-  updateUploadToast,
-  completeUploadToast,
-  errorUploadToast, } from '../utils';
+import { isAuthPage, uploadBeatWithToast } from '../utils';
 
 export const useDragAndDrop = (setRefreshBeats, user_id) => {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -32,32 +27,20 @@ export const useDragAndDrop = (setRefreshBeats, user_id) => {
     setActiveUploads((activeUploads) => activeUploads + files.length);
   
     files.forEach(async (file) => {
-      try {
-        if (file.type === 'audio/aiff') {
-          throw new Error('AIF files are not supported');
-        }
+      if (file.type === 'audio/aiff') {
+        errorUploadToast('AIF files are not supported');
+        setActiveUploads((activeUploads) => activeUploads - 1);
+        return;
+      }
   
+      try {
         const duration = await getAudioDuration(file);
         const beat = {
           title: file.name.replace(/\.[^/.]+$/, ""),
           duration: duration,
         };
   
-        const startTime = Date.now();
-  
-        const toastId = createUploadToast(file.name);
-  
-        await addBeat(beat, file, user_id, (percentage) => {
-          const elapsedTime = Date.now() - startTime;
-  
-          updateUploadToast(toastId, file.name, percentage, elapsedTime);
-        });
-  
-        completeUploadToast(toastId, beat.title);
-  
-        setRefreshBeats((prev) => !prev);
-      } catch (error) {
-        errorUploadToast(error.message);
+        await uploadBeatWithToast(beat, file, user_id, setRefreshBeats);
       } finally {
         setActiveUploads((activeUploads) => activeUploads - 1);
       }
