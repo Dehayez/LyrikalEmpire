@@ -47,27 +47,16 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     setWaveform(prevState => !prevState);
   };
 
-  // Local Audiofiles
-/*   useEffect(() => {
-    if (currentBeat && currentBeat.audio) {
-      const localAudioSrc = `/uploads/${currentBeat.audio}`;
-      setAudioSrc(localAudioSrc);
-    }
-  }, [currentBeat]); */ 
-
   useEffect(() => {
     const fetchSignedUrl = async () => {
       if (currentBeat && currentBeat.audio) {
         try {
-          // Clear the current audio source and disable autoplay
           setAudioSrc('');
           setAutoPlay(false);
   
-          // Fetch the signed URL for the next track
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
   
-          // Re-enable autoplay after the new track is loaded
           setAutoPlay(true);
         } catch (error) {
           console.error('Error fetching signed URL:', error);
@@ -166,16 +155,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       progressContainer.appendChild(waveformRef.current);
     }
   }, []);
-
-/*   useEffect(() => {
-    if (wavesurfer.current) {
-      if (isPlaying) {
-        wavesurfer.current.play();
-      } else {
-        wavesurfer.current.pause();
-      }
-    }
-  }, [isPlaying]); */
 
   useEffect(() => {
     if (wavesurfer.current) {
