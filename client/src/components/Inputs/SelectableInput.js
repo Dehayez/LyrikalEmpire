@@ -1,11 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
 import { addAssociationsToBeat, removeAssociationFromBeat, getAssociationsByBeatId } from '../../services';
 import { useHeaderWidths, useData } from '../../contexts';
 import { SelectedList } from './SelectedList';
 import './SelectableInput.scss';
 
-export const SelectableInput = ({ beatId, associationType, headerIndex, label, placeholder, disableFocus, form, newBeatId, mode }) => {
+export const SelectableInput = ({
+  beatId,
+  associationType,
+  headerIndex,
+  label,
+  placeholder,
+  disableFocus,
+  form,
+  newBeatId,
+  mode
+}) => {
   const { headerWidths } = useHeaderWidths();
   const { genres, moods, keywords, features } = useData();
 
@@ -19,60 +29,51 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
   const [pendingAssociations, setPendingAssociations] = useState([]);
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
-  const items = {
-    moods,
-    genres,
-    keywords,
-    features
-  }[associationType];
+  const items = { moods, genres, keywords, features }[associationType];
 
-  const associationItems = items.filter(item => 
-    item.name.toLowerCase().includes(inputValue.toLowerCase())
+  const associationItems = useMemo(() => 
+    items.filter(item => item.name.toLowerCase().includes(inputValue.toLowerCase())),
+    [items, inputValue]
   );
 
-  const toSingular = (plural) => {
-    if (plural.endsWith('s')) {
-      return plural.slice(0, -1);
-    }
-    return plural;
-  };
+  const singularAssociationType = useMemo(() => {
+    return associationType.endsWith('s') ? associationType.slice(0, -1) : associationType;
+  }, [associationType]);
 
-  const singularAssociationType = toSingular(associationType);
-
-  const isItemSelected = (item) => {
+  const isItemSelected = useCallback((item) => {
     return selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === item.id);
-  };
+  }, [selectedItems, singularAssociationType]);
 
-  const handleFocus = () => {
+  const handleFocus = useCallback(() => {
     setIsFocused(true);
     inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  };
+  }, []);
 
-  const handleContainerClick = () => {
+  const handleContainerClick = useCallback(() => {
     inputRef.current.classList.remove('selectable-input__input--hidden');
     inputRef.current.focus();
     inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  };
+  }, []);
 
-  const handleBlur = (e) => {
+  const handleBlur = useCallback((e) => {
     e.preventDefault();
     setFocusedIndex(-1);
     if (inputContainerRef.current && !isFocused) {
       inputContainerRef.current.scrollLeft = 0;
     }
-  };
+  }, [isFocused]);
 
-  const handleInputChange = (e) => setInputValue(e.target.value);
+  const handleInputChange = useCallback((e) => setInputValue(e.target.value), []);
 
-  const handleItemSelect = async (item) => {
+  const handleItemSelect = useCallback(async (item) => {
     const associationId = item.id;
     const newAssociation = {
       beat_id: beatId,
       [`${singularAssociationType}_id`]: associationId
     };
-  
-    const isSelected = selectedItems.some(selectedItem => selectedItem[`${singularAssociationType}_id`] === associationId);
-  
+
+    const isSelected = isItemSelected(item);
+
     if (isSelected) {
       await handleRemoveAssociation(newAssociation);
     } else {
@@ -90,9 +91,9 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     }
     setInputValue('');
     inputRef.current.focus();
-  };
+  }, [beatId, associationType, form, isItemSelected, singularAssociationType]);
 
-  const handleRemoveAssociation = async (item) => {
+  const handleRemoveAssociation = useCallback(async (item) => {
     const associationId = item[`${singularAssociationType}_id`];
     if (form) {
       setSelectedItems(prevItems => prevItems.filter(item => item[`${singularAssociationType}_id`] !== associationId));
@@ -105,9 +106,9 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
         console.error('Failed to remove association:', error);
       }
     }
-  };
+  }, [beatId, associationType, form, singularAssociationType]);
 
-  const scrollToFocusedItem = (index) => {
+  const scrollToFocusedItem = useCallback((index) => {
     const listItems = containerRef.current.querySelectorAll('.selectable-input__list-item');
     if (listItems[index]) {
       listItems[index].scrollIntoView({
@@ -115,9 +116,9 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
         block: 'nearest',
       });
     }
-  };
+  }, []);
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = useCallback((e) => {
     if (e.key === 'ArrowDown') {
       setFocusedIndex((prevIndex) => {
         const newIndex = (prevIndex + 1) % associationItems.length;
@@ -133,7 +134,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     } else if (e.key === 'Enter' && focusedIndex >= 0) {
       handleItemSelect(associationItems[focusedIndex]);
     }
-  };
+  }, [associationItems, focusedIndex, scrollToFocusedItem, handleItemSelect]);
 
   useEffect(() => {
     const fetchAssociations = async () => {
@@ -166,7 +167,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
     if (maxWidth && inputContainerRef.current) {
       inputContainerRef.current.style.maxWidth = `${maxWidth}px`;
     }
-  }, [headerWidths]);
+  }, [headerWidths, headerIndex]);
 
   useEffect(() => {
     if (form && newBeatId && pendingAssociations.length > 0) {
@@ -178,7 +179,7 @@ export const SelectableInput = ({ beatId, associationType, headerIndex, label, p
           console.error('Failed to upload pending associations:', error);
         }
       };
-  
+
       uploadPendingAssociations();
     }
   }, [newBeatId, form, associationType, pendingAssociations]);
