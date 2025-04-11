@@ -123,6 +123,7 @@ const BeatRow = ({
     'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
     'beat-row--playing': currentBeat && beat.id === currentBeat.id && isSamePlaylist,
     'beat-row--selected': isDragging,
+    'beat-row--edit': mode === 'edit',
   });
 
   const fetchBeats = async (playlistId, setBeats) => {

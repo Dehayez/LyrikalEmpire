@@ -17,6 +17,15 @@
     background-color: $color-gray-dark;
   }
 
+  &--playing.beat-row--edit {
+    & .beat-row__input, & .select-wrapper__select {
+      &:hover {
+        background-color: $color-primary-light;
+        border: 1px solid $color-primary;
+      }
+    }
+  }
+
   &__input {
     box-sizing: border-box;
     background-color: transparent;
@@ -39,16 +48,6 @@
       &:hover {
         background-color: transparent;
       }
-    }
-
-    &--focused {
-      border: 1px solid $color-primary;
-
-      &:hover {
-          border: 1px solid $color-primary;
-          background-color: transparent;
-      }
-
     }
 
     &--static {
@@ -109,13 +108,6 @@
     background-color: $color-primary-bg;
     &:hover {
       background-color: $color-primary-bg;
-    }
-
-    & .beat-row__input, & .select-wrapper__select{
-      &:hover {
-        background-color: $color-primary-light;
-        border: 1px solid $color-primary;
-      }
     }
   }
 
