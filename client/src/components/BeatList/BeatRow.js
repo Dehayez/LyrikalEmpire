@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useLocation } from 'react-router-dom';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline, IoRefreshSharp } from "react-icons/io5";
@@ -18,34 +18,68 @@ import { SelectableInput } from '../Inputs';
 import './BeatRow.scss';
 
 const BeatRow = ({
-  beat, index, moveBeat, handlePlayPause, handleUpdate, isPlaying, onBeatClick,
-  selectedBeats = [], handleBeatClick, 
-  openConfirmModal, beats, activeContextMenu, setActiveContextMenu, currentBeat, addToCustomQueue, searchText, mode, deleteMode, onUpdateBeat, onUpdate, playlistId, setBeats, setHoverIndex, setHoverPosition
+  beat, 
+  index, 
+  moveBeat, 
+  handlePlayPause, 
+  handleUpdate, 
+  isPlaying, 
+  onBeatClick,
+  selectedBeats = [], 
+  handleBeatClick, 
+  openConfirmModal, 
+  beats, 
+  activeContextMenu, 
+  setActiveContextMenu, 
+  currentBeat, 
+  addToCustomQueue, 
+  searchText, 
+  mode, 
+  deleteMode, 
+  onUpdateBeat, 
+  playlistId, 
+  setBeats, 
+  setHoverIndex, 
+  setHoverPosition
 }) => {
   const ref = useRef(null);
   const location = useLocation();
   const { user } = useUser();
   const { genres, moods, keywords, features } = useData();
   const { setHoveredBeat } = useBeat();
-  const { playlists,isSamePlaylist } = usePlaylist();
+  const { playlists, isSamePlaylist } = usePlaylist();
 
-  const beatIndices = beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {});
-  const isSelected = selectedBeats.map(b => b.id).includes(beat.id);
-  const hasSelectedBefore = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1);
-  const hasSelectedAfter = selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] + 1);
+  // Compute derived state with useMemo to avoid recalculations
+  const beatIndices = useMemo(() => 
+    beats.reduce((acc, b, i) => ({ ...acc, [b.id]: i }), {}), 
+    [beats]
+  );
+
+  const isSelected = useMemo(() => 
+    selectedBeats.some(b => b.id === beat.id), 
+    [selectedBeats, beat.id]
+  );
+
+  const hasSelectedBefore = useMemo(() => 
+    selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] - 1), 
+    [selectedBeats, beatIndices, beat.id]
+  );
+
+  const hasSelectedAfter = useMemo(() => 
+    selectedBeats.some(b => beatIndices[b.id] === beatIndices[beat.id] + 1), 
+    [selectedBeats, beatIndices, beat.id]
+  );
+
   const isMiddle = hasSelectedBefore && hasSelectedAfter;
 
-  const [contextMenuX, setContextMenuX] = useState(0);
-  const [contextMenuY, setContextMenuY] = useState(0);
-  const { handleOnKeyDown, handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
-  const toDragAndDrop = location.pathname !== '/' && (mode === 'lock' || mode === 'listen');
+  // State variables
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const [tierlist, setTierlist] = useState(beat.tierlist || '');
-  const [disableFocus, setDisableFocus] = useState(false);
+  const [disableFocus, setDisableFocus] = useState(mode !== 'edit');
   
-  const urlKey = `currentPage_${location.pathname}`;
-  const [currentPage, setCurrentPage] = useState(() => parseInt(localStorage.getItem(urlKey), 10) || 1);
-  const itemsPerPage = 7;
-
+  // Drag and drop configuration
+  const toDragAndDrop = location.pathname !== '/' && (mode === 'lock' || mode === 'listen');
+  
   const [{ isDragging }, drag] = useDrag({
     type: 'BEAT',
     item: { type: 'BEAT', id: beat.id, index },
@@ -57,76 +91,76 @@ const BeatRow = ({
 
   const [, drop] = useDrop({
     accept: 'BEAT',
-    hover(item, monitor) {
-      if (!toDragAndDrop) return;
-      if (!ref.current) {
-        return;
-      }
+    hover: useCallback((item, monitor) => {
+      if (!toDragAndDrop || !ref.current) return;
+      
       const dragIndex = item.index;
       const hoverIndex = index;
     
       const clientOffset = monitor.getClientOffset();
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverBoundingRect = ref.current.getBoundingClientRect();
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
     
+      // Set hover position for visual feedback
       if (hoverClientY < hoverMiddleY) {
         setHoverPosition('top');
-        setHoverIndex(hoverIndex);
       } else {
         setHoverPosition('bottom');
-        setHoverIndex(hoverIndex);
       }
+      setHoverIndex(hoverIndex);
     
-      if (dragIndex === hoverIndex) {
-        return;
-      }
+      if (dragIndex === hoverIndex) return;
     
+      // Only move when crossing midpoint
       if (dragIndex < hoverIndex && hoverClientY > hoverMiddleY) {
         moveBeat(dragIndex, hoverIndex);
         item.index = hoverIndex;
-        setHoverIndex(hoverIndex);
         return;
       }
     
       if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
         moveBeat(dragIndex, hoverIndex);
         item.index = hoverIndex;
-        setHoverIndex(hoverIndex);
         return;
       }
-    },
-    drop: () => {
+    }, [toDragAndDrop, index, moveBeat, setHoverIndex, setHoverPosition]),
+    
+    drop: useCallback(() => {
       if (!toDragAndDrop) return;
       fetchBeats(playlistId, setBeats);
       setHoverIndex(null);
-    },
+    }, [toDragAndDrop, playlistId, setBeats, setHoverIndex]),
   });
 
+  // Connect drag and drop refs
   if (toDragAndDrop) {
     drag(drop(ref));
   }
 
-  const deleteText = selectedBeats.length > 1
-    ? deleteMode === 'playlist'
+  // Dynamic text for delete/remove operation
+  const deleteText = useMemo(() => {
+    if (selectedBeats.length > 1) {
+      return deleteMode === 'playlist'
         ? `Remove ${selectedBeats.length} tracks`
-        : `Delete ${selectedBeats.length} tracks`
-    : deleteMode === 'playlist'
-        ? 'Remove from playlist'
-        : 'Delete this track';
+        : `Delete ${selectedBeats.length} tracks`;
+    }
+    return deleteMode === 'playlist' ? 'Remove from playlist' : 'Delete this track';
+  }, [selectedBeats.length, deleteMode]);
 
-  const beatRowClasses = classNames({
+  // Dynamic class names
+  const beatRowClasses = useMemo(() => classNames({
     'beat-row': true,
     'beat-row--selected-middle': isSelected && isMiddle,
     'beat-row--selected-bottom': isSelected && !isMiddle && hasSelectedBefore,
     'beat-row--selected-top': isSelected && !isMiddle && hasSelectedAfter,
-    'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter,
+    'beat-row--selected': isSelected && !isMiddle && !hasSelectedBefore && !hasSelectedAfter || isDragging,
     'beat-row--playing': currentBeat && beat.id === currentBeat.id && isSamePlaylist,
-    'beat-row--selected': isDragging,
     'beat-row--edit': mode === 'edit',
-  });
+  }), [isSelected, isMiddle, hasSelectedBefore, hasSelectedAfter, isDragging, currentBeat, beat.id, isSamePlaylist, mode]);
 
-  const fetchBeats = async (playlistId, setBeats) => {
+  // API calls and handlers
+  const fetchBeats = useCallback(async (playlistId, setBeats) => {
     try {
       const beatsData = await getBeatsByPlaylistId(playlistId);
       const sortedBeats = beatsData.sort((a, b) => a.beat_order - b.beat_order);
@@ -134,92 +168,75 @@ const BeatRow = ({
     } catch (error) {
       console.error('Error fetching beats:', error);
     }
-  };
+  }, []);
 
-  const calculateActualIndex = (index) => {
-    return (currentPage - 1) * itemsPerPage + index;
-  };
-
-
-  const handleAddToCustomQueueClick = () => {
-    addToCustomQueue(selectedBeats);
-  };
-
-  const handleInputChange = (property, value) => {
-    onUpdateBeat(beat.id, { [property]: value });
-  };
+  const handleInputChange = useCallback((property, value) => {
+    onUpdateBeat?.(beat.id, { [property]: value });
+  }, [beat.id, onUpdateBeat]);
   
-  const handleTierlistChange = (e) => {
+  const handleTierlistChange = useCallback((e) => {
     const newTierlist = e.target.value;
     setTierlist(newTierlist);
     handleUpdate(beat.id, 'tierlist', newTierlist);
-  };
+  }, [beat.id, handleUpdate]);
 
-  const handleBlur = (id, field, value) => {
+  const handleBlur = useCallback((id, field, value) => {
     handleUpdate(id, field, value);
-  };
+  }, [handleUpdate]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (onBeatClick) {
       onBeatClick(beat);
     }
-  };
+  }, [beat, onBeatClick]);
 
-  const handleMenuClick = (e, beat) => {
+  const handleMenuClick = useCallback((e, beatItem) => {
     e.preventDefault();
-    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beat.id)) {
-      handleBeatClick(beat, e);
+    if (!selectedBeats.some(selectedBeat => selectedBeat.id === beatItem.id)) {
+      handleBeatClick(beatItem, e);
     }
-  };
+  }, [selectedBeats, handleBeatClick]);
 
-  const handleMenuButtonClick = (e, beat) => {
+  const handleMenuButtonClick = useCallback((e, beatItem) => {
     e.stopPropagation();
-    handleMenuClick(e, beat);
+    handleMenuClick(e, beatItem);
+    
     if (isMobileOrTablet()) {
-      setActiveContextMenu(beat.id);
+      setActiveContextMenu(beatItem.id);
     } else {
-      if (activeContextMenu === beat.id) {
+      if (activeContextMenu === beatItem.id) {
         setActiveContextMenu(null);
       } else {
-        setActiveContextMenu(beat.id);
+        setActiveContextMenu(beatItem.id);
         const buttonRect = e.currentTarget.getBoundingClientRect();
         const contextMenuWidth = 240;
         const offsetY = 24;
+        
         let calculatedX = buttonRect.left;
         let calculatedY = buttonRect.top + offsetY;
+        
+        // Ensure menu stays within viewport
         if (calculatedX + contextMenuWidth > window.innerWidth) {
           calculatedX = window.innerWidth - contextMenuWidth;
         }
         if (calculatedX < 0) {
           calculatedX = 0;
         }
-        setContextMenuX(calculatedX);
-        setContextMenuY(calculatedY);
+        
+        setContextMenuPosition({ x: calculatedX, y: calculatedY });
       }
     }
-  };
+  }, [activeContextMenu, handleMenuClick, setActiveContextMenu]);
 
-  const handleAddBeatToPlaylist = async (playlistId, beatIds) => {
+  const handleAddBeatToPlaylist = useCallback(async (playlistId, beatIds) => {
     try {
       await addBeatsToPlaylist(playlistId, beatIds);
     } catch (error) {
       console.error('Error adding beats to playlist:', error);
     }
-  };
+  }, []);
 
-  const handleReplaceAudio = async () => {
-    const newAudioFile = await selectNewAudioFile();
-  
-    if (newAudioFile) {
-      try {
-        await replaceAudio(beat.id, newAudioFile, user.id);
-        console.log('Audio replaced successfully');
-      } catch (error) {
-        console.error('Failed to replace audio:', error);
-      }
-    }
-  };
-  const selectNewAudioFile = () => {
+  const selectNewAudioFile = useCallback(() => {
     return new Promise((resolve) => {
       const input = document.createElement('input');
       input.type = 'file';
@@ -235,71 +252,170 @@ const BeatRow = ({
       };
       input.click();
     });
-  };
+  }, []);
 
+  const handleReplaceAudio = useCallback(async () => {
+    const newAudioFile = await selectNewAudioFile();
+  
+    if (newAudioFile) {
+      try {
+        await replaceAudio(beat.id, newAudioFile, user.id);
+        console.log('Audio replaced successfully');
+      } catch (error) {
+        console.error('Failed to replace audio:', error);
+      }
+    }
+  }, [beat.id, selectNewAudioFile, user.id]);
+
+  const handleAddToCustomQueueClick = useCallback(() => {
+    addToCustomQueue(selectedBeats);
+  }, [addToCustomQueue, selectedBeats]);
+
+  const calculateActualIndex = useCallback((index) => {
+    const urlKey = `currentPage_${location.pathname}`;
+    const currentPage = parseInt(localStorage.getItem(urlKey), 10) || 1;
+    const itemsPerPage = 7;
+    return (currentPage - 1) * itemsPerPage + index;
+  }, [location.pathname]);
+  
+  // Effect for context menu behavior
   useEffect(() => {
     const contextMenuElement = document.getElementById('context-menu');
     let hideTimeoutId;
   
     const toggleScroll = (disable) => document.body.classList.toggle('no-scroll', disable);
-    const manageContextMenuVisibility = (show) => {
-      window[`${show ? 'add' : 'remove'}EventListener`]('click', hideContextMenu);
-      toggleScroll(show);
-      if (contextMenuElement) {
-        ['mouseleave', 'mouseenter'].forEach(event => {
-          contextMenuElement[`${show ? 'add' : 'remove'}EventListener`](event, eventHandlers[event]);
-        });
-      }
-    };
-  
     const hideContextMenu = () => setActiveContextMenu(null);
+    
     const eventHandlers = {
       mouseleave: () => hideTimeoutId = setTimeout(hideContextMenu, 0),
       mouseenter: () => clearTimeout(hideTimeoutId)
     };
+    
+    const manageContextMenuVisibility = (show) => {
+      if (show) {
+        window.addEventListener('click', hideContextMenu);
+        toggleScroll(true);
+        if (contextMenuElement) {
+          contextMenuElement.addEventListener('mouseleave', eventHandlers.mouseleave);
+          contextMenuElement.addEventListener('mouseenter', eventHandlers.mouseenter);
+        }
+      } else {
+        window.removeEventListener('click', hideContextMenu);
+        toggleScroll(false);
+        if (contextMenuElement) {
+          contextMenuElement.removeEventListener('mouseleave', eventHandlers.mouseleave);
+          contextMenuElement.removeEventListener('mouseenter', eventHandlers.mouseenter);
+        }
+      }
+    };
   
     manageContextMenuVisibility(activeContextMenu === beat.id);
-  
+    
     return () => manageContextMenuVisibility(false);
-  }, [activeContextMenu, beat.id]);
+  }, [activeContextMenu, beat.id, setActiveContextMenu]);
 
+  // Handle focus state based on edit mode
   useEffect(() => {
-    if (mode !== 'edit') {
-      setDisableFocus(true);
-    } else {
-      setDisableFocus(false);
-    }
+    setDisableFocus(mode !== 'edit');
   }, [mode]);
 
+  // Mouse event handlers
+  const handleMouseEnter = useCallback((e) => {
+    if (!isMobileOrTablet()) { 
+      e.currentTarget.querySelectorAll('.interactive-button').forEach(button => { 
+        button.style.opacity = 1; 
+      }); 
+      setHoveredBeat(beat.id); 
+    }
+  }, [beat.id, setHoveredBeat]);
+
+  const handleMouseLeave = useCallback((e) => {
+    if (!isMobileOrTablet()) { 
+      e.currentTarget.querySelectorAll('.interactive-button').forEach(button => { 
+        button.style.opacity = 0; 
+      }); 
+      setHoveredBeat(null); 
+    }
+  }, [setHoveredBeat]);
+
+  // Extract commonly used props for SelectableInput
+  const commonSelectableInputProps = {
+    beatId: beat.id,
+    mode: mode,
+    disableFocus: disableFocus,
+    onUpdate: (updatedItems, type) => {
+      // This callback will be triggered when the associations are updated
+      if (onUpdateBeat) {
+        onUpdateBeat(beat.id, { [type]: updatedItems });
+      }
+    }
+  };
+
+  // Build the component's click handler conditionally
+  const rowClickHandler = mode !== "edit" 
+    ? (isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)) 
+    : undefined;
+
+  // Handle right-click for context menu
+  const handleContextMenu = useCallback((e) => {
+    e.preventDefault();
+    handleMenuClick(e, beat);
+    setActiveContextMenu(beat.id);
+    setContextMenuPosition({ x: e.clientX, y: e.clientY });
+  }, [beat, handleMenuClick, setActiveContextMenu]);
+
+  // Menu items for context menu
+  const contextMenuItems = useMemo(() => [
+    {
+      icon: IoAddSharp,
+      iconClass: 'add-playlist',
+      text: 'Add to playlist',
+      buttonClass: 'add-playlist',
+      subItems: playlists.map(playlist => ({
+        text: playlist.title,
+        onClick: () => {
+          const selectedBeatIds = selectedBeats.map(beat => beat.id);
+          handleAddBeatToPlaylist(playlist.id, selectedBeatIds);
+        },
+      })),
+    },
+    {
+      icon: IoListSharp,
+      iconClass: 'add-queue',
+      text: 'Add to queue',
+      buttonClass: 'add-queue',
+      onClick: handleAddToCustomQueueClick,
+    },
+    {
+      icon: IoRefreshSharp,
+      iconClass: 'replace-audio',
+      text: 'Replace audio',
+      buttonClass: 'replace-audio',
+      onClick: handleReplaceAudio,
+    },
+    {
+      icon: deleteMode === "playlist" ? IoTrashBinOutline : IoRemoveCircleOutline,
+      iconClass: 'delete',
+      text: deleteText,
+      buttonClass: 'delete',
+      onClick: () => openConfirmModal(beat.id),
+    },
+  ], [
+    playlists, selectedBeats, handleAddBeatToPlaylist, 
+    handleAddToCustomQueueClick, handleReplaceAudio, 
+    deleteMode, deleteText, openConfirmModal
+  ]);
+
+  // Render the component
   return (
     <tr
       ref={ref} 
       className={beatRowClasses}
-      key={beatRowClasses}
-      onClick={mode !== "edit" ? (isMobileOrTablet() ? handleClick : (e) => handleBeatClick(beat, e)) : undefined}
-      onMouseEnter={(e) => { 
-        if (!isMobileOrTablet()) { 
-          e.currentTarget.querySelectorAll('.interactive-button').forEach(button => { 
-            button.style.opacity = 1; 
-          }); 
-          setHoveredBeat(beat.id); 
-        } 
-      }}
-      onMouseLeave={(e) => { 
-        if (!isMobileOrTablet()) { 
-          e.currentTarget.querySelectorAll('.interactive-button').forEach(button => { 
-            button.style.opacity = 0; 
-          }); 
-          setHoveredBeat(null); 
-        } 
-      }}
-      onContextMenu={(e) => {
-        e.preventDefault();
-        handleMenuClick(e, beat);
-        setActiveContextMenu(beat.id);
-        setContextMenuX(e.clientX);
-        setContextMenuY(e.clientY);
-      }}
+      key={`beat-row-${beat.id}`}
+      onClick={rowClickHandler}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onContextMenu={handleContextMenu}
     >
       {!(mode === 'lock' && isMobileOrTablet()) && (
         <td className="beat-row__number">
@@ -396,42 +512,38 @@ const BeatRow = ({
           </td>
           <td className="beat-row__data">
              <SelectableInput
+              {...commonSelectableInputProps}
               associationType="genres"
               items={genres}
-              beatId={beat.id}
               headerIndex='4'
-              mode={mode}
-              disableFocus={disableFocus}
+              key={`genres-${beat.id}`}
             />
           </td>
           <td className="beat-row__data">
               <SelectableInput
+                {...commonSelectableInputProps}
                 associationType="moods"
                 items={moods}
-                beatId={beat.id}
                 headerIndex='5'
-                mode={mode}
-                disableFocus={disableFocus}
+                key={`moods-${beat.id}`}
               />
           </td>
           <td className="beat-row__data">
               <SelectableInput
+                {...commonSelectableInputProps}
                 associationType="keywords"
                 items={keywords}
-                beatId={beat.id}
                 headerIndex='6'
-                mode={mode}
-                disableFocus={disableFocus}
+                key={`keywords-${beat.id}`}
               />
           </td> 
           <td className="beat-row__data">
               <SelectableInput
+                {...commonSelectableInputProps}
                 associationType="features"
                 items={features}
-                beatId={beat.id}
                 headerIndex='7'
-                mode={mode}
-                disableFocus={disableFocus}
+                key={`features-${beat.id}`}
               />
           </td>
         </>
@@ -451,49 +563,25 @@ const BeatRow = ({
         <td className="beat-row__data">
          <ContextMenu
             beat={beat}
-            position={{ top: contextMenuY, left: contextMenuX }}
+            position={{ top: contextMenuPosition.y, left: contextMenuPosition.x }}
             setActiveContextMenu={setActiveContextMenu}
-            items={[
-              {
-                icon: IoAddSharp,
-                iconClass: 'add-playlist',
-                text: 'Add to playlist',
-                buttonClass: 'add-playlist',
-                subItems: playlists.map(playlist => ({
-                  text: playlist.title,
-                  onClick: () => {
-                    const selectedBeatIds = selectedBeats.map(beat => beat.id);
-                    handleAddBeatToPlaylist(playlist.id, selectedBeatIds);
-                  },
-                })),
-              },
-              {
-                icon: IoListSharp,
-                iconClass: 'add-queue',
-                text: 'Add to queue',
-                buttonClass: 'add-queue',
-                onClick: handleAddToCustomQueueClick,
-              },
-              {
-                icon: IoRefreshSharp,
-                iconClass: 'replace-audio',
-                text: 'Replace audio',
-                buttonClass: 'replace-audio',
-                onClick: handleReplaceAudio,
-              },
-              {
-                icon: deleteMode === "playlist" ? IoTrashBinOutline : IoRemoveCircleOutline,
-                iconClass: 'delete',
-                text: deleteText,
-                buttonClass: 'delete',
-                onClick: () => openConfirmModal(beat.id),
-              },
-            ]}
+            items={contextMenuItems}
           />
         </td>
       )}
-      </tr>
-    );
-  };
+    </tr>
+  );
+};
 
-  export default BeatRow;
+// Add memo to prevent unnecessary renders
+export default React.memo(BeatRow, (prevProps, nextProps) => {
+  // Implement custom comparison to determine if re-render is needed
+  return (
+    prevProps.beat.id === nextProps.beat.id &&
+    prevProps.isPlaying === nextProps.isPlaying &&
+    prevProps.mode === nextProps.mode &&
+    prevProps.currentBeat?.id === nextProps.currentBeat?.id &&
+    prevProps.activeContextMenu === nextProps.activeContextMenu &&
+    JSON.stringify(prevProps.selectedBeats) === JSON.stringify(nextProps.selectedBeats)
+  );
+});
