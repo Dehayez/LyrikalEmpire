@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoPlaySkipBackSharp } from "react-icons/io5";
-
-import { Tooltip } from '../../Tooltip';
-
+import IconButton from '../../Buttons/IconButton';
 import './PrevButton.scss';
 
 const PrevButton = ({ onPrev }) => {
@@ -21,7 +19,7 @@ const PrevButton = ({ onPrev }) => {
 
     const handleKeyDown = (event) => {
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') {
-        return; 
+        return;
       }
 
       if (event.code === 'MediaTrackPrevious') {
@@ -50,16 +48,16 @@ const PrevButton = ({ onPrev }) => {
   }, [onPrev]);
 
   return (
-    <button 
-      className={`icon-button icon-button--prev ${isPrevActive ? 'active' : ''}`} 
+    <IconButton
+      className={`icon-button--prev ${isPrevActive ? 'active' : ''}`}
       onMouseDown={() => setIsPrevActive(true)}
       onMouseUp={() => setIsPrevActive(false)}
       onMouseLeave={() => setIsPrevActive(false)}
       onClick={onPrev}
+      text="Prev"
     >
-      <Tooltip text="Prev" />
       <IoPlaySkipBackSharp size={24} />
-    </button>
+    </IconButton>
   );
 };
 

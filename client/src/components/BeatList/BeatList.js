@@ -14,7 +14,6 @@ import { FilterDropdown } from '../Inputs/FilterDropdown';
 import { IconButton } from '../Buttons';
 import PaginationControls from './PaginationControls';
 import TableHeader from './TableHeader';
-import { Tooltip } from '../Tooltip';
 import { SearchInput } from '../Inputs/SearchInput';
 
 import './BeatList.scss';
@@ -302,26 +301,21 @@ useEffect(() => {
           )
         }
         <div className='beat-list__actions'>
-          <IconButton className={`beat-list__action-button--options${isFilterDropdownVisible ? ' active' : ''}`} onClick={toggleFilterDropdown}>
-              <Tooltip text={isFilterDropdownVisible ? "Hide Filter" : "Show Filter"} position='left' />
-            <IoOptionsSharp/>
+          <IconButton
+            className={`beat-list__action-button--options${isFilterDropdownVisible ? ' active' : ''}`}
+            onClick={toggleFilterDropdown}
+            text={isFilterDropdownVisible ? "Hide Filter" : "Show Filter"}
+            tooltipPosition='left'
+          >
+            <IoOptionsSharp />
           </IconButton>
-          <IconButton className='beat-list__action-button--edit' onClick={toggleEdit}>
-              {mode === 'edit' ? 
-              <>
-                  {!isMobileOrTablet() && (
-                      <Tooltip text="Switch to Listen Mode" position='left' />
-                  )}
-                  <IoPencil/> 
-              </>
-              : 
-              <>
-                  {!isMobileOrTablet() && (
-                      <Tooltip text="Switch to Edit Mode" position='left' />
-                  )}
-                  <IoHeadsetSharp/>
-              </>
-              }
+          <IconButton
+            className='beat-list__action-button--edit'
+            onClick={toggleEdit}
+            text={mode === 'edit' ? 'Switch to Listen Mode' : 'Switch to Edit Mode'}
+            tooltipPosition='left'
+          >
+            {mode === 'edit' ? <IoPencil /> : <IoHeadsetSharp />}
           </IconButton>
           <SearchInput
             searchText={searchText}
@@ -332,9 +326,13 @@ useEffect(() => {
             setPreviousPage={setPreviousPage}
           />
 
-          <IconButton className='beat-list__action-button--profile' onClick={() => navigate('/profile')}>
-            <Tooltip text={username} position='left' />
-            <IoPersonSharp/>
+          <IconButton
+            className='beat-list__action-button--profile'
+            onClick={() => navigate('/profile')}
+            text={username}
+            tooltipPosition='left'
+          >
+            <IoPersonSharp />
           </IconButton>
         </div>
       </div>

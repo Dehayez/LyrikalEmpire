@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoPlaySharp, IoPauseSharp } from "react-icons/io5";
-
-import { Tooltip } from '../../Tooltip';
-
+import IconButton from '../../Buttons/IconButton';
 import './PlayPauseButton.scss';
 
 const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
@@ -34,13 +32,13 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') {
         return;
       }
-    
+
       if (event.key === ' ' || event.code === 'MediaPlayPause') {
         event.preventDefault();
         togglePlayPause();
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     setMediaSession();
 
@@ -54,16 +52,16 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
   }, [isPlaying, setIsPlaying]);
 
   return (
-    <button 
-      className={`icon-button play-pause ${animatePlayPause ? 'animate-scale' : ''} ${className}`}
+    <IconButton
+      className={`play-pause ${animatePlayPause ? 'animate-scale' : ''} ${className}`}
       onMouseDown={() => setAnimatePlayPause(true)}
       onMouseUp={() => setAnimatePlayPause(false)}
       onMouseLeave={() => setAnimatePlayPause(false)}
       onClick={handlePlayPauseClick}
+      text={isPlaying ? 'Pause' : 'Play'}
     >
-      <Tooltip text={isPlaying ? 'Pause' : 'Play'} />
       {isPlaying ? <IoPauseSharp size={24} /> : <IoPlaySharp size={24} className="play-icon" />}
-    </button>
+    </IconButton>
   );
 };
 

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoPlaySkipForwardSharp } from "react-icons/io5";
-
-import { Tooltip } from '../../Tooltip';
-
+import IconButton from '../../Buttons/IconButton';
 import './NextButton.scss';
 
 const NextButton = ({ onNext }) => {
@@ -23,7 +21,7 @@ const NextButton = ({ onNext }) => {
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') {
         return;
       }
-    
+
       if (event.code === 'MediaTrackNext') {
         setIsNextActive(true);
         onNext();
@@ -50,16 +48,16 @@ const NextButton = ({ onNext }) => {
   }, [onNext]);
 
   return (
-    <button 
-      className={`icon-button icon-button--next ${isNextActive ? 'active' : ''}`} 
+    <IconButton
+      className={`icon-button--next ${isNextActive ? 'active' : ''}`}
       onMouseDown={() => setIsNextActive(true)}
       onMouseUp={() => setIsNextActive(false)}
       onMouseLeave={() => setIsNextActive(false)}
       onClick={onNext}
+      text="Next"
     >
-      <Tooltip text="Next" />
       <IoPlaySkipForwardSharp size={24} />
-    </button>
+    </IconButton>
   );
 };
 

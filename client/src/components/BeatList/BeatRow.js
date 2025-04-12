@@ -40,7 +40,8 @@ const BeatRow = ({
   playlistId, 
   setBeats, 
   setHoverIndex, 
-  setHoverPosition
+  setHoverPosition,
+  handleOnKeyDown
 }) => {
   const ref = useRef(null);
   const location = useLocation();
