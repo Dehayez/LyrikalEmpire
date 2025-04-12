@@ -28,51 +28,38 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     handlePrevClick,
     currentTime,
   } = useAudioPlayer({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat });
+
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
-  const [waveform, setWaveform] = useState(() => {
-    const savedWaveform = JSON.parse(localStorage.getItem('waveform'));
-    return savedWaveform !== null ? savedWaveform : false;
-  });
+  const [waveform, setWaveform] = useState(() => JSON.parse(localStorage.getItem('waveform')) || false);
 
   useLocalStorageSync({ waveform });
 
-  const toggleLyricsModal = () => {
-    setLyricsModal(prevState => !prevState);
-  };
-
-  const toggleWaveform = () => {
-    setWaveform(prevState => !prevState);
-  };
+  const toggleLyricsModal = () => setLyricsModal(prev => !prev);
+  const toggleWaveform = () => setWaveform(prev => !prev);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
-      if (currentBeat && currentBeat.audio) {
+      if (currentBeat?.audio) {
         try {
           setAudioSrc('');
           setAutoPlay(false);
-  
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
-  
           setAutoPlay(true);
         } catch (error) {
           console.error('Error fetching signed URL:', error);
         }
       }
     };
-  
     fetchSignedUrl();
   }, [currentBeat]);
 
   useEffect(() => {
     if (audioSrc) {
-      const timer = setTimeout(() => {
-        setAutoPlay(true);
-      }, 1000);
-  
+      const timer = setTimeout(() => setAutoPlay(true), 1000);
       return () => clearTimeout(timer);
     }
   }, [audioSrc]);
@@ -80,13 +67,9 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-  
-    const timer = setTimeout(() => {
+
+    const loadWaveform = async () => {
       if (waveformRef.current && audioSrc) {
-        while (waveformRef.current.firstChild) {
-          waveformRef.current.removeChild(waveformRef.current.firstChild);
-        }
-  
         wavesurfer.current = WaveSurfer.create({
           container: waveformRef.current,
           waveColor: '#828282',
@@ -94,7 +77,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           height: 80,
           responsive: true,
           interact: false,
-          cursorColor: '#FFCC44', 
+          cursorColor: '#FFCC44',
           cursorWidth: 0,
           partialRender: true,
           barWidth: 1,
@@ -102,49 +85,30 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           barRadius: 0,
         });
 
-        fetch(audioSrc, { signal })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.blob();
-          })
-          .then(blob => {
-            const url = URL.createObjectURL(blob);
-            wavesurfer.current.load(url);
-            wavesurfer.current.setVolume(0);
-  
-            wavesurfer.current.on('ready', () => {
-              const duration = wavesurfer.current.getDuration();
-              if (!isNaN(currentTime) && duration > 0) {
-                wavesurfer.current.seekTo(currentTime / duration);
-              }
-            });
-          })
-          .catch(error => {
-            if (error.name === 'AbortError') {
-              console.log('Fetch aborted');
-            } else {
-              console.error("Error loading audio source:", error);
+        try {
+          const response = await fetch(audioSrc, { signal });
+          if (!response.ok) throw new Error('Network response was not ok');
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          wavesurfer.current.load(url);
+          wavesurfer.current.setVolume(0);
+          wavesurfer.current.on('ready', () => {
+            const duration = wavesurfer.current.getDuration();
+            if (!isNaN(currentTime) && duration > 0) {
+              wavesurfer.current.seekTo(currentTime / duration);
             }
           });
+        } catch (error) {
+          if (error.name !== 'AbortError') console.error("Error loading audio source:", error);
+        }
       }
-    }, 100);
-  
+    };
+
+    const timer = setTimeout(loadWaveform, 100);
     return () => {
       clearTimeout(timer);
       if (wavesurfer.current) {
-        try {
-          if (wavesurfer.current.isReady) {
-            wavesurfer.current.destroy();
-          } else {
-            wavesurfer.current.once('ready', () => {
-              wavesurfer.current.destroy();
-            });
-          }
-        } catch (error) {
-          console.error("Error destroying wavesurfer instance:", error);
-        }
+        wavesurfer.current.destroy();
       }
     };
   }, [audioSrc]);
@@ -168,16 +132,16 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       <H5AudioPlayer
-          className="smooth-progress-bar smooth-progress-bar--mobile"
-          autoPlayAfterSrcChange={autoPlay}
-          src={audioSrc}
-          ref={playerRef}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-          customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-        />
+        className="smooth-progress-bar smooth-progress-bar--mobile"
+        autoPlayAfterSrcChange={autoPlay}
+        src={audioSrc}
+        ref={playerRef}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
+      />
       {currentBeat && (
-       <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
+        <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
           {currentBeat.title}
         </p>
       )}
@@ -205,7 +169,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
             <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
           ]}
         />
-        <div ref={waveformRef} className={`waveform ${waveform? 'waveform--active' : ''}`}></div>
+        <div ref={waveformRef} className={`waveform ${waveform ? 'waveform--active' : ''}`}></div>
       </div>
       <div className='audio-player__settings' style={{ flex: '1' }}>
         <IconButton className='audio-player__icon' onClick={toggleWaveform}>

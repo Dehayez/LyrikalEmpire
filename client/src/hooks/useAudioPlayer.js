@@ -3,25 +3,13 @@ import { useLocalStorageSync } from './useLocalStorageSync';
 
 export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat }) => {
   const playerRef = useRef();
-  const [volume, setVolume] = useState(() => {
-    const savedVolume = localStorage.getItem('volume');
-    return savedVolume !== null ? parseFloat(savedVolume) : 1.0;
-  });
+  const [volume, setVolume] = useState(() => parseFloat(localStorage.getItem('volume')) || 1.0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [dragPosition, setDragPosition] = useState(0);
-  const [currentTime, setCurrentTime] = useState(() => {
-    const savedCurrentTime = localStorage.getItem('currentTime');
-    return savedCurrentTime !== null ? parseFloat(savedCurrentTime) : 0;
-  });
+  const [currentTime, setCurrentTime] = useState(() => parseFloat(localStorage.getItem('currentTime')) || 0);
 
-  useLocalStorageSync({
-    shuffle,
-    repeat,
-    currentBeat,
-    volume,
-    currentTime,
-  });
+  useLocalStorageSync({ shuffle, repeat, currentBeat, volume, currentTime });
 
   const handleVolumeChange = e => {
     const newVolume = parseFloat(e.target.value);
@@ -30,25 +18,16 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
   };
 
   const handlePlayPause = useCallback(play => {
-    const audio = playerRef.current?.audio?.current;
+    const audio = playerRef.current?.audio?. current;
     if (audio) {
-      if (play && audio.paused) {
-        audio.play().catch(() => {});
-      } else if (!play && !audio.paused) {
-        audio.pause();
-      }
+      play ? audio.play().catch(() => {}) : audio.pause();
     }
   }, []);
 
   const handleEnded = useCallback(() => {
     const audioElement = playerRef.current?.audio?.current;
     if (audioElement) {
-      if (repeat === 'Repeat One') {
-        audioElement.currentTime = 0;
-        audioElement.play();
-      } else {
-        onNext();
-      }
+      repeat === 'Repeat One' ? (audioElement.currentTime = 0, audioElement.play()) : onNext();
     }
   }, [onNext, repeat]);
 
@@ -61,23 +40,15 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
   const handleTouchMove = e => {
     if (!isDragging) return;
     const touch = e.touches[0];
-    const currentPosition = touch.clientX;
-    const movementX = currentPosition - startX;
-    setDragPosition(movementX);
+    setDragPosition(touch.clientX - startX);
     e.preventDefault();
   };
 
   const handleTouchEnd = e => {
-    const touch = e.changedTouches[0];
-    const endX = touch.clientX;
+    const endX = e.changedTouches[0].clientX;
     setIsDragging(false);
     setDragPosition(0);
-
-    if (startX - endX > 50) {
-      onNext();
-    } else if (startX - endX < -50) {
-      onPrev();
-    }
+    startX - endX > 50 ? onNext() : startX - endX < -50 && onPrev();
   };
 
   useEffect(() => {
@@ -87,11 +58,9 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
       const updateTime = () => {
         setCurrentTime(audioElement.currentTime);
         localStorage.setItem('currentTime', audioElement.currentTime.toString());
-        localStorage.setItem('timestamp', Date.now().toString());
       };
       audioElement.addEventListener('timeupdate', updateTime);
       audioElement.addEventListener('ended', handleEnded);
-
       return () => {
         audioElement.removeEventListener('timeupdate', updateTime);
         audioElement.removeEventListener('ended', handleEnded);
@@ -100,9 +69,7 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
   }, [volume, handleEnded]);
 
   useEffect(() => {
-    if (currentBeat && currentBeat.audio) {
-      handlePlayPause(isPlaying);
-    }
+    if (currentBeat?.audio) handlePlayPause(isPlaying);
   }, [currentBeat, isPlaying, handlePlayPause]);
 
   useEffect(() => {
@@ -110,11 +77,8 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     const savedCurrentTime = localStorage.getItem('currentTime');
     if (savedCurrentBeat && savedCurrentTime) {
       setCurrentBeat(JSON.parse(savedCurrentBeat));
-      const currentTime = parseFloat(savedCurrentTime);
       const audioElement = playerRef.current?.audio?.current;
-      if (audioElement) {
-        audioElement.currentTime = currentTime;
-      }
+      if (audioElement) audioElement.currentTime = parseFloat(savedCurrentTime);
     }
   }, [setCurrentBeat]);
 
@@ -128,21 +92,15 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
   const handlePrevClick = useCallback(() => {
     const audioElement = playerRef.current?.audio?.current;
     if (audioElement) {
-      if (audioElement.currentTime > 3) {
-        audioElement.currentTime = 0;
-      } else {
-        onPrev();
-      }
+      audioElement.currentTime > 3 ? (audioElement.currentTime = 0) : onPrev();
     }
-  }, [onPrev, playerRef]);
+  }, [onPrev]);
 
-  const handlePlay = (beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying) => {
-    setSelectedBeat(beat);
-    setBeats(beats);
+  const handlePlay = (beat, play, beats) => {
     if (!beat) {
       setCurrentBeat(null);
       setIsPlaying(false);
-    } else if (currentBeat && currentBeat.id === beat.id) {
+    } else if (currentBeat?.id === beat.id) {
       setIsPlaying(play);
     } else {
       setCurrentBeat(beat);
@@ -150,30 +108,20 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     }
   };
 
-  const handleNext = (repeat, shuffle, lastPlayedIndex, beats, currentBeat, setLastPlayedIndex, handlePlay, setIsPlaying) => {
+  const handleNext = (beats) => {
     let nextIndex;
     if (shuffle) {
       do {
         nextIndex = Math.floor(Math.random() * beats.length);
-      } while (nextIndex === lastPlayedIndex && beats.length > 1);
+      } while (nextIndex === beats.findIndex(b => b.id === currentBeat.id) && beats.length > 1);
     } else {
-      const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
-      nextIndex = (currentIndex + 1) % beats.length;
+      nextIndex = (beats.findIndex(b => b.id === currentBeat.id) + 1) % beats.length;
     }
-    setLastPlayedIndex(nextIndex);
-    if (repeat === 'Disabled Repeat' && nextIndex === 0) {
-      handlePlay(beats[nextIndex], true, beats);
-      setTimeout(() => setIsPlaying(false), 1);
-    } else {
-      handlePlay(beats[nextIndex], true, beats);
-    }
+    handlePlay(beats[nextIndex], true, beats);
   };
 
-  const handlePrev = (beats, currentBeat, handlePlay, repeat, setRepeat) => {
-    if (repeat === 'Repeat One') {
-      setRepeat('Repeat');
-    }
-    const currentIndex = beats.findIndex(beat => beat.id === currentBeat.id);
+  const handlePrev = (beats) => {
+    const currentIndex = beats.findIndex(b => b.id === currentBeat.id);
     const prevIndex = (currentIndex - 1 + beats.length) % beats.length;
     handlePlay(beats[prevIndex], true, beats);
   };
