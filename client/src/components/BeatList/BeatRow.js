@@ -9,6 +9,7 @@ import { addBeatsToPlaylist, getBeatsByPlaylistId, replaceAudio } from '../../se
 import { isMobileOrTablet, formatDuration } from '../../utils';
 import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
 
+import { IconButton } from '../Buttons';
 import BeatAnimation from './BeatAnimation';
 import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
@@ -554,12 +555,13 @@ const BeatRow = ({
         <td className='beat-row__data'>{formatDuration(beat.duration)}</td>
       )}
       <td className="beat-row__data">
-        <button 
-          className={`icon-button icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`} 
-          onClick={(e) => handleMenuButtonClick(e, beat)}
-        >
-          <IoEllipsisHorizontal fontSize={24} />
-        </button>
+      <IconButton
+        className={`icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`}
+        onClick={(e) => handleMenuButtonClick(e, beat)}
+        ariaLabel="Open menu"
+      >
+        <IoEllipsisHorizontal fontSize={24} />
+      </IconButton>
       </td>
       {activeContextMenu === beat.id && (
         <td className="beat-row__data">

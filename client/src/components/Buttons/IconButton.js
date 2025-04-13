@@ -4,13 +4,13 @@ import { isMobileOrTablet } from '../../utils';
 import { Tooltip } from '../Tooltip';
 import './IconButton.scss';
 
-const IconButton = ({ className = null, onClick, children, text, tooltipPosition = 'top' }) => {
+const IconButton = ({ className = null, onClick, children, text, tooltipPosition = 'top', ariaLabel }) => {
   const classes = classNames('icon-button', className, {
     'icon-button--mobile': isMobileOrTablet(),
   });
 
   return (
-    <div className={classes} onClick={onClick}>
+    <div className={classes} onClick={onClick} aria-label={ariaLabel}>
       {children}
       {!isMobileOrTablet() && text && <Tooltip text={text} position={tooltipPosition} />}
     </div>

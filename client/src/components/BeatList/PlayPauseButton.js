@@ -1,6 +1,7 @@
 import React from 'react';
 import { IoPlaySharp, IoPauseSharp } from "react-icons/io5";
-import { useBeat } from '../../contexts/BeatContext';
+import { useBeat } from '../../contexts';
+import { IconButton } from '../Buttons';
 import './PlayPauseButton.scss';
 
 const PlayPauseButton = ({ beat, handlePlayPause, currentBeat, isPlaying }) => {
@@ -8,13 +9,14 @@ const PlayPauseButton = ({ beat, handlePlayPause, currentBeat, isPlaying }) => {
   const { hoveredBeat } = useBeat();
 
   return (
-    <button 
-      className="icon-button icon-button--play-pause" 
+    <IconButton
+      className="icon-button--play-pause"
       onClick={() => handlePlayPause(beat)}
       style={{ opacity: hoveredBeat === beat.id ? 1 : 0 }}
+      aria-label={isCurrentBeatPlaying ? 'Pause' : 'Play'}
     >
       {isCurrentBeatPlaying ? <IoPauseSharp fontSize={18} /> : <IoPlaySharp fontSize={18} />}
-    </button>
+    </IconButton>
   );
 };
 
