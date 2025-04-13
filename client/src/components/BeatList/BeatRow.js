@@ -49,6 +49,7 @@ const BeatRow = ({
   const { genres, moods, keywords, features } = useData();
   const { setHoveredBeat } = useBeat();
   const { playlists, isSamePlaylist } = usePlaylist();
+  const { handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
 
   // Compute derived state with useMemo to avoid recalculations
   const beatIndices = useMemo(() => 
