@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { IoSearchSharp, IoCloseSharp } from "react-icons/io5";
 import classNames from 'classnames';
 import { getInitialState, isMobileOrTablet } from '../../utils';
-import IconButton from '../Buttons/IconButton';
+import { Tooltip } from '../Tooltip';
 
 import '../BeatList/BeatList.scss';
 
@@ -68,21 +68,21 @@ export const SearchInput = ({
       })}
       onClick={(e) => e.stopPropagation()}
     >
-      <IconButton
+      <div
         className={classNames(
           'beat-list__action-button',
           'beat-list__action-button--search',
+          'icon-button',
           {
             'beat-list__action-button--search--active': searchText && !isSearchVisible,
             'beat-list__action-button--search--closed': !isSearchVisible,
           }
         )}
         onClick={toggleSearchVisibility}
-        text="Search in tracks"
-        tooltipPosition="left"
       >
+        {!isMobileOrTablet() && <Tooltip text="Search in tracks" position="left" />}
         <IoSearchSharp />
-      </IconButton>
+      </div>
       <input
         id="search-input"
         ref={searchInputRef}
@@ -94,14 +94,12 @@ export const SearchInput = ({
         autoComplete="off"
       />
       {isSearchVisible && searchText && (
-        <IconButton
-          className="beat-list__action-button--clear"
+        <div
+          className="beat-list__action-button beat-list__action-button--clear"
           onClick={clearSearch}
-          text="Clear search"
-          tooltipPosition="left"
         >
           <IoCloseSharp />
-        </IconButton>
+        </div>
       )}
     </div>
   );
