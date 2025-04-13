@@ -103,10 +103,14 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
           </Link>
           <h2 className="playlists__title">Playlists</h2>
         </div>
-        <button className='icon-button' onClick={() => handleAddPlaylist(`Playlist #${playlists.length + 1}`, null)}>
-          <Tooltip text="Add playlist" position='left' />
+        <IconButton
+          className="icon-button"
+          onClick={() => handleAddPlaylist(`Playlist #${playlists.length + 1}`, null)}
+          text="Add playlist"
+          tooltipPosition="left"
+        >
           <IoAddSharp />
-        </button>
+        </IconButton>
       </div>
       {playlists.length === 0 ? (
         <div className="playlists__empty-message">

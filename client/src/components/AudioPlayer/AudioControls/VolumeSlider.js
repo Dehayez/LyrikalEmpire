@@ -1,8 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { IoVolumeMuteSharp, IoVolumeMediumSharp, IoVolumeHighSharp, IoVolumeLowSharp } from "react-icons/io5";
-
-import { Tooltip } from '../../Tooltip';
-
+import IconButton from '../../Buttons/IconButton';
 import './VolumeSlider.scss';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -19,7 +17,7 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
     const newVolume = clamp((event.clientX - rect.left) / rect.width, 0, 1);
     handleVolumeChange({ target: { value: newVolume } });
     setIsMuted(newVolume === 0);
-  }
+  };
 
   const toggleMute = () => {
     if (volume === 0) {
@@ -30,11 +28,11 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
       handleVolumeChange({ target: { value: 0 } });
       setIsMuted(true);
     }
-  }
+  };
 
   const handleMouseMove = (event) => {
     if (isDragging) calculateVolume(event);
-  }
+  };
 
   useEffect(() => {
     const handleMouseUp = () => setIsDragging(false);
@@ -43,7 +41,7 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
     return () => {
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('mousemove', handleMouseMove);
-    }
+    };
   }, [isDragging]);
 
   const volumeIcon = volume > 0.66 ? <IoVolumeHighSharp size={24} />
@@ -53,11 +51,15 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
 
   return (
     <div className='volume-slider'>
-      <div className='volume-slider__icon' onClick={toggleMute}>
+      <IconButton
+        className='volume-slider__icon'
+        onClick={toggleMute}
+        text={isMuted ? 'Unmute' : 'Mute'}
+        tooltipPosition="top"
+      >
         {volumeIcon}
-        <Tooltip text={isMuted ? 'Unmute' : 'Mute'} />
-      </div>
-      <div 
+      </IconButton>
+      <div
         className={`volume-slider__track ${isHovering || isDragging ? 'hover' : ''}`}
         ref={sliderRef}
         onMouseDown={() => setIsDragging(true)}
@@ -68,17 +70,17 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
           className='volume-slider__progress'
           style={{ width: `${volume * 100}%` }}
         />
-        <div 
+        <div
           className='volume-slider__thumb'
           style={{ left: `${volume * 100}%` }}
         />
-        <div 
+        <div
           className='volume-slider__click-capture'
           onClick={calculateVolume}
         />
       </div>
     </div>
   );
-}
+};
 
 export default VolumeSlider;

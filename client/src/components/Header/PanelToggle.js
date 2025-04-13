@@ -1,7 +1,6 @@
 import React from 'react';
 import { IoMenuSharp, IoListSharp, IoLockOpen, IoLockClosed } from 'react-icons/io5';
 import { IconButton } from '../Buttons';
-import { Tooltip } from '../Tooltip';
 import { isMobileOrTablet } from '../../utils';
 
 import './PanelToggle.scss';
@@ -21,22 +20,42 @@ const PanelToggle = ({
 
   return (
     <div
-      {...(!isMobileOrTablet() ? { onMouseEnter: () => { setHovered(true); handleMouseEnter(); }, onMouseLeave: () => { setHovered(false); handleMouseLeave(); } } : {})}
+      {...(!isMobileOrTablet()
+        ? {
+            onMouseEnter: () => {
+              setHovered(true);
+              handleMouseEnter();
+            },
+            onMouseLeave: () => {
+              setHovered(false);
+              handleMouseLeave();
+            },
+          }
+        : {})}
       onClick={handleClick}
       className={`panel-toggle panel-toggle--${position}`}
     >
       {isPanelVisible ? (
-        <IconButton className={hoverClass}>
+        <IconButton
+          className={hoverClass}
+          text={isHovered ? 'Unlock Panel' : 'Lock Panel'}
+          tooltipPosition={tooltipPosition}
+        >
           {isHovered ? <IoLockOpen /> : <IoLockClosed />}
-          {!isMobileOrTablet() && <Tooltip text={isHovered ? 'Unlock Panel' : 'Lock Panel'} position={tooltipPosition} />}
         </IconButton>
       ) : isDivVisible ? (
-        <IconButton>
+        <IconButton
+          text={isHovered ? 'Lock Panel' : 'Unlock Panel'}
+          tooltipPosition={tooltipPosition}
+        >
           {isHovered ? <IoLockClosed /> : <IoLockOpen />}
-          {!isMobileOrTablet() && <Tooltip text={isHovered ? 'Lock Panel' : 'Unlock Panel'} position={tooltipPosition} />}
         </IconButton>
       ) : (
-        <IconButton className={hoverClass}>
+        <IconButton
+          className={hoverClass}
+          text={position === 'left' ? 'Open Menu' : 'Open List'}
+          tooltipPosition={tooltipPosition}
+        >
           {position === 'left' ? <IoMenuSharp /> : <IoListSharp />}
         </IconButton>
       )}

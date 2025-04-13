@@ -1,16 +1,18 @@
 import React from 'react';
 import { IoShuffleSharp } from "react-icons/io5";
-
-import { Tooltip } from '../../Tooltip';
-
+import IconButton from '../../Buttons/IconButton';
 import './ShuffleButton.scss';
 
 const ShuffleButton = ({ shuffle, setShuffle }) => {
   return (
-    <button className={`icon-button icon-button--shuffle ${shuffle ? 'active' : ''}`} onClick={() => setShuffle(!shuffle)}>
+    <IconButton
+      className={`icon-button--shuffle ${shuffle ? 'active' : ''}`}
+      onClick={() => setShuffle(!shuffle)}
+      text={shuffle ? 'Disable Shuffle' : 'Shuffle'}
+      tooltipPosition="top"
+    >
       <IoShuffleSharp />
-      <Tooltip text={shuffle ? 'Disable Shuffle' : 'Shuffle'} />
-    </button>
+    </IconButton>
   );
 };
 
