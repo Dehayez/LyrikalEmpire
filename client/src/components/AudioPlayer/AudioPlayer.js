@@ -45,10 +45,8 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       if (currentBeat?.audio) {
         try {
           setAudioSrc('');
-          setAutoPlay(false);
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
-          setAutoPlay(true);
         } catch (error) {
           console.error('Error fetching signed URL:', error);
         }
@@ -56,13 +54,6 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     };
     fetchSignedUrl();
   }, [currentBeat]);
-
-  useEffect(() => {
-    if (audioSrc) {
-      const timer = setTimeout(() => setAutoPlay(true), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [audioSrc]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -114,7 +105,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
   }, [audioSrc]);
 
   useEffect(() => {
-    const progressContainer = document.querySelector('.rhap_progress-container');
+    const progressContainer = document .querySelector('.rhap_progress-container');
     if (progressContainer && waveformRef.current && !progressContainer.contains(waveformRef.current)) {
       progressContainer.appendChild(waveformRef.current);
     }
@@ -129,6 +120,11 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     }
   }, [currentTime]);
 
+  const handlePlayClick = () => {
+    setAutoPlay(true);
+    setIsPlaying(true);
+  };
+
   return isMobileOrTablet() ? (
     <div className="audio-player audio-player--mobile" id="audio-player">
       <H5AudioPlayer
@@ -136,7 +132,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         autoPlayAfterSrcChange={autoPlay}
         src={audioSrc}
         ref={playerRef}
-        onPlay={() => setIsPlaying(true)}
+        onPlay={handlePlayClick}
         onPause={() => setIsPlaying(false)}
         customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
       />
@@ -158,7 +154,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           autoPlayAfterSrcChange={autoPlay}
           src={audioSrc}
           ref={playerRef}
-          onPlay={() => setIsPlaying(true)}
+          onPlay={handlePlayClick}
           onPause={() => setIsPlaying(false)}
           customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
           customControlsSection={[
