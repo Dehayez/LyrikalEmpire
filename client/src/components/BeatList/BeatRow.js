@@ -440,6 +440,7 @@ const BeatRow = ({
       )}
       <td className="beat-row__data">
         <Highlight text={beat.title} highlight={searchText} />
+        <label htmlFor={`beat-title-input-${beat.id}`} className="sr-only">Title</label>
         {mode === 'edit' ? 
           <input 
             id={`beat-title-input-${beat.id}`}
@@ -461,6 +462,7 @@ const BeatRow = ({
       {mode !== 'lock' && (
         <>
           <td className="beat-row__data">
+            <label htmlFor={`beat-bpm-input-${beat.id}`} className="sr-only">BPM</label>
             {mode === 'edit' ? 
               <input 
                 id={`beat-bpm-input-${beat.id}`}
@@ -514,6 +516,7 @@ const BeatRow = ({
             }
           </td>
           <td className="beat-row__data">
+            <label htmlFor={`genres-select-${beat.id}`} className="sr-only">Genres</label>
              <SelectableInput
               {...commonSelectableInputProps}
               associationType="genres"
@@ -523,6 +526,7 @@ const BeatRow = ({
             />
           </td>
           <td className="beat-row__data">
+            <label htmlFor={`genres-select-${beat.id}`} className="sr-only">Moods</label>
               <SelectableInput
                 {...commonSelectableInputProps}
                 associationType="moods"
@@ -532,6 +536,7 @@ const BeatRow = ({
               />
           </td>
           <td className="beat-row__data">
+              <label htmlFor={`genres-select-${beat.id}`} className="sr-only">Keywords</label>
               <SelectableInput
                 {...commonSelectableInputProps}
                 associationType="keywords"
@@ -541,6 +546,7 @@ const BeatRow = ({
               />
           </td> 
           <td className="beat-row__data">
+              <label htmlFor={`genres-select-${beat.id}`} className="sr-only">Features</label>
               <SelectableInput
                 {...commonSelectableInputProps}
                 associationType="features"
