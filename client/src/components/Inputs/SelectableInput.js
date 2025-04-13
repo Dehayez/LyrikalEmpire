@@ -46,13 +46,17 @@ export const SelectableInput = ({
 
   const handleFocus = useCallback(() => {
     setIsFocused(true);
-    inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, []);
-
+  
   const handleContainerClick = useCallback(() => {
     inputRef.current.classList.remove('selectable-input__input--hidden');
     inputRef.current.focus();
-    inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  
+    // Scroll the container to the right
+    if (inputContainerRef.current) {
+      const { scrollWidth, clientWidth } = inputContainerRef.current;
+      inputContainerRef.current.scrollLeft = scrollWidth - clientWidth;
+    }
   }, []);
 
   const handleBlur = useCallback((e) => {
