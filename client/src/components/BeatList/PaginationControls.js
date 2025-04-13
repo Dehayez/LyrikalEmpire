@@ -91,7 +91,12 @@ const PaginationControls = ({ items, currentBeat, currentPage, setCurrentPage })
   return (
     <div className="pagination-controls">
       <div className="pagination-controls-top">
-        <button className={`icon-button ${currentPage === 1 ? 'icon-button--disabled' : ''}`} onClick={handlePreviousPage} disabled={currentPage === 1}>
+        <button
+          className={`icon-button ${currentPage === 1 ? 'icon-button--disabled' : ''}`}
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+          aria-label="Previous Page"
+        >
           <IoChevronBackSharp fontSize={20} />
         </button>
         {startPage > 1 ? (
@@ -100,10 +105,11 @@ const PaginationControls = ({ items, currentBeat, currentPage, setCurrentPage })
               onClick={() => handlePageClick(1)}
               className='pagination-controls__link'
               style={{ cursor: 'pointer' }}
+              aria-label="Go to Page 1"
             >
               1
             </a>
-            <span className='pagination-controls__ellipsis' style={{cursor: 'default'}}>...</span>
+            <span className='pagination-controls__ellipsis' style={{ cursor: 'default' }}>...</span>
           </>
         ) : (
           <span className='pagination-controls__placeholder'></span>
@@ -118,6 +124,7 @@ const PaginationControls = ({ items, currentBeat, currentPage, setCurrentPage })
               pageNumber === currentBeatPage ? 'highlight' : ''
             ].join(' ')}
             style={{ cursor: 'pointer' }}
+            aria-label={`Go to Page ${pageNumber}`}
           >
             {pageNumber}
             {pageNumber === currentBeatPage && <div className="indicator"></div>}
@@ -125,11 +132,12 @@ const PaginationControls = ({ items, currentBeat, currentPage, setCurrentPage })
         ))}
         {endPage < totalPages ? (
           <>
-            <span className='pagination-controls__ellipsis' style={{cursor: 'default'}}>...</span>
+            <span className='pagination-controls__ellipsis' style={{ cursor: 'default' }}>...</span>
             <a
               onClick={() => handlePageClick(totalPages)}
               className='pagination-controls__link'
               style={{ cursor: 'pointer' }}
+              aria-label={`Go to Page ${totalPages}`}
             >
               {totalPages}
             </a>
@@ -137,15 +145,21 @@ const PaginationControls = ({ items, currentBeat, currentPage, setCurrentPage })
         ) : (
           <span className='pagination-controls__placeholder'></span>
         )}
-        <button className={`icon-button ${currentPage === totalPages ? 'icon-button--disabled' : ''}`} onClick={handleNextPage} disabled={currentPage === totalPages}>
+        <button
+          className={`icon-button ${currentPage === totalPages ? 'icon-button--disabled' : ''}`}
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          aria-label="Next Page"
+        >
           <IoChevronForwardSharp fontSize={20} />
         </button>
       </div>
       {currentBeatPage !== 0 && (
         <div className="pagination-controls-bottom">
-          <a 
-          className={`pagination-controls-bottom__link ${currentPage === currentBeatPage ? 'pagination-controls-bottom__link--ghost' : ''}`} 
-          onClick={handleGoToCurrentBeatPage}
+          <a
+            className={`pagination-controls-bottom__link ${currentPage === currentBeatPage ? 'pagination-controls-bottom__link--ghost' : ''}`}
+            onClick={handleGoToCurrentBeatPage}
+            aria-label="Go to Current Track Page"
           >
             Go to Current Track
           </a>
