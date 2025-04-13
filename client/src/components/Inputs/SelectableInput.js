@@ -201,41 +201,36 @@ export const SelectableInput = ({
           {...(mode === 'edit' && { onClick: handleContainerClick })}
           ref={inputContainerRef}
         >
-          <label 
-            htmlFor={`selectable-input-${associationType}-${beatId}-${headerIndex}`} 
-            className={`form-group__label ${inputValue || isFocused || selectedItems.length > 0 ? 'form-group__label--active' : ''}`}
-          >
+          <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />
+          <input
+            ref={inputRef}
+            id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
+            className={classNames('form-group__input', 'selectable-input__input', {
+              'selectable-input__input--hidden': !isFocused,
+              'selectable-input__input--disabled': disableFocus,
+            })}
+            placeholder={selectedItems.length === 0 ? placeholder : ''}
+            type="text"
+            value={inputValue}
+            onFocus={(e) => {
+              handleFocus();
+              e.target.nextSibling.classList.add('form-group__label--active');
+            }}
+            onBlur={(e) => {
+              handleBlur(e);
+              if (!inputValue && selectedItems.length === 0) {
+                e.target.nextSibling.classList.remove('form-group__label--active');
+              }
+            }}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onClick={(e) => e.stopPropagation()}
+            disabled={disableFocus}
+            autoComplete="off"
+          />
+          <label htmlFor={`selectable-input-${associationType}-${beatId}-${headerIndex}`} className={`form-group__label ${inputValue || isFocused || selectedItems.length > 0 ? 'form-group__label--active' : ''}`}>
             {label}
           </label>
-          <input
-              ref={inputRef}
-              id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
-              className={classNames('form-group__input', 'selectable-input__input', {
-                  'selectable-input__input--hidden': !isFocused,
-                  'selectable-input__input--disabled': disableFocus,
-              })}
-              placeholder={selectedItems.length === 0 ? placeholder : ''}
-              type="text"
-              value={inputValue}
-              onFocus={(e) => {
-                  handleFocus();
-                  e.target.previousSibling.classList.add('form-group__label--active');
-              }}
-              onBlur={(e) => {
-                  handleBlur(e);
-                  if (!inputValue && selectedItems.length === 0) {
-                      e.target.previousSibling.classList.remove('form-group__label--active');
-                  }
-              }}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              onClick={(e) => e.stopPropagation()}
-              disabled={disableFocus}
-              autoComplete="off"
-              tabIndex={!isFocused ? -1 : 0}
-              aria-hidden={!isFocused}
-              aria-label={label || placeholder}
-          />
         </div>
         {isFocused && (
           <ul className="selectable-input__list">
