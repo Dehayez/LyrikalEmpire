@@ -54,6 +54,7 @@ const PrevButton = ({ onPrev }) => {
       onMouseUp={() => setIsPrevActive(false)}
       onMouseLeave={() => setIsPrevActive(false)}
       onClick={onPrev}
+      ariaLabel={'Previous Track'}
       text="Prev"
     >
       <IoPlaySkipBackSharp size={24} />

@@ -12,6 +12,7 @@ function AddBeatButton({ setIsOpen, isRightPanelVisible, isRightDivVisible }) {
       onClick={() => setIsOpen(true)}
       text="Add Track"
       tooltipPosition="left"
+      ariaLabel="Add a new track"
     >
       <IoAddSharp />
     </IconButton>

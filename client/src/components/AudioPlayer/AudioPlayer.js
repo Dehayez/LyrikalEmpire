@@ -169,9 +169,10 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       </div>
       <div className='audio-player__settings' style={{ flex: '1' }}>
         <IconButton
-          className='audio-player__icon'
-          onClick={toggleWaveform}
-          text={waveform ? "Hide waveform" : "Show waveform"}
+            className='audio-player__icon'
+            onClick={toggleWaveform}
+            text={waveform ? "Hide waveform" : "Show waveform"}
+            ariaLabel={waveform ? "Hide waveform" : "Show waveform"}
         >
           <PiWaveform fontSize={24} className={waveform ? 'icon-primary' : ''} />
         </IconButton>
@@ -179,6 +180,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           className='audio-player__icon'
           onClick={toggleLyricsModal}
           text={lyricsModal ? "Hide lyrics" : "Show lyrics"}
+          ariaLabel={lyricsModal ? "Hide lyrics" : "Show lyrics"}
         >
           <LiaMicrophoneAltSolid fontSize={24} className={lyricsModal ? 'icon-primary' : ''} />
         </IconButton>

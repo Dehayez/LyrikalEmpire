@@ -35,30 +35,33 @@ const PanelToggle = ({
       onClick={handleClick}
       className={`panel-toggle panel-toggle--${position}`}
     >
-      {isPanelVisible ? (
-        <IconButton
-          className={hoverClass}
-          text={isHovered ? 'Unlock Panel' : 'Lock Panel'}
-          tooltipPosition={tooltipPosition}
-        >
-          {isHovered ? <IoLockOpen /> : <IoLockClosed />}
-        </IconButton>
-      ) : isDivVisible ? (
-        <IconButton
-          text={isHovered ? 'Lock Panel' : 'Unlock Panel'}
-          tooltipPosition={tooltipPosition}
-        >
-          {isHovered ? <IoLockClosed /> : <IoLockOpen />}
-        </IconButton>
-      ) : (
-        <IconButton
-          className={hoverClass}
-          text={position === 'left' ? 'Open Menu' : 'Open List'}
-          tooltipPosition={tooltipPosition}
-        >
-          {position === 'left' ? <IoMenuSharp /> : <IoListSharp />}
-        </IconButton>
-      )}
+    {isPanelVisible ? (
+      <IconButton
+        className={hoverClass}
+        text={isHovered ? 'Unlock Panel' : 'Lock Panel'}
+        tooltipPosition={tooltipPosition}
+        ariaLabel={isHovered ? 'Unlock Panel' : 'Lock Panel'}
+      >
+        {isHovered ? <IoLockOpen /> : <IoLockClosed />}
+      </IconButton>
+    ) : isDivVisible ? (
+      <IconButton
+        text={isHovered ? 'Lock Panel' : 'Unlock Panel'}
+        tooltipPosition={tooltipPosition}
+        ariaLabel={isHovered ? 'Lock Panel' : 'Unlock Panel'}
+      >
+        {isHovered ? <IoLockClosed /> : <IoLockOpen />}
+      </IconButton>
+    ) : (
+      <IconButton
+        className={hoverClass}
+        text={position === 'left' ? 'Open Menu' : 'Open List'}
+        tooltipPosition={tooltipPosition}
+        ariaLabel={position === 'left' ? 'Open Menu' : 'Open List'}
+      >
+        {position === 'left' ? <IoMenuSharp /> : <IoListSharp />}
+      </IconButton>
+    )}
     </div>
   );
 };

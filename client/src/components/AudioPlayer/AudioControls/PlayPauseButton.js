@@ -59,6 +59,7 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
       onMouseLeave={() => setAnimatePlayPause(false)}
       onClick={handlePlayPauseClick}
       text={isPlaying ? 'Pause' : 'Play'}
+      ariaLabel={isPlaying ? 'Pause' : 'Play'}
     >
       {isPlaying ? <IoPauseSharp size={24} /> : <IoPlaySharp size={24} className="play-icon" />}
     </IconButton>

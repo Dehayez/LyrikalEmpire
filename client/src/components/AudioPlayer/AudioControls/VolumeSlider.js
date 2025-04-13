@@ -73,6 +73,7 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
         onClick={toggleMute}
         text={isMuted ? 'Unmute' : 'Mute'}
         tooltipPosition="top"
+        ariaLabel={isMuted ? 'Unmute' : 'Mute'}
       >
         {volumeIcon}
       </IconButton>

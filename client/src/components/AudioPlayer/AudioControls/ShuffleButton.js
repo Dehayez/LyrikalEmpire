@@ -9,7 +9,7 @@ const ShuffleButton = ({ shuffle, setShuffle }) => {
       className={`icon-button--shuffle ${shuffle ? 'active' : ''}`}
       onClick={() => setShuffle(!shuffle)}
       text={shuffle ? 'Disable Shuffle' : 'Shuffle'}
-      tooltipPosition="top"
+      ariaLabel={shuffle ? 'Disable Shuffle' : 'Enable Shuffle'}
     >
       <IoShuffleSharp />
     </IconButton>

@@ -54,6 +54,7 @@ const NextButton = ({ onNext }) => {
       onMouseUp={() => setIsNextActive(false)}
       onMouseLeave={() => setIsNextActive(false)}
       onClick={onNext}
+      ariaLabel={'Next Track'}
       text="Next"
     >
       <IoPlaySkipForwardSharp size={24} />

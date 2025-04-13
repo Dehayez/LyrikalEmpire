@@ -306,6 +306,7 @@ useEffect(() => {
             onClick={toggleFilterDropdown}
             text={isFilterDropdownVisible ? "Hide Filter" : "Show Filter"}
             tooltipPosition='left'
+            ariaLabel={isFilterDropdownVisible ? "Hide Filter Options" : "Show Filter Options"}
           >
             <IoOptionsSharp />
           </IconButton>
@@ -314,6 +315,7 @@ useEffect(() => {
             onClick={toggleEdit}
             text={mode === 'edit' ? 'Switch to Listen Mode' : 'Switch to Edit Mode'}
             tooltipPosition='left'
+            ariaLabel={mode === 'edit' ? 'Switch to Listen Mode' : 'Switch to Edit Mode'}
           >
             {mode === 'edit' ? <IoPencil /> : <IoHeadsetSharp />}
           </IconButton>
@@ -325,12 +327,12 @@ useEffect(() => {
             previousPage={previousPage}
             setPreviousPage={setPreviousPage}
           />
-
           <IconButton
             className='beat-list__action-button--profile'
             onClick={() => navigate('/profile')}
             text={username}
             tooltipPosition='left'
+            ariaLabel={`Go to ${username}'s Profile`}
           >
             <IoPersonSharp />
           </IconButton>
