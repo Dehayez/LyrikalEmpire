@@ -9,24 +9,29 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
   const sliderRef = useRef();
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [prevVolume, setPrevVolume] = useState(volume);
+  const [isMuted, setIsMuted] = useState(() => JSON.parse(localStorage.getItem('isMuted')) || false);
+  const [prevVolume, setPrevVolume] = useState(() => parseFloat(localStorage.getItem('prevVolume')) || volume);
 
   const calculateVolume = (event) => {
     const rect = sliderRef.current.getBoundingClientRect();
     const newVolume = clamp((event.clientX - rect.left) / rect.width, 0, 1);
     handleVolumeChange({ target: { value: newVolume } });
     setIsMuted(newVolume === 0);
+    localStorage.setItem('isMuted', JSON.stringify(newVolume === 0));
+    localStorage.setItem('prevVolume', newVolume.toString());
   };
 
   const toggleMute = () => {
-    if (volume === 0) {
+    if (isMuted) {
       handleVolumeChange({ target: { value: prevVolume === 0 ? 1 : prevVolume } });
       setIsMuted(false);
+      localStorage.setItem('isMuted', JSON.stringify(false));
     } else {
       setPrevVolume(volume);
       handleVolumeChange({ target: { value: 0 } });
       setIsMuted(true);
+      localStorage.setItem('isMuted', JSON.stringify(true));
+      localStorage.setItem('prevVolume', volume.toString());
     }
   };
 
@@ -43,6 +48,18 @@ const VolumeSlider = ({ volume, handleVolumeChange }) => {
       document.removeEventListener('mousemove', handleMouseMove);
     };
   }, [isDragging]);
+
+  useEffect(() => {
+    // Restore volume and mute state on component mount
+    const savedIsMuted = JSON.parse(localStorage.getItem('isMuted'));
+    const savedPrevVolume = parseFloat(localStorage.getItem('prevVolume'));
+    if (savedIsMuted) {
+      setIsMuted(true);
+      handleVolumeChange({ target: { value: 0 } });
+    } else if (!isNaN(savedPrevVolume)) {
+      handleVolumeChange({ target: { value: savedPrevVolume } });
+    }
+  }, [handleVolumeChange]);
 
   const volumeIcon = volume > 0.66 ? <IoVolumeHighSharp size={24} />
     : volume > 0.33 ? <IoVolumeMediumSharp size={24} />
