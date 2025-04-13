@@ -45,7 +45,7 @@
       transform: scale(1) translateY(-50%);
     }
 
-    &--edit, &--options {
+    &--edit, &--options, &--profile {
       margin: 0 12px;
     }
 
@@ -113,7 +113,6 @@
   &__search-input {
     width: 0;
     font-size: 16px;
-    padding-left: 40px;
     visibility: hidden;
     opacity: 0;
     transition: width 0.3s ease, opacity 0.2s, visibility 0.2s;
@@ -127,6 +126,7 @@
       outline: none;
       background-color: $color-gray-dark-hover;
       box-shadow: $box-shadow-focus;
+      padding-left: 40px;
     }
 
     &.visible {
