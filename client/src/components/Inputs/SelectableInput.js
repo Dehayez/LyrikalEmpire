@@ -201,7 +201,12 @@ export const SelectableInput = ({
           {...(mode === 'edit' && { onClick: handleContainerClick })}
           ref={inputContainerRef}
         >
-          <SelectedList selectedItems={selectedItems} isFocused={isFocused} handleRemoveAssociation={handleRemoveAssociation} />
+          <label 
+            htmlFor={`selectable-input-${associationType}-${beatId}-${headerIndex}`} 
+            className={`form-group__label ${inputValue || isFocused || selectedItems.length > 0 ? 'form-group__label--active' : ''}`}
+          >
+            {label}
+          </label>
           <input
             ref={inputRef}
             id={`selectable-input-${associationType}-${beatId}-${headerIndex}`}
@@ -214,12 +219,12 @@ export const SelectableInput = ({
             value={inputValue}
             onFocus={(e) => {
               handleFocus();
-              e.target.nextSibling.classList.add('form-group__label--active');
+              e.target.previousSibling.classList.add('form-group__label--active');
             }}
             onBlur={(e) => {
               handleBlur(e);
               if (!inputValue && selectedItems.length === 0) {
-                e.target.nextSibling.classList.remove('form-group__label--active');
+                e.target.previousSibling.classList.remove('form-group__label--active');
               }
             }}
             onChange={handleInputChange}
@@ -228,9 +233,6 @@ export const SelectableInput = ({
             disabled={disableFocus}
             autoComplete="off"
           />
-          <label htmlFor={`selectable-input-${associationType}-${beatId}-${headerIndex}`} className={`form-group__label ${inputValue || isFocused || selectedItems.length > 0 ? 'form-group__label--active' : ''}`}>
-            {label}
-          </label>
         </div>
         {isFocused && (
           <ul className="selectable-input__list">

@@ -10,10 +10,10 @@ const IconButton = ({ className = null, style, onClick, children, text, tooltipP
   });
 
   return (
-    <div className={classes} style={style} onClick={onClick} aria-label={ariaLabel}>
+    <button className={classes} style={style} onClick={onClick} aria-label={ariaLabel}>
       {children}
       {!isMobileOrTablet() && text && <Tooltip text={text} position={tooltipPosition} />}
-    </div>
+    </button>
   );
 };
 
