@@ -127,44 +127,6 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     handlePlay(beats[prevIndex], true, beats);
   };
 
-  useEffect(() => {
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('play', () => {
-        handlePlayPause(true);
-      });
-      navigator.mediaSession.setActionHandler('pause', () => {
-        handlePlayPause(false);
-      });
-      navigator.mediaSession.setActionHandler('nexttrack', () => {
-        handleNext();
-      });
-      navigator.mediaSession.setActionHandler('previoustrack', () => {
-        handlePrev();
-      });
-  
-      if (currentBeat) {
-        const updateMetadata = async () => {
-          try {
-            const user = await getUserById(currentBeat.user_id);
-            const artistName = user ? user.username : 'Unknown Artist';
-  
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: currentBeat.title,
-              artist: artistName,
-              artwork: [
-                { src: currentBeat.coverArt || '/default-cover.jpg', sizes: '512x512', type: 'image/jpeg' },
-              ],
-            });
-          } catch (error) {
-            console.error('Error updating MediaSession metadata:', error);
-          }
-        };
-  
-        updateMetadata();
-      }
-    }
-  }, [currentBeat, handleNext, handlePrev, handlePlayPause]);
-
   return {
     playerRef,
     volume,
