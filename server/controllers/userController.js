@@ -288,6 +288,21 @@ const updateUserDetails = async (req, res) => {
   }
 };
 
+const getUserById = async (userId) => {
+  try {
+    const [user] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+
+    if (!user || user.length === 0) {
+      return null;
+    }
+
+    return { id: user[0].id, username: user[0].username, email: user[0].email };
+  } catch (error) {
+    console.error('Error fetching user by ID:', error);
+    throw new Error('Internal server error');
+  }
+};
+
 module.exports = {
   register,
   verifyConfirmationCode,
@@ -298,4 +313,5 @@ module.exports = {
   verifyToken,
   getUserDetails,
   updateUserDetails,
+  getUserById,
 };

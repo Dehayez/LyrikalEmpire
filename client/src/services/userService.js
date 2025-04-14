@@ -36,6 +36,10 @@ const updateUserDetails = async (userData) => {
   return await apiRequest('put', '/me', API_URL, userData);
 };
 
+export const getUserById = async (userId) => {
+  return await apiRequest('get', `/${userId}`, API_URL);
+};
+
 const requestPasswordReset = async (email) => {
   return await apiRequest('post', '/request-password-reset', API_URL, { email }, null, false);
 };
