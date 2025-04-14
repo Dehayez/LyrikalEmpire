@@ -42,7 +42,6 @@ const BeatRow = ({
   setBeats, 
   setHoverIndex, 
   setHoverPosition,
-  handleOnKeyDown
 }) => {
   const ref = useRef(null);
   const location = useLocation();
@@ -469,7 +468,7 @@ const BeatRow = ({
                 className='beat-row__input beat-row__input--bpm'
                 type="text" 
                 defaultValue={beat.bpm} 
-                onKeyDown={handleOnKeyDown}
+                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
                 onBlur={(e) => {
                   handleInputChange('bpm', e.target.value);
                   handleBpmBlur(e);
