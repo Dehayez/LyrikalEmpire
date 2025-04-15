@@ -579,7 +579,6 @@ const BeatRow = ({
   );
 };
 
-// Add memo to prevent unnecessary renders
 export default React.memo(BeatRow, (prevProps, nextProps) => {
   // Implement custom comparison to determine if re-render is needed
   return (
@@ -588,6 +587,7 @@ export default React.memo(BeatRow, (prevProps, nextProps) => {
     prevProps.mode === nextProps.mode &&
     prevProps.currentBeat?.id === nextProps.currentBeat?.id &&
     prevProps.activeContextMenu === nextProps.activeContextMenu &&
-    JSON.stringify(prevProps.selectedBeats) === JSON.stringify(nextProps.selectedBeats)
+    JSON.stringify(prevProps.selectedBeats) === JSON.stringify(nextProps.selectedBeats) &&
+    prevProps.searchText === nextProps.searchText
   );
 });
