@@ -60,10 +60,6 @@ $indicator-half-size: math.div($indicator-size, 2);
     padding-left: 20px;
   }
 
-  &__icon {
-    margin-right: 20px;
-  }
-
   &--mobile {
     display: flex;
     justify-content: space-between;
