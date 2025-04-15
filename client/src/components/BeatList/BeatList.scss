@@ -44,11 +44,7 @@
     &:hover {
       transform: scale(1) translateY(-50%);
     }
-
-    &--edit, &--options, &--profile {
-      margin: 0 12px;
-    }
-
+    
     &--options {
      &.active {
         color: $color-white;
