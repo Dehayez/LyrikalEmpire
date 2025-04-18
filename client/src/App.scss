@@ -58,6 +58,7 @@
   &__middle {
     position: relative;
     flex-grow: 1;
+    overflow: hidden;
     width: 100%;
     margin: 6px;
     border-radius: 4px;
