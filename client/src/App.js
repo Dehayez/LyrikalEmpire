@@ -136,7 +136,7 @@ function App() {
         queue = [...currentAndNext, ...queue];
       }
     }
-    setQueue(queue);
+    setQueue(currentBeats);
   }
   
   useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
