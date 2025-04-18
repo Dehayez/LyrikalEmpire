@@ -461,59 +461,63 @@ const BeatRow = ({
       {mode !== 'lock' && (
         <>
           <td className="beat-row__data">
-            <label htmlFor={`beat-bpm-input-${beat.id}`} className="sr-only">BPM</label>
-            {mode === 'edit' ? 
-              <input 
-                id={`beat-bpm-input-${beat.id}`}
-                className='beat-row__input beat-row__input--bpm'
-                type="text" 
-                defaultValue={beat.bpm} 
-                onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-                onBlur={(e) => {
-                  handleInputChange('bpm', e.target.value);
-                  handleBpmBlur(e);
-                }}
-                onClick={(e) => e.stopPropagation()}
-                spellCheck="false"
-                autoComplete="off"
-              />
-            : 
-              <div className='beat-row__input beat-row__input--static beat-row__input--bpm'>{beat.bpm}</div> 
-            }
+            {mode === 'edit' ? (
+              <>
+                <label htmlFor={`beat-bpm-input-${beat.id}`} className="sr-only">BPM</label>
+                <input 
+                  id={`beat-bpm-input-${beat.id}`}
+                  className='beat-row__input beat-row__input--bpm'
+                  type="text" 
+                  defaultValue={beat.bpm} 
+                  onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+                  onBlur={(e) => {
+                    handleInputChange('bpm', e.target.value);
+                    handleBpmBlur(e);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  spellCheck="false"
+                  autoComplete="off"
+                />
+              </>
+            ) : (
+              <div className='beat-row__input beat-row__input--static beat-row__input--bpm'>{beat.bpm}</div>
+            )}
           </td>
           <td className="beat-row__data">
-            <label htmlFor={`beat-tierlist-select-${beat.id}`} className="sr-only">Tierlist</label>
-            {mode === 'edit' ? 
-              <div className="form-group">
-                <div className="select-wrapper">
-                  <select 
-                    id={`beat-tierlist-select-${beat.id}`}
-                    className="select-wrapper__select" 
-                    value={tierlist}
-                    onChange={(e) => {
-                      handleInputChange('tierlist', e.target.value);
-                      handleTierlistChange(e);
-                    }}
-                    onFocus={(e) => e.target.style.color = 'white'}
-                    onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
-                    onClick={(e) => e.stopPropagation()}
-                    style={{ color: tierlist ? 'white' : 'grey' }}
-                  >
-                    <option value=""></option>
-                    <option value="G">G</option>
-                    <option value="S">S</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                  </select>
+            {mode === 'edit' ? (
+              <>
+                <label htmlFor={`beat-tierlist-select-${beat.id}`} className="sr-only">Tierlist</label>
+                <div className="form-group">
+                  <div className="select-wrapper">
+                    <select 
+                      id={`beat-tierlist-select-${beat.id}`}
+                      className="select-wrapper__select" 
+                      value={tierlist}
+                      onChange={(e) => {
+                        handleInputChange('tierlist', e.target.value);
+                        handleTierlistChange(e);
+                      }}
+                      onFocus={(e) => e.target.style.color = 'white'}
+                      onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ color: tierlist ? 'white' : 'grey' }}
+                    >
+                      <option value=""></option>
+                      <option value="G">G</option>
+                      <option value="S">S</option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-            : 
-              <div className="beat-row__input beat-row__input--static">{beat.tierlist}</div> 
-            }
+              </>
+            ) : (
+              <div className="beat-row__input beat-row__input--static">{beat.tierlist}</div>
+            )}
           </td>
           <td className="beat-row__data">
              <SelectableInput
