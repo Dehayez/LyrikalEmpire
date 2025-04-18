@@ -31,6 +31,8 @@
   &__actions {
     display: flex;
     align-items: center;
+    margin-right: 20px;
+    gap: 20px;
   }
 
   &__action-button {
@@ -51,23 +53,21 @@
       }
     }
 
-    &--profile {
-      margin-right: 20px;
+    &--edit, &--options, &--profile {
+      padding: 0;
       z-index: 1;
     }
-    
+
     &--search {
       left: 0;
       height: 100%;
       border-radius: 4px;
-      padding: 0 6px;
       
       & .tooltip {
         display: none;
       }
 
       &--closed {
-      
         & .tooltip {
           display: block;
         }
@@ -97,12 +97,9 @@
   &__search-container {
     position: relative;
     width: max-content;
-    margin-left: 6px;
 
-    &--active {
-      & input {
-        padding-right: 28px;
-      }
+    &--active .beat-list__action-button--search {
+      margin-left: 8px;
     }
   }
   
@@ -111,6 +108,7 @@
     font-size: 16px;
     visibility: hidden;
     opacity: 0;
+    padding: 0;
     transition: width 0.3s ease, opacity 0.2s, visibility 0.2s;
   
     &:hover {
@@ -127,9 +125,10 @@
 
     &.visible {
       width: 200px;
+      padding: 12px;
+      padding-left: 40px;
       visibility: visible;
       opacity: 1;
-      margin-right: 16px;
     }
   }
 
