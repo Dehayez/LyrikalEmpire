@@ -439,24 +439,26 @@ const BeatRow = ({
       )}
       <td className="beat-row__data">
         <Highlight text={beat.title} highlight={searchText} />
-        <label htmlFor={`beat-title-input-${beat.id}`} className="sr-only">Title</label>
-        {mode === 'edit' ? 
-          <input 
-            id={`beat-title-input-${beat.id}`}
-            className='beat-row__input beat-row__input--title'
-            type="text"
-            defaultValue={beat.title} 
-            onBlur={(e) => {
-              handleInputChange('title', e.target.value);
-              handleBlur(beat.id, 'title', e.target.value);
-            }}
-            onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-            onClick={(e) => e.stopPropagation()}
-            spellCheck="false"
-          />
-        : 
-          <div className='beat-row__input beat-row__input--title beat-row__input--static'>{beat.title}</div> 
-        }
+        {mode === 'edit' ? (
+          <>
+            <label htmlFor={`beat-title-input-${beat.id}`} className="sr-only">Title</label>
+            <input 
+              id={`beat-title-input-${beat.id}`}
+              className='beat-row__input beat-row__input--title'
+              type="text"
+              defaultValue={beat.title} 
+              onBlur={(e) => {
+                handleInputChange('title', e.target.value);
+                handleBlur(beat.id, 'title', e.target.value);
+              }}
+              onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+              onClick={(e) => e.stopPropagation()}
+              spellCheck="false"
+            />
+          </>
+        ) : (
+          <div className='beat-row__input beat-row__input--title beat-row__input--static'>{beat.title}</div>
+        )}
       </td>
       {mode !== 'lock' && (
         <>
