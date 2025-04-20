@@ -68,6 +68,13 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
     }
   };
 
+  const handleHomepageClick = () => {
+    if (!isMobileOrTablet) {
+      closeSidePanel('left');
+    }
+    navigate('/');
+  };
+
   const openConfirmModal = (playlistId) => {
     const playlist = playlists.find(p => p.id === playlistId);
     if (!playlist) {
@@ -95,14 +102,14 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
   return (
     <div className="playlists">
       <div className="playlists__header">
-        <div className="playlists__header-left">
-          <Link to="/" className="button-homepage">
-            <IconButton>
-              <IoAlbums />
-            </IconButton>
-          </Link>
-          <h2 className="playlists__title">Playlists</h2>
+      <div className="playlists__header-left">
+        <div onClick={handleHomepageClick} className="button-homepage" role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleHomepageClick()}>
+          <IconButton>
+            <IoAlbums />
+          </IconButton>
         </div>
+        <h2 className="playlists__title">Playlists</h2>
+      </div>
         <IconButton
           className="icon-button"
           onClick={() => handleAddPlaylist(`Playlist #${playlists.length + 1}`, null)}
