@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp, IoAlbums } from "react-icons/io5";
 
@@ -10,7 +9,6 @@ import { getPlaylistById, deletePlaylist } from '../../services';
 import { Button, IconButton } from '../Buttons';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import { ContextMenu } from '../ContextMenu';
-import { Tooltip } from '../Tooltip';
 import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 
 import './Playlists.scss';
@@ -69,17 +67,15 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
   };
 
   const handleHomepageClick = () => {
-    if (isMobileOrTablet) {
+    if (isMobileOrTablet()) {
       closeSidePanel('left');
-      console.log('Mobile or tablet detected, closing side panel');
     }
     navigate('/');
   };
 
   const playListClick = (playlistId) => {
-    if (isMobileOrTablet) {
+    if (isMobileOrTablet()) {
       closeSidePanel('left');
-      console.log('Mobile or tablet detected, closing side panel');
     }
     handleLeftClick(playlistId);
   };
