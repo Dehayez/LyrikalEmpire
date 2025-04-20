@@ -75,6 +75,13 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
     navigate('/');
   };
 
+  const playListClick = (playlistId) => {
+    if (!isMobileOrTablet) {
+      closeSidePanel('left');
+    }
+    handleLeftClick(playlistId);
+  };
+
   const openConfirmModal = (playlistId) => {
     const playlist = playlists.find(p => p.id === playlistId);
     if (!playlist) {
@@ -128,7 +135,7 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
           <li 
             key={index} 
             className={`playlists__list-item${playedPlaylistId === playlist.id ? ' playlists__list-item--playing' : ''}${playlist.id === currentPlaylistId ? ' playlists__list-item--active' : ''}`}
-            onClick={() => {handleLeftClick(playlist.id);}}
+            onClick={() => playListClick(playlist.id)}
             onContextMenu={(e) => handleRightClick(e, playlist, index)}
             style={{ textDecoration: 'none' }}
           >
