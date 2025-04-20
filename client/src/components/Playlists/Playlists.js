@@ -103,11 +103,9 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
     <div className="playlists">
       <div className="playlists__header">
       <div className="playlists__header-left">
-        <div onClick={handleHomepageClick} className="button-homepage" role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handleHomepageClick()}>
-          <IconButton>
-            <IoAlbums />
-          </IconButton>
-        </div>
+        <IconButton onClick={handleHomepageClick} className="button-homepage">
+          <IoAlbums />
+        </IconButton>
         <h2 className="playlists__title">Playlists</h2>
       </div>
         <IconButton
