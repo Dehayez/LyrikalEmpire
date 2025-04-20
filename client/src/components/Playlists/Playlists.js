@@ -69,15 +69,17 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
   };
 
   const handleHomepageClick = () => {
-    if (!isMobileOrTablet) {
+    if (isMobileOrTablet) {
       closeSidePanel('left');
+      console.log('Mobile or tablet detected, closing side panel');
     }
     navigate('/');
   };
 
   const playListClick = (playlistId) => {
-    if (!isMobileOrTablet) {
+    if (isMobileOrTablet) {
       closeSidePanel('left');
+      console.log('Mobile or tablet detected, closing side panel');
     }
     handleLeftClick(playlistId);
   };
