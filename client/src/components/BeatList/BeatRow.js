@@ -505,6 +505,7 @@ const BeatRow = ({
                       style={{ color: tierlist ? 'white' : 'grey' }}
                     >
                       <option value=""></option>
+                      <option value="M">M</option>
                       <option value="G">G</option>
                       <option value="S">S</option>
                       <option value="A">A</option>

@@ -1,4 +1,4 @@
-const tierOrder = ['G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
+const tierOrder = ['M', 'G', 'S', 'A', 'B', 'C', 'D', 'E', 'F', ' '];
 
 export const sortBeats = (beats, sortConfig, originalOrder) => {
   if (!sortConfig) return originalOrder;

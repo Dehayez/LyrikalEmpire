@@ -188,6 +188,8 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                         onChange={(e) => setTierlist(e.target.value)} 
                         options={[
                             { value: '', label: 'No tierlist' },
+                            { value: 'M', label: 'M' },
+                            { value: 'G', label: 'G' },
                             { value: 'S', label: 'S' },
                             { value: 'A', label: 'A' },
                             { value: 'B', label: 'B' },
