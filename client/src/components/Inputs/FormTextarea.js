@@ -13,7 +13,7 @@ export const FormTextarea = ({ label, placeholder, value, onChange, required, ro
         <div className="form-group form-textarea">
             <textarea
                 ref={textareaRef}
-                className='form-group__input form-textarea__input'
+                className={`form-group__input form-textarea__input ${value ? 'form-group__input--filled' : ''}`}
                 value={value}
                 onChange={(e) => {
                     onChange(e);
@@ -27,7 +27,9 @@ export const FormTextarea = ({ label, placeholder, value, onChange, required, ro
                 onBlur={(e) => label && !e.target.value && e.target.nextSibling.classList.remove('form-group__label--active')}
             />
             {label && (
-                <label className={`form-group__label ${value || document.activeElement === textareaRef.current ? 'form-group__label--active' : ''}`}>
+                <label
+                    className={`form-group__label ${value || document.activeElement === textareaRef.current ? 'form-group__label--active' : ''}`}
+                >
                     {label}
                 </label>
             )}

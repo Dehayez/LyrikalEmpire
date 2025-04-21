@@ -1,1 +1,7 @@
 @import '../../globals/variables';
+
+.update-playlist__form {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+}
