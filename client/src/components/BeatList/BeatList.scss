@@ -46,14 +46,8 @@
     &:hover {
       transform: scale(1) translateY(-50%);
     }
-    
-    &--options {
-     &.active {
-        color: $color-white;
-      }
-    }
 
-    &--edit, &--options, &--profile {
+    &--edit, &--profile {
       padding: 0;
       z-index: 1;
     }
@@ -79,7 +73,6 @@
       &--active {
         color: $color-white;
       }
-
     }
     
     &--clear {

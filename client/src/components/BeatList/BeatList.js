@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { IoPencil, IoHeadsetSharp, IoOptionsSharp, IoPersonSharp } from "react-icons/io5";
+import { IoPencil, IoHeadsetSharp, IoPersonSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
 import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
