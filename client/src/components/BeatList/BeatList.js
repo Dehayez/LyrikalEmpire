@@ -12,7 +12,6 @@ import BeatRow from './BeatRow';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import { FilterDropdown } from '../Inputs/FilterDropdown';
 import { IconButton } from '../Buttons';
-import PaginationControls from './PaginationControls';
 import TableHeader from './TableHeader';
 import { SearchInput } from '../Inputs/SearchInput';
 
@@ -484,12 +483,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
                 {virtualizedBeats}
               </tbody>
             </table>
-            <PaginationControls
-              items={filteredAndSortedBeats}
-              currentBeat={currentBeat}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
           </div>
         )
       ) : (
