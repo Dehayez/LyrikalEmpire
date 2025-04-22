@@ -21,6 +21,7 @@ import './BeatList.scss';
 const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addToCustomQueue, onBeatClick, externalBeats, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
   const tableRef = useRef(null);
   const containerRef = useRef(null);
+  const tbodyRef = useRef(null);
   const { user } = useUser();
   const { username } = user;
   const navigate = useNavigate();
@@ -42,6 +43,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const beats = externalBeats || allBeats;
   const [filteredBeats, setFilteredBeats] = useState(beats);
 
+  // Virtual scrolling state
+  const [visibleRange, setVisibleRange] = useState({ start: 0, end: 20 });
+  const [rowHeight, setRowHeight] = useState(60); // Default row height in pixels
   
   const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(filteredBeats);
   
@@ -74,6 +78,50 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
     urlKey,
     currentPage
   });
+
+  // Calculate which rows should be visible based on scroll position
+  const calculateVisibleRows = useCallback(() => {
+    if (!containerRef.current || !tableRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const scrollTop = containerRef.current.scrollTop;
+    const viewportHeight = containerRef.current.clientHeight;
+    
+    // Calculate visible range with buffer
+    const buffer = 5; // Number of extra rows to render above and below
+    const startIndex = Math.max(0, Math.floor(scrollTop / rowHeight) - buffer);
+    const endIndex = Math.min(
+      filteredAndSortedBeats.length - 1,
+      Math.ceil((scrollTop + viewportHeight) / rowHeight) + buffer
+    );
+    
+    setVisibleRange({ start: startIndex, end: endIndex });
+  }, [filteredAndSortedBeats.length, rowHeight]);
+
+  // Measure actual row height on first render
+  useEffect(() => {
+    if (tbodyRef.current && tbodyRef.current.firstChild) {
+      const actualHeight = tbodyRef.current.firstChild.getBoundingClientRect().height;
+      if (actualHeight > 0) {
+        setRowHeight(actualHeight);
+      }
+    }
+  }, [paginatedBeats]);
+
+  // Set up scroll event listener for virtualization
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      calculateVisibleRows();
+      container.addEventListener('scroll', calculateVisibleRows);
+      window.addEventListener('resize', calculateVisibleRows);
+      
+      return () => {
+        container.removeEventListener('scroll', calculateVisibleRows);
+        window.removeEventListener('resize', calculateVisibleRows);
+      };
+    }
+  }, [calculateVisibleRows]);
 
   const handleFilterChange = (selectedItems, filterType) => {
     switch (filterType) {
@@ -220,55 +268,55 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
     return () => container.removeEventListener('scroll', handleScroll);
   }, []);
 
-useEffect(() => {
-  const container = containerRef.current;
-  let lastScrollLeft = 0;
-  let lastScrollTop = 0;
-  let isHorizontalScroll = false;
-  let scrollTimeout = null;
+  useEffect(() => {
+    const container = containerRef.current;
+    let lastScrollLeft = 0;
+    let lastScrollTop = 0;
+    let isHorizontalScroll = false;
+    let scrollTimeout = null;
 
-  const handleScroll = () => {
-    const scrollLeft = container.scrollLeft;
-    const scrollTop = container.scrollTop;
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const scrollTop = container.scrollTop;
 
-    // Detect scroll direction
-    if (Math.abs(scrollLeft - lastScrollLeft) > Math.abs(scrollTop - lastScrollTop)) {
-      isHorizontalScroll = true;
-    } else {
-      isHorizontalScroll = false;
-    }
+      // Detect scroll direction
+      if (Math.abs(scrollLeft - lastScrollLeft) > Math.abs(scrollTop - lastScrollTop)) {
+        isHorizontalScroll = true;
+      } else {
+        isHorizontalScroll = false;
+      }
 
-    // Lock the opposite scroll direction
-    if (isHorizontalScroll) {
-      container.style.overflowY = 'hidden';
-      container.style.overflowX = 'auto';
-    } else {
-      container.style.overflowX = 'hidden';
-      container.style.overflowY = 'auto';
-    }
+      // Lock the opposite scroll direction
+      if (isHorizontalScroll) {
+        container.style.overflowY = 'hidden';
+        container.style.overflowX = 'auto';
+      } else {
+        container.style.overflowX = 'hidden';
+        container.style.overflowY = 'auto';
+      }
 
-    lastScrollLeft = scrollLeft;
-    lastScrollTop = scrollTop;
+      lastScrollLeft = scrollLeft;
+      lastScrollTop = scrollTop;
 
-    // Clear any existing timeout and set a new one to reset styles after scrolling stops
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
-    }
-    scrollTimeout = setTimeout(() => {
-      container.style.overflowX = 'auto';
-      container.style.overflowY = 'auto';
-    }, 100);
-  };
+      // Clear any existing timeout and set a new one to reset styles after scrolling stops
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      scrollTimeout = setTimeout(() => {
+        container.style.overflowX = 'auto';
+        container.style.overflowY = 'auto';
+      }, 100);
+    };
 
-  container.addEventListener('scroll', handleScroll);
+    container.addEventListener('scroll', handleScroll);
 
-  return () => {
-    container.removeEventListener('scroll', handleScroll);
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
-    }
-  };
-}, []);
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -282,6 +330,97 @@ useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats, handlePlayPause, inputFocused]);
+
+  // Create virtualized beat list
+  const virtualizedBeats = useMemo(() => {
+    // Generate the visible beats plus spacers
+    const result = [];
+    
+    // Add top spacer if needed
+    if (visibleRange.start > 0) {
+      result.push(
+        <tr key="top-spacer" style={{ height: `${visibleRange.start * rowHeight}px` }} />
+      );
+    }
+    
+    // Add visible beats
+    const visibleBeats = filteredAndSortedBeats.slice(visibleRange.start, visibleRange.end + 1);
+    visibleBeats.forEach((beat, relativeIndex) => {
+      const absoluteIndex = visibleRange.start + relativeIndex;
+      
+      result.push(
+        <React.Fragment key={beat.id}>
+          {hoverIndex === absoluteIndex && hoverPosition === 'top' && <tr className="drop-line" />}
+          <BeatRow
+            beat={beat}
+            currentBeat={currentBeat}
+            index={filteredAndSortedBeats.length - absoluteIndex} // Reverse the index
+            handlePlayPause={handlePlayPause}
+            handleUpdate={handleUpdate}
+            handleDelete={handleDelete}
+            selectedBeat={selectedBeat}
+            isPlaying={isPlaying}
+            handleBeatClick={handleBeatClick}
+            selectedBeats={selectedBeats}
+            openConfirmModal={openConfirmModal}
+            beats={beats}
+            addToCustomQueue={addToCustomQueue}
+            searchText={searchText}
+            mode={mode}
+            setActiveContextMenu={setActiveContextMenu}
+            activeContextMenu={activeContextMenu}
+            onBeatClick={onBeatClick}
+            deleteMode={deleteMode}
+            onUpdateBeat={onUpdateBeat}
+            onUpdate={onUpdate}
+            moveBeat={moveBeat}
+            playlistId={playlistId}
+            setBeats={setBeats}
+            setHoverIndex={setHoverIndex}
+            setHoverPosition={setHoverPosition}
+          />
+          {hoverIndex === absoluteIndex && hoverPosition === 'bottom' && <tr className="drop-line" />}
+        </React.Fragment>
+      );
+    });
+    
+    // Add bottom spacer if needed
+    const remainingRows = filteredAndSortedBeats.length - visibleRange.end - 1;
+    if (remainingRows > 0) {
+      result.push(
+        <tr key="bottom-spacer" style={{ height: `${remainingRows * rowHeight}px` }} />
+      );
+    }
+    
+    return result;
+  }, [
+    visibleRange, 
+    rowHeight, 
+    filteredAndSortedBeats, 
+    hoverIndex, 
+    hoverPosition, 
+    currentBeat,
+    handlePlayPause,
+    handleUpdate,
+    handleDelete, 
+    selectedBeat, 
+    isPlaying, 
+    handleBeatClick, 
+    selectedBeats, 
+    openConfirmModal, 
+    beats, 
+    addToCustomQueue, 
+    searchText, 
+    mode, 
+    activeContextMenu, 
+    onBeatClick, 
+    deleteMode, 
+    onUpdateBeat, 
+    onUpdate, 
+    moveBeat, 
+    playlistId, 
+    setBeats
+  ]);
 
   return (
     <div ref={containerRef} className="beat-list">
@@ -341,42 +480,8 @@ useEffect(() => {
             <table className="beat-list__table" ref={tableRef}>
               <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
 
-              <tbody>
-                {paginatedBeats.map((beat, index) => (
-                  <React.Fragment key={beat.id}>
-                    {hoverIndex === index && hoverPosition === 'top' && <tr className="drop-line" />}
-                    <BeatRow
-                      key={`${beat.id}-${index}`}
-                      beat={beat}
-                      currentBeat={currentBeat}
-                      index={filteredAndSortedBeats.length - index} // Reverse the index
-                      handlePlayPause={handlePlayPause}
-                      handleUpdate={handleUpdate}
-                      handleDelete={handleDelete}
-                      selectedBeat={selectedBeat}
-                      isPlaying={isPlaying}
-                      handleBeatClick={handleBeatClick}
-                      selectedBeats={selectedBeats}
-                      openConfirmModal={openConfirmModal}
-                      beats={beats}
-                      addToCustomQueue={addToCustomQueue}
-                      searchText={searchText}
-                      mode={mode}
-                      setActiveContextMenu={setActiveContextMenu}
-                      activeContextMenu={activeContextMenu}
-                      onBeatClick={onBeatClick}
-                      deleteMode={deleteMode}
-                      onUpdateBeat={onUpdateBeat}
-                      onUpdate={onUpdate}
-                      moveBeat={moveBeat}
-                      playlistId={playlistId}
-                      setBeats={setBeats}
-                      setHoverIndex={setHoverIndex}
-                      setHoverPosition={setHoverPosition}
-                    />
-                    {hoverIndex === index && hoverPosition === 'bottom' && <tr className="drop-line" />}
-                  </React.Fragment>
-                ))}
+              <tbody ref={tbodyRef}>
+                {virtualizedBeats}
               </tbody>
             </table>
             <PaginationControls
