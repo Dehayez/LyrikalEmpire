@@ -276,7 +276,7 @@ const BeatRow = ({
   const calculateActualIndex = useCallback((index) => {
     const urlKey = `currentPage_${location.pathname}`;
     const currentPage = parseInt(localStorage.getItem(urlKey), 10) || 1;
-    const itemsPerPage = 7;
+    const itemsPerPage = 30;
     return (currentPage - 1) * itemsPerPage + index;
   }, [location.pathname]);
   

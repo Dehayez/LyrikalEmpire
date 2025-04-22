@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { isMobileOrTablet } from '../../utils';
 import { useResizableColumns } from '../../hooks';
 import { addGenre, addMood, addKeyword, addFeature } from '../../services';
 import { useData } from '../../contexts';

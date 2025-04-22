@@ -5,7 +5,7 @@ import './PaginationControls.scss';
 
 const PaginationControls = ({ items, currentBeat, currentPage, setCurrentPage }) => {
   const { setPaginatedBeats } = useBeat();
-  const itemsPerPageNumber = 7;
+  const itemsPerPageNumber = 30;
   const [maxVisiblePages, setMaxVisiblePages] = useState(itemsPerPageNumber);
   const itemsPerPage = itemsPerPageNumber;
   const totalPages = Math.ceil(items.length / itemsPerPage);
