@@ -67,19 +67,13 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const [headerOpacity, setHeaderOpacity] = useState(1);
   const [hoverPosition, setHoverPosition] = useState(null);
   const [mode, setMode] = useState(() => getInitialState('mode', 'listen'));
-  const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(() => getInitialState('isFilterDropdownVisible', false));
 
   useLocalStorageSync({ 
     mode, 
-    isFilterDropdownVisible, 
     searchText,
     urlKey,
     currentPage
   });
-
-  const toggleFilterDropdown = () => {
-    setIsFilterDropdownVisible(prevState => !prevState);
-  };
 
   const handleFilterChange = (selectedItems, filterType) => {
     switch (filterType) {
@@ -302,15 +296,6 @@ useEffect(() => {
         }
         <div className='beat-list__actions'>
           <IconButton
-            className={`beat-list__action-button--options${isFilterDropdownVisible ? ' active' : ''}`}
-            onClick={toggleFilterDropdown}
-            text={isFilterDropdownVisible ? "Hide Filter" : "Show Filter"}
-            tooltipPosition='left'
-            ariaLabel={isFilterDropdownVisible ? "Hide Filter Options" : "Show Filter Options"}
-          >
-            <IoOptionsSharp />
-          </IconButton>
-          <IconButton
             className='beat-list__action-button--edit'
             onClick={toggleEdit}
             text={mode === 'edit' ? 'Switch to Listen Mode' : 'Switch to Edit Mode'}
@@ -338,8 +323,6 @@ useEffect(() => {
           </IconButton>
         </div>
       </div>
-
-      {isFilterDropdownVisible && (
       <FilterDropdown
         filters={[
           { id: 'genre-filter', name: 'genres', label: 'Genres', options: genres },
@@ -350,9 +333,6 @@ useEffect(() => {
         ]}
         onFilterChange={handleFilterChange}
       />
-    )}
-      
-
       {beats.length > 0 ? (
         filteredAndSortedBeats.length === 0 ? (
           <div className="placeholder-text">No tracks found</div>
