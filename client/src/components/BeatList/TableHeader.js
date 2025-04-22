@@ -88,66 +88,62 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
   return (
     <thead className="table-header" ref={tableRef}>
       <tr>
-        {!(mode === 'lock' && isMobileOrTablet()) && (
-          <th className={`table-header__cell table-header__cell--center non-draggable`}>#</th>
-        )}
-        {columns.map(column => {
-          if (mode === 'lock' && column !== 'title') {
-            return null; 
-          }
-          return (
-            <th 
-              key={column}
-              onContextMenu={(e) => handleRightClick(e, column)}
-              className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}
+        <th className="table-header__cell table-header__cell--center non-draggable">#</th>
+        {columns.map((column) => (
+          <th
+            key={column}
+            onContextMenu={(e) => handleRightClick(e, column)}
+            className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}
+          >
+            <div
+              className="table-header__cell-left"
+              onClick={() => handleMouseEvents('click', column)}
             >
-              <div 
-                className='table-header__cell-left'
-                 onClick={() => handleMouseEvents('click', column)}
-              >
-                <span className={`table-header__cell-text${sortConfig.key === column ? ' active' : ''}`}>
-                  {column === 'bpm' ? 'BPM' : column.charAt(0).toUpperCase() + column.slice(1)}
-                </span>
-                
-                <span className={`table-header__cell-icon${sortConfig.key === column ? ' active' : ''}`}>
-                  {sortConfig.key === column && sortConfig.direction === 'ascending' ? <IoChevronUpSharp/> : <IoChevronDownSharp/>}
-                </span>
-              </div>
+              <span className={`table-header__cell-text${sortConfig.key === column ? ' active' : ''}`}>
+                {column === 'bpm' ? 'BPM' : column.charAt(0).toUpperCase() + column.slice(1)}
+              </span>
+              <span className={`table-header__cell-icon${sortConfig.key === column ? ' active' : ''}`}>
+                {sortConfig.key === column && sortConfig.direction === 'ascending' ? (
+                  <IoChevronUpSharp />
+                ) : (
+                  <IoChevronDownSharp />
+                )}
+              </span>
+            </div>
 
-              {(column === 'genre' || column === 'mood' || column === 'keyword' || column === 'feature') && (
-                activeContextMenu === column && (
-                  <ContextMenu
-                    items={[
-                      { 
-                        icon: IoAddSharp,
-                        text: `Add ${activeContextMenu}`, 
-                        onClick: () => handleOpenForm(activeContextMenu) 
-                      }
-                    ]}
-                    position={contextMenuPosition}
-                    setActiveContextMenu={setActiveContextMenu}
-                  />
-                )
+            {(column === 'genre' || column === 'mood' || column === 'keyword' || column === 'feature') &&
+              activeContextMenu === column && (
+                <ContextMenu
+                  items={[
+                    {
+                      icon: IoAddSharp,
+                      text: `Add ${activeContextMenu}`,
+                      onClick: () => handleOpenForm(activeContextMenu),
+                    },
+                  ]}
+                  position={contextMenuPosition}
+                  setActiveContextMenu={setActiveContextMenu}
+                />
               )}
-            </th>
-          );
-        })}
-        {!(isMobileOrTablet() && mode === 'lock') && (
-          <th className={`table-header__cell table-header__cell--center non-draggable`}><IoTimeOutline/></th>
-        )}
-        <th className={`table-header__cell table-header__cell--center non-draggable`}></th>
+          </th>
+        ))}
+          <th className="table-header__cell table-header__cell--center non-draggable">
+            <IoTimeOutline />
+          </th>
+        <th className="table-header__cell table-header__cell--center non-draggable"></th>
       </tr>
-      {showForm && ReactDOM.createPortal (
-        <Form
-          title={`Add ${formType}`}
-          placeholder={`Enter ${formType}`}
-          item={formType}
-          onClose={() => setShowForm(false)}
-          onSubmit={handleSubmit}
-          onUpdateSelectableInput={handleUpdateSelectableInput}
-        />,
-        document.getElementById('modal-root')
-      )}
+      {showForm &&
+        ReactDOM.createPortal(
+          <Form
+            title={`Add ${formType}`}
+            placeholder={`Enter ${formType}`}
+            item={formType}
+            onClose={() => setShowForm(false)}
+            onSubmit={handleSubmit}
+            onUpdateSelectableInput={handleUpdateSelectableInput}
+          />,
+          document.getElementById('modal-root')
+        )}
     </thead>
   );
 };
