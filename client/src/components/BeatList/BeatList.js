@@ -268,56 +268,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   }, []);
 
   useEffect(() => {
-    const container = containerRef.current;
-    let lastScrollLeft = 0;
-    let lastScrollTop = 0;
-    let isHorizontalScroll = false;
-    let scrollTimeout = null;
-
-    const handleScroll = () => {
-      const scrollLeft = container.scrollLeft;
-      const scrollTop = container.scrollTop;
-
-      // Detect scroll direction
-      if (Math.abs(scrollLeft - lastScrollLeft) > Math.abs(scrollTop - lastScrollTop)) {
-        isHorizontalScroll = true;
-      } else {
-        isHorizontalScroll = false;
-      }
-
-      // Lock the opposite scroll direction
-      if (isHorizontalScroll) {
-        container.style.overflowY = 'hidden';
-        container.style.overflowX = 'auto';
-      } else {
-        container.style.overflowX = 'hidden';
-        container.style.overflowY = 'auto';
-      }
-
-      lastScrollLeft = scrollLeft;
-      lastScrollTop = scrollTop;
-
-      // Clear any existing timeout and set a new one to reset styles after scrolling stops
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-      scrollTimeout = setTimeout(() => {
-        container.style.overflowX = 'auto';
-        container.style.overflowY = 'auto';
-      }, 100);
-    };
-
-    container.addEventListener('scroll', handleScroll);
-
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Enter' && selectedBeats.length > 0) {
         handlePlayPause(selectedBeats[0]);
