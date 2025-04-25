@@ -8,7 +8,7 @@ import { Button } from '../Buttons';
 import './FilterDropdown.scss';
 
 export const FilterDropdown = ({ filters, onFilterChange }) => {
-  const dropdownRef = useRef(null);
+  const dropdownRefs = useRef({});
 
   const initialSelectedItems = getInitialStateForFilters(filters, []);
   const initialDropdownState = getInitialStateForFilters(filters, false);
@@ -34,11 +34,21 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
     onFilterChange(newSelectedItems, filterType);
   };
 
-  const toggleDropdown = (filterType) => {
-    setIsDropdownOpen(prevState => ({
-      ...prevState,
-      [filterType]: !prevState[filterType]
-    }));
+  const toggleDropdown = (filterType, event) => {
+    // Stop propagation to prevent the click from bubbling up to document
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    setIsDropdownOpen(prevState => {
+      // Close all other dropdowns
+      const newState = { ...prevState };
+      
+      // Toggle the current dropdown
+      newState[filterType] = !prevState[filterType];
+      
+      return newState;
+    });
   };
 
   const handleClear = (filterType) => {
@@ -50,8 +60,13 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
   };
 
   const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target) && !event.target.closest('.filter-dropdown__wrapper')) {
-      setIsDropdownOpen(false);
+    // Only close dropdowns if clicking outside any dropdown
+    const isOutside = !Object.keys(dropdownRefs.current).some(key => 
+      dropdownRefs.current[key] && dropdownRefs.current[key].contains(event.target)
+    );
+    
+    if (isOutside) {
+      setIsDropdownOpen({});
     }
   };
 
@@ -62,14 +77,17 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
     };
   }, []);
 
-
   return (
     <div className="filter-dropdown-container">
       <div className="filter-dropdowns-container">
         {filters.map(({ id, name, label, options }) => (
-          <div key={id} className={`filter-dropdown ${name === 'hidden' ? 'hidden-filter' : ''}`} ref={dropdownRef}>
+          <div 
+            key={id} 
+            className={`filter-dropdown ${name === 'hidden' ? 'hidden-filter' : ''}`} 
+            ref={el => dropdownRefs.current[name] = el}
+          >
             <span
-              onClick={() => toggleDropdown(name)}
+              onClick={(e) => toggleDropdown(name, e)}
               className={`filter-dropdown__label-container ${isDropdownOpen[name] ? 'filter-dropdown__label-container--active' : ''}`}
             >
               {label && (
@@ -105,7 +123,7 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
                 </div>
                 <div className="filter-dropdown__actions">
                   <Button size="small" variant="transparent" className="filter-dropdown__clear-button" onClick={() => handleClear(name)}>Clear</Button>
-                  <Button size="small" className="filter-dropdown__close-button" variant='primary' onClick={() => toggleDropdown(name)}>Close</Button>
+                  <Button size="small" className="filter-dropdown__close-button" variant='primary' onClick={(e) => toggleDropdown(name, e)}>Close</Button>
                 </div>
               </div>
             )}
