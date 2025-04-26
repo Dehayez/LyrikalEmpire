@@ -8,7 +8,7 @@ import { IoChevronUpSharp, IoChevronDownSharp, IoTimeOutline, IoAddSharp } from 
 import ContextMenu from '../ContextMenu/ContextMenu';
 import './TableHeader.scss';
 
-const TableHeader = ({ onSort, sortConfig, mode }) => {
+const TableHeader = ({ onSort, sortConfig, mode, topOffset }) => {
   const tableRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
@@ -85,7 +85,13 @@ const TableHeader = ({ onSort, sortConfig, mode }) => {
   };
 
   return (
-    <thead className="table-header" ref={tableRef}>
+    <thead className="table-header" ref={tableRef}
+    style={{
+      position: 'sticky',
+      top: `${topOffset}px`, // Use the dynamic top offset
+      zIndex: 3,
+      backgroundColor: 'var(--color-black)',
+    }}>
       <tr>
         <th className="table-header__cell table-header__cell--center non-draggable">#</th>
         {columns.map((column) => (

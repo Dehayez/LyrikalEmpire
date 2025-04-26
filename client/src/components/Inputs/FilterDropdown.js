@@ -7,7 +7,7 @@ import { getInitialState, getInitialStateForFilters } from '../../utils/stateUti
 import { Button } from '../Buttons';
 import './FilterDropdown.scss';
 
-export const FilterDropdown = ({ filters, onFilterChange }) => {
+export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref) => {
   const dropdownRefs = useRef({});
 
   const initialSelectedItems = getInitialStateForFilters(filters, []);
@@ -41,7 +41,6 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
     }
     
     setIsDropdownOpen(prevState => {
-      // Create new state object
       const newState = {};
       
       // If the clicked dropdown is already open, close everything
@@ -82,7 +81,7 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
   }, []);
 
   return (
-    <div className="filter-dropdown-container">
+    <div className="filter-dropdown-container" ref={ref}>
       <div className="filter-dropdowns-container">
         {filters.map(({ id, name, label, options }) => (
           <div 
@@ -148,4 +147,4 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
       </div>
     </div>
   );
-};
+});

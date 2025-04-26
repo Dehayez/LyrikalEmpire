@@ -55,6 +55,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
     });
   }, [sortedBeats, searchText]);
 
+  const filterDropdownRef = useRef(null); // Add a ref for the FilterDropdown container
+const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to store the height
+
   useEffect(() => {
     setCurrentBeats(filteredAndSortedBeats)
   }, [filteredAndSortedBeats]);
@@ -121,6 +124,31 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
       };
     }
   }, [calculateVisibleRows]);
+
+  useEffect(() => {
+    const updateFilterDropdownHeight = () => {
+      if (filterDropdownRef.current) {
+        const height = filterDropdownRef.current.offsetHeight;
+        setFilterDropdownHeight(height + 62);
+      }
+    };
+  
+    updateFilterDropdownHeight();
+  
+    const resizeObserver = new ResizeObserver(updateFilterDropdownHeight);
+    if (filterDropdownRef.current) {
+      resizeObserver.observe(filterDropdownRef.current);
+    }
+  
+    window.addEventListener('resize', updateFilterDropdownHeight);
+  
+    return () => {
+      if (filterDropdownRef.current) {
+        resizeObserver.unobserve(filterDropdownRef.current);
+      }
+      window.removeEventListener('resize', updateFilterDropdownHeight);
+    };
+  }, []);
 
   const handleFilterChange = (selectedItems, filterType) => {
     switch (filterType) {
@@ -411,6 +439,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
         </div>
       </div>
       <FilterDropdown
+        ref={filterDropdownRef} 
         filters={[
           { id: 'genre-filter', name: 'genres', label: 'Genres', options: genres },
           { id: 'mood-filter', name: 'moods', label: 'Moods', options: moods },
@@ -426,7 +455,11 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
         ) : (
           <div className='beat-list__table-container'>
             <table className="beat-list__table" ref={tableRef}>
-              <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
+              <TableHeader 
+                onSort={onSort} 
+                sortConfig={sortConfig} 
+                mode={mode}
+                topOffset={filterDropdownHeight} />
 
               <tbody ref={tbodyRef}>
                 {virtualizedBeats}
