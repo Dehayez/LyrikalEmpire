@@ -7,15 +7,16 @@
    align-items: center;
    background-color: $color-black;
    overflow: hidden;
-   padding-left: 16px;
+
       &:hover {
       cursor: pointer;
       }
    }
+
    &__title {
-      padding-right: 16px;
       white-space: nowrap;
       text-overflow: ellipsis;
+      margin: 0;
    } 
 
    &__description {

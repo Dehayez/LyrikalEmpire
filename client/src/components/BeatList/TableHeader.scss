@@ -3,9 +3,9 @@
 .table-header {
     position: sticky;
     top: 0;
-    background-color: $color-black;
     text-align: left;
     z-index: 3;
+    background-color: $color-black;
 
     &:hover {
         .table-header__cell.resizable-header::after {

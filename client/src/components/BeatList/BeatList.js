@@ -129,7 +129,7 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
     const updateFilterDropdownHeight = () => {
       if (filterDropdownRef.current) {
         const height = filterDropdownRef.current.offsetHeight;
-        setFilterDropdownHeight(height + 62);
+        setFilterDropdownHeight(height + 53);
       }
     };
   
