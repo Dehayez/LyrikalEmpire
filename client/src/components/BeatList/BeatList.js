@@ -373,7 +373,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
 
   return (
     <div ref={containerRef} className="beat-list">
-      <div className='beat-list__buffer'/>
       <div className="beat-list__header">
         {
           headerContent ? (
