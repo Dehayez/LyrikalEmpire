@@ -410,6 +410,14 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
           )
         }
         <div className='beat-list__actions'>
+          <SearchInput
+            searchText={searchText}
+            setSearchText={setSearchText}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            previousPage={previousPage}
+            setPreviousPage={setPreviousPage}
+          />
           <IconButton
             className='beat-list__action-button--edit'
             onClick={toggleEdit}
@@ -419,14 +427,6 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
           >
             {mode === 'edit' ? <IoPencil /> : <IoHeadsetSharp />}
           </IconButton>
-          <SearchInput
-            searchText={searchText}
-            setSearchText={setSearchText}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            previousPage={previousPage}
-            setPreviousPage={setPreviousPage}
-          />
           <IconButton
             className='beat-list__action-button--profile'
             onClick={() => navigate('/profile')}

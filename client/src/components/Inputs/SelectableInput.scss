@@ -148,7 +148,6 @@
     
             &:hover {
                 background-color: $color-gray-dark-hover;
-                transform: scale(1.02);
                 cursor: pointer;
             }
     
@@ -158,7 +157,6 @@
     
             &--focused {
                 background-color: $color-gray-dark-hover;
-                transform: scale(1.02);
             }
         }
     }
