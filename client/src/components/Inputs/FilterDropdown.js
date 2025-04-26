@@ -41,12 +41,16 @@ export const FilterDropdown = ({ filters, onFilterChange }) => {
     }
     
     setIsDropdownOpen(prevState => {
-      // Close all other dropdowns
-      const newState = { ...prevState };
+      // Create new state object
+      const newState = {};
       
-      // Toggle the current dropdown
-      newState[filterType] = !prevState[filterType];
+      // If the clicked dropdown is already open, close everything
+      if (prevState[filterType]) {
+        return newState; // Empty object = all closed
+      }
       
+      // Otherwise, close all dropdowns and open only the clicked one
+      newState[filterType] = true;
       return newState;
     });
   };
