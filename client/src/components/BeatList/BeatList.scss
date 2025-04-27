@@ -17,23 +17,37 @@
   &__header {
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    padding: 12px 0;
+    width: calc(100vw - 16px);
+    height: 44px;
+    padding: 8px 0;
     position: sticky;
     left: 0;
     top: 0;
     z-index: 3;
     background-color: $color-black;
+
+    &--focused {
+      width: 100%;
+
+      &.beat-list__header--mobile {
+        .beat-list__title {
+          display: none;
+        }
+      }
+    }
   }
 
   &__title {
+    display: flex;
+    align-items: center;
     margin: 0;
+    text-wrap: nowrap;
   }
 
   &__actions {
     display: flex;
     align-items: center;
-    margin-right: 36px;
+    margin-right: 16px;
     gap: 20px;
   }
 
@@ -92,14 +106,20 @@
   &__search-container {
     position: relative;
     width: max-content;
+    height: 100%;
 
     &--active .beat-list__action-button--search {
       margin-left: 8px;
+    }
+
+    &--mobile {
+      margin-left: 2px;
     }
   }
   
   &__search-input {
     width: 0;
+    height: 100%;
     font-size: 16px;
     visibility: hidden;
     opacity: 0;
@@ -120,7 +140,6 @@
 
     &.visible {
       width: 200px;
-      padding: 12px;
       padding-left: 40px;
       visibility: visible;
       opacity: 1;

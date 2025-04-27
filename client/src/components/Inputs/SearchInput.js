@@ -13,6 +13,7 @@ export const SearchInput = ({
   setCurrentPage,
   previousPage,
   setPreviousPage,
+  setSearchInputFocused,
 }) => {
   const searchInputRef = useRef(null);
   const [isSearchVisible, setIsSearchVisible] = useState(() => getInitialState('searchText', '') !== '');
@@ -26,6 +27,7 @@ export const SearchInput = ({
         !searchText
       ) {
         setIsSearchVisible(false);
+        setSearchInputFocused(false);
       }
     };
 
@@ -36,6 +38,7 @@ export const SearchInput = ({
   const toggleSearchVisibility = () => {
     const willBeVisible = !isSearchVisible;
     setIsSearchVisible(willBeVisible);
+    setSearchInputFocused(true);
 
     if (willBeVisible) {
       setTimeout(() => searchInputRef.current?.focus(), 200);
@@ -65,6 +68,7 @@ export const SearchInput = ({
     <div
       className={classNames('beat-list__search-container', {
         'beat-list__search-container--active': isSearchVisible,
+        'beat-list__search-container--mobile': isMobileOrTablet,
       })}
       onClick={(e) => e.stopPropagation()}
     >

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 import { IoPencil, IoHeadsetSharp, IoPersonSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
@@ -30,6 +31,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => getInitialState(urlKey, 1));
   const [previousPage, setPreviousPage] = useState(currentPage);
+  const [searchInputFocused, setSearchInputFocused] = useState(false);
   
   const { genres, moods, keywords, features } = useData();
   const [selectedGenre, setSelectedGenre] = useState([]);
@@ -401,7 +403,12 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
 
   return (
     <div ref={containerRef} className="beat-list">
-      <div className="beat-list__header">
+        <div
+          className={classNames('beat-list__header', {
+            'beat-list__header--focused': searchInputFocused,
+            'beat-list__header--mobile': isMobileOrTablet,
+          })}
+        >
         {
           headerContent ? (
             headerContent
@@ -417,6 +424,7 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
             setCurrentPage={setCurrentPage}
             previousPage={previousPage}
             setPreviousPage={setPreviousPage}
+            setSearchInputFocused={setSearchInputFocused}
           />
           <IconButton
             className='beat-list__action-button--edit'
