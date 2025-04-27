@@ -1,11 +1,10 @@
 @import '../../globals/variables.scss';
 
 .filter-dropdown {
-
   &-container {
     padding-bottom: 12px;
     position: sticky;
-    top: 53px;
+    top: 60px;
     left: 0;
     z-index: 4;
     background-color: $color-black;
