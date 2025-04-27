@@ -116,10 +116,12 @@
 
 .view-toggle-container {
   display: flex;
+  padding: 0 6px;
+
   &__title {
     position: relative;
     color: $color-gray-default;
-    padding: 12px 16px;
+    padding: 16px 12px;
     border-radius: 4px;
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 
