@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { IoMenuSharp, IoListSharp, IoLockOpen, IoLockClosed } from 'react-icons/io5';
 import { IconButton } from '../Buttons';
 import { isMobileOrTablet } from '../../utils';
@@ -33,7 +34,10 @@ const PanelToggle = ({
           }
         : {})}
       onClick={handleClick}
-      className={`panel-toggle panel-toggle--${position}`}
+      className={classNames(
+        `panel-toggle panel-toggle--${position}`,
+        { 'panel-toggle--mobile': isMobileOrTablet() }
+      )}
     >
     {isPanelVisible ? (
       <IconButton
