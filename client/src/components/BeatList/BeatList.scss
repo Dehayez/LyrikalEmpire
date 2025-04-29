@@ -5,13 +5,7 @@
   width: 100%;
   overflow: auto;
   position: relative;
-
   @include hide-scrollbar;
-
-  &__buffer {
-    height: 70px;
-    width: 100%;
-  }
 
   &__header {
     display: flex;
@@ -145,12 +139,13 @@
   }
 
   &__table {
-    table-layout: auto;
-    overflow-x: auto;
     display: block;
-    white-space: nowrap;
-    overflow: visible;
+    margin-left: 12px;
+    table-layout: auto;
     width: max-content;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow: visible;
     border: none;
     border-collapse: collapse;
 
