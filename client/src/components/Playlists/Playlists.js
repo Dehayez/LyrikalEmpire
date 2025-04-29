@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp, IoAlbums } from "react-icons/io5";
+import { IoAddSharp, IoRemoveCircleOutline, IoPencil, IoVolumeMediumSharp } from "react-icons/io5";
 
 import { usePlaylist } from '../../contexts/PlaylistContext';
 import { eventBus, isMobileOrTablet } from '../../utils';
@@ -66,13 +66,6 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
     }
   };
 
-  const handleHomepageClick = () => {
-    if (isMobileOrTablet()) {
-      closeSidePanel('left');
-    }
-    navigate('/');
-  };
-
   const playListClick = (playlistId) => {
     if (isMobileOrTablet()) {
       closeSidePanel('left');
@@ -108,9 +101,6 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
     <div className="playlists">
       <div className="playlists__header">
       <div className="playlists__header-left">
-        <IconButton onClick={handleHomepageClick} className="button-homepage">
-          <IoAlbums />
-        </IconButton>
         <h2 className="playlists__title">Playlists</h2>
       </div>
         <IconButton
