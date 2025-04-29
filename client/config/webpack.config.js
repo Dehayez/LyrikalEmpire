@@ -40,6 +40,10 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.svg$/, // Add this rule for SVG files
+        use: ['@svgr/webpack'],
+      },
     ],
   },
   plugins: [

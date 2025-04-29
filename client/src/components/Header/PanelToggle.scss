@@ -23,6 +23,10 @@
     padding: 6px;
     z-index: 10;
 
+    &:hover {
+      transform: scale(1);
+    }
+
     &--mobile {
       &:hover {
         background-color: transparent;

@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { IoMenuSharp, IoListSharp, IoLockOpen, IoLockClosed } from 'react-icons/io5';
+import { LeftPanelHide, LeftPanelOpen, RightPanelHide, RightPanelOpen, Playlists, Queue02 } from '../../assets/icons';
 import { IconButton } from '../Buttons';
 import { isMobileOrTablet } from '../../utils';
 
@@ -39,33 +39,32 @@ const PanelToggle = ({
         { 'panel-toggle--mobile': isMobileOrTablet() }
       )}
     >
-    {isPanelVisible ? (
       <IconButton
         className={hoverClass}
-        text={isHovered ? 'Unlock Panel' : 'Lock Panel'}
+        text={
+          isHovered
+            ? `${position === 'left' ? (isPanelVisible ? 'Close Playlists' : 'Open Playlists') : isPanelVisible ? 'Close Queue' : 'Open Queue'}`
+            : `${position === 'left' ? 'Playlists' : 'Queue'}`
+        }
         tooltipPosition={tooltipPosition}
-        ariaLabel={isHovered ? 'Unlock Panel' : 'Lock Panel'}
+        ariaLabel={
+          isHovered
+            ? `${position === 'left' ? (isPanelVisible ? 'Close Playlists' : 'Open Playlists') : isPanelVisible ? 'Close Queue' : 'Open Queue'}`
+            : `${position === 'left' ? 'Playlists' : 'Queue'}`
+        }
       >
-        {isHovered ? <IoLockOpen /> : <IoLockClosed />}
+        {isHovered
+          ? position === 'left'
+            ? isPanelVisible
+              ? <LeftPanelHide />
+              : <LeftPanelOpen />
+            : isPanelVisible
+            ? <RightPanelHide />
+            : <RightPanelOpen />
+          : position === 'left'
+          ? <Playlists />
+          : <Queue02 />}
       </IconButton>
-    ) : isDivVisible ? (
-      <IconButton
-        text={isHovered ? 'Lock Panel' : 'Unlock Panel'}
-        tooltipPosition={tooltipPosition}
-        ariaLabel={isHovered ? 'Lock Panel' : 'Unlock Panel'}
-      >
-        {isHovered ? <IoLockClosed /> : <IoLockOpen />}
-      </IconButton>
-    ) : (
-      <IconButton
-        className={hoverClass}
-        text={position === 'left' ? 'Open Menu' : 'Open List'}
-        tooltipPosition={tooltipPosition}
-        ariaLabel={position === 'left' ? 'Open Menu' : 'Open List'}
-      >
-        {position === 'left' ? <IoMenuSharp /> : <IoListSharp />}
-      </IconButton>
-    )}
     </div>
   );
 };
