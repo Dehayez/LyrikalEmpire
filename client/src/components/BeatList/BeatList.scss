@@ -3,7 +3,6 @@
 .beat-list {
   height: 100%;
   width: 100%;
-  padding-left: 16px;
   overflow: auto;
   position: relative;
 
@@ -19,6 +18,8 @@
     justify-content: space-between;
     height: 44px;
     padding: 8px 0;
+    padding-left: 16px;
+    background-color: $color-black;
     position: sticky;
     left: 0;
     top: 0;
@@ -59,7 +60,8 @@
     z-index: 1;
     
     &:hover {
-      transform: scale(1) translateY(-50%);
+      transform-origin: center;
+      transform: translateY(-50%) scale(1.04);
     }
 
     &--edit, &--profile {
@@ -79,9 +81,6 @@
       &--closed {
         & .tooltip {
           display: block;
-        }
-        &:hover {
-          background-color: $color-gray-dark;
         }
       }
 

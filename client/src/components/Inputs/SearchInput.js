@@ -68,7 +68,7 @@ export const SearchInput = ({
     <div
       className={classNames('beat-list__search-container', {
         'beat-list__search-container--active': isSearchVisible,
-        'beat-list__search-container--mobile': isMobileOrTablet,
+        'beat-list__search-container--mobile': isMobileOrTablet(),
       })}
       onClick={(e) => e.stopPropagation()}
     >
