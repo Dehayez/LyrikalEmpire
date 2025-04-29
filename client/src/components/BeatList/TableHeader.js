@@ -145,7 +145,7 @@ const TableHeader = ({ onSort, sortConfig, mode, topOffset }) => {
             onSubmit={handleSubmit}
             onUpdateSelectableInput={handleUpdateSelectableInput}
           />,
-          document.getElementById('modal-root')
+          document.getElementById('root')
         )}
     </thead>
   );

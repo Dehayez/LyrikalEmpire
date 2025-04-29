@@ -406,7 +406,7 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
         <div
           className={classNames('beat-list__header', {
             'beat-list__header--focused': searchInputFocused,
-            'beat-list__header--mobile': isMobileOrTablet,
+            'beat-list__header--mobile': isMobileOrTablet(),
           })}
         >
         {

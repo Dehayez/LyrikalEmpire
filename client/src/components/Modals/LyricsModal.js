@@ -12,7 +12,7 @@ import { getAssociationsByBeatId, addAssociationsToBeat } from '../../services/b
 import { getLyricsById, updateLyricsById, createLyrics } from '../../services/lyricsService';
 import './LyricsModal.scss';
 
-Modal.setAppElement('#modal-root');
+Modal.setAppElement('#root');
 
 const modalStyle = {
   overlay: {
