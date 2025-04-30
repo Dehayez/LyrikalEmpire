@@ -168,7 +168,7 @@ export const SelectableInput = ({
 
   useEffect(() => {
     const width = localStorage.getItem(`headerWidth${headerIndex}`);
-    if (width && inputContainerRef.current) {
+    if (width && inputRef.current) {
       inputContainerRef.current.style.width = `${width}px`;
     }
   }, [headerWidths, headerIndex]);

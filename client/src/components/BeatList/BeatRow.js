@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { useBpmHandlers } from '../../hooks';
 import { addBeatsToPlaylist, getBeatsByPlaylistId, replaceAudio } from '../../services';
 import { isMobileOrTablet, formatDuration } from '../../utils';
-import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
+import { usePlaylist, useBeat, useData, useUser, useHeaderWidths } from '../../contexts';
 
 import { IconButton } from '../Buttons';
 import BeatAnimation from './BeatAnimation';
@@ -44,12 +44,14 @@ const BeatRow = ({
   setHoverPosition,
 }) => {
   const ref = useRef(null);
+  const inputTitleRef = useRef(null);
   const location = useLocation();
   const { user } = useUser();
   const { genres, moods, keywords, features } = useData();
   const { setHoveredBeat } = useBeat();
   const { playlists, isSamePlaylist } = usePlaylist();
   const { handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
+  const { headerWidths } = useHeaderWidths();
 
   // Compute derived state with useMemo to avoid recalculations
   const beatIndices = useMemo(() => 
@@ -321,6 +323,13 @@ const BeatRow = ({
     setDisableFocus(mode !== 'edit');
   }, [mode]);
 
+   useEffect(() => {
+      const width = localStorage.getItem(`headerWidth1`);
+      if (width && inputTitleRef.current) {
+        inputTitleRef.current.style.width = `${width}px`;
+      }
+    }, [headerWidths, mode]);
+
   // Mouse event handlers
   const handleMouseEnter = useCallback((e) => {
     if (!isMobileOrTablet()) { 
@@ -454,10 +463,11 @@ const BeatRow = ({
               onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
               onClick={(e) => e.stopPropagation()}
               spellCheck="false"
+              ref={inputTitleRef}
             />
           </>
         ) : (
-          <div className='beat-row__input beat-row__input--title beat-row__input--static'>{beat.title}</div>
+          <div className='beat-row__input beat-row__input--title beat-row__input--static' ref={inputTitleRef}>{beat.title}</div>
         )}
       </td>
       {mode !== 'lock' && (
