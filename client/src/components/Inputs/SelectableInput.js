@@ -167,9 +167,9 @@ export const SelectableInput = ({
   }, []);
 
   useEffect(() => {
-    const maxWidth = localStorage.getItem(`headerWidth${headerIndex}`);
-    if (maxWidth && inputContainerRef.current) {
-      inputContainerRef.current.style.maxWidth = `${maxWidth}px`;
+    const width = localStorage.getItem(`headerWidth${headerIndex}`);
+    if (width && inputContainerRef.current) {
+      inputContainerRef.current.style.width = `${width}px`;
     }
   }, [headerWidths, headerIndex]);
 
