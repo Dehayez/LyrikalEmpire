@@ -121,10 +121,10 @@
 }
 
 .beat-row--selected, .beat-row--selected-top, .beat-row--selected-bottom, .beat-row--selected-middle {
-  background-color: $color-primary-bg-hover;
+  background-color: $color-gray-dark-active;
 
   &:hover {
-    background-color: $color-primary-bg;
+    background-color: $color-gray-dark-hover;
   }
 
   &-top {
