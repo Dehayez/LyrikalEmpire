@@ -1,19 +1,24 @@
 @import '../../globals/variables';
 
 .icon-button--addbeat {
-    position: absolute; 
-    bottom: 0; 
+    position: absolute;
+    bottom: 0;
     right: 0;
-    background-color: $color-gray-mid;
-    color: $color-white !important;
-    border: none;
-    border-radius: 50%;
-    margin: 16px;
-    width: 48px;
-    height: 48px;
+    z-index: 3;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    margin: 16px;
+
+    background-color: $color-gray-mid;
+    color: $color-white;
+    border: none;
+    border-radius: 50%;
+
     font-size: 24px;
-    z-index: 3;
 }
