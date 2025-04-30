@@ -159,37 +159,6 @@
   }
 }
 
-.resizable-header {
-  position: relative;
-
-  &::after,
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: transparent;
-  }
-
-  &::after {
-    border-right: 1px solid transparent;
-  }
-
-  &.near-border::after {
-    border-right: 4px solid #505050;
-  }
-
-  &::before {
-    opacity: 0;
-  }
-}
-
-.resizable-header.dragging::after {
-  border-right: 4px solid #CCC;
-}
-
 .toaster--mode {
   background-color: $color-gray-dark !important;
   color: $color-white !important;

@@ -1,28 +1,34 @@
 import { useEffect } from 'react';
 import { useHeaderWidths } from '../contexts';
 
-export const useResizableColumns = (tableRef, mode) => {
+export const useResizableColumns = (tableRef) => {
   const { setHeaderWidths } = useHeaderWidths();
 
   useEffect(() => {
     if (!tableRef.current) return;
 
     const headers = Array.from(tableRef.current.querySelectorAll('th'));
+    const handlerMap = new Map();
 
     const cleanupHeaders = () => {
-      headers.forEach(header => {
-        header.removeEventListener('mousedown', header.handleMouseDown);
-        header.classList.remove('resizable-header');
+      handlerMap.forEach((handler, header) => {
+        const hoverTarget = header.querySelector('.hover-target');
+        if (hoverTarget) {
+          hoverTarget.removeEventListener('mousedown', handler);
+          hoverTarget.remove();
+        }
+
+        const resizeHandle = header.querySelector('.resize-handle');
+        if (resizeHandle) resizeHandle.remove();
+
+        header.classList.remove('resizable-header', 'dragging');
         header.style.width = '';
       });
     };
 
     headers.forEach((header, index) => {
-      // Get the column name from the text content
       const columnText = header.querySelector('.table-header__cell-text')?.textContent?.toLowerCase();
-      
-      // Skip 'bpm' and 'tierlist' columns and non-draggable columns
-      if (columnText === 'bpm' || columnText === 'tierlist' || header.classList.contains('non-draggable')) {
+      if (!columnText || ['bpm', 'tierlist'].includes(columnText) || header.classList.contains('non-draggable')) {
         return;
       }
 
@@ -33,32 +39,35 @@ export const useResizableColumns = (tableRef, mode) => {
         header.style.width = `${savedWidth}px`;
       }
 
-      const handleMouseDown = e => {
+      // Visual element
+      const resizeHandle = document.createElement('div');
+      resizeHandle.classList.add('resize-handle');
+      header.appendChild(resizeHandle);
+
+      // Hover + drag zone
+      const hoverTarget = document.createElement('div');
+      hoverTarget.classList.add('hover-target');
+      header.appendChild(hoverTarget);
+
+      const handleMouseDown = (e) => {
         e.preventDefault();
+        const startX = e.clientX;
+        const startWidth = header.offsetWidth;
 
-        const rect = header.getBoundingClientRect();
-        const isNearBorder = e.clientX >= rect.right - 8 && e.clientX <= rect.right;
-        if (!isNearBorder) return;
+        header.classList.add('dragging');
 
-        const initialMouseX = e.clientX;
-        const initialWidth = header.offsetWidth;
-
-        document.body.style.cursor = 'col-resize';
-        document.body.classList.add('dragging');
-
-        const handleMouseMove = e => {
-          const newWidth = initialWidth + e.clientX - initialMouseX;
+        const handleMouseMove = (e) => {
+          const newWidth = Math.max(startWidth + e.clientX - startX, 50);
           header.style.width = `${newWidth}px`;
           localStorage.setItem(`headerWidth${index}`, newWidth);
-          setHeaderWidths((prevWidths) => ({
-            ...prevWidths,
+          setHeaderWidths((prev) => ({
+            ...prev,
             [`headerWidth${index}`]: newWidth,
           }));
         };
 
         const handleMouseUp = () => {
-          document.body.style.cursor = '';
-          document.body.classList.remove('dragging');
+          header.classList.remove('dragging');
           document.removeEventListener('mousemove', handleMouseMove);
           document.removeEventListener('mouseup', handleMouseUp);
         };
@@ -67,52 +76,12 @@ export const useResizableColumns = (tableRef, mode) => {
         document.addEventListener('mouseup', handleMouseUp);
       };
 
-      header.handleMouseDown = handleMouseDown;
-
-      header.addEventListener('mousedown', handleMouseDown);
+      hoverTarget.addEventListener('mousedown', handleMouseDown);
+      handlerMap.set(header, handleMouseDown);
     });
 
-    return () => {
-      cleanupHeaders();
-    };
-  }, [tableRef, mode, setHeaderWidths]);
-
-  useEffect(() => {
-    const handleMouseEnter = (event) => {
-      const header = event.target.closest('.resizable-header');
-      if (header) {
-        header.classList.add('hovered');
-      }
-    };
-
-    const handleMouseLeave = (event) => {
-      const header = event.target.closest('.resizable-header');
-      if (header) {
-        header.classList.remove('hovered');
-      }
-    };
-
-    const headers = document.querySelectorAll('.resizable-header');
-    headers.forEach(header => {
-      const hoverTarget = document.createElement('div');
-      hoverTarget.classList.add('hover-target');
-      header.appendChild(hoverTarget);
-
-      hoverTarget.addEventListener('mouseenter', handleMouseEnter);
-      hoverTarget.addEventListener('mouseleave', handleMouseLeave);
-    });
-
-    return () => {
-      headers.forEach(header => {
-        const hoverTarget = header.querySelector('.hover-target');
-        if (hoverTarget) {
-          hoverTarget.removeEventListener('mouseenter', handleMouseEnter);
-          hoverTarget.removeEventListener('mouseleave', handleMouseLeave);
-          header.removeChild(hoverTarget);
-        }
-      });
-    };
-  }, []);
+    return () => cleanupHeaders();
+  }, [tableRef, setHeaderWidths]);
 };
 
 export default useResizableColumns;

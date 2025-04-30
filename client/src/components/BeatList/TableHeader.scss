@@ -8,7 +8,7 @@
     background-color: $color-black;
 
     &:hover {
-        .table-header__cell.resizable-header::after {
+        .resize-handle  {
             background-color: $color-gray-dark-hover;
         }
     }
@@ -67,22 +67,6 @@
             }
         }
 
-        &.resizable-header {
-            position: relative;
-
-            &::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                width: 1px;
-                cursor: col-resize;
-                background-color: transparent;
-                transition: background-color 0.2s ease-in-out;
-            }
-        }
-
         &.non-draggable {
             width: 50px !important;
 
@@ -102,6 +86,37 @@
         }
     }
 }
+
+.resizable-header {
+    &.dragging {
+        .resize-handle {
+            background-color: $color-gray-default;
+        }
+    }
+}
+
+.hover-target {
+    position: absolute;
+    top: 0;
+    right: -5px;
+    bottom: 0;
+    width: 13px;
+    cursor: col-resize;
+    background-color: transparent;
+    z-index: 1;
+}
+
+.resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 2px;
+    z-index: 2;
+    transition: all 0.2s ease-in-out;
+    pointer-events: none;
+}
+  
 
 .hide-column {
     visibility: hidden;
