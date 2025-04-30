@@ -35,7 +35,7 @@ const Header = ({
   };
 
   const handleHomepageClick = () => {
-    if (!isMobileOrTablet()) closeSidePanel('both');
+    if (isMobileOrTablet()) closeSidePanel('both');
   };
 
   return (
