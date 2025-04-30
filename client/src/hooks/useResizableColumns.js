@@ -17,20 +17,21 @@ export const useResizableColumns = (tableRef, mode) => {
       });
     };
 
-    if (mode === 'lock') {
-      cleanupHeaders();
-      return;
-    }
-
     headers.forEach((header, index) => {
+      // Get the column name from the text content
+      const columnText = header.querySelector('.table-header__cell-text')?.textContent?.toLowerCase();
+      
+      // Skip 'bpm' and 'tierlist' columns and non-draggable columns
+      if (columnText === 'bpm' || columnText === 'tierlist' || header.classList.contains('non-draggable')) {
+        return;
+      }
+
       header.classList.add('resizable-header');
 
       const savedWidth = localStorage.getItem(`headerWidth${index}`);
       if (savedWidth) {
         header.style.width = `${savedWidth}px`;
       }
-
-      if (header.classList.contains('non-draggable')) return;
 
       const handleMouseDown = e => {
         e.preventDefault();

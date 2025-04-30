@@ -96,7 +96,7 @@ const TableHeader = ({ onSort, sortConfig, mode, topOffset }) => {
           <th
             key={column}
             onContextMenu={(e) => handleRightClick(e, column)}
-            className={`table-header__cell ${isDragging ? 'no-transition' : ''}`}
+            className={`table-header__cell table-header__cell--${column} ${isDragging ? 'no-transition' : ''}`}
           >
             <div
               className="table-header__cell-left"
