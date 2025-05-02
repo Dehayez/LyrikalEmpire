@@ -38,6 +38,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const [selectedMood, setSelectedMood] = useState([]);
   const [selectedKeyword, setSelectedKeyword] = useState([]);
   const [selectedFeature, setSelectedFeature] = useState([]);
+  const [selectedTierlist, setSelectedTierlist] = useState([]);
   
   const { setPlaylistId } = usePlaylist();
   const { allBeats, paginatedBeats, inputFocused, setRefreshBeats, currentBeats, setCurrentBeats } = useBeat();
@@ -52,10 +53,23 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   
   const filteredAndSortedBeats = useMemo(() => {
     return sortedBeats.filter(beat => {
+      // Search text filtering
       const fieldsToSearch = [beat.title];
-      return fieldsToSearch.some(field => field && field.toLowerCase().includes(searchText.toLowerCase()));
+      const matchesSearchText = fieldsToSearch.some(
+        field => field && field.toLowerCase().includes(searchText.toLowerCase())
+      );
+  
+      // Genre, mood, keyword, feature, and tierlist filtering
+      const matchesGenre = selectedGenre.length === 0 || selectedGenre.some(item => beat.genres?.includes(item.id));
+      const matchesMood = selectedMood.length === 0 || selectedMood.some(item => beat.moods?.includes(item.id));
+      const matchesKeyword = selectedKeyword.length === 0 || selectedKeyword.some(item => beat.keywords?.includes(item.id));
+      const matchesFeature = selectedFeature.length === 0 || selectedFeature.some(item => beat.features?.includes(item.id));
+      const matchesTierlist = selectedTierlist.length === 0 || selectedTierlist.some(item => beat.tierlist === item.id);
+  
+      // Combine all conditions
+      return matchesSearchText && matchesGenre && matchesMood && matchesKeyword && matchesFeature && matchesTierlist;
     });
-  }, [sortedBeats, searchText]);
+  }, [sortedBeats, searchText, selectedGenre, selectedMood, selectedKeyword, selectedFeature, selectedTierlist]);
 
   const filterDropdownRef = useRef(null); // Add a ref for the FilterDropdown container
 const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to store the height
@@ -165,6 +179,11 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
         break;
       case 'features':
         setSelectedFeature(selectedItems);
+        break;
+      case 'tierlist':
+        setSelectedTierlist(selectedItems);
+        break;
+      default:
         break;
     }
   };
@@ -449,6 +468,17 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
       <FilterDropdown
         ref={filterDropdownRef} 
         filters={[
+          { id: 'tierlist-filter', name: 'tierlist', label: 'Tierlist', options: [
+            { id: 'M', name: 'M' },
+            { id: 'G', name: 'G' },
+            { id: 'S', name: 'S' },
+            { id: 'A', name: 'A' },
+            { id: 'B', name: 'B' },
+            { id: 'C', name: 'C' },
+            { id: 'D', name: 'D' },
+            { id: 'E', name: 'E' },
+            { id: 'F', name: 'F' },
+          ] },
           { id: 'genre-filter', name: 'genres', label: 'Genres', options: genres },
           { id: 'mood-filter', name: 'moods', label: 'Moods', options: moods },
           { id: 'keyword-filter', name: 'keywords', label: 'Keywords', options: keywords },
