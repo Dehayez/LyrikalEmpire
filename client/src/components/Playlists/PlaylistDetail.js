@@ -98,8 +98,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBe
   return (
     <>
       {playlist && (
-        <div className='playlist'>
-          <div className='playlist__beats'>
             <DndProvider backend={HTML5Backend}>
                 <BeatList
                   key={beats.length}
@@ -130,8 +128,6 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBe
                   }
                 />
             </DndProvider>
-          </div>
-        </div>
       )}
       {isOpen &&
         <UpdatePlaylistForm
