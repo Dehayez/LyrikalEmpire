@@ -342,45 +342,46 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
     }
     
     // Add visible beats
-    const visibleBeats = filteredAndSortedBeats.slice(visibleRange.start, visibleRange.end + 1);
-    visibleBeats.forEach((beat, relativeIndex) => {
-      const absoluteIndex = visibleRange.start + relativeIndex;
-      
-      result.push(
-        <React.Fragment key={beat.id}>
-          {hoverIndex === absoluteIndex && hoverPosition === 'top' && <tr className="drop-line" />}
-          <BeatRow
-            beat={beat}
-            currentBeat={currentBeat}
-            index={filteredAndSortedBeats.length - absoluteIndex} // Reverse the index
-            handlePlayPause={handlePlayPause}
-            handleUpdate={handleUpdate}
-            handleDelete={handleDelete}
-            selectedBeat={selectedBeat}
-            isPlaying={isPlaying}
-            handleBeatClick={handleBeatClick}
-            selectedBeats={selectedBeats}
-            openConfirmModal={openConfirmModal}
-            beats={beats}
-            addToCustomQueue={addToCustomQueue}
-            searchText={searchText}
-            mode={mode}
-            setActiveContextMenu={setActiveContextMenu}
-            activeContextMenu={activeContextMenu}
-            onBeatClick={onBeatClick}
-            deleteMode={deleteMode}
-            onUpdateBeat={onUpdateBeat}
-            onUpdate={onUpdate}
-            moveBeat={moveBeat}
-            playlistId={playlistId}
-            setBeats={setBeats}
-            setHoverIndex={setHoverIndex}
-            setHoverPosition={setHoverPosition}
-          />
-          {hoverIndex === absoluteIndex && hoverPosition === 'bottom' && <tr className="drop-line" />}
-        </React.Fragment>
-      );
-    });
+  const visibleBeats = filteredAndSortedBeats.slice(visibleRange.start, visibleRange.end + 1);
+  visibleBeats.forEach((beat, relativeIndex) => {
+    const absoluteIndex = visibleRange.start + relativeIndex;
+    const reversedIndex = filteredAndSortedBeats.length - 1 - absoluteIndex; // Reverse the index
+
+    result.push(
+      <React.Fragment key={beat.id}>
+        {hoverIndex === absoluteIndex && hoverPosition === 'top' && <tr className="drop-line" />}
+        <BeatRow
+          beat={beat}
+          currentBeat={currentBeat}
+          index={reversedIndex} // Pass the reversed index
+          handlePlayPause={handlePlayPause}
+          handleUpdate={handleUpdate}
+          handleDelete={handleDelete}
+          selectedBeat={selectedBeat}
+          isPlaying={isPlaying}
+          handleBeatClick={handleBeatClick}
+          selectedBeats={selectedBeats}
+          openConfirmModal={openConfirmModal}
+          beats={beats}
+          addToCustomQueue={addToCustomQueue}
+          searchText={searchText}
+          mode={mode}
+          setActiveContextMenu={setActiveContextMenu}
+          activeContextMenu={activeContextMenu}
+          onBeatClick={onBeatClick}
+          deleteMode={deleteMode}
+          onUpdateBeat={onUpdateBeat}
+          onUpdate={onUpdate}
+          moveBeat={moveBeat}
+          playlistId={playlistId}
+          setBeats={setBeats}
+          setHoverIndex={setHoverIndex}
+          setHoverPosition={setHoverPosition}
+        />
+        {hoverIndex === absoluteIndex && hoverPosition === 'bottom' && <tr className="drop-line" />}
+      </React.Fragment>
+    );
+  });
     
     // Add bottom spacer if needed
     const remainingRows = filteredAndSortedBeats.length - visibleRange.end - 1;
