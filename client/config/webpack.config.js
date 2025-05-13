@@ -8,6 +8,7 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, '../build'),
+    publicPath: '/', // Ensure the public path is set correctly for routing
   },
   resolve: {
     fallback: {
@@ -71,7 +72,9 @@ module.exports = {
     },
     compress: true,
     port: 3000,
-    historyApiFallback: true,
+    historyApiFallback: {
+      index: '/index.html', // Redirect all unmatched routes to index.html
+    },
     allowedHosts: [
       '.ngrok-free.app',
     ],
