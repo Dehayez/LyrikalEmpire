@@ -345,7 +345,8 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
   const visibleBeats = filteredAndSortedBeats.slice(visibleRange.start, visibleRange.end + 1);
   visibleBeats.forEach((beat, relativeIndex) => {
     const absoluteIndex = visibleRange.start + relativeIndex;
-    const reversedIndex = filteredAndSortedBeats.length - 1 - absoluteIndex; // Reverse the index
+    const reversedIndex = filteredAndSortedBeats.length - 1 - absoluteIndex;
+    const indexValue = playlistId ? absoluteIndex : reversedIndex;
 
     result.push(
       <React.Fragment key={beat.id}>
@@ -353,7 +354,7 @@ const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to
         <BeatRow
           beat={beat}
           currentBeat={currentBeat}
-          index={reversedIndex} // Pass the reversed index
+          index={indexValue}
           handlePlayPause={handlePlayPause}
           handleUpdate={handleUpdate}
           handleDelete={handleDelete}
