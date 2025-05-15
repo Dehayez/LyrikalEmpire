@@ -597,14 +597,15 @@ const BeatRow = ({
 };
 
 export default React.memo(BeatRow, (prevProps, nextProps) => {
-  // Implement custom comparison to determine if re-render is needed
   return (
     prevProps.beat.id === nextProps.beat.id &&
+    prevProps.index === nextProps.index &&
     prevProps.isPlaying === nextProps.isPlaying &&
     prevProps.mode === nextProps.mode &&
     prevProps.currentBeat?.id === nextProps.currentBeat?.id &&
     prevProps.activeContextMenu === nextProps.activeContextMenu &&
     JSON.stringify(prevProps.selectedBeats) === JSON.stringify(nextProps.selectedBeats) &&
-    prevProps.searchText === nextProps.searchText
+    prevProps.searchText === nextProps.searchText &&
+    JSON.stringify(prevProps.beats) === JSON.stringify(nextProps.beats)
   );
 });
