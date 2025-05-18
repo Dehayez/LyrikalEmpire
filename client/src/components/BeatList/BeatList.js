@@ -53,26 +53,22 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   
   const filteredAndSortedBeats = useMemo(() => {
     return sortedBeats.filter(beat => {
-      // Search text filtering
       const fieldsToSearch = [beat.title];
       const matchesSearchText = fieldsToSearch.some(
         field => field && field.toLowerCase().includes(searchText.toLowerCase())
       );
-  
-      // Genre, mood, keyword, feature, and tierlist filtering
-      const matchesGenre = selectedGenre.length === 0 || selectedGenre.some(item => beat.genres?.includes(item.id));
-      const matchesMood = selectedMood.length === 0 || selectedMood.some(item => beat.moods?.includes(item.id));
-      const matchesKeyword = selectedKeyword.length === 0 || selectedKeyword.some(item => beat.keywords?.includes(item.id));
-      const matchesFeature = selectedFeature.length === 0 || selectedFeature.some(item => beat.features?.includes(item.id));
-      const matchesTierlist = selectedTierlist.length === 0 || selectedTierlist.some(item => beat.tierlist === item.id);
-  
-      // Combine all conditions
-      return matchesSearchText && matchesGenre && matchesMood && matchesKeyword && matchesFeature && matchesTierlist;
-    });
-  }, [sortedBeats, searchText, selectedGenre, selectedMood, selectedKeyword, selectedFeature, selectedTierlist]);
 
-  const filterDropdownRef = useRef(null); // Add a ref for the FilterDropdown container
-const [filterDropdownHeight, setFilterDropdownHeight] = useState(0); // State to store the height
+      // Tierlist filtering
+      const matchesTierlist =
+        selectedTierlist.length === 0 ||
+        selectedTierlist.some(item => beat.tierlist === item.id);
+
+      return matchesSearchText && matchesTierlist;
+    });
+  }, [sortedBeats, searchText, selectedTierlist]);
+
+  const filterDropdownRef = useRef(null);
+  const [filterDropdownHeight, setFilterDropdownHeight] = useState(0);
 
   useEffect(() => {
     setCurrentBeats(filteredAndSortedBeats)
