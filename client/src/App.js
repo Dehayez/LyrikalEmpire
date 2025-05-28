@@ -202,6 +202,12 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
     }
   }, [currentBeat]);
 
+  useEffect(() => {
+  if (queue.length === 0 && currentBeat && currentBeats && currentBeats.length > 0) {
+    logQueue(currentBeats, shuffle, currentBeat);
+  }
+}, [queue.length, currentBeat, currentBeats, shuffle]);
+
   return (
       <div className="app app--hidden">
         {isDraggingOver && (
