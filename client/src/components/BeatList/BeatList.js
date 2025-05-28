@@ -25,20 +25,15 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const { user } = useUser();
   const { username } = user;
   const navigate = useNavigate();
-
+  const { genres, moods, keywords, features } = useData();
   const location = useLocation();
+
   const [searchText, setSearchText] = useState(() => getInitialState('searchText', ''));
   const urlKey = `currentPage_${location.pathname}`;
   const [currentPage, setCurrentPage] = useState(() => getInitialState(urlKey, 1));
   const [previousPage, setPreviousPage] = useState(currentPage);
   const [searchInputFocused, setSearchInputFocused] = useState(false);
   
-  const { genres, moods, keywords, features } = useData();
-  const [selectedGenre, setSelectedGenre] = useState([]);
-  const [selectedMood, setSelectedMood] = useState([]);
-  const [selectedKeyword, setSelectedKeyword] = useState([]);
-  const [selectedFeature, setSelectedFeature] = useState([]);
-  const [selectedTierlist, setSelectedTierlist] = useState([]);
   
   const { setPlaylistId } = usePlaylist();
   const { allBeats, paginatedBeats, inputFocused, setRefreshBeats, currentBeats, setCurrentBeats } = useBeat();
@@ -51,21 +46,26 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   
   const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(filteredBeats);
   
-  const filteredAndSortedBeats = useMemo(() => {
-    return sortedBeats.filter(beat => {
-      const fieldsToSearch = [beat.title];
-      const matchesSearchText = fieldsToSearch.some(
-        field => field && field.toLowerCase().includes(searchText.toLowerCase())
-      );
+const [selectedGenre, setSelectedGenre] = useState(() => getInitialState('selectedItems', {}).genres || []);
+const [selectedMood, setSelectedMood] = useState(() => getInitialState('selectedItems', {}).moods || []);
+const [selectedKeyword, setSelectedKeyword] = useState(() => getInitialState('selectedItems', {}).keywords || []);
+const [selectedFeature, setSelectedFeature] = useState(() => getInitialState('selectedItems', {}).features || []);
+const [selectedTierlist, setSelectedTierlist] = useState(() => getInitialState('selectedItems', {}).tierlist || []);
 
-      // Tierlist filtering
-      const matchesTierlist =
-        selectedTierlist.length === 0 ||
-        selectedTierlist.some(item => beat.tierlist === item.id);
+const filteredAndSortedBeats = useMemo(() => {
+  const result = sortedBeats.filter(beat => {
+    const fieldsToSearch = [beat.title];
+    const matchesSearchText = fieldsToSearch.some(
+      field => field && field.toLowerCase().includes(searchText.toLowerCase())
+    );
+    const matchesTierlist =
+      selectedTierlist.length === 0 ||
+      selectedTierlist.some(item => beat.tierlist === item.id);
 
-      return matchesSearchText && matchesTierlist;
-    });
-  }, [sortedBeats, searchText, selectedTierlist]);
+    return matchesSearchText && matchesTierlist;
+  });
+  return result;
+}, [sortedBeats, searchText, selectedTierlist]);
 
   const filterDropdownRef = useRef(null);
   const [filterDropdownHeight, setFilterDropdownHeight] = useState(0);
@@ -186,9 +186,9 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
     
 const handlePlayPause = useCallback((beat) => {
   const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
-  onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats, true);
+  onPlay(beat, !isCurrentBeatPlaying || !isPlaying, filteredAndSortedBeats, true);
   setPlaylistId(playlistId);
-}, [selectedBeat, isPlaying, onPlay, beats, playlistId, setPlaylistId]);
+}, [selectedBeat, isPlaying, onPlay, filteredAndSortedBeats, playlistId, setPlaylistId]);
 
   const handleConfirm = async () => {
     if (beatsToDelete.length > 0) {
