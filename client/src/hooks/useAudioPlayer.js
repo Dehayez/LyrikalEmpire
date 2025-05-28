@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { getUserById } from '../services';
 import { useLocalStorageSync } from './useLocalStorageSync';
 
-export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat }) => {
+export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, repeat }) => {
   const playerRef = useRef();
   const [volume, setVolume] = useState(() => parseFloat(localStorage.getItem('volume')) || 1.0);
   const [isDragging, setIsDragging] = useState(false);
