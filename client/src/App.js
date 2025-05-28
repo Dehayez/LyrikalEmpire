@@ -90,13 +90,13 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
  const handleNextWrapper = () => {
   if (customQueue.length > 0) {
     const nextCustomBeat = customQueue[0];
-    handlePlayWrapper(nextCustomBeat, true, currentBeats); // no queue update
+    handlePlayWrapper(nextCustomBeat, true, currentBeats);
     setCustomQueue(customQueue.slice(1));
   } else {
     const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
     const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
     const nextBeat = queue[nextIndex];
-    handlePlayWrapper(nextBeat, true, currentBeats); // no queue update
+    handlePlayWrapper(nextBeat, true, currentBeats);
   }
   if (repeat === 'Repeat One') {
     setRepeat('Repeat');

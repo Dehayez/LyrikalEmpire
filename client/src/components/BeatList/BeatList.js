@@ -186,7 +186,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
     
 const handlePlayPause = useCallback((beat) => {
   const isCurrentBeatPlaying = selectedBeat && selectedBeat.id === beat.id;
-  // Only update queue when playing from BeatList
   onPlay(beat, !isCurrentBeatPlaying || !isPlaying, beats, true);
   setPlaylistId(playlistId);
 }, [selectedBeat, isPlaying, onPlay, beats, playlistId, setPlaylistId]);
