@@ -159,7 +159,9 @@ function App() {
     setQueue(queue);
   }
   
-  useEffect(() => { logQueue(sortedBeats, shuffle, currentBeat); }, [beats, sortConfig, shuffle, currentBeat]);
+  useEffect(() => { 
+    logQueue(currentBeats, shuffle, currentBeat); 
+  }, [currentBeats, sortConfig, shuffle, currentBeat]);
 
   const updateHistory = (playedBeat) => {
     const history = getInitialState('playedBeatsHistory', []);
