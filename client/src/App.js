@@ -74,32 +74,34 @@ function App() {
   
   useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig, lyricsModal });
   
-  const handlePlayWrapper = (beat, play) => {
-    handlePlay(beat, play, currentBeats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
-    updateHistory(beat);
-    if (window.electron) {
-      console.log(`Calling setActivity with songTitle: ${beat.title}`);
-      window.electron.setActivity(beat.title);
-    }
-  };
+const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
+  if (shouldUpdateQueue) {
+    logQueue(beats, shuffle, beat);
+  }
+  handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
+  updateHistory(beat);
+  if (window.electron) {
+    window.electron.setActivity(beat.title);
+  }
+};
 
   const handlePrevWrapper = () => handlePrev(currentBeats, currentBeat, handlePlayWrapper, repeat, setRepeat);
 
-  const handleNextWrapper = () => {
-    if (customQueue.length > 0) {
-      const nextCustomBeat = customQueue[0];
-      handlePlayWrapper(nextCustomBeat, true, currentBeats);
-      setCustomQueue(customQueue.slice(1));
-    } else {
-      const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
-      const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
-      const nextBeat = queue[nextIndex];
-      handlePlayWrapper(nextBeat, true, currentBeats);
-    }
-    if (repeat === 'Repeat One') {
-      setRepeat('Repeat');
-    }
-  };
+ const handleNextWrapper = () => {
+  if (customQueue.length > 0) {
+    const nextCustomBeat = customQueue[0];
+    handlePlayWrapper(nextCustomBeat, true, currentBeats); // no queue update
+    setCustomQueue(customQueue.slice(1));
+  } else {
+    const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+    const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
+    const nextBeat = queue[nextIndex];
+    handlePlayWrapper(nextBeat, true, currentBeats); // no queue update
+  }
+  if (repeat === 'Repeat One') {
+    setRepeat('Repeat');
+  }
+};
 
   const {
     handlePlay,
@@ -158,10 +160,6 @@ function App() {
     }
     setQueue(queue);
   }
-  
-  useEffect(() => { 
-    logQueue(currentBeats, shuffle, currentBeat); 
-  }, [currentBeats, sortConfig, shuffle, currentBeat]);
 
   const updateHistory = (playedBeat) => {
     const history = getInitialState('playedBeatsHistory', []);
