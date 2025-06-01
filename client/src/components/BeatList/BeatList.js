@@ -118,15 +118,13 @@ const BeatList = ({
 
   // Main filtering effect: service + tierlist
 useEffect(() => {
-  const fetchFiltered = async () => {
-    console.log('--- FILTER DEBUG ---');
-    console.log('selectedGenre:', selectedGenre);
-    console.log('selectedMood:', selectedMood);
-    console.log('selectedKeyword:', selectedKeyword);
-    console.log('selectedFeature:', selectedFeature);
-    console.log('selectedTierlist:', selectedTierlist);
-    console.log('beats:', beats);
+  // Only run filter if beats are loaded
+  if (!beats || beats.length === 0) {
+    setFilteredBeats([]);
+    return;
+  }
 
+  const fetchFiltered = async () => {
     const serviceAssocs = [
       { type: 'genres', selected: selectedGenre },
       { type: 'moods', selected: selectedMood },
@@ -139,22 +137,19 @@ useEffect(() => {
       const lists = await Promise.all(
         serviceAssocs.map((assoc) => {
           const ids = assoc.selected.map((i) => i.id);
-          return getBeatsByAssociation(assoc.type, ids, currentBeats, user.id);
+          // Use 'beats' as the base, not 'currentBeats'
+          return getBeatsByAssociation(assoc.type, ids, beats, user.id);
         })
       );
       base = lists.flat();
-      console.log('After serviceAssocs filter:', base);
     }
     if (selectedTierlist.length) {
       base = base.filter((b) => selectedTierlist.some((t) => b.tierlist === t.id));
-      console.log('After tierlist filter:', base);
     }
     setFilteredBeats(base);
-    console.log('setFilteredBeats:', base);
-    console.log('--- END FILTER DEBUG ---');
   };
   fetchFiltered();
-}, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, selectedTierlist, user.id]);
+}, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, selectedTierlist, user.id, beats]);
 
   // Virtual scroll calculation
   const calculateVisibleRows = useCallback(() => {
