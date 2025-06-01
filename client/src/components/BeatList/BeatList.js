@@ -60,7 +60,7 @@ const BeatList = ({
   const [currentPage, setCurrentPage] = useState(() => getInitialState(urlKey, 1));
   const [previousPage, setPreviousPage] = useState(currentPage);
   const [searchInputFocused, setSearchInputFocused] = useState(false);
-  const [filteredBeats, setFilteredBeats] = useState(beats);
+  const [filteredBeats, setFilteredBeats] = useState([]);
   const [visibleRange, setVisibleRange] = useState({ start: 0, end: 20 });
   const [rowHeight, setRowHeight] = useState(60);
   const [filterDropdownHeight, setFilterDropdownHeight] = useState(0);
@@ -117,32 +117,44 @@ const BeatList = ({
   }, []);
 
   // Main filtering effect: service + tierlist
-  useEffect(() => {
-    const fetchFiltered = async () => {
-      const serviceAssocs = [
-        { type: 'genres', selected: selectedGenre },
-        { type: 'moods', selected: selectedMood },
-        { type: 'keywords', selected: selectedKeyword },
-        { type: 'features', selected: selectedFeature },
-      ].filter((a) => a.selected.length > 0);
+useEffect(() => {
+  const fetchFiltered = async () => {
+    console.log('--- FILTER DEBUG ---');
+    console.log('selectedGenre:', selectedGenre);
+    console.log('selectedMood:', selectedMood);
+    console.log('selectedKeyword:', selectedKeyword);
+    console.log('selectedFeature:', selectedFeature);
+    console.log('selectedTierlist:', selectedTierlist);
+    console.log('beats:', beats);
 
-      let base = beats;
-      if (serviceAssocs.length) {
-        const lists = await Promise.all(
-          serviceAssocs.map((assoc) => {
-            const ids = assoc.selected.map((i) => i.id);
-            return getBeatsByAssociation(assoc.type, ids, currentBeats, user.id);
-          })
-        );
-        base = lists.flat();
-      }
-      if (selectedTierlist.length) {
-        base = base.filter((b) => selectedTierlist.some((t) => b.tierlist === t.id));
-      }
-      setFilteredBeats(base);
-    };
-    fetchFiltered();
-  }, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, selectedTierlist, beats, currentBeats, user.id]);
+    const serviceAssocs = [
+      { type: 'genres', selected: selectedGenre },
+      { type: 'moods', selected: selectedMood },
+      { type: 'keywords', selected: selectedKeyword },
+      { type: 'features', selected: selectedFeature },
+    ].filter((a) => a.selected.length > 0);
+
+    let base = beats;
+    if (serviceAssocs.length) {
+      const lists = await Promise.all(
+        serviceAssocs.map((assoc) => {
+          const ids = assoc.selected.map((i) => i.id);
+          return getBeatsByAssociation(assoc.type, ids, currentBeats, user.id);
+        })
+      );
+      base = lists.flat();
+      console.log('After serviceAssocs filter:', base);
+    }
+    if (selectedTierlist.length) {
+      base = base.filter((b) => selectedTierlist.some((t) => b.tierlist === t.id));
+      console.log('After tierlist filter:', base);
+    }
+    setFilteredBeats(base);
+    console.log('setFilteredBeats:', base);
+    console.log('--- END FILTER DEBUG ---');
+  };
+  fetchFiltered();
+}, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, selectedTierlist, user.id]);
 
   // Virtual scroll calculation
   const calculateVisibleRows = useCallback(() => {
