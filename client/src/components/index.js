@@ -6,6 +6,8 @@ export * from './Buttons';
 export * from './Charts';
 export * from './ConfirmModal';
 export * from './ContextMenu';
+export * from './PanelToggle';
+export * from './Footer';
 export * from './Form';
 export * from './Header';
 export * from './Highlight';

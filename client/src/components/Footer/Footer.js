@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Home } from '../../assets/icons';
 import { isMobileOrTablet } from '../../utils';
-import { NavigationButtons } from '../Buttons';
+import { IconButton, NavigationButtons } from '../Buttons';
 import { Breadcrumb } from '../Breadcrumb';
 import { PanelToggle } from '../PanelToggle';
 
-import './Header.scss';
+import './Footer.scss';
 
-const Header = ({
+const Footer = ({
   isLeftPanelVisible,
   isRightPanelVisible,
   toggleSidePanel,
@@ -39,7 +40,7 @@ const Header = ({
   };
 
   return (
-    <header className="header">
+    <footer className="footer">
       {!isAuthPage && (
         <PanelToggle
           isPanelVisible={isLeftPanelVisible}
@@ -60,9 +61,11 @@ const Header = ({
         </>
       )}
 
-      <div className="header__nav-group" onClick={handleHomepageClick}>
+      <div className="footer__nav-group" onClick={handleHomepageClick}>
         <Link to="/">
-          <img className="header__nav-logo" src="/android-chrome-192x192.png" alt="Logo" />
+            <IconButton>
+                <Home/>
+            </IconButton>
         </Link>
       </div>
 
@@ -78,8 +81,8 @@ const Header = ({
           position="right"
         />
       )}
-    </header>
+    </footer>
   );
 };
 
-export default Header;
+export default Footer;

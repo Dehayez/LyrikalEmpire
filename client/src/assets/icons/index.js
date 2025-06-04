@@ -1,3 +1,4 @@
+import Home from './icon-home.svg';
 import LeftPanelHide from './icon-left-panel-hide.svg';
 import LeftPanelOpen from './icon-left-panel-open.svg';
 import RightPanelHide from './icon-right-panel-hide.svg';
@@ -7,6 +8,7 @@ import Queue01 from './icon-queue-01.svg';
 import Queue02 from './icon-queue-02.svg';
 
 export {
+  Home,
   LeftPanelHide,
   LeftPanelOpen,
   Playlists,

@@ -1,0 +1,33 @@
+@import '../../globals/variables';
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  padding: 0 0 $safe-area-inset-bottom 0;
+  width: 100%;
+  background-color: $color-black;
+  border-radius: 4px;
+
+  &__nav-group {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    &-dashboard {
+      position: absolute;
+      right: 80px;
+    }
+  }
+
+  &__nav-logo {
+    width: 30px;
+  }
+    
+  & svg {
+      width: 20px;
+      height: 20px;
+  }
+
+}

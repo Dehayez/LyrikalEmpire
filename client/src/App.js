@@ -9,7 +9,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import userService from './services/userService';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, RequestPasswordResetPage, ResetPasswordPage, ProfilePage } from './pages';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Footer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
 import NotFound from './components/NotFound';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -230,19 +230,21 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
             setLyricsModal={setLyricsModal}
           />
         )}
-        <Header 
-          isLeftPanelVisible={isLeftPanelVisible} 
-          isRightPanelVisible={isRightPanelVisible} 
-          toggleSidePanel={toggleSidePanel}
-          handleMouseEnterLeft={handleMouseEnterLeft} 
-          handleMouseLeaveLeft={handleMouseLeaveLeft} 
-          handleMouseEnterRight={handleMouseEnterRight}
-          handleMouseLeaveRight={handleMouseLeaveRight}
-          isLeftDivVisible={isLeftDivVisible}
-          isRightDivVisible={isRightDivVisible}
-          isAuthPage={isAuthRoute}
-          closeSidePanel={closeSidePanel}
-        />
+       {!isMobileOrTablet() && (
+          <Header 
+            isLeftPanelVisible={isLeftPanelVisible} 
+            isRightPanelVisible={isRightPanelVisible} 
+            toggleSidePanel={toggleSidePanel}
+            handleMouseEnterLeft={handleMouseEnterLeft} 
+            handleMouseLeaveLeft={handleMouseLeaveLeft} 
+            handleMouseEnterRight={handleMouseEnterRight}
+            handleMouseLeaveRight={handleMouseLeaveRight}
+            isLeftDivVisible={isLeftDivVisible}
+            isRightDivVisible={isRightDivVisible}
+            isAuthPage={isAuthRoute}
+            closeSidePanel={closeSidePanel}
+          />
+        )}
         <div className="container">
           <div className='container__content'>
             <div className={`container__content__left ${isMobileOrTablet() && isLeftPanelVisible ? 'container__content__left--mobile' : ''} ${isLeftPanelVisible ? 'container__content__left--pinned' : ''}`}>
@@ -365,6 +367,21 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
             setLyricsModal={setLyricsModal}
           />
         }
+       {isMobileOrTablet() && (
+          <Footer 
+            isLeftPanelVisible={isLeftPanelVisible} 
+            isRightPanelVisible={isRightPanelVisible} 
+            toggleSidePanel={toggleSidePanel}
+            handleMouseEnterLeft={handleMouseEnterLeft} 
+            handleMouseLeaveLeft={handleMouseLeaveLeft} 
+            handleMouseEnterRight={handleMouseEnterRight}
+            handleMouseLeaveRight={handleMouseLeaveRight}
+            isLeftDivVisible={isLeftDivVisible}
+            isRightDivVisible={isRightDivVisible}
+            isAuthPage={isAuthRoute}
+            closeSidePanel={closeSidePanel}
+          />
+        )}
       </div>
   );
 }
