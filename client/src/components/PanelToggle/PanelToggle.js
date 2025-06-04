@@ -15,6 +15,7 @@ const PanelToggle = ({
   handleMouseLeave,
   handleClick,
   position,
+  bottomLabel
 }) => {
   const tooltipPosition = position === 'left' ? 'right' : 'left';
   const hoverClass = isMobileOrTablet() ? 'icon-button--mobile' : '';
@@ -52,6 +53,7 @@ const PanelToggle = ({
             ? `${position === 'left' ? (isPanelVisible ? 'Close Playlists' : 'Open Playlists') : isPanelVisible ? 'Close Queue' : 'Open Queue'}`
             : `${position === 'left' ? 'Playlists' : 'Queue'}`
         }
+        bottomLabel={bottomLabel}
       >
         {isHovered
           ? position === 'left'

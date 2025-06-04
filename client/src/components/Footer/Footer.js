@@ -51,6 +51,7 @@ const Footer = ({
           handleMouseLeave={handleMouseLeaveLeft}
           handleClick={() => handleClickPanel('left')}
           position="left"
+          bottomLabel="Playlists"
         />
       )}
 
@@ -79,6 +80,7 @@ const Footer = ({
           handleMouseLeave={handleMouseLeaveRight}
           handleClick={() => handleClickPanel('right')}
           position="right"
+          bottomLabel="Queue"
         />
       )}
     </footer>
