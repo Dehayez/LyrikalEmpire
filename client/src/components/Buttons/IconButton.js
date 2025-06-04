@@ -4,7 +4,16 @@ import { isMobileOrTablet } from '../../utils';
 import { Tooltip } from '../Tooltip';
 import './IconButton.scss';
 
-const IconButton = ({ className = null, style, onClick, children, text, tooltipPosition = 'top', ariaLabel }) => {
+const IconButton = ({
+  className = null,
+  style,
+  onClick,
+  children,
+  text,
+  tooltipPosition = 'top',
+  ariaLabel,
+  bottomLabel,
+}) => {
   const classes = classNames('icon-button', className, {
     'icon-button--mobile': isMobileOrTablet(),
   });
@@ -13,6 +22,9 @@ const IconButton = ({ className = null, style, onClick, children, text, tooltipP
     <button className={classes} style={style} onClick={onClick} aria-label={ariaLabel}>
       {children}
       {!isMobileOrTablet() && text && <Tooltip text={text} position={tooltipPosition} />}
+      {bottomLabel && (
+        <span className="icon-button__bottom-label">{bottomLabel}</span>
+      )}
     </button>
   );
 };

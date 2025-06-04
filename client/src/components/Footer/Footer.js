@@ -63,7 +63,7 @@ const Footer = ({
 
       <div className="footer__nav-group" onClick={handleHomepageClick}>
         <Link to="/">
-            <IconButton>
+            <IconButton bottomLabel="Home">
                 <Home/>
             </IconButton>
         </Link>
