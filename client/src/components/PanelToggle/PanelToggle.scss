@@ -16,7 +16,9 @@
   }
 
   &--mobile {
-    margin: 12px;
+    margin: 0;
+    padding: 12px;
+    position: relative;
   }
 
   .icon-button {

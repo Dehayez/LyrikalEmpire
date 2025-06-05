@@ -16,7 +16,8 @@ const PanelToggle = ({
   handleMouseLeave,
   handleClick,
   position,
-  bottomLabel
+  bottomLabel,
+  className,
 }) => {
   const tooltipPosition = position === 'left' ? 'right' : 'left';
   const hoverClass = isMobileOrTablet() ? 'icon-button--mobile' : '';
@@ -37,8 +38,10 @@ const PanelToggle = ({
         : {})}
       onClick={handleClick}
       className={classNames(
-        `panel-toggle panel-toggle--${position}`,
-        { 'panel-toggle--mobile': isMobileOrTablet() }
+        'panel-toggle',
+        `panel-toggle--${position}`,
+        { 'panel-toggle--mobile': isMobileOrTablet() },
+        className
       )}
     >
       <IconButton

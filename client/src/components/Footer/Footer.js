@@ -43,15 +43,16 @@ const Footer = ({
     <footer className="footer">
         {!isAuthPage && (
             <PanelToggle
-            isPanelVisible={isLeftPanelVisible}
-            isDivVisible={isLeftDivVisible}
-            isHovered={isLeftHovered}
-            setHovered={setIsLeftHovered}
-            handleMouseEnter={handleMouseEnterLeft}
-            handleMouseLeave={handleMouseLeaveLeft}
-            handleClick={() => handleClickPanel('left')}
-            position="left"
-            active={isLeftPanelVisible}
+              className="footer__item footer__item--left"
+              isPanelVisible={isLeftPanelVisible}
+              isDivVisible={isLeftDivVisible}
+              isHovered={isLeftHovered}
+              setHovered={setIsLeftHovered}
+              handleMouseEnter={handleMouseEnterLeft}
+              handleMouseLeave={handleMouseLeaveLeft}
+              handleClick={() => handleClickPanel('left')}
+              position="left"
+              active={isLeftPanelVisible}
             />
         )}
 
@@ -62,25 +63,26 @@ const Footer = ({
             </>
         )}
 
-        <div className="footer__nav-group" onClick={handleHomepageClick}>
+        <div className="footer__item" onClick={handleHomepageClick}>
             <Link to="/">
-            <IconButton active={location.pathname === '/' && !isLeftPanelVisible && !isRightPanelVisible}>
-              {location.pathname === '/' && !isLeftPanelVisible && !isRightPanelVisible ? <HomeFill /> : <Home />}
-            </IconButton>
+              <IconButton active={location.pathname === '/' && !isLeftPanelVisible && !isRightPanelVisible}>
+                {location.pathname === '/' && !isLeftPanelVisible && !isRightPanelVisible ? <HomeFill /> : <Home />}
+              </IconButton>
             </Link>
         </div>
 
         {!isAuthPage && (
             <PanelToggle
-            isPanelVisible={isRightPanelVisible}
-            isDivVisible={isRightDivVisible}
-            isHovered={isRightHovered}
-            setHovered={setIsRightHovered}
-            handleMouseEnter={handleMouseEnterRight}
-            handleMouseLeave={handleMouseLeaveRight}
-            handleClick={() => handleClickPanel('right')}
-            position="right"
-            active={isRightPanelVisible} 
+              className="footer__item footer__item--right"
+              isPanelVisible={isRightPanelVisible}
+              isDivVisible={isRightDivVisible}
+              isHovered={isRightHovered}
+              setHovered={setIsRightHovered}
+              handleMouseEnter={handleMouseEnterRight}
+              handleMouseLeave={handleMouseLeaveRight}
+              handleClick={() => handleClickPanel('right')}
+              position="right"
+              active={isRightPanelVisible} 
             />
         )}
     </footer>
