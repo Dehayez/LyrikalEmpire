@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { LeftPanelHide, LeftPanelOpen, RightPanelHide, RightPanelOpen, Playlists, Queue02 } from '../../assets/icons';
+import { LeftPanelHide, LeftPanelOpen, RightPanelHide, RightPanelOpen, Playlists, PlaylistsFill, Queue02, QueueFill } from '../../assets/icons';
 import { IconButton } from '../Buttons';
 import { isMobileOrTablet } from '../../utils';
 
@@ -65,6 +65,10 @@ const PanelToggle = ({
             : isPanelVisible
             ? <RightPanelHide />
             : <RightPanelOpen />
+          : active
+          ? position === 'left'
+            ? <PlaylistsFill />
+            : <QueueFill />
           : position === 'left'
           ? <Playlists />
           : <Queue02 />}

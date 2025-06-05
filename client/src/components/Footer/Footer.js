@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home } from '../../assets/icons';
+import { Home, HomeFill } from '../../assets/icons';
 import { isMobileOrTablet } from '../../utils';
 import { IconButton, NavigationButtons } from '../Buttons';
 import { Breadcrumb } from '../Breadcrumb';
@@ -65,7 +65,7 @@ const Footer = ({
         <div className="footer__nav-group" onClick={handleHomepageClick}>
             <Link to="/">
             <IconButton active={location.pathname === '/' && !isLeftPanelVisible && !isRightPanelVisible}>
-                <Home/>
+              {location.pathname === '/' && !isLeftPanelVisible && !isRightPanelVisible ? <HomeFill /> : <Home />}
             </IconButton>
             </Link>
         </div>
