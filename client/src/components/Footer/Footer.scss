@@ -4,8 +4,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
-  padding: 0 0 $safe-area-inset-bottom 0;
+  padding: 12px 0;
+  margin-bottom: $safe-area-inset-bottom;
   width: 100%;
   background-color: $color-black;
   border-radius: 4px;
