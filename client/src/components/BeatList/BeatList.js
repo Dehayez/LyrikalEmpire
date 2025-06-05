@@ -63,7 +63,6 @@ const BeatList = ({
   const [filteredBeats, setFilteredBeats] = useState([]);
   const [visibleRange, setVisibleRange] = useState({ start: 0, end: 20 });
   const [rowHeight, setRowHeight] = useState(60);
-  const [filterDropdownHeight, setFilterDropdownHeight] = useState(0);
   const [selectedGenre, setSelectedGenre] = useState(() => getInitialState('selectedItems', {}).genres || []);
   const [selectedMood, setSelectedMood] = useState(() => getInitialState('selectedItems', {}).moods || []);
   const [selectedKeyword, setSelectedKeyword] = useState(() => getInitialState('selectedItems', {}).keywords || []);
@@ -97,23 +96,6 @@ const BeatList = ({
 
   // Update parent context
   useEffect(() => setCurrentBeats(filteredAndSortedBeats), [filteredAndSortedBeats, setCurrentBeats]);
-
-  // Measure filter dropdown height
-  useEffect(() => {
-    const updateSize = () => {
-      if (filterDropdownRef.current) {
-        setFilterDropdownHeight(filterDropdownRef.current.offsetHeight + 60);
-      }
-    };
-    updateSize();
-    const observer = new ResizeObserver(updateSize);
-    if (filterDropdownRef.current) observer.observe(filterDropdownRef.current);
-    window.addEventListener('resize', updateSize);
-    return () => {
-      if (filterDropdownRef.current) observer.unobserve(filterDropdownRef.current);
-      window.removeEventListener('resize', updateSize);
-    };
-  }, []);
 
   // Main filtering effect: service + tierlist
 useEffect(() => {
@@ -343,7 +325,7 @@ useEffect(() => {
         filteredAndSortedBeats.length === 0 ? (
           <div className="placeholder-text">No tracks found</div>
         ) : (
-          <div className="beat-list__table-container" style={{ top: filterDropdownHeight }}>
+          <div className="beat-list__table-container">
             <table className="beat-list__table" ref={tableRef}>
               <TableHeader onSort={onSort} sortConfig={sortConfig} mode={mode} />
               <tbody ref={tbodyRef}>{virtualizedBeats}</tbody>
