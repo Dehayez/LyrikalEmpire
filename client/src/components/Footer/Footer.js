@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home } from '../../assets/icons';
 import { isMobileOrTablet } from '../../utils';
@@ -41,48 +41,48 @@ const Footer = ({
 
   return (
     <footer className="footer">
-      {!isAuthPage && (
-        <PanelToggle
-          isPanelVisible={isLeftPanelVisible}
-          isDivVisible={isLeftDivVisible}
-          isHovered={isLeftHovered}
-          setHovered={setIsLeftHovered}
-          handleMouseEnter={handleMouseEnterLeft}
-          handleMouseLeave={handleMouseLeaveLeft}
-          handleClick={() => handleClickPanel('left')}
-          position="left"
-          bottomLabel="Playlists"
-        />
-      )}
+        {!isAuthPage && (
+            <PanelToggle
+            isPanelVisible={isLeftPanelVisible}
+            isDivVisible={isLeftDivVisible}
+            isHovered={isLeftHovered}
+            setHovered={setIsLeftHovered}
+            handleMouseEnter={handleMouseEnterLeft}
+            handleMouseLeave={handleMouseLeaveLeft}
+            handleClick={() => handleClickPanel('left')}
+            position="left"
+            active={isLeftPanelVisible}
+            />
+        )}
 
-      {isDashboard && (
-        <>
-          <NavigationButtons />
-          <Breadcrumb />
-        </>
-      )}
+        {isDashboard && (
+            <>
+            <NavigationButtons />
+            <Breadcrumb />
+            </>
+        )}
 
-      <div className="footer__nav-group" onClick={handleHomepageClick}>
-        <Link to="/">
-            <IconButton bottomLabel="Home">
+        <div className="footer__nav-group" onClick={handleHomepageClick}>
+            <Link to="/">
+            <IconButton active={location.pathname === '/' && !isLeftPanelVisible && !isRightPanelVisible}>
                 <Home/>
             </IconButton>
-        </Link>
-      </div>
+            </Link>
+        </div>
 
-      {!isAuthPage && (
-        <PanelToggle
-          isPanelVisible={isRightPanelVisible}
-          isDivVisible={isRightDivVisible}
-          isHovered={isRightHovered}
-          setHovered={setIsRightHovered}
-          handleMouseEnter={handleMouseEnterRight}
-          handleMouseLeave={handleMouseLeaveRight}
-          handleClick={() => handleClickPanel('right')}
-          position="right"
-          bottomLabel="Queue"
-        />
-      )}
+        {!isAuthPage && (
+            <PanelToggle
+            isPanelVisible={isRightPanelVisible}
+            isDivVisible={isRightDivVisible}
+            isHovered={isRightHovered}
+            setHovered={setIsRightHovered}
+            handleMouseEnter={handleMouseEnterRight}
+            handleMouseLeave={handleMouseLeaveRight}
+            handleClick={() => handleClickPanel('right')}
+            position="right"
+            active={isRightPanelVisible} 
+            />
+        )}
     </footer>
   );
 };

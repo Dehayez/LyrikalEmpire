@@ -7,6 +7,7 @@ import { isMobileOrTablet } from '../../utils';
 import './PanelToggle.scss';
 
 const PanelToggle = ({
+  active,
   isPanelVisible,
   isDivVisible,
   isHovered,
@@ -54,6 +55,7 @@ const PanelToggle = ({
             : `${position === 'left' ? 'Playlists' : 'Queue'}`
         }
         bottomLabel={bottomLabel}
+        active={active}
       >
         {isHovered
           ? position === 'left'

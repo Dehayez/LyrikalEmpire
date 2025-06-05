@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { isMobileOrTablet } from '../../utils';
 import { Tooltip } from '../Tooltip';
 import './IconButton.scss';
 
 const IconButton = ({
+  active,
   className = null,
   style,
   onClick,
@@ -16,6 +17,7 @@ const IconButton = ({
 }) => {
   const classes = classNames('icon-button', className, {
     'icon-button--mobile': isMobileOrTablet(),
+    'icon-button--active': active,
   });
 
   return (

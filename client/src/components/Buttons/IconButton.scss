@@ -34,6 +34,11 @@
       }
     }
 
+    &--active {
+        color: $color-white;
+        fill: $color-white;
+    }
+
     &--mobile {
         &:hover {
             color: $color-gray-light;
