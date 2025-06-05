@@ -75,7 +75,6 @@ const BeatList = ({
   const [isOpen, setIsOpen] = useState(false);
   const [beatsToDelete, setBeatsToDelete] = useState([]);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
-  const [headerOpacity, setHeaderOpacity] = useState(1);
   const [showMessage, setShowMessage] = useState(false);
 
   // Derived & handlers
@@ -184,17 +183,6 @@ useEffect(() => {
       window.removeEventListener('resize', calculateVisibleRows);
     };
   }, [calculateVisibleRows]);
-
-  // Header fade on scroll
-  useEffect(() => {
-    const onScroll = () => {
-      const pos = containerRef.current.scrollTop;
-      setHeaderOpacity(Math.max(1 - pos / 50, 0));
-    };
-    const c = containerRef.current;
-    c.addEventListener('scroll', onScroll);
-    return () => c.removeEventListener('scroll', onScroll);
-  }, []);
 
   // Show initial placeholder
   useEffect(() => {
@@ -309,7 +297,7 @@ useEffect(() => {
       <div className={classNames('beat-list__header', {
         'beat-list__header--focused': searchInputFocused,
         'beat-list__header--mobile': isMobileOrTablet(),
-      })} style={{ opacity: headerOpacity }}>
+      })}>
         {headerContent || <h2 className="beat-list__title">All Tracks</h2>}
         <div className="beat-list__actions">
           <SearchInput
