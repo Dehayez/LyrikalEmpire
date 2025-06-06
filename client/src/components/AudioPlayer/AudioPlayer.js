@@ -55,7 +55,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     fetchSignedUrl();
   }, [currentBeat]);
 
-  useEffect(() => {
+useEffect(() => {
   const setMediaSessionMetadata = async () => {
     if ('mediaSession' in navigator && currentBeat) {
       let artistName = currentBeat.artist || '';
@@ -67,13 +67,18 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           console.error('Error fetching artist name:', error);
         }
       }
+
+      const safeArtworkUrl = currentBeat.artworkUrl?.startsWith('https')
+        ? currentBeat.artworkUrl
+        : 'https://www.lyrikalempire.com/placeholder.png';
+
       navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: currentBeat.title,
-        artist: artistName,
+        title: currentBeat.title || 'Unknown Title',
+        artist: artistName || 'Unknown Artist',
         album: currentBeat.album || '',
         artwork: [
           {
-            src: currentBeat.artworkUrl || '/placeholder.png',
+            src: safeArtworkUrl,
             sizes: '512x512',
             type: 'image/png'
           }
@@ -81,8 +86,27 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       });
     }
   };
+
   setMediaSessionMetadata();
 }, [currentBeat]);
+
+useEffect(() => {
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.setActionHandler('play', () => setIsPlaying(true));
+    navigator.mediaSession.setActionHandler('pause', () => setIsPlaying(false));
+    navigator.mediaSession.setActionHandler('previoustrack', handlePrevClick);
+    navigator.mediaSession.setActionHandler('nexttrack', onNext);
+  }
+  // Optionally clean up on unmount
+  return () => {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', null);
+      navigator.mediaSession.setActionHandler('pause', null);
+      navigator.mediaSession.setActionHandler('previoustrack', null);
+      navigator.mediaSession.setActionHandler('nexttrack', null);
+    }
+  };
+}, [setIsPlaying, handlePrevClick, onNext]);
 
   useEffect(() => {
     const controller = new AbortController();
