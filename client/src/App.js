@@ -326,7 +326,10 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
                     <div className='view-toggle-container__right'>
                        <IconButton
                           className='beat-list__action-button--profile'
-                          onClick={() => navigate('/profile')}
+                          onClick={() => {
+                            toggleSidePanel('right');
+                            navigate('/profile');
+                          }}
                           text={username}
                           tooltipPosition='left'
                           ariaLabel={`Go to ${username}'s Profile`}
