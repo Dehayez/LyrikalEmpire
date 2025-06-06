@@ -8,14 +8,14 @@ let refreshTimeoutId = null;
 /**
  * Register a new user
  */
-const register = async (userData) => {
+export const register = async (userData) => {
   return await apiRequest('post', '/register', API_URL, userData, null, false);
 };
 
 /**
  * Log in a user and setup token refresh
  */
-const login = async (userData) => {
+export const login = async (userData) => {
   const response = await apiRequest('post', '/login', API_URL, userData, null, false);
   const { accessToken, refreshToken, email, username, id } = response;
   
@@ -29,7 +29,7 @@ const login = async (userData) => {
 /**
  * Login with Google OAuth
  */
-const loginWithGoogle = async (tokenId) => {
+export const loginWithGoogle = async (tokenId) => {
   const response = await apiRequest('post', '/auth/google', API_URL, { tokenId }, null, false);
   const { accessToken, refreshToken, email, username, id } = response;
   
@@ -43,7 +43,7 @@ const loginWithGoogle = async (tokenId) => {
 /**
  * Store tokens securely
  */
-const storeTokens = (accessToken, refreshToken) => {
+export const storeTokens = (accessToken, refreshToken) => {
   localStorage.setItem('accessToken', accessToken);
   localStorage.setItem('refreshToken', refreshToken);
 };
@@ -51,7 +51,7 @@ const storeTokens = (accessToken, refreshToken) => {
 /**
  * Clear tokens on logout
  */
-const clearTokens = () => {
+export const clearTokens = () => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
   
@@ -65,7 +65,7 @@ const clearTokens = () => {
 /**
  * Logout the user
  */
-const logout = async () => {
+export const logout = async () => {
   try {
     // Optionally notify server to invalidate refresh token
     await apiRequest('post', '/logout', API_URL);
@@ -79,7 +79,7 @@ const logout = async () => {
 /**
  * Get current user details
  */
-const getUserDetails = async () => {
+export const getUserDetails = async () => {
   const response = await apiRequest('get', '/me', API_URL);
   const { email, username, id } = response;
   return { email, username, id };
@@ -88,49 +88,49 @@ const getUserDetails = async () => {
 /**
  * Update user details
  */
-const updateUserDetails = async (userData) => {
+export const updateUserDetails = async (userData) => {
   return await apiRequest('put', '/me', API_URL, userData);
 };
 
 /**
  * Get a user by ID
  */
-const getUserById = async (userId) => {
+export const getUserById = async (userId) => {
   return await apiRequest('get', `/${userId}`, API_URL);
 };
 
 /**
  * Request password reset
  */
-const requestPasswordReset = async (email) => {
+export const requestPasswordReset = async (email) => {
   return await apiRequest('post', '/request-password-reset', API_URL, { email }, null, false);
 };
 
 /**
  * Verify confirmation code
  */
-const verifyConfirmationCode = async (email, confirmationCode) => {
+export const verifyConfirmationCode = async (email, confirmationCode) => {
   return await apiRequest('post', '/verify-confirmation-code', API_URL, { email, confirmationCode }, null, false);
 };
 
 /**
  * Verify reset code
  */
-const verifyResetCode = async (email, resetCode) => {
+export const verifyResetCode = async (email, resetCode) => {
   return await apiRequest('post', '/verify-reset-code', API_URL, { email, resetCode }, null, false);
 };
 
 /**
  * Reset password
  */
-const resetPassword = async (email, resetCode, password) => {
+export const resetPassword = async (email, resetCode, password) => {
   return await apiRequest('post', '/reset-password', API_URL, { email, resetCode, password }, null, false);
 };
 
 /**
  * Verify token
  */
-const verifyToken = async (token) => {
+export const verifyToken = async (token) => {
   return await apiRequest('post', '/verify-token', API_URL, { token }, null, false);
 };
 
@@ -138,7 +138,7 @@ const verifyToken = async (token) => {
  * Calculate time until token refresh in milliseconds
  * Refreshes at 75% of token lifetime to prevent edge cases
  */
-const calculateRefreshTime = (token) => {
+export const calculateRefreshTime = (token) => {
   try {
     const decodedToken = jwtDecode(token);
     const currentTime = Math.floor(Date.now() / 1000);
@@ -163,7 +163,7 @@ const calculateRefreshTime = (token) => {
 /**
  * Refresh access token using refresh token
  */
-const refreshTokenFunction = async () => {
+export const refreshTokenFunction = async () => {
   try {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
@@ -197,7 +197,7 @@ const refreshTokenFunction = async () => {
 /**
  * Sets up the token refresh cycle
  */
-const setupTokenRefresh = (accessToken) => {
+export const setupTokenRefresh = (accessToken) => {
   // Clear any existing refresh timer
   if (refreshTimeoutId) {
     clearTimeout(refreshTimeoutId);
@@ -220,7 +220,7 @@ const setupTokenRefresh = (accessToken) => {
 /**
  * Initialize token refresh on app startup
  */
-const startTokenRefresh = () => {
+export const startTokenRefresh = () => {
   const accessToken = localStorage.getItem('accessToken');
   if (accessToken) {
     try {
@@ -253,7 +253,7 @@ const startTokenRefresh = () => {
 /**
  * Check if user is authenticated
  */
-const isAuthenticated = () => {
+export const isAuthenticated = () => {
   const accessToken = localStorage.getItem('accessToken');
   if (!accessToken) return false;
   
