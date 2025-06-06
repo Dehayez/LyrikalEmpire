@@ -6,7 +6,7 @@ import { PiWaveform } from "react-icons/pi";
 
 import { isMobileOrTablet } from '../../utils';
 import { useAudioPlayer, useLocalStorageSync } from '../../hooks';
-import { getSignedUrl } from '../../services/beatService';
+import { getSignedUrl, getUserById } from '../../services';
 
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
 import { IconButton } from '../Buttons';
@@ -54,6 +54,35 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     };
     fetchSignedUrl();
   }, [currentBeat]);
+
+  useEffect(() => {
+  const setMediaSessionMetadata = async () => {
+    if ('mediaSession' in navigator && currentBeat) {
+      let artistName = currentBeat.artist || '';
+      if (!artistName && currentBeat.user_id) {
+        try {
+          const user = await getUserById(currentBeat.user_id);
+          artistName = user?.name || '';
+        } catch (error) {
+          console.error('Error fetching artist name:', error);
+        }
+      }
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: currentBeat.title,
+        artist: artistName,
+        album: currentBeat.album || '',
+        artwork: [
+          {
+            src: currentBeat.artworkUrl || '/placeholder.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      });
+    }
+  };
+  setMediaSessionMetadata();
+}, [currentBeat]);
 
   useEffect(() => {
     const controller = new AbortController();
