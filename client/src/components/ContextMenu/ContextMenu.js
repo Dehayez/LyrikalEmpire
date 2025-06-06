@@ -16,10 +16,12 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     hideContextMenu();
   };
 
-  const hideContextMenu = () => {
-    setIsVisible(false);
+const hideContextMenu = () => {
+  setIsVisible(false);
+  setTimeout(() => {
     setActiveContextMenu(null);
-  };
+  }, 300); // Match your CSS animation duration
+};
 
   useEffect(() => {
     setIsVisible(true);
@@ -49,7 +51,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   if (isMobileOrTablet()) {
     return (
       <>
-        <div className={`context-menu-overlay`} onClick={(e) => { e.stopPropagation(); hideContextMenu(); }}></div>
+        <div className={`context-menu-overlay${!isVisible ? ' inactive' : ''}`} onClick={(e) => { e.stopPropagation(); hideContextMenu(); }}></div>
         <div className={`context-menu--mobile ${beat && isVisible ? 'active' : 'inactive'}`} id='context-menu--mobile' onClick={(e) => { e.stopPropagation()}} onTouchStart={handleDragStart} onTouchMove={handleDragMove} onTouchEnd={handleDragEnd}>
             <div className='context-menu__header'>
                 <p className="context-menu__text"> {beat ? beat.title : ''}</p>

@@ -116,6 +116,13 @@
     height: 100%;
     background-color: $overlay;
     z-index: 3;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.context-menu-overlay.inactive {
+  opacity: 0;
+  pointer-events: none;
 }
 
 @keyframes slideIn {
