@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { IoPersonSharp } from "react-icons/io5";
 
 import { isMobileOrTablet, getInitialState, isAuthPage } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
@@ -9,7 +10,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import userService from './services/userService';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, RequestPasswordResetPage, ResetPasswordPage, ProfilePage } from './pages';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Footer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal } from './components';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Footer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal, IconButton } from './components';
 import NotFound from './components/NotFound';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,7 +20,9 @@ function App() {
   const location = useLocation();
   const isAuthRoute = isAuthPage(location.pathname);
   const { beats, setBeats, setRefreshBeats, currentBeats } = useBeat();
+  const navigate = useNavigate();
   const { user } = useUser();
+  const { username } = user;
   const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats, user.id);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -316,8 +319,21 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
                 >
                 <div>
                   <div className='view-toggle-container'>
-                    <h3 onClick={() => toggleView("queue")} className={`view-toggle-container__title ${viewState === "queue" ? 'view-toggle-container__title--active' : ''}`}>Queue</h3>
-                    <h3 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h3>
+                    <div className='view-toggle-container__left'>
+                      <h3 onClick={() => toggleView("queue")} className={`view-toggle-container__title ${viewState === "queue" ? 'view-toggle-container__title--active' : ''}`}>Queue</h3>
+                      <h3 onClick={() => toggleView("history")} className={`view-toggle-container__title ${viewState === "history" ? 'view-toggle-container__title--active' : ''}`}>History</h3>
+                    </div>
+                    <div className='view-toggle-container__right'>
+                       <IconButton
+                          className='beat-list__action-button--profile'
+                          onClick={() => navigate('/profile')}
+                          text={username}
+                          tooltipPosition='left'
+                          ariaLabel={`Go to ${username}'s Profile`}
+                        >
+                          <IoPersonSharp />
+                        </IconButton>
+                    </div>
                   </div>
                   {viewState === "queue" ? (
                     <Queue 

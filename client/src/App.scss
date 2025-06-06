@@ -121,6 +121,20 @@
   display: flex;
   padding: 0 6px;
 
+  &__left {
+    display: flex;
+  }
+
+  &__right {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+
+    & button {
+      padding: 12px;
+    }
+  }
+
   &__title {
     position: relative;
     color: $color-gray-default;

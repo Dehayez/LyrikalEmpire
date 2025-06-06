@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
-import { IoPencil, IoHeadsetSharp, IoPersonSharp } from "react-icons/io5";
+import { IoPencil, IoHeadsetSharp } from "react-icons/io5";
 import { toast, Slide } from 'react-toastify';
 
 import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
@@ -23,8 +23,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const containerRef = useRef(null);
   const tbodyRef = useRef(null);
   const { user } = useUser();
-  const { username } = user;
-  const navigate = useNavigate();
   const { genres, moods, keywords, features } = useData();
   const location = useLocation();
 
@@ -36,7 +34,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   
   
   const { setPlaylistId } = usePlaylist();
-  const { allBeats, paginatedBeats, inputFocused, setRefreshBeats, currentBeats, setCurrentBeats } = useBeat();
+  const { allBeats, paginatedBeats, inputFocused, setRefreshBeats, setCurrentBeats } = useBeat();
   const beats = externalBeats || allBeats;
   const [filteredBeats, setFilteredBeats] = useState(beats);
 
@@ -453,15 +451,6 @@ useEffect(() => {
             ariaLabel={mode === 'edit' ? 'Switch to Listen Mode' : 'Switch to Edit Mode'}
           >
             {mode === 'edit' ? <IoPencil /> : <IoHeadsetSharp />}
-          </IconButton>
-          <IconButton
-            className='beat-list__action-button--profile'
-            onClick={() => navigate('/profile')}
-            text={username}
-            tooltipPosition='left'
-            ariaLabel={`Go to ${username}'s Profile`}
-          >
-            <IoPersonSharp />
           </IconButton>
         </div>
       </div>
