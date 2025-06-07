@@ -31,6 +31,8 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
 
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
+  const artistCache = useRef(new Map());
+
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
   const [waveform, setWaveform] = useState(() => JSON.parse(localStorage.getItem('waveform')) || false);
@@ -55,58 +57,63 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     fetchSignedUrl();
   }, [currentBeat]);
 
-useEffect(() => {
-  const setMediaSessionMetadata = async () => {
-    if ('mediaSession' in navigator && currentBeat) {
-      let artistName = currentBeat.artist || '';
-      if (!artistName && currentBeat.user_id) {
-        try {
-          const user = await getUserById(currentBeat.user_id);
-          artistName = user?.name || '';
-        } catch (error) {
-          console.error('Error fetching artist name:', error);
-        }
-      }
+  useEffect(() => {
+    const setMediaSessionMetadata = async () => {
+      if ('mediaSession' in navigator && currentBeat) {
+        let artistName = 'Unknown Artist';
 
-      const safeArtworkUrl = currentBeat.artworkUrl?.startsWith('https')
-        ? currentBeat.artworkUrl
-        : 'https://www.lyrikalempire.com/placeholder.png';
-
-      navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: currentBeat.title || 'Unknown Title',
-        artist: artistName || 'Unknown Artist',
-        album: currentBeat.album || '',
-        artwork: [
-          {
-            src: safeArtworkUrl,
-            sizes: '512x512',
-            type: 'image/png'
+        if (currentBeat.user_id) {
+          if (artistCache.current.has(currentBeat.user_id)) {
+            artistName = artistCache.current.get(currentBeat.user_id);
+          } else {
+            try {
+              const user = await getUserById(currentBeat.user_id);
+              artistName = user?.name || artistName;
+              artistCache.current.set(currentBeat.user_id, artistName);
+            } catch (error) {
+              console.warn('Could not fetch artist name. Using fallback.');
+            }
           }
-        ]
-      });
-    }
-  };
+        }
 
-  setMediaSessionMetadata();
-}, [currentBeat]);
+        const safeArtworkUrl = currentBeat.artworkUrl?.startsWith('https')
+          ? currentBeat.artworkUrl
+          : 'https://www.lyrikalempire.com/placeholder.png';
 
-useEffect(() => {
-  if ('mediaSession' in navigator) {
-    navigator.mediaSession.setActionHandler('play', () => setIsPlaying(true));
-    navigator.mediaSession.setActionHandler('pause', () => setIsPlaying(false));
-    navigator.mediaSession.setActionHandler('previoustrack', handlePrevClick);
-    navigator.mediaSession.setActionHandler('nexttrack', onNext);
-  }
-  // Optionally clean up on unmount
-  return () => {
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: currentBeat.title || 'Unknown Title',
+          artist: artistName,
+          album: currentBeat.album || '',
+          artwork: [
+            {
+              src: safeArtworkUrl,
+              sizes: '512x512',
+              type: 'image/png'
+            }
+          ]
+        });
+      }
+    };
+
+    setMediaSessionMetadata();
+  }, [currentBeat]);
+
+  useEffect(() => {
     if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('play', null);
-      navigator.mediaSession.setActionHandler('pause', null);
-      navigator.mediaSession.setActionHandler('previoustrack', null);
-      navigator.mediaSession.setActionHandler('nexttrack', null);
+      navigator.mediaSession.setActionHandler('play', () => setIsPlaying(true));
+      navigator.mediaSession.setActionHandler('pause', () => setIsPlaying(false));
+      navigator.mediaSession.setActionHandler('previoustrack', handlePrevClick);
+      navigator.mediaSession.setActionHandler('nexttrack', onNext);
     }
-  };
-}, [setIsPlaying, handlePrevClick, onNext]);
+    return () => {
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', null);
+        navigator.mediaSession.setActionHandler('pause', null);
+        navigator.mediaSession.setActionHandler('previoustrack', null);
+        navigator.mediaSession.setActionHandler('nexttrack', null);
+      }
+    };
+  }, [setIsPlaying, handlePrevClick, onNext]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -158,7 +165,7 @@ useEffect(() => {
   }, [audioSrc]);
 
   useEffect(() => {
-    const progressContainer = document .querySelector('.rhap_progress-container');
+    const progressContainer = document.querySelector('.rhap_progress-container');
     if (progressContainer && waveformRef.current && !progressContainer.contains(waveformRef.current)) {
       progressContainer.appendChild(waveformRef.current);
     }
