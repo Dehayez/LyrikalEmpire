@@ -18,7 +18,7 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
   };
 
   const handlePlayPause = useCallback(play => {
-    const audio = playerRef.current?.audio?. current;
+    const audio = playerRef.current?.audio?.current;
     if (audio) {
       play ? audio.play().catch(() => {}) : audio.pause();
     }
@@ -37,19 +37,34 @@ export const useAudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPl
     setIsDragging(true);
   };
 
-  const handleTouchMove = e => {
-    if (!isDragging) return;
-    const touch = e.touches[0];
-    setDragPosition(touch.clientX - startX);
-    e.preventDefault();
-  };
-
   const handleTouchEnd = e => {
     const endX = e.changedTouches[0].clientX;
     setIsDragging(false);
     setDragPosition(0);
     startX - endX > 50 ? onNext() : startX - endX < -50 && onPrev();
   };
+
+  const handleTouchMove = useCallback(e => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    setDragPosition(touch.clientX - startX);
+  }, [isDragging, startX]);
+
+  useEffect(() => {
+    const element = document.querySelector('.rhap_container');
+    if (!element) return;
+
+    const onTouchMove = e => {
+      handleTouchMove(e);
+      e.preventDefault();
+    };
+
+    element.addEventListener('touchmove', onTouchMove, { passive: false });
+
+    return () => {
+      element.removeEventListener('touchmove', onTouchMove);
+    };
+  }, [handleTouchMove]);
 
   useEffect(() => {
     const audioElement = playerRef.current?.audio?.current;
