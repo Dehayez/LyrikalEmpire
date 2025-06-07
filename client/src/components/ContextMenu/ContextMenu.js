@@ -18,21 +18,30 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
 
   const showContextMenu = () => {
     if (contextMenuRef.current) {
-      contextMenuRef.current.style.transition = 'transform 0.6s ease-in-out'; // Slower animation
-      contextMenuRef.current.style.transform = 'translateY(0)';
+      // Set initial off-screen position
+      contextMenuRef.current.style.transition = 'none';
+      contextMenuRef.current.style.transform = 'translateY(100%)';
+
+      // Let it render first, then animate
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out';
+          contextMenuRef.current.style.transform = 'translateY(0)';
+        });
+      });
     }
     setIsVisible(true);
   };
 
   const hideContextMenu = () => {
     if (contextMenuRef.current) {
-      contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out'; // Default animation speed
+      contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out';
       contextMenuRef.current.style.transform = 'translateY(100%)';
     }
     setTimeout(() => {
       setIsVisible(false);
       setActiveContextMenu(null);
-      setTranslateY(0); // Reset translateY after closing
+      setTranslateY(0);
     }, 300); // Match your CSS transition duration
   };
 
@@ -46,7 +55,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     setIsDragging(true);
     setStartY(e.touches ? e.touches[0].clientY : e.clientY);
     if (contextMenuRef.current) {
-      contextMenuRef.current.style.transition = 'none'; // Disable animation during drag
+      contextMenuRef.current.style.transition = 'none';
     }
   };
 

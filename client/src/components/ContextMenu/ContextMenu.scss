@@ -92,8 +92,8 @@
     background-color: $color-gray-dark;
     padding-bottom: $safe-area-inset-bottom;
     border-radius: 20px 20px 0 0;
-    transform: translateY(0);
-    transition: transform 0.3s ease-in-out;
+    /* transform: translateY(0);
+    transition: transform 0.3s ease-in-out; */
 
     &::after {
         content: '';
