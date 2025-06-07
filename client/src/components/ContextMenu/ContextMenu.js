@@ -18,17 +18,8 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
 
   const showContextMenu = () => {
     if (contextMenuRef.current) {
-      // Set initial off-screen position
-      contextMenuRef.current.style.transition = 'none';
-      contextMenuRef.current.style.transform = 'translateY(100%)';
-
-      // Let it render first, then animate
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out';
-          contextMenuRef.current.style.transform = 'translateY(0)';
-        });
-      });
+      contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out';
+      contextMenuRef.current.style.transform = 'translateY(0)';
     }
     setIsVisible(true);
   };
@@ -41,7 +32,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     setTimeout(() => {
       setIsVisible(false);
       setActiveContextMenu(null);
-      setTranslateY(0);
+      setTranslateY(0); // Reset translateY after closing
     }, 300); // Match your CSS transition duration
   };
 
@@ -55,12 +46,13 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     setIsDragging(true);
     setStartY(e.touches ? e.touches[0].clientY : e.clientY);
     if (contextMenuRef.current) {
-      contextMenuRef.current.style.transition = 'none';
+      contextMenuRef.current.style.transition = 'none'; // Disable animation during drag
     }
   };
 
   const handleDragMove = (e) => {
     if (!isDragging) return;
+    e.preventDefault(); // Prevent page scrolling
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     const deltaY = clientY - startY;
 
@@ -91,6 +83,20 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     setStartY(0);
   };
 
+  useEffect(() => {
+    const contextMenuElement = contextMenuRef.current;
+
+    if (contextMenuElement) {
+      contextMenuElement.addEventListener('touchmove', handleDragMove, { passive: false }); // Prevent default scrolling
+    }
+
+    return () => {
+      if (contextMenuElement) {
+        contextMenuElement.removeEventListener('touchmove', handleDragMove);
+      }
+    };
+  }, [handleDragMove]);
+
   if (isMobileOrTablet()) {
     return (
       <>
@@ -104,7 +110,6 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
           id="context-menu--mobile"
           onClick={(e) => { e.stopPropagation(); }}
           onTouchStart={handleDragStart}
-          onTouchMove={handleDragMove}
           onTouchEnd={handleDragEnd}
         >
           <div className="context-menu__header">
