@@ -51,7 +51,7 @@ const hideContextMenu = () => {
   if (isMobileOrTablet()) {
     return (
       <>
-        <div className={`context-menu-overlay${!isVisible ? ' inactive' : ''}`} onClick={(e) => { e.stopPropagation(); hideContextMenu(); }}></div>
+        <div className={`context-menu__overlay${!isVisible ? ' inactive' : ''}`} onClick={(e) => { e.stopPropagation(); hideContextMenu(); }}></div>
         <div className={`context-menu--mobile ${beat && isVisible ? 'active' : 'inactive'}`} id='context-menu--mobile' onClick={(e) => { e.stopPropagation()}} onTouchStart={handleDragStart} onTouchMove={handleDragMove} onTouchEnd={handleDragEnd}>
             <div className='context-menu__header'>
                 <p className="context-menu__text"> {beat ? beat.title : ''}</p>

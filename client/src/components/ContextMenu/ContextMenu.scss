@@ -8,6 +8,25 @@
     background-color: $color-gray-dark;
     border-radius: 4px;
 
+
+    &__overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: $overlay;
+        z-index: 4;
+        opacity: 1;
+        transition: opacity 0.3s;
+
+        &.inactive {
+            opacity: 0;
+            pointer-events: none;
+        }
+    }
+
     &__button {
         display: flex;
         align-items: center;
@@ -69,11 +88,20 @@
     bottom: 0;
     left: 0;
     right: 0;
+    width: 100%;
     background-color: $color-gray-dark;
     padding-bottom: $safe-area-inset-bottom;
     border-radius: 20px 20px 0 0;
     transform: translateY(0);
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.3s ease-in-out;
+
+    &.active {
+        animation: slideIn 0.3s forwards;
+    }
+
+    &.inactive {
+        animation: slideOut 0.3s forwards;
+    }
 
     &::after {
         content: '';
@@ -107,24 +135,6 @@
     }
 }
 
-.context-menu-overlay {
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: $overlay;
-    z-index: 4;
-    opacity: 1;
-    transition: opacity 0.3s;
-}
-
-.context-menu-overlay.inactive {
-  opacity: 0;
-  pointer-events: none;
-}
-
 @keyframes slideIn {
     from {
         transform: translateY(100%);
@@ -141,20 +151,4 @@
     to {
         transform: translateY(100%);
     }
-}
-
-.context-menu--mobile {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    transition: transform 0.3s ease-in-out;
-}
-
-.context-menu--mobile.active {
-    animation: slideIn 0.3s forwards;
-}
-
-.context-menu--mobile.inactive {
-    animation: slideOut 0.3s forwards;
 }
