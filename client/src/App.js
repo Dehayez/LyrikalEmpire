@@ -386,7 +386,7 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
             setLyricsModal={setLyricsModal}
           />
         }
-       {isMobileOrTablet() && (
+       {!isAuthRoute && isMobileOrTablet() && (
           <Footer 
             isLeftPanelVisible={isLeftPanelVisible} 
             isRightPanelVisible={isRightPanelVisible} 
