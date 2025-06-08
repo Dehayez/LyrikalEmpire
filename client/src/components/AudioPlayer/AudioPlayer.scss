@@ -73,6 +73,10 @@ $indicator-half-size: math.div($indicator-size, 2);
     justify-content: space-between;
     align-items: center;
 
+    &-title {
+      font-weight: 600;
+    }
+
     & .icon-button--mobile {
       margin: 0;
     }
