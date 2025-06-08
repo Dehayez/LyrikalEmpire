@@ -56,9 +56,11 @@ const AudioPlayer = ({
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
   const [waveform, setWaveform] = useState(() => JSON.parse(localStorage.getItem('waveform')) || false);
-  const [isFullPage, setIsFullPage] = useState(false);
+  const [isFullPage, setIsFullPage] = useState(() => {
+    return JSON.parse(localStorage.getItem('isFullPage')) || false;
+  });
 
-  useLocalStorageSync({ waveform });
+  useLocalStorageSync({ waveform, isFullPage });
 
   const toggleLyricsModal = () => setLyricsModal(prev => !prev);
   const toggleWaveform = () => setWaveform(prev => !prev);
