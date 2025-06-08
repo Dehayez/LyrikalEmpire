@@ -100,8 +100,14 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
 
   useEffect(() => {
     if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('play', () => setIsPlaying(true));
-      navigator.mediaSession.setActionHandler('pause', () => setIsPlaying(false));
+      navigator.mediaSession.setActionHandler('play', () => {
+        setIsPlaying(true);
+        navigator.mediaSession.playbackState = 'playing'; // Update playback state
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        setIsPlaying(false);
+        navigator.mediaSession.playbackState = 'paused'; // Update playback state
+      });
       navigator.mediaSession.setActionHandler('previoustrack', handlePrevClick);
       navigator.mediaSession.setActionHandler('nexttrack', onNext);
     }
