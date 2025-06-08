@@ -6,8 +6,9 @@ import './PlayPauseButton.scss';
 const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
   const [animatePlayPause, setAnimatePlayPause] = useState(false);
 
-  const handlePlayPauseClick = () => {
+  const handlePlayPauseClick = (e) => {
     togglePlayPause();
+    e.stopPropagation();
   };
 
   const togglePlayPause = () => {
