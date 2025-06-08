@@ -68,10 +68,10 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           } else {
             try {
               const user = await getUserById(currentBeat.user_id);
-              artistName = user?.name || artistName;
+              artistName = user?.username || artistName;
               artistCache.current.set(currentBeat.user_id, artistName);
             } catch (error) {
-              console.warn('Could not fetch artist name. Using fallback.');
+              console.warn('Could not fetch artist name. Using fallback.', error);
             }
           }
         }
