@@ -3,13 +3,14 @@ import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import WaveSurfer from 'wavesurfer.js';
 import { LiaMicrophoneAltSolid } from "react-icons/lia";
 import { PiWaveform } from "react-icons/pi";
-import { IoChevronDownSharp, IoEllipsisHorizontalSharp } from "react-icons/io5";
+import { IoChevronDownSharp, IoEllipsisHorizontalSharp, IoAddSharp, IoListSharp, IoRemoveCircleOutline } from "react-icons/io5";
 
 import { isMobileOrTablet } from '../../utils';
 import { useAudioPlayer, useLocalStorageSync } from '../../hooks';
 import { getSignedUrl, getUserById } from '../../services';
 import { usePlaylist } from '../../contexts';
 
+import { ContextMenu } from '../ContextMenu';
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
 import { IconButton } from '../Buttons';
 
@@ -42,12 +43,15 @@ const AudioPlayer = ({
     shuffle, setShuffle,
     repeat, setRepeat
   });
-  const { playedPlaylistTitle } = usePlaylist();
+  const { playedPlaylistTitle, playlists } = usePlaylist();
 
   const waveformRefDesktop = useRef(null);
   const waveformRefFullPage = useRef(null);
   const wavesurfer = useRef(null);
   const artistCache = useRef(new Map());
+  const [activeContextMenu, setActiveContextMenu] = useState(false);
+  const [contextMenuX, setContextMenuX] = useState(0);
+  const [contextMenuY, setContextMenuY] = useState(0);
 
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
@@ -59,6 +63,19 @@ const AudioPlayer = ({
   const toggleLyricsModal = () => setLyricsModal(prev => !prev);
   const toggleWaveform = () => setWaveform(prev => !prev);
   const toggleFullPagePlayer = () => setIsFullPage(prev => !prev);
+
+  const handleEllipsisClick = (e) => {
+    e.stopPropagation();
+    const buttonRect = e.currentTarget.getBoundingClientRect();
+    setContextMenuX(buttonRect.left);
+    setContextMenuY(buttonRect.bottom);
+    setActiveContextMenu(true);
+  };
+
+  const handleCloseContextMenu = () => {
+    setActiveContextMenu(false);
+  };
+
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
@@ -237,7 +254,10 @@ useEffect(() => {
             <p className="audio-player__full-page-title">
               {playedPlaylistTitle || 'All Tracks'}
             </p>
-            <IconButton className="audio-player__ellipsis-button">
+            <IconButton
+              className="audio-player__ellipsis-button"
+              onClick={handleEllipsisClick}
+            >
               <IoEllipsisHorizontalSharp />
             </IconButton>
           </div>
@@ -357,6 +377,42 @@ useEffect(() => {
             </div>
           </div>
         )
+      )}
+      {activeContextMenu && (
+        <ContextMenu
+          beat={currentBeat}
+          position={{ top: contextMenuY, left: contextMenuX }}
+          setActiveContextMenu={handleCloseContextMenu}
+          items={[
+            {
+              icon: IoAddSharp,
+              text: 'Add to playlist',
+              subItems: playlists.map((playlist) => ({
+                text: playlist.title,
+                onClick: () => {
+                  console.log(`Add current beat to playlist: ${playlist.title}`);
+                  // Add logic to handle adding the current beat to the playlist
+                },
+              })),
+            },
+            {
+              icon: IoListSharp,
+              text: 'Add to queue',
+              onClick: () => {
+                console.log('Add current beat to queue');
+                // Add logic to handle adding the current beat to the queue
+              },
+            },
+            {
+              icon: IoRemoveCircleOutline,
+              text: 'Remove from queue',
+              onClick: () => {
+                console.log('Remove current beat from queue');
+                // Add logic to handle removing the current beat from the queue
+              },
+            },
+          ]}
+        />
       )}
     </>
   );
