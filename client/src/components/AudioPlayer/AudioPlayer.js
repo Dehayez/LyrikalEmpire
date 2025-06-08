@@ -222,7 +222,7 @@ useEffect(() => {
   return (
     <>
       {isFullPage && (
-        <div className="audio-player__full-page">
+        <div className="audio-player audio-player__full-page">
           <div className="audio-player__full-page-header">
             <IconButton
               className="audio-player__close-button"
@@ -240,6 +240,14 @@ useEffect(() => {
             </IconButton>
           </div>
           <div className="audio-player__full-page-content">
+           <div className="audio-player__full-page-info">
+           <p className="audio-player__title">
+              {currentBeat ? currentBeat.title : 'Audio Player'}
+            </p>
+            <p className="audio-player__artist">
+              {currentBeat ? artistCache.current.get(currentBeat.user_id) || 'Unknown Artist' : ''}
+            </p>
+          </div>
             <div
               ref={waveformRefFullPage}
               className={`waveform ${waveform ? 'waveform--active' : ''}`}

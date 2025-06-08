@@ -84,6 +84,22 @@ $indicator-half-size: math.div($indicator-size, 2);
 
     &-content {
       width: 100%;
+
+      & .audio-player__title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+        margin-bottom: 8px;
+      }
+      & .audio-player__artist {
+        font-size: 14px;
+        opacity: 0.8;
+        margin: 0;
+      }
+    }
+
+    &-info {
+      margin: 16px 0;
     }
 
     & .rhap_controls-section {
@@ -149,6 +165,7 @@ $indicator-half-size: math.div($indicator-size, 2);
 .rhap_container {
   background-color: transparent;
   box-shadow: none;
+  padding: 0;
 }
 
 .rhap_download-progress {
