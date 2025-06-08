@@ -288,18 +288,20 @@ const updateUserDetails = async (req, res) => {
   }
 };
 
-const getUserById = async (userId) => {
+const getUserById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const [user] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+    const [user] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
 
     if (!user || user.length === 0) {
-      return null;
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    return { id: user[0].id, username: user[0].username, email: user[0].email };
+    res.json({ id: user[0].id, username: user[0].username, email: user[0].email });
   } catch (error) {
     console.error('Error fetching user by ID:', error);
-    throw new Error('Internal server error');
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
