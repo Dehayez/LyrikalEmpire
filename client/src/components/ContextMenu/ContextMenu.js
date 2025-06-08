@@ -8,6 +8,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [translateY, setTranslateY] = useState(0);
+  const [hoveredItem, setHoveredItem] = useState(null);
   const contextMenuRef = useRef(null);
 
   const handleClick = (e, onClick) => {
@@ -140,7 +141,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
       onMouseUp={handleDragEnd} 
       onMouseLeave={hideContextMenu}
     >
-      {items.map((item, index) => (
+     {items.map((item, index) => (
         <div
           key={index}
           className={`context-menu__button context-menu__button--${item.buttonClass}`}
@@ -149,9 +150,29 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
               handleClick(e, item.onClick);
             }
           }}
+          onMouseEnter={() => setHoveredItem(index)}
+          onMouseLeave={() => setHoveredItem(null)}
         >
           {item.icon && <item.icon className={`context-menu__icon context-menu__icon--${item.iconClass}`} />}
           <p className="context-menu__text">{item.text}</p>
+          {item.subItems && (
+            <button className="icon-button context-menu__subitem-icon">
+              <IoChevronForwardSharp fontSize={16} />
+            </button>
+          )}
+          {item.subItems && hoveredItem === index && (
+            <div className={`context-menu__nested-list ${position.left + 300 > window.innerWidth ? 'context-menu__nested-list--left' : ''}`}>
+              {item.subItems.map((subItem, subIndex) => (
+                <div key={subIndex} className="context-menu__nested-list-item" onClick={() => {
+                  if (typeof subItem.onClick === 'function') {
+                    subItem.onClick();
+                  }
+                }}>
+                  {subItem.text}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>
