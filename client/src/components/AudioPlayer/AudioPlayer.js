@@ -196,6 +196,24 @@ const AudioPlayer = ({
     }
   }, [currentTime]);
 
+useEffect(() => {
+  const container = document.querySelector('.rhap_progress-container');
+  const waveformEl = isFullPage ? waveformRefFullPage.current : waveformRefDesktop.current;
+
+  if (container && waveformEl && !container.contains(waveformEl)) {
+    container.style.position = 'relative';
+    waveformEl.style.position = 'absolute';
+    waveformEl.style.top = '-30px';
+    waveformEl.style.left = '0';
+    waveformEl.style.width = '100%';
+    waveformEl.style.height = '100%';
+    waveformEl.style.zIndex = '0';
+    waveformEl.style.pointerEvents = 'none';
+
+    container.prepend(waveformEl);
+  }
+}, [waveform, isFullPage]);
+
   const handlePlayClick = () => {
     setAutoPlay(true);
     setIsPlaying(true);
@@ -222,6 +240,10 @@ const AudioPlayer = ({
             </IconButton>
           </div>
           <div className="audio-player__full-page-content">
+            <div
+              ref={waveformRefFullPage}
+              className={`waveform ${waveform ? 'waveform--active' : ''}`}
+            ></div>
             <H5AudioPlayer
               className="smooth-progress-bar smooth-progress-bar--full-page"
               autoPlayAfterSrcChange={autoPlay}
@@ -254,10 +276,6 @@ const AudioPlayer = ({
                 </IconButton>,
               ]}
             />
-            <div
-              ref={waveformRefFullPage}
-              className={`waveform ${waveform ? 'waveform--active' : ''}`}
-            ></div>
           </div>
         </div>
       )}
