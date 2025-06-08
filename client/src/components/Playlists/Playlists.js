@@ -13,7 +13,7 @@ import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 
 import './Playlists.scss';
 
-const Playlists = ({ isPlaying, closeSidePanel }) => {
+const Playlists = ({ isPlaying, closeSidePanel, toggleSidePanel }) => {
   const navigate = useNavigate();
   const { playlists, playedPlaylistId, currentPlaylistId, updatePlaylist, handleAddPlaylist } = usePlaylist();
 
@@ -68,7 +68,8 @@ const Playlists = ({ isPlaying, closeSidePanel }) => {
 
   const playListClick = (playlistId) => {
     if (isMobileOrTablet()) {
-      closeSidePanel('left');
+      console.log('Mobile or tablet detected, not closing side panel');
+      toggleSidePanel('left');
     }
     handleLeftClick(playlistId);
   };

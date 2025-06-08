@@ -257,7 +257,7 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
                   className={isLeftPanelVisible ? 'left-side-panel--pinned' : (isLeftDivVisible ? 'left-side-panel--hover' : '')}
                   {...(isLeftDivVisible && !isLeftPanelVisible && { handleMouseEnter: handleMouseEnterLeft, handleMouseLeave: handleMouseLeaveLeft })}
                 >
-                  <Playlists isPlaying={isPlaying} closeSidePanel={closeSidePanel} />
+                  <Playlists isPlaying={isPlaying} closeSidePanel={closeSidePanel} toggleSidePanel={toggleSidePanel} />
                 </LeftSidePanel>
               ) : null}
             </div>
