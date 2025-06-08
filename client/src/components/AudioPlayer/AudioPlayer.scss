@@ -60,6 +60,38 @@ $indicator-half-size: math.div($indicator-size, 2);
     padding-left: 20px;
   }
 
+  &__full-page {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    z-index: 4;
+    background-color: $color-black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+
+    & .icon-button--mobile {
+      margin: 0;
+    }
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    &-content {
+      width: 100%;
+    }
+
+    & .rhap_controls-section {
+      padding: 0;
+      margin-bottom: 32px;
+    }
+  }
+
   &--mobile {
     display: flex;
     justify-content: space-between;
