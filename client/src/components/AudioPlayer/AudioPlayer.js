@@ -15,7 +15,14 @@ import { IconButton } from '../Buttons';
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
 
-const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat, lyricsModal, setLyricsModal }) => {
+const AudioPlayer = ({
+  currentBeat, setCurrentBeat,
+  isPlaying, setIsPlaying,
+  onNext, onPrev,
+  shuffle, setShuffle,
+  repeat, setRepeat,
+  lyricsModal, setLyricsModal
+}) => {
   const {
     playerRef,
     volume,
@@ -27,9 +34,16 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     handleTouchEnd,
     handlePrevClick,
     currentTime,
-  } = useAudioPlayer({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onNext, onPrev, shuffle, setShuffle, repeat, setRepeat });
+  } = useAudioPlayer({
+    currentBeat, setCurrentBeat,
+    isPlaying, setIsPlaying,
+    onNext, onPrev,
+    shuffle, setShuffle,
+    repeat, setRepeat
+  });
 
-  const waveformRef = useRef(null);
+  const waveformRefDesktop = useRef(null);
+  const waveformRefFullPage = useRef(null);
   const wavesurfer = useRef(null);
   const artistCache = useRef(new Map());
 
@@ -107,6 +121,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
       navigator.mediaSession.setActionHandler('previoustrack', handlePrevClick);
       navigator.mediaSession.setActionHandler('nexttrack', onNext);
     }
+
     return () => {
       if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', null);
@@ -122,9 +137,15 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
     const signal = controller.signal;
 
     const loadWaveform = async () => {
-      if (waveformRef.current && audioSrc) {
+      const container = isFullPage ? waveformRefFullPage.current : waveformRefDesktop.current;
+
+      if (container && audioSrc) {
+        if (wavesurfer.current) {
+          wavesurfer.current.destroy();
+        }
+
         wavesurfer.current = WaveSurfer.create({
-          container: waveformRef.current,
+          container,
           waveColor: '#828282',
           progressColor: '#FFCC44',
           height: 80,
@@ -164,14 +185,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
         wavesurfer.current.destroy();
       }
     };
-  }, [audioSrc]);
-
-  useEffect(() => {
-    const progressContainer = document.querySelector('.rhap_progress-container');
-    if (progressContainer && waveformRef.current && !progressContainer.contains(waveformRef.current)) {
-      progressContainer.appendChild(waveformRef.current);
-    }
-  }, []);
+  }, [audioSrc, isFullPage]);
 
   useEffect(() => {
     if (wavesurfer.current) {
@@ -203,9 +217,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
             <p className="audio-player__full-page-title">
               {currentBeat ? currentBeat.title : 'Audio Player'}
             </p>
-            <IconButton
-              className="audio-player__ellipsis-button"
-            >
+            <IconButton className="audio-player__ellipsis-button">
               <IoEllipsisHorizontalSharp />
             </IconButton>
           </div>
@@ -242,72 +254,81 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
                 </IconButton>,
               ]}
             />
+            <div
+              ref={waveformRefFullPage}
+              className={`waveform ${waveform ? 'waveform--active' : ''}`}
+            ></div>
           </div>
         </div>
       )}
 
-      {isMobileOrTablet() ? (
-        <div className="audio-player audio-player--mobile" id="audio-player" onClick={toggleFullPagePlayer}>
-          <H5AudioPlayer
-            className="smooth-progress-bar smooth-progress-bar--mobile"
-            autoPlayAfterSrcChange={autoPlay}
-            src={audioSrc}
-            ref={playerRef}
-            onPlay={handlePlayClick}
-            onPause={() => setIsPlaying(false)}
-            customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-          />
-          {currentBeat && (
-            <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
-              {currentBeat.title}
-            </p>
-          )}
-          <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} className="small" />
-        </div>
-      ) : (
-        <div className="audio-player" id="audio-player">
-          <div className='audio-player__title audio-player__title--desktop' style={{ flex: '1' }}>
-            {currentBeat && <p>{currentBeat.title}</p>}
-          </div>
-          <div style={{ flex: '3' }}>
+      {!isFullPage && (
+        isMobileOrTablet() ? (
+          <div className="audio-player audio-player--mobile" id="audio-player" onClick={toggleFullPagePlayer}>
             <H5AudioPlayer
-              className="smooth-progress-bar smooth-progress-bar--desktop"
+              className="smooth-progress-bar smooth-progress-bar--mobile"
               autoPlayAfterSrcChange={autoPlay}
               src={audioSrc}
               ref={playerRef}
               onPlay={handlePlayClick}
               onPause={() => setIsPlaying(false)}
               customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-              customControlsSection={[
-                <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
-                <PrevButton onPrev={handlePrevClick} />,
-                <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
-                <NextButton onNext={onNext} />,
-                <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
-              ]}
             />
-            <div ref={waveformRef} className={`waveform ${waveform ? 'waveform--active' : ''}`}></div>
+            {currentBeat && (
+              <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
+                {currentBeat.title}
+              </p>
+            )}
+            <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} className="small" />
           </div>
-          <div className='audio-player__settings' style={{ flex: '1' }}>
-            <IconButton
-              className='audio-player__icon'
-              onClick={toggleWaveform}
-              text={waveform ? "Hide waveform" : "Show waveform"}
-              ariaLabel={waveform ? "Hide waveform" : "Show waveform"}
-            >
-              <PiWaveform className={waveform ? 'icon-primary' : ''} />
-            </IconButton>
-            <IconButton
-              className='audio-player__icon'
-              onClick={toggleLyricsModal}
-              text={lyricsModal ? "Hide lyrics" : "Show lyrics"}
-              ariaLabel={lyricsModal ? "Hide lyrics" : "Show lyrics"}
-            >
-              <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
-            </IconButton>
-            <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
+        ) : (
+          <div className="audio-player" id="audio-player">
+            <div className='audio-player__title audio-player__title--desktop' style={{ flex: '1' }}>
+              {currentBeat && <p>{currentBeat.title}</p>}
+            </div>
+            <div style={{ flex: '3' }}>
+              <H5AudioPlayer
+                className="smooth-progress-bar smooth-progress-bar--desktop"
+                autoPlayAfterSrcChange={autoPlay}
+                src={audioSrc}
+                ref={playerRef}
+                onPlay={handlePlayClick}
+                onPause={() => setIsPlaying(false)}
+                customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
+                customControlsSection={[
+                  <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
+                  <PrevButton onPrev={handlePrevClick} />,
+                  <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
+                  <NextButton onNext={onNext} />,
+                  <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
+                ]}
+              />
+              <div
+                ref={waveformRefDesktop}
+                className={`waveform ${waveform ? 'waveform--active' : ''}`}
+              ></div>
+            </div>
+            <div className='audio-player__settings' style={{ flex: '1' }}>
+              <IconButton
+                className='audio-player__icon'
+                onClick={toggleWaveform}
+                text={waveform ? "Hide waveform" : "Show waveform"}
+                ariaLabel={waveform ? "Hide waveform" : "Show waveform"}
+              >
+                <PiWaveform className={waveform ? 'icon-primary' : ''} />
+              </IconButton>
+              <IconButton
+                className='audio-player__icon'
+                onClick={toggleLyricsModal}
+                text={lyricsModal ? "Hide lyrics" : "Show lyrics"}
+                ariaLabel={lyricsModal ? "Hide lyrics" : "Show lyrics"}
+              >
+                <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
+              </IconButton>
+              <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
+            </div>
           </div>
-        </div>
+        )
       )}
     </>
   );
