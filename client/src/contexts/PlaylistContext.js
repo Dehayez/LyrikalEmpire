@@ -5,13 +5,15 @@ import { getPlaylists, createPlaylist } from '../services';
 import { useUser } from '../contexts';
 
 const PlaylistContext = createContext();
-
 export const usePlaylist = () => useContext(PlaylistContext);
 
 export const PlaylistProvider = ({ children }) => {
   const [playlists, setPlaylists] = useState([]);
   const [playedPlaylistId, setPlayedPlaylistId] = useState(() => {
     return localStorage.getItem('playedPlaylistId');
+  });
+  const [playedPlaylistTitle, setPlayedPlaylistTitle] = useState(() => {
+    return localStorage.getItem('playedPlaylistTitle');
   });
   const [currentPlaylistId, setCurrentPlaylistId] = useState(null);
   const [isSamePlaylist, setIsSamePlaylist] = useState(false);
@@ -20,14 +22,23 @@ export const PlaylistProvider = ({ children }) => {
 
   const setPlaylistId = (id) => {
     setPlayedPlaylistId(id);
+
+    const playlist = playlists.find((p) => p.id === id);
+    if (playlist) {
+      setPlayedPlaylistTitle(playlist.title);
+      localStorage.setItem('playedPlaylistTitle', playlist.title);
+    } else {
+      setPlayedPlaylistTitle(null);
+      localStorage.removeItem('playedPlaylistTitle');
+    }
   };
 
   const updatePlaylist = (updatedPlaylist) => {
-    setPlaylists((prevPlaylists) => {
-      return prevPlaylists.map((playlist) =>
+    setPlaylists((prevPlaylists) =>
+      prevPlaylists.map((playlist) =>
         playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
-      );
-    });
+      )
+    );
   };
 
   const handleAddPlaylist = async (title, description) => {
@@ -102,7 +113,18 @@ export const PlaylistProvider = ({ children }) => {
   }, [user.id]);
 
   return (
-    <PlaylistContext.Provider value={{ playedPlaylistId, setPlaylistId, currentPlaylistId, isSamePlaylist, playlists, updatePlaylist, handleAddPlaylist }}>
+    <PlaylistContext.Provider
+      value={{
+        playedPlaylistId,
+        playedPlaylistTitle,
+        setPlaylistId,
+        currentPlaylistId,
+        isSamePlaylist,
+        playlists,
+        updatePlaylist,
+        handleAddPlaylist
+      }}
+    >
       {children}
     </PlaylistContext.Provider>
   );

@@ -8,6 +8,7 @@ import { IoChevronDownSharp, IoEllipsisHorizontalSharp } from "react-icons/io5";
 import { isMobileOrTablet } from '../../utils';
 import { useAudioPlayer, useLocalStorageSync } from '../../hooks';
 import { getSignedUrl, getUserById } from '../../services';
+import { usePlaylist } from '../../contexts';
 
 import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
 import { IconButton } from '../Buttons';
@@ -41,6 +42,7 @@ const AudioPlayer = ({
     shuffle, setShuffle,
     repeat, setRepeat
   });
+  const { playedPlaylistTitle } = usePlaylist();
 
   const waveformRefDesktop = useRef(null);
   const waveformRefFullPage = useRef(null);
@@ -233,7 +235,7 @@ useEffect(() => {
               <IoChevronDownSharp />
             </IconButton>
             <p className="audio-player__full-page-title">
-              {currentBeat ? currentBeat.title : 'Audio Player'}
+              {playedPlaylistTitle || 'All Tracks'}
             </p>
             <IconButton className="audio-player__ellipsis-button">
               <IoEllipsisHorizontalSharp />

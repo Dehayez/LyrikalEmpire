@@ -58,8 +58,6 @@ export const usePanels = () => {
   const closeSidePanel = (panel) => {
     if (panel === 'left' && isLeftPanelVisible) {
       setIsLeftPanelVisible(false);
-      setIsLeftDivVisible(false);
-      console.log('left');
     } else if (panel === 'right' && isRightPanelVisible) {
       setIsRightPanelVisible(false);
       setIsRightDivVisible(false);
