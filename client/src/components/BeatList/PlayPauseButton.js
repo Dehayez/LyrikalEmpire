@@ -15,7 +15,7 @@ const PlayPauseButton = ({ beat, handlePlayPause, currentBeat, isPlaying }) => {
       style={{ opacity: hoveredBeat === beat.id ? 1 : 0 }}
       ariaLabel={isCurrentBeatPlaying ? 'Pause' : 'Play'}
     >
-      {isCurrentBeatPlaying ? <IoPauseSharp fontSize={18} /> : <IoPlaySharp fontSize={18} />}
+      {isCurrentBeatPlaying ? <IoPauseSharp/> : <IoPlaySharp/>}
     </IconButton>
   );
 };

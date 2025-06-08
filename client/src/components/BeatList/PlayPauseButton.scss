@@ -1,6 +1,8 @@
 @import '../../globals/variables';
 
 .icon-button--play-pause {
+    width: 1em;
+    height: 1em;
     position: absolute;
     color: $color-white;
     opacity: 0;

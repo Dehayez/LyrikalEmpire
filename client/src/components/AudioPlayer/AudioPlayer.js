@@ -234,7 +234,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
             text={waveform ? "Hide waveform" : "Show waveform"}
             ariaLabel={waveform ? "Hide waveform" : "Show waveform"}
         >
-          <PiWaveform fontSize={24} className={waveform ? 'icon-primary' : ''} />
+          <PiWaveform className={waveform ? 'icon-primary' : ''} />
         </IconButton>
         <IconButton
           className='audio-player__icon'
@@ -242,7 +242,7 @@ const AudioPlayer = ({ currentBeat, setCurrentBeat, isPlaying, setIsPlaying, onN
           text={lyricsModal ? "Hide lyrics" : "Show lyrics"}
           ariaLabel={lyricsModal ? "Hide lyrics" : "Show lyrics"}
         >
-          <LiaMicrophoneAltSolid fontSize={24} className={lyricsModal ? 'icon-primary' : ''} />
+          <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
         </IconButton>
         <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
       </div>
