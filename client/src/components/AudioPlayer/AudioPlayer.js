@@ -70,17 +70,15 @@ const AudioPlayer = ({
   
   const toggleFullPagePlayer = () => {
     if (!isFullPage) {
-      // Opening full page player
       setIsFullPage(true);
-      setIsFullPageVisible(true);
-      // Use setTimeout to ensure the element is in DOM before animating
-      setTimeout(() => {
+
+      requestAnimationFrame(() => {
+        setIsFullPageVisible(true);
         if (fullPagePlayerRef.current) {
           slideIn(fullPagePlayerRef.current);
         }
-      }, 0);
+      });
     } else {
-      // Closing full page player
       slideOut(fullPagePlayerRef.current, fullPageOverlayRef.current, () => {
         setIsFullPage(false);
         setIsFullPageVisible(false);
