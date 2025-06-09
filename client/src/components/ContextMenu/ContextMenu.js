@@ -37,11 +37,19 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
       contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out';
       contextMenuRef.current.style.transform = 'translateY(100%)';
     }
-    setTimeout(() => {
-      setIsVisible(false);
-      setActiveContextMenu(null);
-      setTranslateY(0);
-    }, 300);
+
+    const overlay = document.querySelector('.context-menu__overlay');
+    if (overlay) {
+      overlay.style.transition = 'opacity 0.3s ease';
+      overlay.style.opacity = '0';
+
+      setTimeout(() => {
+        overlay.style.pointerEvents = 'none';
+        setIsVisible(false);
+        setActiveContextMenu(null);
+        setTranslateY(0);
+      }, 300);
+    }
   };
 
   useEffect(() => {
