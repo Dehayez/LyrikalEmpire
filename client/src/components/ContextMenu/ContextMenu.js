@@ -4,12 +4,13 @@ import './ContextMenu.scss';
 import { IoChevronForwardSharp } from "react-icons/io5";
 
 import { getUserById } from '../../services';
+import { useDragToDismiss } from '../../hooks';
 import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
 
 const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [startY, setStartY] = useState(0);
-  const [translateY, setTranslateY] = useState(0);
+  const { dismissRef, handleDragStart, handleDragMove, handleDragEnd } = useDragToDismiss(() => {
+    hideContextMenu();
+  });
   const [hoveredItem, setHoveredItem] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [artistName, setArtistName] = useState('Unknown Artist');
@@ -40,45 +41,6 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     }
   }, [beat]);
 
-  const handleDragStart = (e) => {
-    setIsDragging(true);
-    setStartY(e.touches ? e.touches[0].clientY : e.clientY);
-    if (contextMenuRef.current) {
-      contextMenuRef.current.style.transition = 'none';
-    }
-  };
-
-  const handleDragMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const deltaY = clientY - startY;
-
-    if (deltaY > 0) {
-      setTranslateY(deltaY);
-      if (contextMenuRef.current) {
-        contextMenuRef.current.style.transform = `translateY(${deltaY}px)`;
-      }
-    }
-
-    if (deltaY > 100) {
-      hideContextMenu();
-      setIsDragging(false);
-    }
-  };
-
-  const handleDragEnd = () => {
-    if (translateY < 100) {
-      setTranslateY(0);
-      if (contextMenuRef.current) {
-        contextMenuRef.current.style.transition = 'transform 0.3s ease-out';
-        contextMenuRef.current.style.transform = 'translateY(0)';
-      }
-    }
-    setIsDragging(false);
-    setStartY(0);
-  };
-
   useEffect(() => {
     const contextMenuElement = contextMenuRef.current;
     if (contextMenuElement) {
@@ -92,19 +54,19 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   }, [handleDragMove]);
 
   useEffect(() => {
-  const fetchArtistName = async () => {
-    if (beat?.user_id) {
-      try {
-        const user = await getUserById(beat.user_id);
-        setArtistName(user?.username || 'Unknown Artist');
-      } catch (error) {
-        console.warn('Could not fetch artist name. Using fallback.', error);
+    const fetchArtistName = async () => {
+      if (beat?.user_id) {
+        try {
+          const user = await getUserById(beat.user_id);
+          setArtistName(user?.username || 'Unknown Artist');
+        } catch (error) {
+          console.warn('Could not fetch artist name. Using fallback.', error);
+        }
       }
-    }
-  };
+    };
 
-  fetchArtistName();
-}, [beat?.user_id]);
+    fetchArtistName();
+  }, [beat?.user_id]);
 
   if (isMobileOrTablet()) {
     return (
@@ -150,7 +112,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
       onMouseUp={handleDragEnd} 
       onMouseLeave={hideContextMenu}
     >
-     {items.map((item, index) => (
+      {items.map((item, index) => (
         <div
           key={index}
           className={`context-menu__button context-menu__button--${item.buttonClass}`}

@@ -7,3 +7,4 @@ export { useDragAndDrop } from './useDragAndDrop';
 export { useLocalStorageSync } from './useLocalStorageSync';
 export { useAudioPlayer } from './useAudioPlayer';
 export { usePanels } from './usePanels';
+export { useDragToDismiss } from './useDragToDismiss';
