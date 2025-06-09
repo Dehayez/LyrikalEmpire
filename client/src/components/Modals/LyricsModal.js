@@ -1,20 +1,30 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
 import Modal from 'react-modal';
+import { IoCloseSharp } from 'react-icons/io5';
+
+import { isAuthPage, isMobileOrTablet } from '../../utils';
+import { useLocalStorageSync } from '../../hooks';
+import {
+  getAssociationsByBeatId,
+  addAssociationsToBeat,
+} from '../../services/beatService';
+import {
+  getLyricsById,
+  updateLyricsById,
+  createLyrics,
+} from '../../services/lyricsService';
+
 import { IconButton } from '../Buttons';
 import { FormTextarea } from '../Inputs';
-import { IoCloseSharp } from 'react-icons/io5';
-import { isAuthPage } from '../../utils';
-import { useLocalStorageSync } from '../../hooks';
-import { getAssociationsByBeatId, addAssociationsToBeat } from '../../services/beatService';
-import { getLyricsById, updateLyricsById, createLyrics } from '../../services/lyricsService';
+
 import './LyricsModal.scss';
 
 Modal.setAppElement('#root');
 
-const modalStyle = {
+const MODAL_STYLE = {
   overlay: {
     backgroundColor: 'transparent',
     zIndex: 10,
@@ -30,28 +40,26 @@ const modalStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
-    right: 'auto',
-    bottom: 'auto',
     transform: 'translate(-50%, -50%)',
     pointerEvents: 'none',
-  }
+  },
 };
 
 const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
   const location = useLocation();
-  const isAuthRoute = isAuthPage(location.pathname);
+  const isAuthRoute = useMemo(() => isAuthPage(location.pathname), [location.pathname]);
+  const isMobile = useMemo(() => isMobileOrTablet(), []);
+
   const draggableRef = useRef(null);
   const modalRef = useRef(null);
+
   const [lyrics, setLyrics] = useState('');
   const [lyricsId, setLyricsId] = useState(null);
   const [dimensions, setDimensions] = useState(() => {
-    const savedDimensions = localStorage.getItem('dimensions');
-    return savedDimensions ? JSON.parse(savedDimensions) : { width: 400, height: 300 };
+    return JSON.parse(localStorage.getItem('dimensions')) || { width: 400, height: 300 };
   });
 
-  const handleCancel = () => {
-    setLyricsModal(false);
-  };
+  const handleCancel = useCallback(() => setLyricsModal(false), [setLyricsModal]);
 
   const updateDimensions = useCallback(() => {
     if (modalRef.current) {
@@ -60,58 +68,28 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     }
   }, []);
 
-  useEffect(() => {
-    updateDimensions(); 
-
-    const resizeObserver = new ResizeObserver(() => {
-      updateDimensions();
-    });
-
-    const observeModal = () => {
-      if (!(modalRef.current instanceof Element)) {
-        return;
-      }
-      resizeObserver.observe(modalRef.current);
-    };
-
-    const timeoutId = setTimeout(observeModal, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (modalRef.current instanceof Element) {
-        resizeObserver.unobserve(modalRef.current);
-      } 
-      resizeObserver.disconnect();
-    };
-  }, [updateDimensions]);
-
   useLocalStorageSync({ dimensions });
 
   useEffect(() => {
+    if (!beatId) return;
+
     const fetchLyrics = async () => {
       try {
-        const data = await getAssociationsByBeatId(beatId, 'lyrics');
-        if (data && data.length > 0 && data[0].lyrics_id) {
-          const lyricData = await getLyricsById(data[0].lyrics_id);
-          if (lyricData && lyricData.length > 0 && lyricData[0].lyrics) {
-            setLyrics(lyricData[0].lyrics);
-            setLyricsId(data[0].lyrics_id);
-          } else {
-            setLyrics('');
-            setLyricsId(null);
-          }
+        const [assoc] = await getAssociationsByBeatId(beatId, 'lyrics');
+        if (assoc?.lyrics_id) {
+          const [lyricData] = await getLyricsById(assoc.lyrics_id);
+          setLyrics(lyricData?.lyrics || '');
+          setLyricsId(assoc.lyrics_id);
         } else {
           setLyrics('');
           setLyricsId(null);
         }
-      } catch (error) {
-        console.error('Failed to fetch lyrics:', error);
+      } catch (err) {
+        console.error('Failed to fetch lyrics:', err);
       }
     };
 
-    if (beatId) {
-      fetchLyrics();
-    }
+    fetchLyrics();
   }, [beatId]);
 
   const handleLyricsChange = async (e) => {
@@ -122,58 +100,87 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
       if (lyricsId) {
         await updateLyricsById(lyricsId, newLyrics);
       } else {
-        const createdLyricsId = await createLyrics(newLyrics);
-        setLyricsId(createdLyricsId);
-        await addAssociationsToBeat(beatId, 'lyrics', createdLyricsId);
+        const newId = await createLyrics(newLyrics);
+        setLyricsId(newId);
+        await addAssociationsToBeat(beatId, 'lyrics', newId);
       }
-    } catch (error) {
-      console.error('Failed to update or create lyrics:', error);
+    } catch (err) {
+      console.error('Failed to update/create lyrics:', err);
     }
   };
 
   useEffect(() => {
+    updateDimensions();
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    const modalEl = modalRef.current;
+
+    const timeoutId = setTimeout(() => {
+      if (modalEl instanceof Element) resizeObserver.observe(modalEl);
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (modalEl instanceof Element) resizeObserver.unobserve(modalEl);
+      resizeObserver.disconnect();
+    };
+  }, [updateDimensions]);
+
+  useEffect(() => {
     const observer = new MutationObserver(() => {
-      const formGroupInput = document.querySelector('.lyrics-modal .form-group__input');
-      if (formGroupInput) {
-        formGroupInput.style.minHeight = `${dimensions.height - 70}px`;
+      const el = document.querySelector('.lyrics-modal .form-group__input');
+      if (el) {
+        el.style.minHeight = `${dimensions.height - 70}px`;
         observer.disconnect();
       }
     });
-  
+
     observer.observe(document.body, { childList: true, subtree: true });
-  
     return () => observer.disconnect();
-  }, []);
+  }, [dimensions]);
+
+  if (isAuthRoute) return null;
 
   return (
-    (isAuthRoute) ? null :
-      <Modal 
-        className="lyrics-modal"
-        isOpen={lyricsModal} 
-        onRequestClose={handleCancel} 
-        style={{ ...modalStyle, width: dimensions.width, height: dimensions.height }}
-        shouldCloseOnOverlayClick={false}
-      >
+    <Modal
+      className="lyrics-modal"
+      isOpen={lyricsModal}
+      onRequestClose={handleCancel}
+      style={MODAL_STYLE}
+      shouldCloseOnOverlayClick={false}
+    >
+      {isMobile ? (
+        <div className="modal modal--mobile">
+          <div className="modal-content" ref={modalRef}>
+            <IconButton className="modal__close-button" onClick={handleCancel}>
+              <IoCloseSharp />
+            </IconButton>
+            <h2 className="modal__title">{title}</h2>
+            <FormTextarea value={lyrics} onChange={handleLyricsChange} />
+          </div>
+        </div>
+      ) : (
         <Draggable handle=".modal__title" nodeRef={draggableRef}>
-          <div ref={draggableRef} className='modal'>
+          <div ref={draggableRef} className="modal">
             <ResizableBox
               width={dimensions.width}
               height={dimensions.height}
-              onResizeStop={(e, data) => {
-                setDimensions({ width: data.size.width, height: data.size.height });
-              }}
+              resizeHandles={['se', 'e', 's']}
+              onResizeStop={(e, data) =>
+                setDimensions({ width: data.size.width, height: data.size.height })
+              }
             >
-              <div className='modal-content' ref={modalRef}>
+              <div className="modal-content" ref={modalRef}>
                 <IconButton className="modal__close-button" onClick={handleCancel}>
                   <IoCloseSharp />
                 </IconButton>
-                <h2 className='modal__title'>{title}</h2>
-                <FormTextarea value={lyrics} onChange={handleLyricsChange}/>
+                <h2 className="modal__title">{title}</h2>
+                <FormTextarea value={lyrics} onChange={handleLyricsChange} />
               </div>
             </ResizableBox>
           </div>
         </Draggable>
-      </Modal>
+      )}
+    </Modal>
   );
 };
 

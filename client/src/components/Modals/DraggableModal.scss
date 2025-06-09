@@ -1,5 +1,11 @@
 @import '../../globals/variables';
 
+.modal {
+    &--modal {
+        height: 100vh;
+    }
+}
+
 .modal-content {
     position: relative;
     max-width: 400px;

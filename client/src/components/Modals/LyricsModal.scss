@@ -2,12 +2,19 @@
 
 .lyrics-modal {
   outline: none;
-  background-color: red;
 
   .modal {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &--mobile {
+      height: 100vh;
+
+      & .modal-content {
+        min-width: 0;
+      }
+    }
   }
 
   .modal-content {
@@ -17,6 +24,9 @@
     overflow: hidden;
     padding: 0 !important;
     box-shadow: $box-shadow;
+    height: 100%;
+    width: 100%;
+    border: none;
   }
 
   .modal__title {
@@ -55,7 +65,6 @@
   }
 
   .form-textarea__input {
-      
       &:hover {
           border: none !important;
       }
