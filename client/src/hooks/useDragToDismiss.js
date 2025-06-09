@@ -16,7 +16,6 @@ export const useDragToDismiss = (onDismissCallback) => {
 
   const handleDragMove = (e) => {
     if (!isDragging) return;
-    e.preventDefault();
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     const deltaY = clientY - startY;
 
