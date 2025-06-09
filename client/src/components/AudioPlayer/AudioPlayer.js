@@ -5,7 +5,7 @@ import { LiaMicrophoneAltSolid } from "react-icons/lia";
 import { PiWaveform } from "react-icons/pi";
 import { IoChevronDownSharp, IoEllipsisHorizontalSharp, IoAddSharp, IoListSharp, IoRemoveCircleOutline } from "react-icons/io5";
 
-import { isMobileOrTablet } from '../../utils';
+import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
 import { useAudioPlayer, useLocalStorageSync } from '../../hooks';
 import { getSignedUrl, getUserById } from '../../services';
 import { usePlaylist } from '../../contexts';
@@ -47,6 +47,8 @@ const AudioPlayer = ({
 
   const waveformRefDesktop = useRef(null);
   const waveformRefFullPage = useRef(null);
+  const fullPagePlayerRef = useRef(null);
+  const fullPageOverlayRef = useRef(null);
   const wavesurfer = useRef(null);
   const artistCache = useRef(new Map());
   const [activeContextMenu, setActiveContextMenu] = useState(false);
@@ -59,12 +61,32 @@ const AudioPlayer = ({
   const [isFullPage, setIsFullPage] = useState(() => {
     return JSON.parse(localStorage.getItem('isFullPage')) || false;
   });
+  const [isFullPageVisible, setIsFullPageVisible] = useState(false);
 
   useLocalStorageSync({ waveform, isFullPage });
 
   const toggleLyricsModal = () => setLyricsModal(prev => !prev);
   const toggleWaveform = () => setWaveform(prev => !prev);
-  const toggleFullPagePlayer = () => setIsFullPage(prev => !prev);
+  
+  const toggleFullPagePlayer = () => {
+    if (!isFullPage) {
+      // Opening full page player
+      setIsFullPage(true);
+      setIsFullPageVisible(true);
+      // Use setTimeout to ensure the element is in DOM before animating
+      setTimeout(() => {
+        if (fullPagePlayerRef.current) {
+          slideIn(fullPagePlayerRef.current);
+        }
+      }, 0);
+    } else {
+      // Closing full page player
+      slideOut(fullPagePlayerRef.current, fullPageOverlayRef.current, () => {
+        setIsFullPage(false);
+        setIsFullPageVisible(false);
+      });
+    }
+  };
 
   const handleEllipsisClick = (e) => {
     e.stopPropagation();
@@ -78,6 +100,13 @@ const AudioPlayer = ({
     setActiveContextMenu(false);
   };
 
+  // Effect to handle initial slide-in when full page becomes active
+  useEffect(() => {
+    if (isFullPage && fullPagePlayerRef.current && !isFullPageVisible) {
+      setIsFullPageVisible(true);
+      slideIn(fullPagePlayerRef.current);
+    }
+  }, [isFullPage, isFullPageVisible]);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
@@ -217,23 +246,23 @@ const AudioPlayer = ({
     }
   }, [currentTime]);
 
-useEffect(() => {
-  const container = document.querySelector('.rhap_progress-container');
-  const waveformEl = isFullPage ? waveformRefFullPage.current : waveformRefDesktop.current;
+  useEffect(() => {
+    const container = document.querySelector('.rhap_progress-container');
+    const waveformEl = isFullPage ? waveformRefFullPage.current : waveformRefDesktop.current;
 
-  if (container && waveformEl && !container.contains(waveformEl)) {
-    container.style.position = 'relative';
-    waveformEl.style.position = 'absolute';
-    waveformEl.style.top = '-30px';
-    waveformEl.style.left = '0';
-    waveformEl.style.width = '100%';
-    waveformEl.style.height = '100%';
-    waveformEl.style.zIndex = '0';
-    waveformEl.style.pointerEvents = 'none';
+    if (container && waveformEl && !container.contains(waveformEl)) {
+      container.style.position = 'relative';
+      waveformEl.style.position = 'absolute';
+      waveformEl.style.top = '-30px';
+      waveformEl.style.left = '0';
+      waveformEl.style.width = '100%';
+      waveformEl.style.height = '100%';
+      waveformEl.style.zIndex = '0';
+      waveformEl.style.pointerEvents = 'none';
 
-    container.prepend(waveformEl);
-  }
-}, [waveform, isFullPage]);
+      container.prepend(waveformEl);
+    }
+  }, [waveform, isFullPage]);
 
   const handlePlayClick = () => {
     setAutoPlay(true);
@@ -243,73 +272,82 @@ useEffect(() => {
   return (
     <>
       {isFullPage && (
-        <div className="audio-player audio-player__full-page">
-          <div className="audio-player__full-page-header">
-            <IconButton
-              className="audio-player__close-button"
-              onClick={toggleFullPagePlayer}
-              text="Close"
-              ariaLabel="Close full-page player"
-            >
-              <IoChevronDownSharp />
-            </IconButton>
-            <p className="audio-player__full-page-title">
-              {playedPlaylistTitle || 'All Tracks'}
-            </p>
-            <IconButton
-              className="audio-player__ellipsis-button"
-              onClick={handleEllipsisClick}
-            >
-              <IoEllipsisHorizontalSharp />
-            </IconButton>
+        <>
+          <div 
+            ref={fullPageOverlayRef}
+            className="audio-player__full-page-overlay"
+          />
+          <div 
+            ref={fullPagePlayerRef}
+            className="audio-player audio-player__full-page"
+          >
+            <div className="audio-player__full-page-header">
+              <IconButton
+                className="audio-player__close-button"
+                onClick={toggleFullPagePlayer}
+                text="Close"
+                ariaLabel="Close full-page player"
+              >
+                <IoChevronDownSharp />
+              </IconButton>
+              <p className="audio-player__full-page-title">
+                {playedPlaylistTitle || 'All Tracks'}
+              </p>
+              <IconButton
+                className="audio-player__ellipsis-button"
+                onClick={handleEllipsisClick}
+              >
+                <IoEllipsisHorizontalSharp />
+              </IconButton>
+            </div>
+            <div className="audio-player__full-page-content">
+              <div className="audio-player__full-page-info">
+                <p className="audio-player__title">
+                  {currentBeat ? currentBeat.title : 'Audio Player'}
+                </p>
+                <p className="audio-player__artist">
+                  {currentBeat ? artistCache.current.get(currentBeat.user_id) || 'Unknown Artist' : ''}
+                </p>
+              </div>
+              <div
+                ref={waveformRefFullPage}
+                className={`waveform ${waveform ? 'waveform--active' : ''}`}
+              ></div>
+              <H5AudioPlayer
+                className="smooth-progress-bar smooth-progress-bar--full-page"
+                autoPlayAfterSrcChange={autoPlay}
+                src={audioSrc}
+                ref={playerRef}
+                onPlay={handlePlayClick}
+                onPause={() => setIsPlaying(false)}
+                customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
+                customControlsSection={[
+                  <IconButton
+                    className="audio-player__icon"
+                    onClick={toggleWaveform}
+                    text={waveform ? "Hide waveform" : "Show waveform"}
+                    ariaLabel={waveform ? "Hide waveform" : "Show waveform"}
+                  >
+                    <PiWaveform className={waveform ? 'icon-primary' : ''} />
+                  </IconButton>,
+                  <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
+                  <PrevButton onPrev={handlePrevClick} />,
+                  <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
+                  <NextButton onNext={onNext} />,
+                  <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
+                  <IconButton
+                    className="audio-player__icon"
+                    onClick={toggleLyricsModal}
+                    text={lyricsModal ? "Hide lyrics" : "Show lyrics"}
+                    ariaLabel={lyricsModal ? "Hide lyrics" : "Show lyrics"}
+                  >
+                    <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
+                  </IconButton>,
+                ]}
+              />
+            </div>
           </div>
-          <div className="audio-player__full-page-content">
-           <div className="audio-player__full-page-info">
-           <p className="audio-player__title">
-              {currentBeat ? currentBeat.title : 'Audio Player'}
-            </p>
-            <p className="audio-player__artist">
-              {currentBeat ? artistCache.current.get(currentBeat.user_id) || 'Unknown Artist' : ''}
-            </p>
-          </div>
-            <div
-              ref={waveformRefFullPage}
-              className={`waveform ${waveform ? 'waveform--active' : ''}`}
-            ></div>
-            <H5AudioPlayer
-              className="smooth-progress-bar smooth-progress-bar--full-page"
-              autoPlayAfterSrcChange={autoPlay}
-              src={audioSrc}
-              ref={playerRef}
-              onPlay={handlePlayClick}
-              onPause={() => setIsPlaying(false)}
-              customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-              customControlsSection={[
-                <IconButton
-                  className="audio-player__icon"
-                  onClick={toggleWaveform}
-                  text={waveform ? "Hide waveform" : "Show waveform"}
-                  ariaLabel={waveform ? "Hide waveform" : "Show waveform"}
-                >
-                  <PiWaveform className={waveform ? 'icon-primary' : ''} />
-                </IconButton>,
-                <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
-                <PrevButton onPrev={handlePrevClick} />,
-                <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
-                <NextButton onNext={onNext} />,
-                <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
-                <IconButton
-                  className="audio-player__icon"
-                  onClick={toggleLyricsModal}
-                  text={lyricsModal ? "Hide lyrics" : "Show lyrics"}
-                  ariaLabel={lyricsModal ? "Hide lyrics" : "Show lyrics"}
-                >
-                  <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
-                </IconButton>,
-              ]}
-            />
-          </div>
-        </div>
+        </>
       )}
 
       {!isFullPage && (
