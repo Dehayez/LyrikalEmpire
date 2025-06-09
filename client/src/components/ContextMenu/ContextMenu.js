@@ -19,8 +19,15 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
 
   const showContextMenu = () => {
     if (contextMenuRef.current) {
-      contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out';
-      contextMenuRef.current.style.transform = 'translateY(0)';
+      contextMenuRef.current.style.transition = 'none';
+      contextMenuRef.current.style.transform = 'translateY(100%)';
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out';
+          contextMenuRef.current.style.transform = 'translateY(0)';
+        });
+      });
     }
     setIsVisible(true);
   };
@@ -33,8 +40,8 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     setTimeout(() => {
       setIsVisible(false);
       setActiveContextMenu(null);
-      setTranslateY(0); // Reset translateY after closing
-    }, 300); // Match your CSS transition duration
+      setTranslateY(0);
+    }, 300);
   };
 
   useEffect(() => {
@@ -47,17 +54,16 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     setIsDragging(true);
     setStartY(e.touches ? e.touches[0].clientY : e.clientY);
     if (contextMenuRef.current) {
-      contextMenuRef.current.style.transition = 'none'; // Disable animation during drag
+      contextMenuRef.current.style.transition = 'none';
     }
   };
 
   const handleDragMove = (e) => {
     if (!isDragging) return;
-    e.preventDefault(); // Prevent page scrolling
+    e.preventDefault();
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     const deltaY = clientY - startY;
 
-    // Only allow downward dragging
     if (deltaY > 0) {
       setTranslateY(deltaY);
       if (contextMenuRef.current) {
@@ -73,10 +79,9 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
 
   const handleDragEnd = () => {
     if (translateY < 100) {
-      // If not dragged far enough, snap back
       setTranslateY(0);
       if (contextMenuRef.current) {
-        contextMenuRef.current.style.transition = 'transform 0.3s ease-out'; // Re-enable animation
+        contextMenuRef.current.style.transition = 'transform 0.3s ease-out';
         contextMenuRef.current.style.transform = 'translateY(0)';
       }
     }
@@ -86,11 +91,9 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
 
   useEffect(() => {
     const contextMenuElement = contextMenuRef.current;
-
     if (contextMenuElement) {
-      contextMenuElement.addEventListener('touchmove', handleDragMove, { passive: false }); // Prevent default scrolling
+      contextMenuElement.addEventListener('touchmove', handleDragMove, { passive: false });
     }
-
     return () => {
       if (contextMenuElement) {
         contextMenuElement.removeEventListener('touchmove', handleDragMove);
