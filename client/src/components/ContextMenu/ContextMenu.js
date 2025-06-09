@@ -125,7 +125,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
           onTouchEnd={handleDragEnd}
         >
           <div className="context-menu__header">
-            <p className="context-menu__text">{beat ? beat.title : ''}</p>
+            <p className="context-menu__title">{beat ? beat.title : ''}</p>
           </div>
           {items.map((item, index) => (
             <div 

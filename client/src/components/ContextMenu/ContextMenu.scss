@@ -8,6 +8,9 @@
     background-color: $color-gray-dark;
     border-radius: 4px;
 
+    &__title {
+        font-weight: 600;
+    }
 
     &__overlay {
         display: block;
