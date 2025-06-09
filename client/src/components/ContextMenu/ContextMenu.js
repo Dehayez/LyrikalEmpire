@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ContextMenu.scss';
-import { isMobileOrTablet } from '../../utils';
+import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
 import { IoChevronForwardSharp } from "react-icons/io5";
 
 const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
-  const [isVisible, setIsVisible] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [translateY, setTranslateY] = useState(0);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
   const contextMenuRef = useRef(null);
 
   const handleClick = (e, onClick) => {
@@ -18,38 +18,16 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   };
 
   const showContextMenu = () => {
-    if (contextMenuRef.current) {
-      contextMenuRef.current.style.transition = 'none';
-      contextMenuRef.current.style.transform = 'translateY(100%)';
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out';
-          contextMenuRef.current.style.transform = 'translateY(0)';
-        });
-      });
-    }
+    slideIn(contextMenuRef.current);
     setIsVisible(true);
   };
 
   const hideContextMenu = () => {
-    if (contextMenuRef.current) {
-      contextMenuRef.current.style.transition = 'transform 0.3s ease-in-out';
-      contextMenuRef.current.style.transform = 'translateY(100%)';
-    }
-
     const overlay = document.querySelector('.context-menu__overlay');
-    if (overlay) {
-      overlay.style.transition = 'opacity 0.3s ease';
-      overlay.style.opacity = '0';
-
-      setTimeout(() => {
-        overlay.style.pointerEvents = 'none';
-        setIsVisible(false);
-        setActiveContextMenu(null);
-        setTranslateY(0);
-      }, 300);
-    }
+    slideOut(contextMenuRef.current, overlay, () => {
+      setIsVisible(false);
+      setActiveContextMenu(null);
+    });
   };
 
   useEffect(() => {
