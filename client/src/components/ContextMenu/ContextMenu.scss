@@ -10,6 +10,14 @@
 
     &__title {
         font-weight: 600;
+        margin: 0;
+        padding-bottom: 4px;
+    }
+
+    &__artist {
+        font-size: 14px;
+        font-weight: 300;
+        margin: 0;
     }
 
     &__overlay {
@@ -110,7 +118,7 @@
 
     .context-menu__header {
         text-align: left;
-        padding: 8px 16px;
+        padding: 16px 16px;
         border-bottom: $border-bottom;
     }
 

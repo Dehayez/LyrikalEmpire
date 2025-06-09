@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ContextMenu.scss';
-import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
+
 import { IoChevronForwardSharp } from "react-icons/io5";
+
+import { getUserById } from '../../services';
+import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
 
 const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -9,6 +12,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   const [translateY, setTranslateY] = useState(0);
   const [hoveredItem, setHoveredItem] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [artistName, setArtistName] = useState('Unknown Artist');
   const contextMenuRef = useRef(null);
 
   const handleClick = (e, onClick) => {
@@ -87,6 +91,21 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
     };
   }, [handleDragMove]);
 
+  useEffect(() => {
+  const fetchArtistName = async () => {
+    if (beat?.user_id) {
+      try {
+        const user = await getUserById(beat.user_id);
+        setArtistName(user?.username || 'Unknown Artist');
+      } catch (error) {
+        console.warn('Could not fetch artist name. Using fallback.', error);
+      }
+    }
+  };
+
+  fetchArtistName();
+}, [beat?.user_id]);
+
   if (isMobileOrTablet()) {
     return (
       <>
@@ -104,6 +123,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
         >
           <div className="context-menu__header">
             <p className="context-menu__title">{beat ? beat.title : ''}</p>
+            <p className="context-menu__artist">{artistName}</p>
           </div>
           {items.map((item, index) => (
             <div 
