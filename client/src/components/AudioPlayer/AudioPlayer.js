@@ -275,7 +275,7 @@ const AudioPlayer = ({
         <>
           <div 
             ref={fullPageOverlayRef}
-            className="audio-player__full-page-overlay"
+            className={`audio-player__full-page-overlay ${isFullPageVisible ? 'visible' : ''}`}
           />
           <div 
             ref={fullPagePlayerRef}
