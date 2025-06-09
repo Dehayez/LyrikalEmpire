@@ -10,8 +10,11 @@
         .modal-content {
             min-width: 0;
             max-width: none;
-            margin: 20px;
         }
+    }
+
+    &__close-button {
+        padding: 0;
     }
 }
 
