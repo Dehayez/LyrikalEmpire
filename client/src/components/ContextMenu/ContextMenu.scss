@@ -86,7 +86,7 @@
 
 .context-menu--mobile {
     position: fixed;
-    z-index: 4;
+    z-index: 6;
     bottom: 0;
     left: 0;
     right: 0;
@@ -101,6 +101,7 @@
         height: 4px;
         width: 40px;
         transform: translateX(-50%);
+        left: 50%;
         border-radius: 10px;
         background-color: $color-gray-mid;
         top: 0;
@@ -125,4 +126,8 @@
             background-color: $color-black;
         }
     }
+}
+
+.context-menu__overlay {
+    z-index: 6;
 }
