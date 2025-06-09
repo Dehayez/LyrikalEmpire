@@ -17,15 +17,16 @@ const modalStyle = {
     backgroundColor: 'transparent',
     color: 'white',
     border: 'none',
-    height: isMobileOrTablet() ? '100%' : 'auto',
-    width: isMobileOrTablet() ? '100%' : 'auto',
-    margin: 'auto',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
+    height: isMobileOrTablet() ? '100vh' : 'auto',
+    width: isMobileOrTablet() ? '100vw' : 'auto',
+    margin: isMobileOrTablet() ? '0' : 'auto',
+    position: isMobileOrTablet() ? 'fixed' : 'absolute',
+    top: isMobileOrTablet() ? '0' : '50%',
+    left: isMobileOrTablet() ? '0' : '50%',
+    right: isMobileOrTablet() ? '0' : 'auto',
+    bottom: isMobileOrTablet() ? '0' : 'auto',
     transform: isMobileOrTablet() ? 'none' : 'translate(-50%, -50%)',
+    padding: '0',
   },
 };
 
@@ -58,9 +59,6 @@ const DraggableModal = ({ isOpen, setIsOpen, title, children, onConfirm, onCance
       {isMobileOrTablet() ? (
         <div className='modal modal--mobile'>
           <div className='modal-content'>
-            <IconButton className="modal__close-button" onClick={handleCancel}>
-              <IoCloseSharp />
-            </IconButton>
             <h2 className='modal__title'>{title}</h2>
             {children}
             <div className='modal__buttons'>

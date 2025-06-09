@@ -1,8 +1,16 @@
 @import '../../globals/variables';
 
 .modal {
-    &--modal {
+    &--mobile {
         height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .modal-content {
+            min-width: 0;
+            max-width: none;
+        }
     }
 }
 
@@ -14,6 +22,7 @@
     border-radius: 6px;
     padding: 20px;
     pointer-events: auto;
+    box-sizing: border-box;
 }
 
 .modal__title {
@@ -39,6 +48,7 @@
 
 .ReactModal__Content {
     pointer-events: none;
+    overflow: visible !important;
 }
 
 .react-draggable {
