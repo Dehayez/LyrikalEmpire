@@ -10,7 +10,7 @@ Modal.setAppElement('#root');
 
 const modalStyle = {
   overlay: {
-    backgroundColor: 'rgba(30, 30, 30, 0.75)',
+    backgroundColor: 'rgba(20, 20, 20, 0.5)',
     zIndex: 10,
   },
   content: {

@@ -10,6 +10,7 @@
         .modal-content {
             min-width: 0;
             max-width: none;
+            margin: 20px;
         }
     }
 }
@@ -23,6 +24,7 @@
     padding: 20px;
     pointer-events: auto;
     box-sizing: border-box;
+    box-shadow: $box-shadow-hover;
 }
 
 .modal__title {
