@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ContextMenu.scss';
 
 import { IoChevronForwardSharp } from "react-icons/io5";
@@ -8,13 +8,18 @@ import { useDragToDismiss } from '../../hooks';
 import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
 
 const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
-  const { dismissRef, handleDragStart, handleDragMove, handleDragEnd } = useDragToDismiss(() => {
+  const {
+    dismissRef,
+    handleDragStart,
+    handleDragMove,
+    handleDragEnd,
+  } = useDragToDismiss(() => {
     hideContextMenu();
   });
+
   const [hoveredItem, setHoveredItem] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [artistName, setArtistName] = useState('Unknown Artist');
-  const contextMenuRef = useRef(null);
 
   const handleClick = (e, onClick) => {
     e.stopPropagation();
@@ -23,13 +28,13 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   };
 
   const showContextMenu = () => {
-    slideIn(contextMenuRef.current);
+    slideIn(dismissRef.current);
     setIsVisible(true);
   };
 
   const hideContextMenu = () => {
     const overlay = document.querySelector('.context-menu__overlay');
-    slideOut(contextMenuRef.current, overlay, () => {
+    slideOut(dismissRef.current, overlay, () => {
       setIsVisible(false);
       setActiveContextMenu(null);
     });
@@ -42,13 +47,13 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   }, [beat]);
 
   useEffect(() => {
-    const contextMenuElement = contextMenuRef.current;
-    if (contextMenuElement) {
-      contextMenuElement.addEventListener('touchmove', handleDragMove, { passive: false });
+    const element = dismissRef.current;
+    if (element) {
+      element.addEventListener('touchmove', handleDragMove, { passive: false });
     }
     return () => {
-      if (contextMenuElement) {
-        contextMenuElement.removeEventListener('touchmove', handleDragMove);
+      if (element) {
+        element.removeEventListener('touchmove', handleDragMove);
       }
     };
   }, [handleDragMove]);
@@ -76,7 +81,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
           onClick={(e) => { e.stopPropagation(); hideContextMenu(); }}
         />
         <div 
-          ref={contextMenuRef}
+          ref={dismissRef}
           className={`context-menu--mobile`}
           id="context-menu--mobile"
           onClick={(e) => { e.stopPropagation(); }}
