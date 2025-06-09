@@ -62,7 +62,10 @@
 
     &__icon {
         color: $color-gray-light;
+        fill: $color-gray-light;
         padding-right: 12px;
+        width: 16px;
+        height: 16px;
     }
 
     &__nested-list {

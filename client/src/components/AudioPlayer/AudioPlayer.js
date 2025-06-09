@@ -4,6 +4,7 @@ import WaveSurfer from 'wavesurfer.js';
 import { LiaMicrophoneAltSolid } from "react-icons/lia";
 import { PiWaveform } from "react-icons/pi";
 import { IoChevronDownSharp, IoEllipsisHorizontalSharp, IoAddSharp, IoListSharp, IoRemoveCircleOutline } from "react-icons/io5";
+import { Queue02 } from "../../assets/icons";
 
 import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
 import { useAudioPlayer, useLocalStorageSync } from '../../hooks';
@@ -434,7 +435,7 @@ const AudioPlayer = ({
               })),
             },
             {
-              icon: IoListSharp,
+              icon: Queue02,
               text: 'Add to queue',
               onClick: () => {
                 console.log('Add current beat to queue');

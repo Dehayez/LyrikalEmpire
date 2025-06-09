@@ -19,7 +19,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
 
   const [hoveredItem, setHoveredItem] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [artistName, setArtistName] = useState('');
+  const [artistName, setArtistName] = useState(' ');
 
   const handleClick = (e, onClick) => {
     e.stopPropagation();
@@ -63,7 +63,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
       if (beat?.user_id) {
         try {
           const user = await getUserById(beat.user_id);
-          setArtistName(user?.username || 'Unknown Artist');
+          setArtistName(user?.username || ' ');
         } catch (error) {
           console.warn('Could not fetch artist name. Using fallback.', error);
         }
