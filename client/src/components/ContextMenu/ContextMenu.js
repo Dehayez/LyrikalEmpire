@@ -19,7 +19,7 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
 
   const [hoveredItem, setHoveredItem] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [artistName, setArtistName] = useState('Unknown Artist');
+  const [artistName, setArtistName] = useState('');
 
   const handleClick = (e, onClick) => {
     e.stopPropagation();
