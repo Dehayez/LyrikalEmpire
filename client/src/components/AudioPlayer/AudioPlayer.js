@@ -7,7 +7,7 @@ import { IoChevronDownSharp, IoEllipsisHorizontalSharp, IoAddSharp, IoListSharp,
 import { Queue02 } from "../../assets/icons";
 
 import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
-import { useAudioPlayer, useLocalStorageSync } from '../../hooks';
+import { useAudioPlayer, useLocalStorageSync, useDragToDismiss } from '../../hooks';
 import { getSignedUrl, getUserById } from '../../services';
 import { usePlaylist } from '../../contexts';
 
@@ -26,6 +26,7 @@ const AudioPlayer = ({
   repeat, setRepeat,
   lyricsModal, setLyricsModal
 }) => {
+
   const {
     playerRef,
     volume,
@@ -44,11 +45,23 @@ const AudioPlayer = ({
     shuffle, setShuffle,
     repeat, setRepeat
   });
+
   const { playedPlaylistTitle, playlists } = usePlaylist();
+
+  const {
+    dismissRef: fullPagePlayerRef,
+    handleDragStart,
+    handleDragMove,
+    handleDragEnd,
+  } = useDragToDismiss(() => {
+    slideOut(fullPagePlayerRef.current, fullPageOverlayRef.current, () => {
+      setIsFullPage(false);
+      setIsFullPageVisible(false);
+    });
+  });
 
   const waveformRefDesktop = useRef(null);
   const waveformRefFullPage = useRef(null);
-  const fullPagePlayerRef = useRef(null);
   const fullPageOverlayRef = useRef(null);
   const wavesurfer = useRef(null);
   const artistCache = useRef(new Map());
@@ -279,6 +292,9 @@ const AudioPlayer = ({
           <div 
             ref={fullPagePlayerRef}
             className="audio-player audio-player__full-page"
+            onTouchStart={handleDragStart}
+            onTouchMove={handleDragMove}
+            onTouchEnd={handleDragEnd}
           >
             <div className="audio-player__full-page-header">
               <IconButton
