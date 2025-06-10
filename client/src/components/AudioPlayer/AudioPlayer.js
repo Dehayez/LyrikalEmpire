@@ -123,11 +123,14 @@ const AudioPlayer = ({
   // Sync all player instances with the main player
   const syncAllPlayers = () => {
     if (!playerRef.current?.audio.current) return;
-    
+
     const mainAudio = playerRef.current.audio.current;
     const currentTime = mainAudio.currentTime;
     const duration = mainAudio.duration;
-    
+
+    // Update progress state immediately
+    setProgress(currentTime / duration);
+
     // Sync all other player instances
     const playersToSync = [
       mobilePlayerRef.current?.audio.current,
@@ -145,8 +148,6 @@ const AudioPlayer = ({
     if (wavesurfer.current && duration > 0) {
       wavesurfer.current.seekTo(currentTime / duration);
     }
-
-    setProgress(currentTime / duration);
   };
 
   // Effect to handle initial slide-in when full page becomes active
