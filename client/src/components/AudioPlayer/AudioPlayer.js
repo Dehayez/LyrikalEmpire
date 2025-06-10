@@ -65,10 +65,17 @@ const AudioPlayer = ({
   const fullPageOverlayRef = useRef(null);
   const wavesurfer = useRef(null);
   const artistCache = useRef(new Map());
+  
+  // Refs for all H5AudioPlayer instances to keep them in sync
+  const mobilePlayerRef = useRef(null);
+  const desktopPlayerRef = useRef(null);
+  const fullPageProgressRef = useRef(null);
+  
   const [activeContextMenu, setActiveContextMenu] = useState(false);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
@@ -111,6 +118,35 @@ const AudioPlayer = ({
 
   const handleCloseContextMenu = () => {
     setActiveContextMenu(false);
+  };
+
+  // Sync all player instances with the main player
+  const syncAllPlayers = () => {
+    if (!playerRef.current?.audio.current) return;
+    
+    const mainAudio = playerRef.current.audio.current;
+    const currentTime = mainAudio.currentTime;
+    const duration = mainAudio.duration;
+    
+    // Sync all other player instances
+    const playersToSync = [
+      mobilePlayerRef.current?.audio.current,
+      desktopPlayerRef.current?.audio.current,
+      fullPageProgressRef.current?.audio.current
+    ].filter(Boolean);
+
+    playersToSync.forEach(audio => {
+      if (Math.abs(audio.currentTime - currentTime) > 0.1) {
+        audio.currentTime = currentTime;
+      }
+    });
+
+    // Update waveform progress
+    if (wavesurfer.current && duration > 0) {
+      wavesurfer.current.seekTo(currentTime / duration);
+    }
+
+    setProgress(currentTime / duration);
   };
 
   // Effect to handle initial slide-in when full page becomes active
@@ -195,6 +231,29 @@ const AudioPlayer = ({
     };
   }, [setIsPlaying, handlePrevClick, onNext]);
 
+  // Main synchronization effect - runs on every time update
+  useEffect(() => {
+    const audio = playerRef.current?.audio.current;
+    if (!audio) return;
+
+    const updateProgress = () => {
+      setDuration(audio.duration || 0);
+      syncAllPlayers();
+    };
+
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration || 0);
+    };
+
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    
+    return () => {
+      audio.removeEventListener('timeupdate', updateProgress);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+    };
+  }, [playerRef, audioSrc]);
+
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -229,6 +288,7 @@ const AudioPlayer = ({
           const url = URL.createObjectURL(blob);
           wavesurfer.current.load(url);
           wavesurfer.current.setVolume(0);
+          
           wavesurfer.current.on('ready', () => {
             const duration = wavesurfer.current.getDuration();
             if (!isNaN(currentTime) && duration > 0) {
@@ -251,14 +311,12 @@ const AudioPlayer = ({
     };
   }, [audioSrc, isFullPage]);
 
+  // Update waveform position when currentTime changes
   useEffect(() => {
-    if (wavesurfer.current) {
-      const duration = wavesurfer.current.getDuration();
-      if (!isNaN(currentTime) && duration > 0) {
-        wavesurfer.current.seekTo(currentTime / duration);
-      }
+    if (wavesurfer.current && duration > 0) {
+      wavesurfer.current.seekTo(currentTime / duration);
     }
-  }, [currentTime]);
+  }, [currentTime, duration]);
 
   useEffect(() => {
     const container = document.querySelector('.rhap_progress-container');
@@ -278,33 +336,37 @@ const AudioPlayer = ({
     }
   }, [waveform, isFullPage]);
 
-  useEffect(() => {
-    const audio = playerRef.current?.audio.current;
-    if (!audio) return;
-
-    const updateProgress = () => {
-      setProgress(audio.currentTime / audio.duration);
-    };
-
-    audio.addEventListener('timeupdate', updateProgress);
-    return () => {
-      audio.removeEventListener('timeupdate', updateProgress);
-    };
-  }, [playerRef]);
-
   const handlePlayClick = () => {
     setAutoPlay(true);
     setIsPlaying(true);
   };
 
+  const handlePauseClick = () => {
+    setIsPlaying(false);
+  };
+
+  // Enhanced play/pause handlers that sync all players
+  const handlePlayPause = (play) => {
+    setIsPlaying(play);
+    const mainAudio = playerRef.current?.audio.current;
+    if (mainAudio) {
+      if (play) {
+        mainAudio.play();
+      } else {
+        mainAudio.pause();
+      }
+    }
+  };
+
   return (
     <>
+      {/* Hidden main audio player that controls everything */}
       <H5AudioPlayer
         ref={playerRef}
         src={audioSrc}
         autoPlayAfterSrcChange={autoPlay}
         onPlay={handlePlayClick}
-        onPause={() => setIsPlaying(false)}
+        onPause={handlePauseClick}
         style={{ display: 'none' }}
       />
 
@@ -350,13 +412,14 @@ const AudioPlayer = ({
                 </p>
               </div>
               
-              {/* Full page progress bar */}
+              {/* Full page progress bar - synced with main player */}
               <H5AudioPlayer
+                ref={fullPageProgressRef}
                 className="smooth-progress-bar smooth-progress-bar--full-page"
-                autoPlayAfterSrcChange={autoPlay}
+                autoPlayAfterSrcChange={false}
                 src={audioSrc}
-                onPlay={handlePlayClick}
-                onPause={() => setIsPlaying(false)}
+                onPlay={() => {}} // Prevent this from controlling playback
+                onPause={() => {}} // Prevent this from controlling playback
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
                 customControlsSection={[
                   <>
@@ -369,10 +432,7 @@ const AudioPlayer = ({
                     </IconButton>
                     <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
                     <PrevButton onPrev={handlePrevClick} />
-                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
-                      setIsPlaying(play);
-                      play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
-                    }} />
+                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} />
                     <NextButton onNext={onNext} />
                     <RepeatButton repeat={repeat} setRepeat={setRepeat} />
                     <IconButton
@@ -397,13 +457,14 @@ const AudioPlayer = ({
       {!isFullPage && (
         isMobileOrTablet() ? (
           <div className="audio-player audio-player--mobile" onClick={toggleFullPagePlayer}>
-            {/* Mobile progress bar */}
+            {/* Mobile progress bar - synced with main player */}
             <H5AudioPlayer
+              ref={mobilePlayerRef}
               className="smooth-progress-bar smooth-progress-bar--mobile"
-              autoPlayAfterSrcChange={autoPlay}
+              autoPlayAfterSrcChange={false}
               src={audioSrc}
-              onPlay={handlePlayClick}
-              onPause={() => setIsPlaying(false)}
+              onPlay={() => {}} // Prevent this from controlling playback
+              onPause={() => {}} // Prevent this from controlling playback
               customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
               customControlsSection={[]}
             />
@@ -413,10 +474,7 @@ const AudioPlayer = ({
                 {currentBeat.title}
               </p>
             )}
-            <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
-              setIsPlaying(play);
-              play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
-            }} className="small" />
+            <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} className="small" />
           </div>
         ) : (
           <div className="audio-player">
@@ -424,22 +482,20 @@ const AudioPlayer = ({
               {currentBeat && <p>{currentBeat.title}</p>}
             </div>
             <div style={{ flex: '3' }}>
-              {/* Desktop progress bar */}
+              {/* Desktop progress bar - synced with main player */}
               <H5AudioPlayer
+                ref={desktopPlayerRef}
                 className="smooth-progress-bar smooth-progress-bar--desktop"
-                autoPlayAfterSrcChange={autoPlay}
+                autoPlayAfterSrcChange={false}
                 src={audioSrc}
-                onPlay={handlePlayClick}
-                onPause={() => setIsPlaying(false)}
+                onPlay={() => {}} // Prevent this from controlling playback
+                onPause={() => {}} // Prevent this from controlling playback
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
                 customControlsSection={[
                   <>
                     <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
                     <PrevButton onPrev={handlePrevClick} />
-                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
-                      setIsPlaying(play);
-                      play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
-                    }} />
+                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} />
                     <NextButton onNext={onNext} />
                     <RepeatButton repeat={repeat} setRepeat={setRepeat} />
                   </>
