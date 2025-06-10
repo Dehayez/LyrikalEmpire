@@ -68,6 +68,7 @@ const AudioPlayer = ({
   const [activeContextMenu, setActiveContextMenu] = useState(false);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
+  const [progress, setProgress] = useState(0);
 
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
@@ -276,6 +277,20 @@ const AudioPlayer = ({
     }
   }, [waveform, isFullPage]);
 
+    useEffect(() => {
+    const audio = playerRef.current?.audio.current;
+    if (!audio) return;
+
+    const updateProgress = () => {
+      setProgress(audio.currentTime / audio.duration);
+    };
+
+    audio.addEventListener('timeupdate', updateProgress);
+    return () => {
+      audio.removeEventListener('timeupdate', updateProgress);
+    };
+  }, []);
+
   const handlePlayClick = () => {
     setAutoPlay(true);
     setIsPlaying(true);
@@ -283,13 +298,22 @@ const AudioPlayer = ({
 
   return (
     <>
+      <H5AudioPlayer
+        ref={playerRef}
+        src={audioSrc}
+        autoPlayAfterSrcChange={autoPlay}
+        onPlay={handlePlayClick}
+        onPause={() => setIsPlaying(false)}
+        style={{ display: 'none' }}
+      />
+
       {isFullPage && (
         <>
-          <div 
+          <div
             ref={fullPageOverlayRef}
             className={`audio-player__full-page-overlay ${isFullPageVisible ? 'visible' : ''}`}
           />
-          <div 
+          <div
             ref={fullPagePlayerRef}
             className="audio-player audio-player__full-page"
             onTouchStart={handleDragStart}
@@ -297,69 +321,36 @@ const AudioPlayer = ({
             onTouchEnd={handleDragEnd}
           >
             <div className="audio-player__full-page-header">
-              <IconButton
-                className="audio-player__close-button"
-                onClick={toggleFullPagePlayer}
-                text="Close"
-                ariaLabel="Close full-page player"
-              >
+              <IconButton onClick={toggleFullPagePlayer} text="Close" ariaLabel="Close full-page player">
                 <IoChevronDownSharp />
               </IconButton>
-              <p className="audio-player__full-page-title">
-                {playedPlaylistTitle || 'All Tracks'}
-              </p>
-              <IconButton
-                className="audio-player__ellipsis-button"
-                onClick={handleEllipsisClick}
-              >
+              <p className="audio-player__full-page-title">{playedPlaylistTitle || 'All Tracks'}</p>
+              <IconButton onClick={handleEllipsisClick}>
                 <IoEllipsisHorizontalSharp />
               </IconButton>
             </div>
             <div className="audio-player__full-page-content">
               <div className="audio-player__full-page-info">
-                <p className="audio-player__title">
-                  {currentBeat ? currentBeat.title : 'Audio Player'}
-                </p>
-                <p className="audio-player__artist">
-                  {currentBeat ? artistCache.current.get(currentBeat.user_id) || 'Unknown Artist' : ''}
-                </p>
+                <p className="audio-player__title">{currentBeat?.title || 'Audio Player'}</p>
+                <p className="audio-player__artist">{artistCache.current.get(currentBeat?.user_id) || 'Unknown Artist'}</p>
               </div>
-              <div
-                ref={waveformRefFullPage}
-                className={`waveform ${waveform ? 'waveform--active' : ''}`}
-              ></div>
-              <H5AudioPlayer
-                className="smooth-progress-bar smooth-progress-bar--full-page"
-                autoPlayAfterSrcChange={autoPlay}
-                src={audioSrc}
-                ref={playerRef}
-                onPlay={handlePlayClick}
-                onPause={() => setIsPlaying(false)}
-                customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-                customControlsSection={[
-                  <IconButton
-                    className="audio-player__icon"
-                    onClick={toggleWaveform}
-                    text={waveform ? "Hide waveform" : "Show waveform"}
-                    ariaLabel={waveform ? "Hide waveform" : "Show waveform"}
-                  >
-                    <PiWaveform className={waveform ? 'icon-primary' : ''} />
-                  </IconButton>,
-                  <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
-                  <PrevButton onPrev={handlePrevClick} />,
-                  <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
-                  <NextButton onNext={onNext} />,
-                  <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
-                  <IconButton
-                    className="audio-player__icon"
-                    onClick={toggleLyricsModal}
-                    text={lyricsModal ? "Hide lyrics" : "Show lyrics"}
-                    ariaLabel={lyricsModal ? "Hide lyrics" : "Show lyrics"}
-                  >
-                    <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
-                  </IconButton>,
-                ]}
-              />
+              <div ref={waveformRefFullPage} className={`waveform ${waveform ? 'waveform--active' : ''}`}></div>
+              <div className="controls">
+                <IconButton onClick={toggleWaveform} text={waveform ? 'Hide waveform' : 'Show waveform'} ariaLabel={waveform ? 'Hide waveform' : 'Show waveform'}>
+                  <PiWaveform className={waveform ? 'icon-primary' : ''} />
+                </IconButton>
+                <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
+                <PrevButton onPrev={handlePrevClick} />
+                <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
+                  setIsPlaying(play);
+                  play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
+                }} />
+                <NextButton onNext={onNext} />
+                <RepeatButton repeat={repeat} setRepeat={setRepeat} />
+                <IconButton onClick={toggleLyricsModal} text={lyricsModal ? 'Hide lyrics' : 'Show lyrics'} ariaLabel={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}>
+                  <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
+                </IconButton>
+              </div>
             </div>
           </div>
         </>
@@ -367,65 +358,43 @@ const AudioPlayer = ({
 
       {!isFullPage && (
         isMobileOrTablet() ? (
-          <div className="audio-player audio-player--mobile" id="audio-player" onClick={toggleFullPagePlayer}>
-            <H5AudioPlayer
-              className="smooth-progress-bar smooth-progress-bar--mobile"
-              autoPlayAfterSrcChange={autoPlay}
-              src={audioSrc}
-              ref={playerRef}
-              onPlay={handlePlayClick}
-              onPause={() => setIsPlaying(false)}
-              customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-            />
+          <div className="audio-player audio-player--mobile" onClick={toggleFullPagePlayer}>
             {currentBeat && (
               <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
                 {currentBeat.title}
               </p>
             )}
-            <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} className="small" />
+            <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
+              setIsPlaying(play);
+              play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
+            }} className="small" />
           </div>
         ) : (
-          <div className="audio-player" id="audio-player">
+          <div className="audio-player">
             <div className='audio-player__title audio-player__title--desktop' style={{ flex: '1' }}>
               {currentBeat && <p>{currentBeat.title}</p>}
             </div>
             <div style={{ flex: '3' }}>
-              <H5AudioPlayer
-                className="smooth-progress-bar smooth-progress-bar--desktop"
-                autoPlayAfterSrcChange={autoPlay}
-                src={audioSrc}
-                ref={playerRef}
-                onPlay={handlePlayClick}
-                onPause={() => setIsPlaying(false)}
-                customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-                customControlsSection={[
-                  <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />,
-                  <PrevButton onPrev={handlePrevClick} />,
-                  <PlayPauseButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
-                  <NextButton onNext={onNext} />,
-                  <RepeatButton repeat={repeat} setRepeat={setRepeat} />,
-                ]}
-              />
-              <div
-                ref={waveformRefDesktop}
-                className={`waveform ${waveform ? 'waveform--active' : ''}`}
-              ></div>
+              <div className='smooth-progress-bar smooth-progress-bar--desktop'>
+                {/* Custom progress visualization could go here using progress state */}
+              </div>
+              <div ref={waveformRefDesktop} className={`waveform ${waveform ? 'waveform--active' : ''}`}></div>
+              <div className='controls'>
+                <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
+                <PrevButton onPrev={handlePrevClick} />
+                <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
+                  setIsPlaying(play);
+                  play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
+                }} />
+                <NextButton onNext={onNext} />
+                <RepeatButton repeat={repeat} setRepeat={setRepeat} />
+              </div>
             </div>
             <div className='audio-player__settings' style={{ flex: '1' }}>
-              <IconButton
-                className='audio-player__icon'
-                onClick={toggleWaveform}
-                text={waveform ? "Hide waveform" : "Show waveform"}
-                ariaLabel={waveform ? "Hide waveform" : "Show waveform"}
-              >
+              <IconButton onClick={toggleWaveform} text={waveform ? 'Hide waveform' : 'Show waveform'} ariaLabel={waveform ? 'Hide waveform' : 'Show waveform'}>
                 <PiWaveform className={waveform ? 'icon-primary' : ''} />
               </IconButton>
-              <IconButton
-                className='audio-player__icon'
-                onClick={toggleLyricsModal}
-                text={lyricsModal ? "Hide lyrics" : "Show lyrics"}
-                ariaLabel={lyricsModal ? "Hide lyrics" : "Show lyrics"}
-              >
+              <IconButton onClick={toggleLyricsModal} text={lyricsModal ? 'Hide lyrics' : 'Show lyrics'} ariaLabel={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}>
                 <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
               </IconButton>
               <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
@@ -433,6 +402,7 @@ const AudioPlayer = ({
           </div>
         )
       )}
+
       {activeContextMenu && (
         <ContextMenu
           beat={currentBeat}
@@ -444,28 +414,19 @@ const AudioPlayer = ({
               text: 'Add to playlist',
               subItems: playlists.map((playlist) => ({
                 text: playlist.title,
-                onClick: () => {
-                  console.log(`Add current beat to playlist: ${playlist.title}`);
-                  // Add logic to handle adding the current beat to the playlist
-                },
-              })),
+                onClick: () => console.log(`Add to playlist: ${playlist.title}`)
+              }))
             },
             {
               icon: Queue02,
               text: 'Add to queue',
-              onClick: () => {
-                console.log('Add current beat to queue');
-                // Add logic to handle adding the current beat to the queue
-              },
+              onClick: () => console.log('Add to queue')
             },
             {
               icon: IoRemoveCircleOutline,
               text: 'Remove from queue',
-              onClick: () => {
-                console.log('Remove current beat from queue');
-                // Add logic to handle removing the current beat from the queue
-              },
-            },
+              onClick: () => console.log('Remove from queue')
+            }
           ]}
         />
       )}
