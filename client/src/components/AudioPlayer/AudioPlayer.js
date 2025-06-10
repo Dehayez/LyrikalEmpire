@@ -99,11 +99,15 @@ const AudioPlayer = ({
         if (fullPagePlayerRef.current) {
           slideIn(fullPagePlayerRef.current);
         }
+        // Force sync when switching to full page
+        setTimeout(forceSyncAllPlayers, 100);
       });
     } else {
       slideOut(fullPagePlayerRef.current, fullPageOverlayRef.current, () => {
         setIsFullPage(false);
         setIsFullPageVisible(false);
+        // Force sync when switching back from full page
+        setTimeout(forceSyncAllPlayers, 100);
       });
     }
   };
@@ -150,20 +154,45 @@ const AudioPlayer = ({
     }
   };
 
+  // Force sync when switching views or when paused
+  const forceSyncAllPlayers = () => {
+    if (!playerRef.current?.audio.current) return;
+    
+    const mainAudio = playerRef.current.audio.current;
+    const currentTime = mainAudio.currentTime;
+    const duration = mainAudio.duration;
+    
+    // Update progress state immediately
+    setProgress(currentTime / duration);
+    
+    // Force sync all player instances immediately
+    const playersToSync = [
+      mobilePlayerRef.current?.audio.current,
+      desktopPlayerRef.current?.audio.current,
+      fullPageProgressRef.current?.audio.current
+    ].filter(Boolean);
+
+    playersToSync.forEach(audio => {
+      audio.currentTime = currentTime;
+      // Trigger a manual timeupdate event to force UI update
+      audio.dispatchEvent(new Event('timeupdate'));
+    });
+
+    // Update waveform progress
+    if (wavesurfer.current && duration > 0) {
+      wavesurfer.current.seekTo(currentTime / duration);
+    }
+  };
+
   // Effect to handle initial slide-in when full page becomes active
   useEffect(() => {
     if (isFullPage && fullPagePlayerRef.current && !isFullPageVisible) {
       setIsFullPageVisible(true);
       slideIn(fullPagePlayerRef.current);
-    } else if (!isFullPage) {
-      syncAllPlayers();
     }
-
-    // Sync the full-page audio player progress
-    const fullPageAudio = fullPageProgressRef.current?.audio?.current;
-    const mainAudio = playerRef.current?.audio?.current;
-    if (fullPageAudio && mainAudio) {
-      fullPageAudio.currentTime = mainAudio.currentTime;
+    // Force sync when view changes
+    if (isFullPage !== undefined) {
+      setTimeout(forceSyncAllPlayers, 50);
     }
   }, [isFullPage, isFullPageVisible]);
 
@@ -174,6 +203,8 @@ const AudioPlayer = ({
           setAudioSrc('');
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
+          // Force sync after new audio loads
+          setTimeout(forceSyncAllPlayers, 200);
         } catch (error) {
           console.error('Error fetching signed URL:', error);
         }
@@ -253,14 +284,23 @@ const AudioPlayer = ({
 
     const handleLoadedMetadata = () => {
       setDuration(audio.duration || 0);
+      // Force sync after metadata loads
+      setTimeout(forceSyncAllPlayers, 100);
+    };
+
+    const handleLoadedData = () => {
+      // Force sync after audio data loads
+      setTimeout(forceSyncAllPlayers, 100);
     };
 
     audio.addEventListener('timeupdate', updateProgress);
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('loadeddata', handleLoadedData);
     
     return () => {
       audio.removeEventListener('timeupdate', updateProgress);
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('loadeddata', handleLoadedData);
     };
   }, [playerRef, audioSrc]);
 
@@ -271,7 +311,7 @@ const AudioPlayer = ({
     const loadWaveform = async () => {
       const container = isFullPage ? waveformRefFullPage.current : waveformRefDesktop.current;
 
-      if (container && audioSrc) {
+      if (container && audioSrc && waveform) {
         if (wavesurfer.current) {
           wavesurfer.current.destroy();
         }
@@ -304,6 +344,8 @@ const AudioPlayer = ({
             if (!isNaN(currentTime) && duration > 0) {
               wavesurfer.current.seekTo(currentTime / duration);
             }
+            // Force sync after waveform is ready
+            setTimeout(forceSyncAllPlayers, 100);
           });
         } catch (error) {
           if (error.name !== 'AbortError') console.error("Error loading audio source:", error);
@@ -311,15 +353,24 @@ const AudioPlayer = ({
       }
     };
 
-    const timer = setTimeout(loadWaveform, 100);
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
+    if (waveform) {
+      const timer = setTimeout(loadWaveform, 100);
+      return () => {
+        clearTimeout(timer);
+        controller.abort();
+      };
+    } else {
+      // Clean up waveform when disabled
       if (wavesurfer.current) {
         wavesurfer.current.destroy();
+        wavesurfer.current = null;
       }
+    }
+
+    return () => {
+      controller.abort();
     };
-  }, [audioSrc, isFullPage]);
+  }, [audioSrc, isFullPage, waveform]);
 
   // Update waveform position when currentTime changes
   useEffect(() => {
@@ -329,22 +380,44 @@ const AudioPlayer = ({
   }, [currentTime, duration]);
 
   useEffect(() => {
-    const container = document.querySelector('.rhap_progress-container');
-    const waveformEl = isFullPage ? waveformRefFullPage.current : waveformRefDesktop.current;
+    if (!waveform) return;
 
-    if (container && waveformEl && !container.contains(waveformEl)) {
-      container.style.position = 'relative';
-      waveformEl.style.position = 'absolute';
-      waveformEl.style.top = '-30px';
-      waveformEl.style.left = '0';
-      waveformEl.style.width = '100%';
-      waveformEl.style.height = '100%';
-      waveformEl.style.zIndex = '0';
-      waveformEl.style.pointerEvents = 'none';
-
-      container.prepend(waveformEl);
+    // Find the correct progress container based on current view
+    let containerSelector;
+    if (isFullPage) {
+      containerSelector = '.smooth-progress-bar--full-page .rhap_progress-container';
+    } else if (isMobileOrTablet()) {
+      containerSelector = '.smooth-progress-bar--mobile .rhap_progress-container';
+    } else {
+      containerSelector = '.smooth-progress-bar--desktop .rhap_progress-container';
     }
-  }, [waveform, isFullPage]);
+
+    // Use a timeout to ensure the DOM is ready
+    const timer = setTimeout(() => {
+      const container = document.querySelector(containerSelector);
+      const waveformEl = isFullPage ? waveformRefFullPage.current : waveformRefDesktop.current;
+
+      if (container && waveformEl && !container.contains(waveformEl)) {
+        // Remove from any previous container first
+        if (waveformEl.parentElement && waveformEl.parentElement.classList.contains('rhap_progress-container')) {
+          waveformEl.parentElement.removeChild(waveformEl);
+        }
+
+        container.style.position = 'relative';
+        waveformEl.style.position = 'absolute';
+        waveformEl.style.top = '-30px';
+        waveformEl.style.left = '0';
+        waveformEl.style.width = '100%';
+        waveformEl.style.height = '100%';
+        waveformEl.style.zIndex = '0';
+        waveformEl.style.pointerEvents = 'none';
+
+        container.prepend(waveformEl);
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [waveform, isFullPage, isFullPageVisible]);
 
   const handlePlayClick = () => {
     setAutoPlay(true);
