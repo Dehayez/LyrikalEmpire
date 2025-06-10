@@ -154,6 +154,8 @@ const AudioPlayer = ({
     if (isFullPage && fullPagePlayerRef.current && !isFullPageVisible) {
       setIsFullPageVisible(true);
       slideIn(fullPagePlayerRef.current);
+    } else if (!isFullPage) {
+      syncAllPlayers();
     }
   }, [isFullPage, isFullPageVisible]);
 
