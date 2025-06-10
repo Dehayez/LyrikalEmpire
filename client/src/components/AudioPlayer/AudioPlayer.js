@@ -358,41 +358,37 @@ const AudioPlayer = ({
                 onPlay={handlePlayClick}
                 onPause={() => setIsPlaying(false)}
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-                customControlsSection={[]}
+                customControlsSection={[
+                  <>
+                    <IconButton
+                      onClick={toggleWaveform}
+                      text={waveform ? 'Hide waveform' : 'Show waveform'}
+                      ariaLabel={waveform ? 'Hide waveform' : 'Show waveform'}
+                    >
+                      <PiWaveform className={waveform ? 'icon-primary' : ''} />
+                    </IconButton>
+                    <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
+                    <PrevButton onPrev={handlePrevClick} />
+                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
+                      setIsPlaying(play);
+                      play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
+                    }} />
+                    <NextButton onNext={onNext} />
+                    <RepeatButton repeat={repeat} setRepeat={setRepeat} />
+                    <IconButton
+                      onClick={toggleLyricsModal}
+                      text={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
+                      ariaLabel={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
+                    >
+                      <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
+                    </IconButton>
+                  </>
+                ]}
                 style={{ marginBottom: '20px' }}
               />
               
               {/* Full page waveform */}
-              <div
-                ref={waveformRefFullPage}
-                className={`waveform ${waveform ? 'waveform--active' : ''}`}
-              ></div>
-              
-              {/* Full page controls */}
-              <div className="controls">
-                <IconButton
-                  onClick={toggleWaveform}
-                  text={waveform ? 'Hide waveform' : 'Show waveform'}
-                  ariaLabel={waveform ? 'Hide waveform' : 'Show waveform'}
-                >
-                  <PiWaveform className={waveform ? 'icon-primary' : ''} />
-                </IconButton>
-                <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
-                <PrevButton onPrev={handlePrevClick} />
-                <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
-                  setIsPlaying(play);
-                  play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
-                }} />
-                <NextButton onNext={onNext} />
-                <RepeatButton repeat={repeat} setRepeat={setRepeat} />
-                <IconButton
-                  onClick={toggleLyricsModal}
-                  text={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
-                  ariaLabel={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
-                >
-                  <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
-                </IconButton>
-              </div>
+              <div ref={waveformRefFullPage} className={`waveform ${waveform ? 'waveform--active' : ''}`}></div>
             </div>
           </div>
         </>
@@ -436,26 +432,24 @@ const AudioPlayer = ({
                 onPlay={handlePlayClick}
                 onPause={() => setIsPlaying(false)}
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-                customControlsSection={[]}
+                customControlsSection={[
+                  <>
+                    <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
+                    <PrevButton onPrev={handlePrevClick} />
+                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
+                      setIsPlaying(play);
+                      play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
+                    }} />
+                    <NextButton onNext={onNext} />
+                    <RepeatButton repeat={repeat} setRepeat={setRepeat} />
+                  </>
+                ]}
               />
-              
               {/* Desktop waveform */}
               <div
                 ref={waveformRefDesktop}
                 className={`waveform ${waveform ? 'waveform--active' : ''}`}
               ></div>
-              
-              {/* Desktop controls */}
-              <div className='controls'>
-                <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
-                <PrevButton onPrev={handlePrevClick} />
-                <PlayPauseButton isPlaying={isPlaying} setIsPlaying={(play) => {
-                  setIsPlaying(play);
-                  play ? playerRef.current.audio.current.play() : playerRef.current.audio.current.pause();
-                }} />
-                <NextButton onNext={onNext} />
-                <RepeatButton repeat={repeat} setRepeat={setRepeat} />
-              </div>
             </div>
             <div className='audio-player__settings' style={{ flex: '1' }}>
               <IconButton
