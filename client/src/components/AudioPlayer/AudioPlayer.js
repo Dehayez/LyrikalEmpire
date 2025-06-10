@@ -157,6 +157,13 @@ const AudioPlayer = ({
     } else if (!isFullPage) {
       syncAllPlayers();
     }
+
+    // Sync the full-page audio player progress
+    const fullPageAudio = fullPageProgressRef.current?.audio?.current;
+    const mainAudio = playerRef.current?.audio?.current;
+    if (fullPageAudio && mainAudio) {
+      fullPageAudio.currentTime = mainAudio.currentTime;
+    }
   }, [isFullPage, isFullPageVisible]);
 
   useEffect(() => {
