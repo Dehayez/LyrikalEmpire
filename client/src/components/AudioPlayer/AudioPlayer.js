@@ -441,6 +441,16 @@ const AudioPlayer = ({
     }
   };
 
+
+const handleSeeked = (e) => {
+  const newTime = e.target.currentTime;
+  const mainAudio = playerRef.current?.audio.current;
+  if (mainAudio && Math.abs(mainAudio.currentTime - newTime) > 0.1) { 
+    mainAudio.currentTime = newTime;
+    setProgress(newTime / mainAudio.duration);
+    forceSyncAllPlayers();
+  }
+};
   return (
     <>
       {/* Hidden main audio player that controls everything */}
@@ -501,8 +511,9 @@ const AudioPlayer = ({
                 className="smooth-progress-bar smooth-progress-bar--full-page"
                 autoPlayAfterSrcChange={false}
                 src={audioSrc}
-                onPlay={() => {}} // Prevent this from controlling playback
-                onPause={() => {}} // Prevent this from controlling playback
+                onPlay={() => {}} 
+                onPause={() => {}}
+                onSeeked={handleSeeked}
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
                 customControlsSection={[
                   <>
@@ -546,8 +557,9 @@ const AudioPlayer = ({
               className="smooth-progress-bar smooth-progress-bar--mobile"
               autoPlayAfterSrcChange={false}
               src={audioSrc}
-              onPlay={() => {}} // Prevent this from controlling playback
-              onPause={() => {}} // Prevent this from controlling playback
+              onPlay={() => {}}
+              onPause={() => {}}
+              onSeeked={handleSeeked}
               customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
               customControlsSection={[]}
             />
@@ -571,9 +583,10 @@ const AudioPlayer = ({
                 className="smooth-progress-bar smooth-progress-bar--desktop"
                 autoPlayAfterSrcChange={false}
                 src={audioSrc}
-                onPlay={() => {}} // Prevent this from controlling playback
-                onPause={() => {}} // Prevent this from controlling playback
+                onPlay={() => {}}
+                onPause={() => {}}
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
+                onSeeked={handleSeeked}
                 customControlsSection={[
                   <>
                     <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
