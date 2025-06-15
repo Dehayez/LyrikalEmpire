@@ -203,12 +203,10 @@ const AudioPlayer = ({
 
   // Handle play/pause from UI
   const handlePlayPause = (play) => {
-    if (!sharedAudioRef.current) return;
-    
-    if (play) {
-      sharedAudioRef.current.play().catch(console.error);
-    } else {
-      sharedAudioRef.current.pause();
+    const audio = playerRef.current?.audio.current;
+    if (audio) {
+      play ? audio.play().catch(console.error) : audio.pause();
+      setIsPlaying(play);
     }
   };
 
