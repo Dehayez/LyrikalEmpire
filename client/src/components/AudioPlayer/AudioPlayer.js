@@ -142,27 +142,32 @@ const AudioPlayer = ({
     // Force update display players by manipulating their progress bars directly
     const updateProgressBar = (playerRef) => {
       if (playerRef?.current) {
-        const progressBar = playerRef.current.container.current?.querySelector('.rhap_progress-filled');
-        const progressIndicator = playerRef.current.container.current?.querySelector('.rhap_progress-indicator');
-        const currentTimeEl = playerRef.current.container.current?.querySelector('.rhap_current-time');
-        const durationEl = playerRef.current.container.current?.querySelector('.rhap_total-time');
-        
-        if (progressBar) {
-          const progressPercent = duration ? (currentTime / duration) * 100 : 0;
-          progressBar.style.width = `${progressPercent}%`;
+        // Use requestAnimationFrame for smoother updates
+        requestAnimationFrame(() => {
+          const progressBar = playerRef.current.container.current?.querySelector('.rhap_progress-filled');
+          const progressIndicator = playerRef.current.container.current?.querySelector('.rhap_progress-indicator');
+          const currentTimeEl = playerRef.current.container.current?.querySelector('.rhap_current-time');
+          const durationEl = playerRef.current.container.current?.querySelector('.rhap_total-time');
           
-          if (progressIndicator) {
-            progressIndicator.style.left = `${progressPercent}%`;
+          if (progressBar) {
+            const progressPercent = duration ? (currentTime / duration) * 100 : 0;
+            progressBar.style.width = `${progressPercent}%`;
+            progressBar.style.transition = 'none'; // Remove transition for instant update
+            
+            if (progressIndicator) {
+              progressIndicator.style.left = `${progressPercent}%`;
+              progressIndicator.style.transition = 'none'; // Remove transition for instant update
+            }
           }
-        }
-        
-        if (currentTimeEl) {
-          currentTimeEl.textContent = formatTime(currentTime);
-        }
-        
-        if (durationEl) {
-          durationEl.textContent = formatTime(duration);
-        }
+          
+          if (currentTimeEl) {
+            currentTimeEl.textContent = formatTime(currentTime);
+          }
+          
+          if (durationEl) {
+            durationEl.textContent = formatTime(duration);
+          }
+        });
       }
     };
 
@@ -292,6 +297,18 @@ const AudioPlayer = ({
     syncAllPlayers();
   };
 
+  // Get current audio state for immediate rendering
+  const getCurrentAudioState = () => {
+    const mainAudio = playerRef.current?.audio.current;
+    if (!mainAudio) return { currentTime: 0, duration: 0, progress: 0 };
+    
+    const currentTime = mainAudio.currentTime || 0;
+    const duration = mainAudio.duration || 0;
+    const progress = duration ? (currentTime / duration) * 100 : 0;
+    
+    return { currentTime, duration, progress };
+  };
+
   // Override H5AudioPlayer events to prevent conflicts
   const preventDefaultAudioEvents = {
     onPlay: (e) => {
@@ -308,16 +325,31 @@ const AudioPlayer = ({
     onSeeked: handleSeeked,
   };
 
+  // Pre-calculate progress for immediate rendering
+  const audioState = getCurrentAudioState();
+  const progressStyle = {
+    width: `${audioState.progress}%`
+  };
+  const progressIndicatorStyle = {
+    left: `${audioState.progress}%`
+  };
+
   // Effect to sync display players when they're rendered or view changes
   useEffect(() => {
     const syncAfterRender = () => {
+      // Immediate sync without delay for view changes
       syncAllPlayers(true);
+      
+      // Also force sync with requestAnimationFrame for next paint cycle
+      requestAnimationFrame(() => {
+        syncAllPlayers(true);
+      });
     };
     
-    // Sync when switching between mobile/desktop/fullpage views
-    const timeoutId = setTimeout(syncAfterRender, 100);
+    // Immediate sync when switching views
+    syncAfterRender();
     
-    return () => clearTimeout(timeoutId);
+    return () => {};
   }, [isFullPage, isFullPageVisible]);
 
   // Additional effect to ensure sync after display players are mounted
@@ -329,8 +361,11 @@ const AudioPlayer = ({
       }
     };
 
-    // Check multiple times to catch when display players are ready
-    const intervals = [100, 300, 500, 1000];
+    // Immediate sync, then fallback syncs
+    ensureSync();
+    
+    // Reduced timeout intervals for faster sync
+    const intervals = [0, 16, 50]; // 0ms, one frame, then 50ms
     const timeouts = intervals.map(delay => 
       setTimeout(ensureSync, delay)
     );
@@ -579,6 +614,9 @@ const AudioPlayer = ({
                 src={audioSrc}
                 {...preventDefaultAudioEvents}
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
+                onLoadedMetadata={() => {
+                  requestAnimationFrame(() => syncAllPlayers(true));
+                }}
                 customControlsSection={[
                   <>
                     <IconButton
@@ -647,6 +685,9 @@ const AudioPlayer = ({
                 src={audioSrc}
                 {...preventDefaultAudioEvents}
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
+                onLoadedMetadata={() => {
+                  requestAnimationFrame(() => syncAllPlayers(true));
+                }}
                 customControlsSection={[
                   <>
                     <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
