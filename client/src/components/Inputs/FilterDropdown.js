@@ -126,7 +126,7 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
                 </div>
                 <div className="filter-dropdown__actions">
                   <Button size="small" variant="transparent" className="filter-dropdown__clear-button" onClick={() => handleClear(name)}>Clear</Button>
-                  <Button size="small" className="filter-dropdown__close-button" variant='primary' onClick={(e) => toggleDropdown(name, e)}>Close</Button>
+                  <Button size="small" className="filter-dropdown__close-button" variant='primary' onClick={(e) => toggleDropdown(name, e)}>Done</Button>
                 </div>
               </div>
             )}
