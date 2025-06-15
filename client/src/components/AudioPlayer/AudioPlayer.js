@@ -66,6 +66,11 @@ const AudioPlayer = ({
   const wavesurfer = useRef(null);
   const artistCache = useRef(new Map());
   
+  // Refs for display-only H5AudioPlayer instances
+  const mobilePlayerRef = useRef(null);
+  const desktopPlayerRef = useRef(null);
+  const fullPageProgressRef = useRef(null);
+  
   // Single shared audio element
   const sharedAudioRef = useRef(null);
   
@@ -118,29 +123,33 @@ const AudioPlayer = ({
     setActiveContextMenu(false);
   };
 
-  // Create shared audio element once
+  // Initialize shared audio element once
   useEffect(() => {
     if (!sharedAudioRef.current) {
       sharedAudioRef.current = new Audio();
       sharedAudioRef.current.preload = 'metadata';
       
-      // Set up event listeners for the shared audio
       const audio = sharedAudioRef.current;
       
       const updateProgress = () => {
         if (audio.duration) {
-          setProgress(audio.currentTime / audio.duration);
+          const currentProgress = audio.currentTime / audio.duration;
+          setProgress(currentProgress);
           setDuration(audio.duration);
           
           // Update waveform progress
           if (wavesurfer.current) {
-            wavesurfer.current.seekTo(audio.currentTime / audio.duration);
+            wavesurfer.current.seekTo(currentProgress);
           }
+          
+          // Sync all display players
+          syncDisplayPlayers(audio.currentTime);
         }
       };
 
       const handleLoadedMetadata = () => {
         setDuration(audio.duration || 0);
+        syncDisplayPlayers(0);
       };
 
       const handlePlay = () => {
@@ -177,7 +186,22 @@ const AudioPlayer = ({
     }
   }, [onNext, setIsPlaying]);
 
-  // Handle play/pause
+  // Sync display-only H5AudioPlayer instances
+  const syncDisplayPlayers = (currentTime) => {
+    const playersToSync = [
+      mobilePlayerRef.current?.audio.current,
+      desktopPlayerRef.current?.audio.current,
+      fullPageProgressRef.current?.audio.current
+    ].filter(Boolean);
+
+    playersToSync.forEach(audio => {
+      if (Math.abs(audio.currentTime - currentTime) > 0.1) {
+        audio.currentTime = currentTime;
+      }
+    });
+  };
+
+  // Handle play/pause from UI
   const handlePlayPause = (play) => {
     if (!sharedAudioRef.current) return;
     
@@ -188,11 +212,22 @@ const AudioPlayer = ({
     }
   };
 
-  // Handle seeking
-  const handleSeek = (time) => {
-    if (sharedAudioRef.current) {
-      sharedAudioRef.current.currentTime = time;
+  // Handle seeking from UI
+  const handleSeeked = (e) => {
+    const newTime = e.target.currentTime;
+    if (sharedAudioRef.current && Math.abs(sharedAudioRef.current.currentTime - newTime) > 0.1) {
+      sharedAudioRef.current.currentTime = newTime;
+      syncDisplayPlayers(newTime);
     }
+  };
+
+  // Override H5AudioPlayer events to use shared audio
+  const preventDefaultAudioEvents = {
+    onPlay: () => {}, // Prevent H5AudioPlayer from controlling audio
+    onPause: () => {},
+    onLoadStart: () => {},
+    onCanPlay: () => {},
+    onLoadedData: () => {},
   };
 
   // Effect to handle initial slide-in when full page becomes active
@@ -207,6 +242,7 @@ const AudioPlayer = ({
     const fetchSignedUrl = async () => {
       if (currentBeat?.audio) {
         try {
+          setAudioSrc('');
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
           
@@ -351,11 +387,11 @@ const AudioPlayer = ({
 
     let containerSelector;
     if (isFullPage) {
-      containerSelector = '.progress-display--full-page';
-    } else if (isMobileOrTablet()) {      
-      containerSelector = '.progress-display--mobile';
+      containerSelector = '.smooth-progress-bar--full-page .rhap_progress-container';
+    } else if (isMobileOrTablet()) {
+      containerSelector = '.smooth-progress-bar--mobile .rhap_progress-container';
     } else {
-      containerSelector = '.progress-display--desktop';
+      containerSelector = '.smooth-progress-bar--desktop .rhap_progress-container';
     }
 
     const timer = setTimeout(() => {
@@ -363,84 +399,38 @@ const AudioPlayer = ({
       const waveformEl = isFullPage ? waveformRefFullPage.current : waveformRefDesktop.current;
 
       if (container && waveformEl && !container.contains(waveformEl)) {
-        if (waveformEl.parentElement && waveformEl.parentElement !== container) {
+        if (waveformEl.parentElement && waveformEl.parentElement.classList.contains('rhap_progress-container')) {
           waveformEl.parentElement.removeChild(waveformEl);
         }
 
         container.style.position = 'relative';
         waveformEl.style.position = 'absolute';
-        waveformEl.style.top = '0';
+        waveformEl.style.top = '-30px';
         waveformEl.style.left = '0';
         waveformEl.style.width = '100%';
         waveformEl.style.height = '100%';
         waveformEl.style.zIndex = '0';
         waveformEl.style.pointerEvents = 'none';
 
-        container.appendChild(waveformEl);
+        container.prepend(waveformEl);
       }
     }, 150);
 
     return () => clearTimeout(timer);
   }, [waveform, isFullPage, isFullPageVisible]);
 
-  // Custom progress bar component
-  const ProgressBar = ({ className, showControls = false }) => {
-    const progressBarRef = useRef(null);
-
-    const handleProgressClick = (e) => {
-      if (!progressBarRef.current || !sharedAudioRef.current) return;
-      
-      const rect = progressBarRef.current.getBoundingClientRect();
-      const percent = (e.clientX - rect.left) / rect.width;
-      const newTime = percent * sharedAudioRef.current.duration;
-      handleSeek(newTime);
-    };
-
-    const formatTime = (time) => {
-      if (!time || isNaN(time)) return '0:00';
-      const minutes = Math.floor(time / 60);
-      const seconds = Math.floor(time % 60);
-      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    };
-
-    return (
-      <div className={`progress-container ${className}`}>
-        <div className="time-display">
-          <span className="current-time">{formatTime(sharedAudioRef.current?.currentTime || 0)}</span>
-        </div>
-        
-        <div 
-          className="progress-display"
-          ref={progressBarRef}
-          onClick={handleProgressClick}
-        >
-          <div className="progress-track">
-            <div 
-              className="progress-fill"
-              style={{ width: `${progress * 100}%` }}
-            />
-          </div>
-        </div>
-        
-        <div className="time-display">
-          <span className="duration">{formatTime(duration)}</span>
-        </div>
-        
-        {showControls && (
-          <div className="audio-controls">
-            <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
-            <PrevButton onPrev={handlePrevClick} />
-            <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} />
-            <NextButton onNext={onNext} />
-            <RepeatButton repeat={repeat} setRepeat={setRepeat} />
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <>
+      {/* Hidden main audio player - kept for compatibility with useAudioPlayer hook */}
+      <H5AudioPlayer
+        ref={playerRef}
+        src={audioSrc}
+        autoPlayAfterSrcChange={autoPlay}
+        onPlay={() => handlePlayPause(true)}
+        onPause={() => handlePlayPause(false)}
+        style={{ display: 'none' }}
+      />
+
       {isFullPage && (
         <>
           <div
@@ -483,25 +473,42 @@ const AudioPlayer = ({
                 </p>
               </div>
               
-              <ProgressBar className="progress-container--full-page" showControls />
+              {/* Full page progress bar - display only */}
+              <H5AudioPlayer
+                ref={fullPageProgressRef}
+                className="smooth-progress-bar smooth-progress-bar--full-page"
+                autoPlayAfterSrcChange={false}
+                src={audioSrc}
+                {...preventDefaultAudioEvents}
+                onSeeked={handleSeeked}
+                customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
+                customControlsSection={[
+                  <>
+                    <IconButton
+                      onClick={toggleWaveform}
+                      text={waveform ? 'Hide waveform' : 'Show waveform'}
+                      ariaLabel={waveform ? 'Hide waveform' : 'Show waveform'}
+                    >
+                      <PiWaveform className={waveform ? 'icon-primary' : ''} />
+                    </IconButton>
+                    <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
+                    <PrevButton onPrev={handlePrevClick} />
+                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} />
+                    <NextButton onNext={onNext} />
+                    <RepeatButton repeat={repeat} setRepeat={setRepeat} />
+                    <IconButton
+                      onClick={toggleLyricsModal}
+                      text={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
+                      ariaLabel={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
+                    >
+                      <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
+                    </IconButton>
+                  </>
+                ]}
+                style={{ marginBottom: '20px' }}
+              />
               
-              <div className="audio-player__additional-controls">
-                <IconButton
-                  onClick={toggleWaveform}
-                  text={waveform ? 'Hide waveform' : 'Show waveform'}
-                  ariaLabel={waveform ? 'Hide waveform' : 'Show waveform'}
-                >
-                  <PiWaveform className={waveform ? 'icon-primary' : ''} />
-                </IconButton>
-                <IconButton
-                  onClick={toggleLyricsModal}
-                  text={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
-                  ariaLabel={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
-                >
-                  <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
-                </IconButton>
-              </div>
-              
+              {/* Full page waveform */}
               <div ref={waveformRefFullPage} className={`waveform ${waveform ? 'waveform--active' : ''}`}></div>
             </div>
           </div>
@@ -511,16 +518,20 @@ const AudioPlayer = ({
       {!isFullPage && (
         isMobileOrTablet() ? (
           <div className="audio-player audio-player--mobile" onClick={toggleFullPagePlayer}>
-            <ProgressBar className="progress-container--mobile" />
+            {/* Mobile progress bar - display only */}
+            <H5AudioPlayer
+              ref={mobilePlayerRef}
+              className="smooth-progress-bar smooth-progress-bar--mobile"
+              autoPlayAfterSrcChange={false}
+              src={audioSrc}
+              {...preventDefaultAudioEvents}
+              onSeeked={handleSeeked}
+              customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
+              customControlsSection={[]}
+            />
             
             {currentBeat && (
-              <p 
-                className="audio-player__title" 
-                onTouchStart={handleTouchStart} 
-                onTouchEnd={handleTouchEnd} 
-                onTouchMove={handleTouchMove} 
-                style={{ transform: `translateX(${dragPosition}px)` }}
-              >
+              <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
                 {currentBeat.title}
               </p>
             )}
@@ -532,7 +543,26 @@ const AudioPlayer = ({
               {currentBeat && <p>{currentBeat.title}</p>}
             </div>
             <div style={{ flex: '3' }}>
-              <ProgressBar className="progress-container--desktop" showControls />
+              {/* Desktop progress bar - display only */}
+              <H5AudioPlayer
+                ref={desktopPlayerRef}
+                className="smooth-progress-bar smooth-progress-bar--desktop"
+                autoPlayAfterSrcChange={false}
+                src={audioSrc}
+                {...preventDefaultAudioEvents}
+                customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
+                onSeeked={handleSeeked}
+                customControlsSection={[
+                  <>
+                    <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
+                    <PrevButton onPrev={handlePrevClick} />
+                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} />
+                    <NextButton onNext={onNext} />
+                    <RepeatButton repeat={repeat} setRepeat={setRepeat} />
+                  </>
+                ]}
+              />
+              {/* Desktop waveform */}
               <div
                 ref={waveformRefDesktop}
                 className={`waveform ${waveform ? 'waveform--active' : ''}`}
