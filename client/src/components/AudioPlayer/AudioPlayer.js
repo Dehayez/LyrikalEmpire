@@ -71,14 +71,12 @@ const AudioPlayer = ({
   const desktopPlayerRef = useRef(null);
   const fullPageProgressRef = useRef(null);
   
-  // Single shared audio element
-  const sharedAudioRef = useRef(null);
-  
   const [activeContextMenu, setActiveContextMenu] = useState(false);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [currentTimeState, setCurrentTimeState] = useState(0);
 
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
@@ -123,109 +121,167 @@ const AudioPlayer = ({
     setActiveContextMenu(false);
   };
 
-  // Initialize shared audio element once
-  useEffect(() => {
-    if (!sharedAudioRef.current) {
-      sharedAudioRef.current = new Audio();
-      sharedAudioRef.current.preload = 'metadata';
-      
-      const audio = sharedAudioRef.current;
-      
-      const updateProgress = () => {
-        if (audio.duration) {
-          const currentProgress = audio.currentTime / audio.duration;
-          setProgress(currentProgress);
-          setDuration(audio.duration);
-          
-          // Update waveform progress
-          if (wavesurfer.current) {
-            wavesurfer.current.seekTo(currentProgress);
-          }
-          
-          // Sync all display players
-          syncDisplayPlayers(audio.currentTime);
-        }
-      };
+  // Sync all display players with main audio element
+  const syncAllPlayers = () => {
+    const mainAudio = playerRef.current?.audio.current;
+    if (!mainAudio) return;
 
-      const handleLoadedMetadata = () => {
-        setDuration(audio.duration || 0);
-        syncDisplayPlayers(0);
-      };
+    const currentTime = mainAudio.currentTime;
+    const duration = mainAudio.duration;
+    
+    // Update state
+    setCurrentTimeState(currentTime);
+    setDuration(duration || 0);
+    setProgress(duration ? currentTime / duration : 0);
 
-      const handlePlay = () => {
-        setIsPlaying(true);
-        if ('mediaSession' in navigator) {
-          navigator.mediaSession.playbackState = 'playing';
-        }
-      };
-
-      const handlePause = () => {
-        setIsPlaying(false);
-        if ('mediaSession' in navigator) {
-          navigator.mediaSession.playbackState = 'paused';
-        }
-      };
-
-      const handleEnded = () => {
-        onNext();
-      };
-
-      audio.addEventListener('timeupdate', updateProgress);
-      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.addEventListener('play', handlePlay);
-      audio.addEventListener('pause', handlePause);
-      audio.addEventListener('ended', handleEnded);
-      
-      return () => {
-        audio.removeEventListener('timeupdate', updateProgress);
-        audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-        audio.removeEventListener('play', handlePlay);
-        audio.removeEventListener('pause', handlePause);
-        audio.removeEventListener('ended', handleEnded);
-      };
+    // Update waveform
+    if (wavesurfer.current && duration) {
+      wavesurfer.current.seekTo(currentTime / duration);
     }
-  }, [onNext, setIsPlaying]);
 
-  // Sync display-only H5AudioPlayer instances
-  const syncDisplayPlayers = (currentTime) => {
-    const playersToSync = [
-      mobilePlayerRef.current?.audio.current,
-      desktopPlayerRef.current?.audio.current,
-      fullPageProgressRef.current?.audio.current
-    ].filter(Boolean);
-
-    playersToSync.forEach(audio => {
-      if (Math.abs(audio.currentTime - currentTime) > 0.1) {
-        audio.currentTime = currentTime;
+    // Force update display players by manipulating their progress bars directly
+    const updateProgressBar = (playerRef) => {
+      if (playerRef?.current) {
+        const progressBar = playerRef.current.container.current?.querySelector('.rhap_progress-filled');
+        const progressIndicator = playerRef.current.container.current?.querySelector('.rhap_progress-indicator');
+        const currentTimeEl = playerRef.current.container.current?.querySelector('.rhap_current-time');
+        const durationEl = playerRef.current.container.current?.querySelector('.rhap_total-time');
+        
+        if (progressBar && duration) {
+          const progressPercent = (currentTime / duration) * 100;
+          progressBar.style.width = `${progressPercent}%`;
+          
+          if (progressIndicator) {
+            progressIndicator.style.left = `${progressPercent}%`;
+          }
+        }
+        
+        if (currentTimeEl) {
+          currentTimeEl.textContent = formatTime(currentTime);
+        }
+        
+        if (durationEl) {
+          durationEl.textContent = formatTime(duration);
+        }
       }
-    });
+    };
+
+    // Update all display players
+    updateProgressBar(mobilePlayerRef);
+    updateProgressBar(desktopPlayerRef);
+    updateProgressBar(fullPageProgressRef);
   };
+
+  // Format time helper function
+  const formatTime = (time) => {
+    if (isNaN(time)) return '0:00';
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  // Set up main audio player event listeners
+  useEffect(() => {
+    const mainAudio = playerRef.current?.audio.current;
+    if (!mainAudio) return;
+
+    const handleTimeUpdate = () => {
+      syncAllPlayers();
+    };
+
+    const handleLoadedMetadata = () => {
+      syncAllPlayers();
+    };
+
+    const handlePlay = () => {
+      setIsPlaying(true);
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'playing';
+      }
+    };
+
+    const handlePause = () => {
+      setIsPlaying(false);
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'paused';
+      }
+    };
+
+    const handleEnded = () => {
+      onNext();
+    };
+
+    // Add event listeners
+    mainAudio.addEventListener('timeupdate', handleTimeUpdate);
+    mainAudio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    mainAudio.addEventListener('play', handlePlay);
+    mainAudio.addEventListener('pause', handlePause);
+    mainAudio.addEventListener('ended', handleEnded);
+    
+    // Initial sync
+    syncAllPlayers();
+
+    return () => {
+      mainAudio.removeEventListener('timeupdate', handleTimeUpdate);
+      mainAudio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      mainAudio.removeEventListener('play', handlePlay);
+      mainAudio.removeEventListener('pause', handlePause);
+      mainAudio.removeEventListener('ended', handleEnded);
+    };
+  }, [playerRef.current?.audio.current, onNext, setIsPlaying]);
 
   // Handle play/pause from UI
   const handlePlayPause = (play) => {
     const audio = playerRef.current?.audio.current;
     if (audio) {
-      play ? audio.play().catch(console.error) : audio.pause();
-      setIsPlaying(play);
+      if (play) {
+        audio.play().catch(console.error);
+      } else {
+        audio.pause();
+      }
     }
   };
 
-  // Handle seeking from UI
+  // Handle seeking from display players
   const handleSeeked = (e) => {
+    const mainAudio = playerRef.current?.audio.current;
     const newTime = e.target.currentTime;
-    if (sharedAudioRef.current && Math.abs(sharedAudioRef.current.currentTime - newTime) > 0.1) {
-      sharedAudioRef.current.currentTime = newTime;
-      syncDisplayPlayers(newTime);
+    
+    if (mainAudio && Math.abs(mainAudio.currentTime - newTime) > 0.1) {
+      mainAudio.currentTime = newTime;
+      syncAllPlayers();
     }
   };
 
-  // Override H5AudioPlayer events to use shared audio
+  // Handle manual seeking on progress bar
+  const handleProgressClick = (e) => {
+    const mainAudio = playerRef.current?.audio.current;
+    if (!mainAudio || !mainAudio.duration) return;
+
+    const progressBar = e.currentTarget;
+    const rect = progressBar.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const progressPercent = clickX / rect.width;
+    const newTime = progressPercent * mainAudio.duration;
+    
+    mainAudio.currentTime = newTime;
+    syncAllPlayers();
+  };
+
+  // Override H5AudioPlayer events to prevent conflicts
   const preventDefaultAudioEvents = {
-    onPlay: () => {}, // Prevent H5AudioPlayer from controlling audio
-    onPause: () => {},
+    onPlay: (e) => {
+      e.preventDefault();
+      handlePlayPause(true);
+    },
+    onPause: (e) => {
+      e.preventDefault();
+      handlePlayPause(false);
+    },
     onLoadStart: () => {},
     onCanPlay: () => {},
     onLoadedData: () => {},
+    onSeeked: handleSeeked,
   };
 
   // Effect to handle initial slide-in when full page becomes active
@@ -243,24 +299,14 @@ const AudioPlayer = ({
           setAudioSrc('');
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
-          
-          // Update shared audio source
-          if (sharedAudioRef.current) {
-            const wasPlaying = !sharedAudioRef.current.paused;
-            sharedAudioRef.current.src = signedUrl;
-            
-            if (autoPlay || wasPlaying) {
-              sharedAudioRef.current.load();
-              sharedAudioRef.current.play().catch(console.error);
-            }
-          }
+          setAutoPlay(true);
         } catch (error) {
           console.error('Error fetching signed URL:', error);
         }
       }
     };
     fetchSignedUrl();
-  }, [currentBeat, autoPlay]);
+  }, [currentBeat]);
 
   useEffect(() => {
     const setMediaSessionMetadata = async () => {
@@ -351,9 +397,10 @@ const AudioPlayer = ({
           wavesurfer.current.setVolume(0);
           
           wavesurfer.current.on('ready', () => {
+            const mainAudio = playerRef.current?.audio.current;
             const duration = wavesurfer.current.getDuration();
-            if (sharedAudioRef.current && !isNaN(sharedAudioRef.current.currentTime) && duration > 0) {
-              wavesurfer.current.seekTo(sharedAudioRef.current.currentTime / duration);
+            if (mainAudio && !isNaN(mainAudio.currentTime) && duration > 0) {
+              wavesurfer.current.seekTo(mainAudio.currentTime / duration);
             }
           });
         } catch (error) {
@@ -419,13 +466,13 @@ const AudioPlayer = ({
 
   return (
     <>
-      {/* Hidden main audio player - kept for compatibility with useAudioPlayer hook */}
+      {/* Main audio player */}
       <H5AudioPlayer
         ref={playerRef}
         src={audioSrc}
         autoPlayAfterSrcChange={autoPlay}
-        onPlay={() => handlePlayPause(true)}
-        onPause={() => handlePlayPause(false)}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
         style={{ display: 'none' }}
       />
 
@@ -478,7 +525,6 @@ const AudioPlayer = ({
                 autoPlayAfterSrcChange={false}
                 src={audioSrc}
                 {...preventDefaultAudioEvents}
-                onSeeked={handleSeeked}
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
                 customControlsSection={[
                   <>
@@ -523,7 +569,6 @@ const AudioPlayer = ({
               autoPlayAfterSrcChange={false}
               src={audioSrc}
               {...preventDefaultAudioEvents}
-              onSeeked={handleSeeked}
               customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
               customControlsSection={[]}
             />
@@ -549,7 +594,6 @@ const AudioPlayer = ({
                 src={audioSrc}
                 {...preventDefaultAudioEvents}
                 customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-                onSeeked={handleSeeked}
                 customControlsSection={[
                   <>
                     <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
