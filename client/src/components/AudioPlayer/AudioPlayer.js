@@ -122,16 +122,16 @@ const AudioPlayer = ({
   };
 
   // Sync all display players with main audio element
-  const syncAllPlayers = () => {
+  const syncAllPlayers = (forceUpdate = false) => {
     const mainAudio = playerRef.current?.audio.current;
     if (!mainAudio) return;
 
-    const currentTime = mainAudio.currentTime;
-    const duration = mainAudio.duration;
+    const currentTime = mainAudio.currentTime || 0;
+    const duration = mainAudio.duration || 0;
     
     // Update state
     setCurrentTimeState(currentTime);
-    setDuration(duration || 0);
+    setDuration(duration);
     setProgress(duration ? currentTime / duration : 0);
 
     // Update waveform
@@ -147,8 +147,8 @@ const AudioPlayer = ({
         const currentTimeEl = playerRef.current.container.current?.querySelector('.rhap_current-time');
         const durationEl = playerRef.current.container.current?.querySelector('.rhap_total-time');
         
-        if (progressBar && duration) {
-          const progressPercent = (currentTime / duration) * 100;
+        if (progressBar) {
+          const progressPercent = duration ? (currentTime / duration) * 100 : 0;
           progressBar.style.width = `${progressPercent}%`;
           
           if (progressIndicator) {
@@ -190,7 +190,16 @@ const AudioPlayer = ({
     };
 
     const handleLoadedMetadata = () => {
-      syncAllPlayers();
+      // Wait a bit for the audio to be ready, then sync
+      setTimeout(() => syncAllPlayers(true), 100);
+    };
+
+    const handleLoadedData = () => {
+      syncAllPlayers(true);
+    };
+
+    const handleCanPlay = () => {
+      syncAllPlayers(true);
     };
 
     const handlePlay = () => {
@@ -214,16 +223,31 @@ const AudioPlayer = ({
     // Add event listeners
     mainAudio.addEventListener('timeupdate', handleTimeUpdate);
     mainAudio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    mainAudio.addEventListener('loadeddata', handleLoadedData);
+    mainAudio.addEventListener('canplay', handleCanPlay);
     mainAudio.addEventListener('play', handlePlay);
     mainAudio.addEventListener('pause', handlePause);
     mainAudio.addEventListener('ended', handleEnded);
     
-    // Initial sync
-    syncAllPlayers();
+    // Initial sync - force update even when paused
+    const initialSync = () => {
+      if (mainAudio.readyState >= 1) { // HAVE_METADATA or better
+        syncAllPlayers(true);
+      }
+    };
+    
+    // Try immediate sync
+    initialSync();
+    
+    // Also try after a short delay in case metadata isn't loaded yet
+    const timeoutId = setTimeout(initialSync, 200);
 
     return () => {
+      clearTimeout(timeoutId);
       mainAudio.removeEventListener('timeupdate', handleTimeUpdate);
       mainAudio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      mainAudio.removeEventListener('loadeddata', handleLoadedData);
+      mainAudio.removeEventListener('canplay', handleCanPlay);
       mainAudio.removeEventListener('play', handlePlay);
       mainAudio.removeEventListener('pause', handlePause);
       mainAudio.removeEventListener('ended', handleEnded);
@@ -284,13 +308,37 @@ const AudioPlayer = ({
     onSeeked: handleSeeked,
   };
 
-  // Effect to handle initial slide-in when full page becomes active
+  // Effect to sync display players when they're rendered or view changes
   useEffect(() => {
-    if (isFullPage && fullPagePlayerRef.current && !isFullPageVisible) {
-      setIsFullPageVisible(true);
-      slideIn(fullPagePlayerRef.current);
-    }
+    const syncAfterRender = () => {
+      syncAllPlayers(true);
+    };
+    
+    // Sync when switching between mobile/desktop/fullpage views
+    const timeoutId = setTimeout(syncAfterRender, 100);
+    
+    return () => clearTimeout(timeoutId);
   }, [isFullPage, isFullPageVisible]);
+
+  // Additional effect to ensure sync after display players are mounted
+  useEffect(() => {
+    const ensureSync = () => {
+      const mainAudio = playerRef.current?.audio.current;
+      if (mainAudio && (mainAudio.readyState >= 1 || mainAudio.duration)) {
+        syncAllPlayers(true);
+      }
+    };
+
+    // Check multiple times to catch when display players are ready
+    const intervals = [100, 300, 500, 1000];
+    const timeouts = intervals.map(delay => 
+      setTimeout(ensureSync, delay)
+    );
+
+    return () => {
+      timeouts.forEach(timeout => clearTimeout(timeout));
+    };
+  }, [audioSrc, isFullPage]);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
@@ -300,6 +348,11 @@ const AudioPlayer = ({
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
           setAutoPlay(true);
+          
+          // Force sync after audio source changes
+          setTimeout(() => {
+            syncAllPlayers(true);
+          }, 300);
         } catch (error) {
           console.error('Error fetching signed URL:', error);
         }
