@@ -119,6 +119,9 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
 
             {isDropdownOpen[name] && (
               <div className="filter-dropdown__wrapper">
+                <div className="filter-dropdown__header">
+                  {label}
+                </div>
                 <div className="filter-dropdown__list">
                   {options.map(option => {
                     const optionId = `${id}-${option.id}`;
