@@ -77,6 +77,7 @@ const AudioPlayer = ({
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTimeState, setCurrentTimeState] = useState(0);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
@@ -152,11 +153,11 @@ const AudioPlayer = ({
           if (progressBar) {
             const progressPercent = duration ? (currentTime / duration) * 100 : 0;
             progressBar.style.width = `${progressPercent}%`;
-            progressBar.style.transition = 'none'; // Remove transition for instant update
+            progressBar.style.transition = 'none';
             
             if (progressIndicator) {
               progressIndicator.style.left = `${progressPercent}%`;
-              progressIndicator.style.transition = 'none'; // Remove transition for instant update
+              progressIndicator.style.transition = 'none';
             }
           }
           
@@ -225,7 +226,6 @@ const AudioPlayer = ({
       onNext();
     };
 
-    // Add event listeners
     mainAudio.addEventListener('timeupdate', handleTimeUpdate);
     mainAudio.addEventListener('loadedmetadata', handleLoadedMetadata);
     mainAudio.addEventListener('loadeddata', handleLoadedData);
@@ -236,12 +236,11 @@ const AudioPlayer = ({
     
     // Initial sync - force update even when paused
     const initialSync = () => {
-      if (mainAudio.readyState >= 1) { // HAVE_METADATA or better
+      if (mainAudio.readyState >= 1) {
         syncAllPlayers(true);
       }
     };
     
-    // Try immediate sync
     initialSync();
     
     // Also try after a short delay in case metadata isn't loaded yet
@@ -382,8 +381,14 @@ const AudioPlayer = ({
           setAudioSrc('');
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
-          setAutoPlay(true);
-          
+
+          // Set autoPlay to true only after the first render
+          if (!isFirstRender) {
+            setAutoPlay(true);
+          } else {
+            setIsFirstRender(false); // Mark first render as complete
+          }
+
           // Force sync after audio source changes
           setTimeout(() => {
             syncAllPlayers(true);
