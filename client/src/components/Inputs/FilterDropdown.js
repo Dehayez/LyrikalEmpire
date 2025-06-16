@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
 
-import { useLocalStorageSync } from '../../hooks';
+import { useLocalStorageSync, useDragToDismiss } from '../../hooks';
 import { getInitialState, getInitialStateForFilters } from '../../utils/stateUtils';
-import { isMobileOrTablet } from '../../utils'; // Import the mobile detection utility
+import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
 
 import { Button } from '../Buttons';
 import './FilterDropdown.scss';
@@ -16,6 +16,15 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
   
   const [selectedItems, setSelectedItems] = useState(() => getInitialState('selectedItems', initialSelectedItems));
   const [isDropdownOpen, setIsDropdownOpen] = useState(() => getInitialState('isDropdownOpen', initialDropdownState));
+
+  const {
+    dismissRef,
+    handleDragStart,
+    handleDragMove,
+    handleDragEnd,
+  } = useDragToDismiss(() => {
+    closeAllDropdowns();
+  });
 
   useLocalStorageSync({
     selectedItems,
@@ -36,7 +45,6 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
   };
 
   const toggleDropdown = (filterType, event) => {
-    // Stop propagation to prevent the click from bubbling up to document
     if (event) {
       event.stopPropagation();
     }
@@ -44,12 +52,10 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
     setIsDropdownOpen(prevState => {
       const newState = {};
       
-      // If the clicked dropdown is already open, close everything
       if (prevState[filterType]) {
-        return newState; // Empty object = all closed
+        return newState;
       }
       
-      // Otherwise, close all dropdowns and open only the clicked one
       newState[filterType] = true;
       return newState;
     });
@@ -63,20 +69,35 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
     onFilterChange([], filterType);
   };
 
+  const closeAllDropdowns = () => {
+    if (isMobileOrTablet()) {
+      const overlay = document.querySelector('.filter-dropdown__overlay');
+      const activeDropdown = document.querySelector('.filter-dropdown__wrapper');
+      if (activeDropdown) {
+        slideOut(activeDropdown, overlay, () => {
+          setIsDropdownOpen({});
+        });
+      } else {
+        setIsDropdownOpen({});
+      }
+    } else {
+      setIsDropdownOpen({});
+    }
+  };
+
   const handleClickOutside = (event) => {
-    // Only close dropdowns if clicking outside any dropdown
     const isOutside = !Object.keys(dropdownRefs.current).some(key => 
       dropdownRefs.current[key] && dropdownRefs.current[key].contains(event.target)
     );
     
     if (isOutside) {
-      setIsDropdownOpen({});
+      closeAllDropdowns();
     }
   };
 
   const handleOverlayClick = (event) => {
     event.stopPropagation();
-    setIsDropdownOpen({});
+    closeAllDropdowns();
   };
 
   useEffect(() => {
@@ -86,11 +107,23 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
     };
   }, []);
 
+  useEffect(() => {
+    const element = dismissRef.current;
+    if (element && isMobileOrTablet()) {
+      element.addEventListener('touchmove', handleDragMove, { passive: false });
+    }
+    return () => {
+      if (element) {
+        element.removeEventListener('touchmove', handleDragMove);
+      }
+    };
+  }, [handleDragMove]);
+
   const hasOpenDropdown = Object.values(isDropdownOpen).some(Boolean);
 
   return (
     <div className="filter-dropdown-container" ref={ref}>
-      {/* Mobile overlay - only show on mobile when dropdown is open */}
+      {/* Mobile overlay */}
       {isMobileOrTablet() && hasOpenDropdown && (
         <div 
           className="filter-dropdown__overlay"
@@ -118,10 +151,18 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
             </span>
 
             {isDropdownOpen[name] && (
-              <div className="filter-dropdown__wrapper">
-                <div className="filter-dropdown__header">
-                  {label}
-                </div>
+              <div 
+                className="filter-dropdown__wrapper"
+                ref={isMobileOrTablet() ? dismissRef : null}
+                onTouchStart={isMobileOrTablet() ? handleDragStart : undefined}
+                onTouchEnd={isMobileOrTablet() ? handleDragEnd : undefined}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {isMobileOrTablet() && (
+                  <div className="filter-dropdown__header">
+                    {label}
+                  </div>
+                )}
                 <div className="filter-dropdown__list">
                   {options.map(option => {
                     const optionId = `${id}-${option.id}`;
@@ -151,18 +192,6 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
             )}
           </div>
         ))}
-      </div>
-      <div className="filter-dropdown__selected">
-      {Object.entries(selectedItems).flatMap(([filterType, items]) =>
-          items.map(item => (
-            <div key={item.id} className="filter-dropdown__selected-item" onClick={() => handleSelect(filterType, item)}>
-              <span>{item.name}</span>
-              <button>
-                <IoCloseSharp />
-              </button>
-            </div>
-          ))
-        )}
       </div>
     </div>
   );
