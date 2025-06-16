@@ -102,6 +102,16 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
     closeAllDropdowns();
   };
 
+  // Add this effect to handle slide in animation when dropdown opens
+  useEffect(() => {
+    if (isMobileOrTablet() && hasOpenDropdown) {
+      const activeWrapper = dismissRef.current;
+      if (activeWrapper) {
+        slideIn(activeWrapper);
+      }
+    }
+  }, [hasOpenDropdown]);
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
