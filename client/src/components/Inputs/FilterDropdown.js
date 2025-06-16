@@ -190,15 +190,17 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
               >
                 {isMobileOrTablet() && (
                   <div className="filter-dropdown__header">
-                    {label}
+                    Filter {label}
                   </div>
                 )}
                 <div className="filter-dropdown__search">
                   <input
                     type="text"
-                    placeholder="Search options..."
-                    value={searchTerms[name] || ''}
-                    onChange={(e) => handleSearch(name, e.target.value)}
+                    name={`search-${name}`} 
+                    id={`search-${name}`}
+                    placeholder={`Search ${label?.toLowerCase()}...`} 
+                    value={searchTerms[name] || ''} 
+                    onChange={(e) => handleSearch(name, e.target.value)} 
                     className="filter-dropdown__search-input"
                     onClick={(e) => e.stopPropagation()}
                   />
