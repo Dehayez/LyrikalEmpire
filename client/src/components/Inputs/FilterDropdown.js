@@ -17,6 +17,8 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
   const [selectedItems, setSelectedItems] = useState(() => getInitialState('selectedItems', initialSelectedItems));
   const [isDropdownOpen, setIsDropdownOpen] = useState(() => getInitialState('isDropdownOpen', initialDropdownState));
 
+  const hasOpenDropdown = Object.values(isDropdownOpen).some(Boolean);
+  
   const {
     dismissRef,
     handleDragStart,
@@ -118,8 +120,6 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
       }
     };
   }, [handleDragMove]);
-
-  const hasOpenDropdown = Object.values(isDropdownOpen).some(Boolean);
 
   return (
     <div className="filter-dropdown-container" ref={ref}>
