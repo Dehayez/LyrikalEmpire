@@ -16,6 +16,7 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
   
   const [selectedItems, setSelectedItems] = useState(() => getInitialState('selectedItems', initialSelectedItems));
   const [isDropdownOpen, setIsDropdownOpen] = useState(() => getInitialState('isDropdownOpen', initialDropdownState));
+  const [searchTerms, setSearchTerms] = useState({});
 
   const hasOpenDropdown = Object.values(isDropdownOpen).some(Boolean);
   
@@ -71,6 +72,22 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
     onFilterChange([], filterType);
   };
 
+  const handleSearch = (filterType, searchTerm) => {
+    setSearchTerms(prevState => ({
+      ...prevState,
+      [filterType]: searchTerm
+    }));
+  };
+
+  const getFilteredOptions = (options, filterType) => {
+    const searchTerm = searchTerms[filterType];
+    if (!searchTerm) return options;
+    
+    return options.filter(option => 
+      option.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
   const closeAllDropdowns = () => {
     if (isMobileOrTablet()) {
       const overlay = document.querySelector('.filter-dropdown__overlay');
@@ -78,12 +95,15 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
       if (activeDropdown) {
         slideOut(activeDropdown, overlay, () => {
           setIsDropdownOpen({});
+          setSearchTerms({});
         });
       } else {
         setIsDropdownOpen({});
+        setSearchTerms({});
       }
     } else {
       setIsDropdownOpen({});
+      setSearchTerms({});
     }
   };
 
@@ -173,8 +193,18 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
                     {label}
                   </div>
                 )}
+                <div className="filter-dropdown__search">
+                  <input
+                    type="text"
+                    placeholder="Search options..."
+                    value={searchTerms[name] || ''}
+                    onChange={(e) => handleSearch(name, e.target.value)}
+                    className="filter-dropdown__search-input"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
                 <div className="filter-dropdown__list">
-                  {options.map(option => {
+                  {getFilteredOptions(options, name).map(option => {
                     const optionId = `${id}-${option.id}`;
                     return (
                       <div key={option.id} className="filter-dropdown__option">
