@@ -3,6 +3,7 @@ import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
 
 import { useLocalStorageSync } from '../../hooks';
 import { getInitialState, getInitialStateForFilters } from '../../utils/stateUtils';
+import { isMobileOrTablet } from '../../utils'; // Import the mobile detection utility
 
 import { Button } from '../Buttons';
 import './FilterDropdown.scss';
@@ -73,6 +74,11 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
     }
   };
 
+  const handleOverlayClick = (event) => {
+    event.stopPropagation();
+    setIsDropdownOpen({});
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -80,8 +86,18 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
     };
   }, []);
 
+  const hasOpenDropdown = Object.values(isDropdownOpen).some(Boolean);
+
   return (
     <div className="filter-dropdown-container" ref={ref}>
+      {/* Mobile overlay - only show on mobile when dropdown is open */}
+      {isMobileOrTablet() && hasOpenDropdown && (
+        <div 
+          className="filter-dropdown__overlay"
+          onClick={handleOverlayClick}
+        />
+      )}
+      
       <div className="filter-dropdowns-container">
         {filters.map(({ id, name, label, options }) => (
           <div 
