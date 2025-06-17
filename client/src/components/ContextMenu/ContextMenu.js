@@ -33,7 +33,6 @@ const ContextMenu = ({ items, position, beat, setActiveContextMenu }) => {
   };
 
   const hideContextMenu = () => {
-    console.log('hideContextMenu triggered');
     const overlay = document.querySelector('.context-menu__overlay');
     slideOut(dismissRef.current, overlay, () => {
       setIsVisible(false);
