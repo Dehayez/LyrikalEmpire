@@ -713,8 +713,8 @@ const AudioPlayer = ({
             <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} className="small" />
           </div>
         ) : (
-          {/* Desktop bottom audio player */}
           <div className="audio-player">
+            {/* Desktop bottom audio player */}
             <div className='audio-player__title audio-player__title--desktop' style={{ flex: '1' }}>
               {currentBeat && <p>{currentBeat.title}</p>}
             </div>
