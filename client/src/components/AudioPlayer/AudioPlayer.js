@@ -602,7 +602,7 @@ const AudioPlayer = ({
         style={{ display: 'none' }}
       />
 
-      {/* Full page player - only render when shouldShowFullPagePlayer is true */}
+      {/* Mobile full page player */}
       {shouldShowFullPagePlayer && (
         <>
           <div
@@ -645,7 +645,6 @@ const AudioPlayer = ({
                 </p>
               </div>
               
-              {/* Full page progress bar - display only */}
               <H5AudioPlayer
                 ref={fullPageProgressRef}
                 className="smooth-progress-bar smooth-progress-bar--full-page"
@@ -682,14 +681,13 @@ const AudioPlayer = ({
                 style={{ marginBottom: '20px' }}
               />
               
-              {/* Full page waveform */}
               <div ref={waveformRefFullPage} className={`waveform ${waveform ? 'waveform--active' : ''}`}></div>
             </div>
           </div>
         </>
       )}
 
-      {/* Mobile/Desktop players - render based on computed conditions */}
+      {/* Mobile bottom audio player */}
       {!shouldShowFullPagePlayer && (
         shouldShowMobilePlayer ? (
           <div
@@ -715,12 +713,12 @@ const AudioPlayer = ({
             <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} className="small" />
           </div>
         ) : (
+          {/* Desktop bottom audio player */}
           <div className="audio-player">
             <div className='audio-player__title audio-player__title--desktop' style={{ flex: '1' }}>
               {currentBeat && <p>{currentBeat.title}</p>}
             </div>
             <div style={{ flex: '3' }}>
-              {/* Desktop progress bar - display only */}
               <H5AudioPlayer
                 ref={desktopPlayerRef}
                 className="smooth-progress-bar smooth-progress-bar--desktop"
@@ -741,7 +739,6 @@ const AudioPlayer = ({
                   </>
                 ]}
               />
-              {/* Desktop waveform */}
               <div
                 ref={waveformRefDesktop}
                 className={`waveform ${waveform ? 'waveform--active' : ''}`}
