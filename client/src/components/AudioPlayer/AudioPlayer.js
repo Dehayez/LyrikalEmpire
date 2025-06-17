@@ -87,12 +87,21 @@ const AudioPlayer = ({
   });
   const [isFullPageVisible, setIsFullPageVisible] = useState(false);
 
+  // Determine which player to show based on isFullPage AND lyricsModal state
+  const shouldShowFullPagePlayer = isFullPage && !(isMobileOrTablet() && lyricsModal);
+  const shouldShowMobilePlayer = !shouldShowFullPagePlayer && isMobileOrTablet();
+
   useLocalStorageSync({ waveform, isFullPage });
 
   const toggleLyricsModal = () => setLyricsModal(prev => !prev);
   const toggleWaveform = () => setWaveform(prev => !prev);
   
   const toggleFullPagePlayer = () => {
+    // Don't allow opening full page player when lyrics modal is open on mobile
+    if (isMobileOrTablet() && lyricsModal) {
+      return;
+    }
+
     if (!isFullPage) {
       setIsFullPage(true);
 
@@ -109,6 +118,24 @@ const AudioPlayer = ({
       });
     }
   };
+
+  // Close full page player when lyrics modal opens on mobile
+  useEffect(() => {
+    if (isMobileOrTablet() && lyricsModal && isFullPage) {
+      // Smoothly close the full page player
+      slideOut(fullPagePlayerRef.current, fullPageOverlayRef.current, () => {
+        setIsFullPageVisible(false);
+      });
+    } else if (isMobileOrTablet() && !lyricsModal && isFullPage && !isFullPageVisible) {
+      // Re-open full page player when lyrics modal closes (if it was open before)
+      requestAnimationFrame(() => {
+        setIsFullPageVisible(true);
+        if (fullPagePlayerRef.current) {
+          slideIn(fullPagePlayerRef.current);
+        }
+      });
+    }
+  }, [lyricsModal, isFullPage, isFullPageVisible]);
 
   const handleEllipsisClick = (e) => {
     e.stopPropagation();
@@ -172,10 +199,16 @@ const AudioPlayer = ({
       }
     };
 
-    // Update all display players
-    updateProgressBar(mobilePlayerRef);
-    updateProgressBar(desktopPlayerRef);
-    updateProgressBar(fullPageProgressRef);
+    // Update all display players that are currently rendered
+    if (shouldShowMobilePlayer) {
+      updateProgressBar(mobilePlayerRef);
+    }
+    if (!isMobileOrTablet()) {
+      updateProgressBar(desktopPlayerRef);
+    }
+    if (shouldShowFullPagePlayer && isFullPageVisible) {
+      updateProgressBar(fullPageProgressRef);
+    }
   };
 
   // Format time helper function
@@ -349,7 +382,7 @@ const AudioPlayer = ({
     syncAfterRender();
     
     return () => {};
-  }, [isFullPage, isFullPageVisible]);
+  }, [shouldShowFullPagePlayer, shouldShowMobilePlayer, isFullPageVisible]);
 
   // Additional effect to ensure sync after display players are mounted
   useEffect(() => {
@@ -372,7 +405,7 @@ const AudioPlayer = ({
     return () => {
       timeouts.forEach(timeout => clearTimeout(timeout));
     };
-  }, [audioSrc, isFullPage]);
+  }, [audioSrc, shouldShowFullPagePlayer]);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
@@ -569,7 +602,8 @@ const AudioPlayer = ({
         style={{ display: 'none' }}
       />
 
-      {isFullPage && (
+      {/* Full page player - only render when shouldShowFullPagePlayer is true */}
+      {shouldShowFullPagePlayer && (
         <>
           <div
             ref={fullPageOverlayRef}
@@ -655,8 +689,9 @@ const AudioPlayer = ({
         </>
       )}
 
-      {!isFullPage && (
-        isMobileOrTablet() ? (
+      {/* Mobile/Desktop players - render based on computed conditions */}
+      {!shouldShowFullPagePlayer && (
+        shouldShowMobilePlayer ? (
           <div className="audio-player audio-player--mobile" onClick={toggleFullPagePlayer}>
             {/* Mobile progress bar - display only */}
             <H5AudioPlayer
