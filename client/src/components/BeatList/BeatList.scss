@@ -24,8 +24,21 @@
       width: 100%;
 
       &.beat-list__header--mobile {
+        input {
+          width: 100%;
+          box-sizing: border-box;
+        }
+
         .beat-list__title {
           display: none;
+        }
+
+        .beat-list__actions {
+          width: 100%;
+        }
+
+        & .icon-button--mobile {
+          margin-right: 16px;
         }
       }
     }
@@ -106,6 +119,7 @@
 
     &--mobile {
       margin-left: 2px;
+      width: 100%;
     }
   }
   
