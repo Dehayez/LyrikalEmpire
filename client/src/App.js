@@ -77,34 +77,34 @@ function App() {
   
   useLocalStorageSync({ shuffle, repeat, currentBeat, selectedBeat, isLeftPanelVisible, isRightPanelVisible, viewState, customQueue, sortConfig, lyricsModal });
   
-const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
-  if (shouldUpdateQueue) {
-    logQueue(beats, shuffle, beat);
-  }
-  handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
-  updateHistory(beat);
-  if (window.electron) {
-    window.electron.setActivity(beat.title);
-  }
-};
+  const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
+    if (shouldUpdateQueue) {
+      logQueue(beats, shuffle, beat);
+    }
+    handlePlay(beat, play, beats, setSelectedBeat, setBeats, currentBeat, setCurrentBeat, setIsPlaying);
+    updateHistory(beat);
+    if (window.electron) {
+      window.electron.setActivity(beat.title);
+    }
+  };
 
   const handlePrevWrapper = () => handlePrev(currentBeats, currentBeat, handlePlayWrapper, repeat, setRepeat);
 
  const handleNextWrapper = () => {
-  if (customQueue.length > 0) {
-    const nextCustomBeat = customQueue[0];
-    handlePlayWrapper(nextCustomBeat, true, currentBeats);
-    setCustomQueue(customQueue.slice(1));
-  } else {
-    const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
-    const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
-    const nextBeat = queue[nextIndex];
-    handlePlayWrapper(nextBeat, true, currentBeats);
-  }
-  if (repeat === 'Repeat One') {
-    setRepeat('Repeat');
-  }
-};
+    if (customQueue.length > 0) {
+      const nextCustomBeat = customQueue[0];
+      handlePlayWrapper(nextCustomBeat, true, currentBeats);
+      setCustomQueue(customQueue.slice(1));
+    } else {
+      const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+      const nextIndex = currentIndex + 1 < queue.length ? currentIndex + 1 : 0;
+      const nextBeat = queue[nextIndex];
+      handlePlayWrapper(nextBeat, true, currentBeats);
+    }
+    if (repeat === 'Repeat One') {
+      setRepeat('Repeat');
+    }
+  };
 
   const {
     handlePlay,
@@ -212,7 +212,7 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
 }, [queue.length, currentBeat, currentBeats, shuffle]);
 
   return (
-      <div className="app app--hidden">
+      <div className={`app app--hidden ${lyricsModal ? 'app--lyrics-modal-open' : ''}`}>
         {isDraggingOver && (
           <div className='app__overlay'>
             Drop files to upload
@@ -399,6 +399,7 @@ const handlePlayWrapper = (beat, play, beats, shouldUpdateQueue = false) => {
             isRightDivVisible={isRightDivVisible}
             isAuthPage={isAuthRoute}
             closeSidePanel={closeSidePanel}
+            lyricsModal={lyricsModal}
           />
         )}
       </div>

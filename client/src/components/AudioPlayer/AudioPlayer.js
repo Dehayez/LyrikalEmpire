@@ -692,7 +692,10 @@ const AudioPlayer = ({
       {/* Mobile/Desktop players - render based on computed conditions */}
       {!shouldShowFullPagePlayer && (
         shouldShowMobilePlayer ? (
-          <div className="audio-player audio-player--mobile" onClick={toggleFullPagePlayer}>
+          <div
+            className={`audio-player audio-player--mobile ${lyricsModal ? 'audio-player--lyrics-modal-open' : ''}`}
+            onClick={toggleFullPagePlayer}
+          >
             {/* Mobile progress bar - display only */}
             <H5AudioPlayer
               ref={mobilePlayerRef}

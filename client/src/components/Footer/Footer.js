@@ -20,6 +20,7 @@ const Footer = ({
   isRightDivVisible,
   isAuthPage,
   closeSidePanel,
+  lyricsModal,
 }) => {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
@@ -40,7 +41,7 @@ const Footer = ({
   };
 
   return (
-    <footer className="footer">
+    <footer className={`footer ${lyricsModal ? 'footer--lyrics-modal-open' : ''}`}>
         {!isAuthPage && (
             <PanelToggle
               className="footer__item footer__item--left"
