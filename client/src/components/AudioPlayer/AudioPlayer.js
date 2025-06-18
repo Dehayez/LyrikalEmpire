@@ -71,6 +71,7 @@ const AudioPlayer = ({
   const desktopPlayerRef = useRef(null);
   const fullPageProgressRef = useRef(null);
   
+  const [artistName, setArtistName] = useState('Unknown Artist');
   const [activeContextMenu, setActiveContextMenu] = useState(false);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
@@ -455,10 +456,12 @@ const AudioPlayer = ({
         if (currentBeat.user_id) {
           if (artistCache.current.has(currentBeat.user_id)) {
             artistName = artistCache.current.get(currentBeat.user_id);
+            setArtistName(artistName);
           } else {
             try {
               const user = await getUserById(currentBeat.user_id);
               artistName = user?.username || artistName;
+              setArtistName(artistName);
               artistCache.current.set(currentBeat.user_id, artistName);
             } catch (error) {
               console.warn('Could not fetch artist name. Using fallback.', error);
@@ -707,7 +710,6 @@ const AudioPlayer = ({
             className={`audio-player audio-player--mobile ${lyricsModal ? 'audio-player--lyrics-modal-open' : ''}`}
             onClick={toggleFullPagePlayer}
           >
-            {/* Mobile progress bar - display only */}
             <H5AudioPlayer
               ref={mobilePlayerRef}
               className="smooth-progress-bar smooth-progress-bar--mobile"
@@ -719,9 +721,10 @@ const AudioPlayer = ({
             />
             
             {currentBeat && (
-              <p className="audio-player__title" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
-                {currentBeat.title}
-              </p>
+              <div className="audio-player__text" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
+                <p className="audio-player__title">{currentBeat.title}</p>
+                <p className="audio-player__artist">{artistName}</p>
+              </div>
             )}
             <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} className="small" />
           </div>
@@ -809,4 +812,4 @@ const AudioPlayer = ({
   );
 };
 
-export default AudioPlayer;
+export default AudioPlayer; 
