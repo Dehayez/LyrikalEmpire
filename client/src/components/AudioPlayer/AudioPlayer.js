@@ -78,6 +78,7 @@ const AudioPlayer = ({
   const [duration, setDuration] = useState(0);
   const [currentTimeState, setCurrentTimeState] = useState(0);
   const [isFirstRender, setIsFirstRender] = useState(true);
+  const [isReturningFromLyrics, setIsReturningFromLyrics] = useState(false);
 
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
@@ -104,6 +105,7 @@ const AudioPlayer = ({
 
     if (!isFullPage) {
       setIsFullPage(true);
+      setIsReturningFromLyrics(false); // Reset flag when manually opening
 
       requestAnimationFrame(() => {
         setIsFullPageVisible(true);
@@ -115,6 +117,7 @@ const AudioPlayer = ({
       slideOut(fullPagePlayerRef.current, fullPageOverlayRef.current, () => {
         setIsFullPage(false);
         setIsFullPageVisible(false);
+        setIsReturningFromLyrics(false); // Reset flag when closing
       });
     }
   };
@@ -122,6 +125,8 @@ const AudioPlayer = ({
   // Close full page player when lyrics modal opens on mobile
   useEffect(() => {
     if (isMobileOrTablet() && lyricsModal && isFullPage) {
+      // Mark that we're going to return from lyrics modal
+      setIsReturningFromLyrics(true);
       // Smoothly close the full page player
       slideOut(fullPagePlayerRef.current, fullPageOverlayRef.current, () => {
         setIsFullPageVisible(false);
@@ -131,11 +136,19 @@ const AudioPlayer = ({
       requestAnimationFrame(() => {
         setIsFullPageVisible(true);
         if (fullPagePlayerRef.current) {
-          slideIn(fullPagePlayerRef.current);
+          // Only slide in if we're not returning from lyrics modal
+          if (!isReturningFromLyrics) {
+            slideIn(fullPagePlayerRef.current);
+          } else {
+            // Just show without animation and reset the flag
+            fullPagePlayerRef.current.style.transform = 'translateY(0)';
+            fullPagePlayerRef.current.style.opacity = '1';
+            setIsReturningFromLyrics(false);
+          }
         }
       });
     }
-  }, [lyricsModal, isFullPage, isFullPageVisible]);
+  }, [lyricsModal, isFullPage, isFullPageVisible, isReturningFromLyrics]);
 
   const handleEllipsisClick = (e) => {
     e.stopPropagation();
