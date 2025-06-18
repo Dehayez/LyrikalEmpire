@@ -63,6 +63,10 @@ $indicator-half-size: math.div($indicator-size, 2);
     gap: 4px;
     font-size: 14px;
     padding: 8px 0;
+
+    &--desktop {
+      font-size: 16px;
+    }
   }
 
   &__title {

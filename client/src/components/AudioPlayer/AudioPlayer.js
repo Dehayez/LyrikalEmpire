@@ -721,7 +721,7 @@ const AudioPlayer = ({
             />
             
             {currentBeat && (
-              <div className="audio-player__text" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
+              <div  className="audio-player__text" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
                 <p className="audio-player__title">{currentBeat.title}</p>
                 <p className="audio-player__artist">{artistName}</p>
               </div>
@@ -731,8 +731,9 @@ const AudioPlayer = ({
         ) : (
           <div className="audio-player">
             {/* Desktop bottom audio player */}
-            <div className='audio-player__title audio-player__title--desktop' style={{ flex: '1' }}>
-              {currentBeat && <p>{currentBeat.title}</p>}
+            <div className='audio-player__text audio-player__text--desktop' style={{ flex: '1' }}>
+              <p className="audio-player__title">{currentBeat.title}</p>
+              <p className="audio-player__artist">{artistName}</p>
             </div>
             <div style={{ flex: '3' }}>
               <H5AudioPlayer
