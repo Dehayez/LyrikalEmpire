@@ -61,7 +61,6 @@ $indicator-half-size: math.div($indicator-size, 2);
     width: 100%;
     display: grid;
     gap: 4px;
-    font-size: 14px;
     padding: 8px 0;
 
     &--desktop {
@@ -73,11 +72,13 @@ $indicator-half-size: math.div($indicator-size, 2);
     margin: 0;
     padding: 0;
     font-weight: 600;
+    font-size: 15px;
   }
 
   &__artist {
     margin: 0;
     padding: 0;
+    font-size: 14px;
   }
 
   &__settings {
