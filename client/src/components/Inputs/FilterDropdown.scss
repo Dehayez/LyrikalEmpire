@@ -3,7 +3,6 @@
 .filter-dropdown {
   &-container {
     padding-bottom: 14px;
-    padding-left: 16px;
     padding-top: 6px;
     position: sticky;
     top: 60px;
@@ -206,6 +205,7 @@
 
 .filter-dropdowns-container {
   display: flex;
+  padding: 0 16px;
   gap: 8px;
   overflow: auto;
   @include hide-scrollbar;
