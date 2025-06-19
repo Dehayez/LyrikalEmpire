@@ -179,6 +179,10 @@ $indicator-half-size: math.div($indicator-size, 2);
       height: 6px;
     }
 
+    .rhap_progress-section {
+      padding: 0;
+    }
+
     .rhap_controls-section,
     .rhap_current-time,
     .rhap_time {
@@ -189,7 +193,7 @@ $indicator-half-size: math.div($indicator-size, 2);
 
 .smooth-progress-bar--mobile {
   position: absolute;
-  top: -41px;
+  top: -12px;
   left: 0;
   width: 100vw;
   padding: 0;
