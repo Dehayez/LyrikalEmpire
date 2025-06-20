@@ -27,6 +27,11 @@ const AudioPlayer = ({
   lyricsModal, setLyricsModal
 }) => {
 
+  // Guard clause: Don't render if there's no current beat
+  if (!currentBeat) {
+    return null;
+  }
+
   const {
     playerRef,
     volume,
@@ -654,10 +659,10 @@ const AudioPlayer = ({
             <div className="audio-player__full-page-content">
               <div className="audio-player__full-page-info">
                 <p className="audio-player__title">
-                  {currentBeat?.title || 'Audio Player'}
+                  {currentBeat.title || 'Audio Player'}
                 </p>
                 <p className="audio-player__artist">
-                  {artistCache.current.get(currentBeat?.user_id) || 'Unknown Artist'}
+                  {artistCache.current.get(currentBeat.user_id) || 'Unknown Artist'}
                 </p>
               </div>
               
@@ -720,12 +725,10 @@ const AudioPlayer = ({
               customControlsSection={[]}
             />
             
-            {currentBeat && (
-              <div  className="audio-player__text" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
-                <p className="audio-player__title">{currentBeat.title}</p>
-                <p className="audio-player__artist">{artistName}</p>
-              </div>
-            )}
+            <div  className="audio-player__text" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
+              <p className="audio-player__title">{currentBeat.title}</p>
+              <p className="audio-player__artist">{artistName}</p>
+            </div>
             <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} className="small" />
           </div>
         ) : (
@@ -813,4 +816,4 @@ const AudioPlayer = ({
   );
 };
 
-export default AudioPlayer; 
+export default AudioPlayer;
