@@ -235,6 +235,26 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
           </div>
         ))}
       </div>
+      
+      {/* Selected items display */}
+      {Object.values(selectedItems).flatMap(items => items).length > 0 && (
+        <div className="filter-dropdown__selected">
+          {Object.entries(selectedItems).flatMap(([filterType, items]) =>
+            items.map(item => (
+              <div
+                key={item.id}
+                className="filter-dropdown__selected-item"
+                onClick={() => handleSelect(filterType, item)}
+              >
+                <span>{item.name}</span>
+                <button>
+                  <IoCloseSharp />
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 });
