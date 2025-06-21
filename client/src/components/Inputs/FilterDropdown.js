@@ -110,9 +110,16 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
   };
 
   const handleClickOutside = (event) => {
-    const isOutside = !Object.keys(dropdownRefs.current).some(key => 
+    // Check if click is within any filter dropdown label container
+    const isInsideLabelContainer = Object.keys(dropdownRefs.current).some(key => 
       dropdownRefs.current[key] && dropdownRefs.current[key].contains(event.target)
     );
+    
+    // Check if click is within the portaled dropdown wrapper
+    const isInsideDropdownWrapper = event.target.closest('.filter-dropdown__wrapper');
+    
+    // Only close if click is outside both the label containers AND the dropdown wrapper
+    const isOutside = !isInsideLabelContainer && !isInsideDropdownWrapper;
     
     if (isOutside) {
       closeAllDropdowns();
