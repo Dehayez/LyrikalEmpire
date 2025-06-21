@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
 
 import { useLocalStorageSync, useDragToDismiss } from '../../hooks';
@@ -180,58 +181,74 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
               <IoChevronDownSharp className="filter-dropdown__label-icon" />
             </span>
 
-            {isDropdownOpen[name] && (
-              <div 
-                className="filter-dropdown__wrapper"
-                ref={isMobileOrTablet() ? dismissRef : null}
-                onTouchStart={isMobileOrTablet() ? handleDragStart : undefined}
-                onTouchEnd={isMobileOrTablet() ? handleDragEnd : undefined}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {isMobileOrTablet() && (
-                  <div className="filter-dropdown__header">
-                    Filter {label}
+            {isDropdownOpen[name] &&
+              ReactDOM.createPortal(
+                <div 
+                  className="filter-dropdown__wrapper"
+                  ref={isMobileOrTablet() ? dismissRef : null}
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    isMobileOrTablet() && handleDragStart(e);
+                  }}
+                  onTouchMove={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    isMobileOrTablet() && handleDragMove(e);
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    isMobileOrTablet() && handleDragEnd(e);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {isMobileOrTablet() && (
+                    <div className="filter-dropdown__header">
+                      Filter {label}
+                    </div>
+                  )}
+                  <div className="filter-dropdown__search">
+                    <input
+                      type="text"
+                      name={`search-${name}`} 
+                      id={`search-${name}`}
+                      placeholder={`Search ${label?.toLowerCase()}...`} 
+                      value={searchTerms[name] || ''} 
+                      onChange={(e) => handleSearch(name, e.target.value)} 
+                      className="filter-dropdown__search-input"
+                      onClick={(e) => e.stopPropagation()}
+                    />
                   </div>
-                )}
-                <div className="filter-dropdown__search">
-                  <input
-                    type="text"
-                    name={`search-${name}`} 
-                    id={`search-${name}`}
-                    placeholder={`Search ${label?.toLowerCase()}...`} 
-                    value={searchTerms[name] || ''} 
-                    onChange={(e) => handleSearch(name, e.target.value)} 
-                    className="filter-dropdown__search-input"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                </div>
-                <div className="filter-dropdown__list">
-                  {getFilteredOptions(options, name).map(option => {
-                    const optionId = `${id}-${option.id}`;
-                    return (
-                      <div key={option.id} className="filter-dropdown__option">
-                        <input
-                          type="checkbox"
-                          id={optionId}
-                          name={name}
-                          value={option.id}
-                          checked={selectedItems[name]?.some(selectedItem => selectedItem.id === option.id)}
-                          onChange={() => handleSelect(name, option)}
-                          className="filter-dropdown__option-input"
-                        />
-                        <span onClick={() => handleSelect(name, option)} className="filter-dropdown__option-text">
-                          {option.name} <span className="filter-dropdown__option-text-count">{option.count}</span>
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="filter-dropdown__actions">
-                  <Button size="small" variant="transparent" className="filter-dropdown__clear-button" onClick={() => handleClear(name)}>Clear</Button>
-                  <Button size="small" className="filter-dropdown__close-button" variant='primary' onClick={(e) => toggleDropdown(name, e)}>Done</Button>
-                </div>
-              </div>
-            )}
+                  <div className="filter-dropdown__list">
+                    {getFilteredOptions(options, name).map(option => {
+                      const optionId = `${id}-${option.id}`;
+                      return (
+                        <div key={option.id} className="filter-dropdown__option">
+                          <input
+                            type="checkbox"
+                            id={optionId}
+                            name={name}
+                            value={option.id}
+                            checked={selectedItems[name]?.some(selectedItem => selectedItem.id === option.id)}
+                            onChange={() => handleSelect(name, option)}
+                            className="filter-dropdown__option-input"
+                          />
+                          <span onClick={() => handleSelect(name, option)} className="filter-dropdown__option-text">
+                            {option.name} <span className="filter-dropdown__option-text-count">{option.count}</span>
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="filter-dropdown__actions">
+                    <Button size="small" variant="transparent" className="filter-dropdown__clear-button" onClick={() => handleClear(name)}>Clear</Button>
+                    <Button size="small" className="filter-dropdown__close-button" variant='primary' onClick={(e) => toggleDropdown(name, e)}>Done</Button>
+                  </div>
+                </div>,
+                document.getElementById('root')
+              )
+            }
           </div>
         ))}
       </div>
