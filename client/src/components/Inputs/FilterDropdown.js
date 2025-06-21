@@ -11,6 +11,7 @@ import './FilterDropdown.scss';
 
 export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref) => {
   const dropdownRefs = useRef({});
+  const listRef = useRef(null);
 
   const initialSelectedItems = getInitialStateForFilters(filters, []);
   const initialDropdownState = getInitialStateForFilters(filters, false);
@@ -123,6 +124,58 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
     closeAllDropdowns();
   };
 
+  // Enhanced touch handling to distinguish between scroll and drag-to-dismiss
+  const handleTouchStartWrapper = (e) => {
+    if (!isMobileOrTablet()) return;
+    
+    const target = e.target;
+    const list = listRef.current;
+    
+    // If touch started within the scrollable list area, don't prevent default
+    // This allows normal scrolling behavior
+    if (list && list.contains(target)) {
+      // Check if list is scrollable and has scroll content
+      const isScrollable = list.scrollHeight > list.clientHeight;
+      if (isScrollable) {
+        // Don't prevent default - allow normal scrolling
+        return;
+      }
+    }
+    
+    // Only handle drag-to-dismiss for header area or when list is not scrollable
+    handleDragStart(e);
+  };
+
+  const handleTouchMoveWrapper = (e) => {
+    if (!isMobileOrTablet()) return;
+    
+    const target = e.target;
+    const list = listRef.current;
+    
+    // If touch is within the scrollable list, allow normal scrolling
+    if (list && list.contains(target)) {
+      const isScrollable = list.scrollHeight > list.clientHeight;
+      const isAtTop = list.scrollTop === 0;
+      const isAtBottom = list.scrollTop + list.clientHeight >= list.scrollHeight;
+      
+      // Only prevent scrolling and trigger drag-to-dismiss if:
+      // 1. We're at the top and trying to scroll up further, OR
+      // 2. The list is not scrollable
+      if (isScrollable && !(isAtTop && e.touches[0].clientY > e.touches[0].startY)) {
+        return; // Allow normal scrolling
+      }
+    }
+    
+    // Handle drag-to-dismiss
+    e.stopPropagation();
+    handleDragMove(e);
+  };
+
+  const handleTouchEndWrapper = (e) => {
+    if (!isMobileOrTablet()) return;
+    handleDragEnd(e);
+  };
+
   // Add this effect to handle slide in animation when dropdown opens
   useEffect(() => {
     if (isMobileOrTablet() && hasOpenDropdown) {
@@ -186,25 +239,20 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
                 <div 
                   className="filter-dropdown__wrapper"
                   ref={isMobileOrTablet() ? dismissRef : null}
-                  onTouchStart={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    isMobileOrTablet() && handleDragStart(e);
-                  }}
-                  onTouchMove={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    isMobileOrTablet() && handleDragMove(e);
-                  }}
-                  onTouchEnd={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    isMobileOrTablet() && handleDragEnd(e);
-                  }}
+                  onTouchStart={handleTouchStartWrapper}
+                  onTouchMove={handleTouchMoveWrapper}
+                  onTouchEnd={handleTouchEndWrapper}
                   onClick={(e) => e.stopPropagation()}
                 >
                   {isMobileOrTablet() && (
-                    <div className="filter-dropdown__header">
+                    <div 
+                      className="filter-dropdown__header"
+                      onTouchStart={(e) => {
+                        // Always allow drag-to-dismiss from header
+                        e.stopPropagation();
+                        handleDragStart(e);
+                      }}
+                    >
                       Filter {label}
                     </div>
                   )}
@@ -220,7 +268,10 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
                       onClick={(e) => e.stopPropagation()}
                     />
                   </div>
-                  <div className="filter-dropdown__list">
+                  <div 
+                    className="filter-dropdown__list"
+                    ref={listRef}
+                  >
                     {getFilteredOptions(options, name).map(option => {
                       const optionId = `${id}-${option.id}`;
                       return (
