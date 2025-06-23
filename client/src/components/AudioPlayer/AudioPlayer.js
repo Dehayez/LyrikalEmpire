@@ -76,6 +76,12 @@ const AudioPlayer = ({
   const mobilePlayerRef = useRef(null);
   const desktopPlayerRef = useRef(null);
   const fullPageProgressRef = useRef(null);
+
+  // Swipeable content refs
+  const swipeableContainerRef = useRef(null);
+  const swipeStartX = useRef(0);
+  const swipeCurrentX = useRef(0);
+  const isSwipeDragging = useRef(false);
   
   const [artistName, setArtistName] = useState('Unknown Artist');
   const [activeContextMenu, setActiveContextMenu] = useState(false);
@@ -86,7 +92,9 @@ const AudioPlayer = ({
   const [currentTimeState, setCurrentTimeState] = useState(0);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [isReturningFromLyrics, setIsReturningFromLyrics] = useState(false);
-  const [isOptionsActive, setIsOptionsActive] = useState(true);
+  
+  // Replace isOptionsActive with activeSlideIndex for swipeable content
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
@@ -95,6 +103,40 @@ const AudioPlayer = ({
     return JSON.parse(localStorage.getItem('isFullPage')) || false;
   });
   const [isFullPageVisible, setIsFullPageVisible] = useState(false);
+
+  // Swipeable slides configuration
+  const slides = [
+    {
+      id: 'image',
+      content: (
+        <div className="audio-player__full-page-image">
+          {currentBeat.artworkUrl ? (
+            <img
+              src={currentBeat.artworkUrl}
+              alt={currentBeat.title || 'Audio Cover'}
+              className="audio-player__cover-image"
+            />
+          ) : (
+            <img
+              src="https://www.lyrikalempire.com/placeholder.png"
+              alt="Placeholder Cover"
+              className="audio-player__cover-image"
+            />
+          )}
+        </div>
+      )
+    },
+    {
+      id: 'info',
+      content: (
+        <div className="audio-player__full-page-info-content">
+          <p className="audio-player__full-page-description">
+            {currentBeat.description || 'No description available.'}
+          </p>
+        </div>
+      )
+    }
+  ];
 
   // Determine which player to show based on isFullPage AND lyricsModal state
   const shouldShowFullPagePlayer = isFullPage && !(isMobileOrTablet() && lyricsModal);
@@ -130,9 +172,128 @@ const AudioPlayer = ({
     }
   };
 
-  const toggleOptions = () => {
-    setIsOptionsActive((prev) => !prev);
+  // Swipeable content handlers
+  const handleSwipeTouchStart = (e) => {
+    swipeStartX.current = e.touches[0].clientX;
+    isSwipeDragging.current = true;
+    
+    if (swipeableContainerRef.current) {
+      swipeableContainerRef.current.style.transition = 'none';
+    }
   };
+
+  const handleSwipeTouchMove = (e) => {
+    if (!isSwipeDragging.current) return;
+    
+    swipeCurrentX.current = e.touches[0].clientX;
+    const diffX = swipeCurrentX.current - swipeStartX.current;
+    
+    if (swipeableContainerRef.current) {
+      const translateX = -activeSlideIndex * 100 + (diffX / swipeableContainerRef.current.offsetWidth) * 100;
+      swipeableContainerRef.current.style.transform = `translateX(${translateX}%)`;
+    }
+  };
+
+  const handleSwipeTouchEnd = () => {
+    if (!isSwipeDragging.current) return;
+    
+    const diffX = swipeCurrentX.current - swipeStartX.current;
+    const threshold = 50; // Minimum distance to trigger slide
+    
+    if (swipeableContainerRef.current) {
+      swipeableContainerRef.current.style.transition = 'transform 0.3s ease-out';
+    }
+    
+    if (Math.abs(diffX) > threshold) {
+      if (diffX > 0 && activeSlideIndex > 0) {
+        // Swipe right - go to previous slide
+        setActiveSlideIndex(activeSlideIndex - 1);
+      } else if (diffX < 0 && activeSlideIndex < slides.length - 1) {
+        // Swipe left - go to next slide
+        setActiveSlideIndex(activeSlideIndex + 1);
+      }
+    }
+    
+    isSwipeDragging.current = false;
+    updateSwipeTransform();
+  };
+
+  // Mouse events for desktop swipe
+  const handleSwipeMouseDown = (e) => {
+    swipeStartX.current = e.clientX;
+    isSwipeDragging.current = true;
+    
+    if (swipeableContainerRef.current) {
+      swipeableContainerRef.current.style.transition = 'none';
+    }
+    
+    // Prevent text selection during drag
+    e.preventDefault();
+  };
+
+  const handleSwipeMouseMove = (e) => {
+    if (!isSwipeDragging.current) return;
+    
+    swipeCurrentX.current = e.clientX;
+    const diffX = swipeCurrentX.current - swipeStartX.current;
+    
+    if (swipeableContainerRef.current) {
+      const translateX = -activeSlideIndex * 100 + (diffX / swipeableContainerRef.current.offsetWidth) * 100;
+      swipeableContainerRef.current.style.transform = `translateX(${translateX}%)`;
+    }
+  };
+
+  const handleSwipeMouseUp = () => {
+    if (!isSwipeDragging.current) return;
+    
+    const diffX = swipeCurrentX.current - swipeStartX.current;
+    const threshold = 50;
+    
+    if (swipeableContainerRef.current) {
+      swipeableContainerRef.current.style.transition = 'transform 0.3s ease-out';
+    }
+    
+    if (Math.abs(diffX) > threshold) {
+      if (diffX > 0 && activeSlideIndex > 0) {
+        setActiveSlideIndex(activeSlideIndex - 1);
+      } else if (diffX < 0 && activeSlideIndex < slides.length - 1) {
+        setActiveSlideIndex(activeSlideIndex + 1);
+      }
+    }
+    
+    isSwipeDragging.current = false;
+    updateSwipeTransform();
+  };
+
+  const updateSwipeTransform = () => {
+    if (swipeableContainerRef.current) {
+      swipeableContainerRef.current.style.transform = `translateX(-${activeSlideIndex * 100}%)`;
+    }
+  };
+
+  const goToSlide = (index) => {
+    setActiveSlideIndex(index);
+  };
+
+  // Add mouse event listeners to document for desktop drag
+  useEffect(() => {
+    const handleDocumentMouseMove = (e) => handleSwipeMouseMove(e);
+    const handleDocumentMouseUp = () => handleSwipeMouseUp();
+
+    if (isSwipeDragging.current) {
+      document.addEventListener('mousemove', handleDocumentMouseMove);
+      document.addEventListener('mouseup', handleDocumentMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleDocumentMouseMove);
+      document.removeEventListener('mouseup', handleDocumentMouseUp);
+    };
+  }, [activeSlideIndex]);
+
+  useEffect(() => {
+    updateSwipeTransform();
+  }, [activeSlideIndex]);
 
   // Close full page player when lyrics modal opens on mobile
   useEffect(() => {
@@ -664,29 +825,42 @@ const AudioPlayer = ({
               </IconButton>
             </div>
 
-            {/* CONTENT */}
+            {/* SWIPEABLE CONTENT */}
             <div className="audio-player__full-page-content">
-              {isOptionsActive ? (
-                <div className="audio-player__full-page-image">
-                  {currentBeat.artworkUrl ? (
-                    <img
-                      src={currentBeat.artworkUrl}
-                      alt={currentBeat.title || 'Audio Cover'}
-                      className="audio-player__cover-image"
-                    />
-                  ) : (
-                    <img
-                      src="https://www.lyrikalempire.com/placeholder.png"
-                      alt="Placeholder Cover"
-                      className="audio-player__cover-image"
-                    />
-                  )}
-                  </div>
-              ) : (
-                  <p className="audio-player__full-page-description">
-                    {currentBeat.description || 'No description available.'}
-                  </p>
-              )}
+              <div 
+                className="swipeable-container"
+                onTouchStart={handleSwipeTouchStart}
+                onTouchMove={handleSwipeTouchMove}
+                onTouchEnd={handleSwipeTouchEnd}
+                onMouseDown={handleSwipeMouseDown}
+              >
+                <div 
+                  ref={swipeableContainerRef}
+                  className="swipeable-content"
+                  style={{
+                    transform: `translateX(-${activeSlideIndex * 50}%)`,
+                    transition: 'transform 0.3s ease-out'
+                  }}
+                >
+                  {slides.map((slide, index) => (
+                    <div key={slide.id} className="swipeable-slide">
+                      {slide.content}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Navigation dots */}
+              <div className="swipeable-dots">
+                {slides.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`swipeable-dot ${index === activeSlideIndex ? 'active' : ''}`}
+                    onClick={() => goToSlide(index)}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* CONTROLS */}
@@ -699,15 +873,6 @@ const AudioPlayer = ({
                   <p className="audio-player__artist">
                     {artistCache.current.get(currentBeat.user_id) || 'Unknown Artist'}
                   </p>
-                </div>
-                <div className="audio-player__full-page-options">
-                  <IconButton
-                    onClick={toggleOptions}
-                    text={isOptionsActive ? 'Show Info' : 'Show Cover'}
-                    ariaLabel={isOptionsActive ? 'Show Info' : 'Show Cover'}
-                  >
-                    {isOptionsActive ? <IoOptionsSharp /> : <LuDisc3 />}
-                  </IconButton>
                 </div>
               </div>
               
