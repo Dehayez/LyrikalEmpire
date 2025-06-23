@@ -643,6 +643,7 @@ const AudioPlayer = ({
             onTouchMove={handleDragMove}
             onTouchEnd={handleDragEnd}
           >
+            {/* HEADER */}
             <div className="audio-player__full-page-header">
               <IconButton
                 className="audio-player__close-button"
@@ -662,7 +663,34 @@ const AudioPlayer = ({
                 <IoEllipsisHorizontalSharp />
               </IconButton>
             </div>
+
+            {/* CONTENT */}
             <div className="audio-player__full-page-content">
+              {isOptionsActive ? (
+                <div className="audio-player__full-page-image">
+                  {currentBeat.artworkUrl ? (
+                    <img
+                      src={currentBeat.artworkUrl}
+                      alt={currentBeat.title || 'Audio Cover'}
+                      className="audio-player__cover-image"
+                    />
+                  ) : (
+                    <img
+                      src="https://www.lyrikalempire.com/placeholder.png"
+                      alt="Placeholder Cover"
+                      className="audio-player__cover-image"
+                    />
+                  )}
+                  </div>
+              ) : (
+                  <p className="audio-player__full-page-description">
+                    {currentBeat.description || 'No description available.'}
+                  </p>
+              )}
+            </div>
+
+            {/* CONTROLS */}
+            <div className="audio-player__full-page-controls">
               <div className="audio-player__full-page-info">
                 <div className="audio-player__full-page-text">
                   <p className="audio-player__title">
@@ -672,7 +700,7 @@ const AudioPlayer = ({
                     {artistCache.current.get(currentBeat.user_id) || 'Unknown Artist'}
                   </p>
                 </div>
-                <div className="audio-player__full-page-controls">
+                <div className="audio-player__full-page-options">
                   <IconButton
                     onClick={toggleOptions}
                     text={isOptionsActive ? 'Show Info' : 'Show Cover'}
