@@ -149,6 +149,8 @@ $indicator-half-size: math.div($indicator-size, 2);
     }
 
     &-info {
+      display: flex;
+      justify-content: space-between;
       margin: 16px 0;
     }
 

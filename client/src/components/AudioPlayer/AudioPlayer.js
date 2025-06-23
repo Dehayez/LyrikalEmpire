@@ -3,7 +3,8 @@ import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import WaveSurfer from 'wavesurfer.js';
 import { LiaMicrophoneAltSolid } from "react-icons/lia";
 import { PiWaveform } from "react-icons/pi";
-import { IoChevronDownSharp, IoEllipsisHorizontalSharp, IoAddSharp, IoListSharp, IoRemoveCircleOutline } from "react-icons/io5";
+import { IoChevronDownSharp, IoEllipsisHorizontalSharp, IoAddSharp, IoListSharp, IoRemoveCircleOutline, IoOptionsSharp } from "react-icons/io5";
+import { LuDisc3 } from "react-icons/lu";
 import { Queue02 } from "../../assets/icons";
 
 import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
@@ -85,6 +86,7 @@ const AudioPlayer = ({
   const [currentTimeState, setCurrentTimeState] = useState(0);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [isReturningFromLyrics, setIsReturningFromLyrics] = useState(false);
+  const [isOptionsActive, setIsOptionsActive] = useState(true);
 
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
@@ -126,6 +128,10 @@ const AudioPlayer = ({
         setIsReturningFromLyrics(false); // Reset flag when closing
       });
     }
+  };
+
+  const toggleOptions = () => {
+    setIsOptionsActive((prev) => !prev);
   };
 
   // Close full page player when lyrics modal opens on mobile
@@ -658,12 +664,23 @@ const AudioPlayer = ({
             </div>
             <div className="audio-player__full-page-content">
               <div className="audio-player__full-page-info">
-                <p className="audio-player__title">
-                  {currentBeat.title || 'Audio Player'}
-                </p>
-                <p className="audio-player__artist">
-                  {artistCache.current.get(currentBeat.user_id) || 'Unknown Artist'}
-                </p>
+                <div className="audio-player__full-page-text">
+                  <p className="audio-player__title">
+                    {currentBeat.title || 'Audio Player'}
+                  </p>
+                  <p className="audio-player__artist">
+                    {artistCache.current.get(currentBeat.user_id) || 'Unknown Artist'}
+                  </p>
+                </div>
+                <div className="audio-player__full-page-controls">
+                  <IconButton
+                    onClick={toggleOptions}
+                    text={isOptionsActive ? 'Show Info' : 'Show Cover'}
+                    ariaLabel={isOptionsActive ? 'Show Info' : 'Show Cover'}
+                  >
+                    {isOptionsActive ? <IoOptionsSharp /> : <LuDisc3 />}
+                  </IconButton>
+                </div>
               </div>
               
               <H5AudioPlayer
