@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
 import { IoChevronDownSharp, IoCloseSharp } from "react-icons/io5";
 
 import { useLocalStorageSync, useDragToDismiss } from '../../hooks';
@@ -110,16 +109,9 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
   };
 
   const handleClickOutside = (event) => {
-    // Check if click is within any filter dropdown label container
-    const isInsideLabelContainer = Object.keys(dropdownRefs.current).some(key => 
+    const isOutside = !Object.keys(dropdownRefs.current).some(key => 
       dropdownRefs.current[key] && dropdownRefs.current[key].contains(event.target)
     );
-    
-    // Check if click is within the portaled dropdown wrapper
-    const isInsideDropdownWrapper = event.target.closest('.filter-dropdown__wrapper');
-    
-    // Only close if click is outside both the label containers AND the dropdown wrapper
-    const isOutside = !isInsideLabelContainer && !isInsideDropdownWrapper;
     
     if (isOutside) {
       closeAllDropdowns();
@@ -241,72 +233,69 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
               <IoChevronDownSharp className="filter-dropdown__label-icon" />
             </span>
 
-            {isDropdownOpen[name] &&
-              ReactDOM.createPortal(
-                <div 
-                  className="filter-dropdown__wrapper"
-                  ref={isMobileOrTablet() ? dismissRef : null}
-                  onTouchStart={handleTouchStartWrapper}
-                  onTouchMove={handleTouchMoveWrapper}
-                  onTouchEnd={handleTouchEndWrapper}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {isMobileOrTablet() && (
-                    <div 
-                      className="filter-dropdown__header"
-                      onTouchStart={(e) => {
-                        // Always allow drag-to-dismiss from header
-                        e.stopPropagation();
-                        handleDragStart(e);
-                      }}
-                    >
-                      Filter {label}
-                    </div>
-                  )}
-                  <div className="filter-dropdown__search">
-                    <input
-                      type="text"
-                      name={`search-${name}`} 
-                      id={`search-${name}`}
-                      placeholder={`Search ${label?.toLowerCase()}...`} 
-                      value={searchTerms[name] || ''} 
-                      onChange={(e) => handleSearch(name, e.target.value)} 
-                      className="filter-dropdown__search-input"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </div>
+            {isDropdownOpen[name] && (
+              <div 
+                className="filter-dropdown__wrapper"
+                ref={isMobileOrTablet() ? dismissRef : null}
+                onTouchStart={handleTouchStartWrapper}
+                onTouchMove={handleTouchMoveWrapper}
+                onTouchEnd={handleTouchEndWrapper}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {isMobileOrTablet() && (
                   <div 
-                    className="filter-dropdown__list"
-                    ref={listRef}
+                    className="filter-dropdown__header"
+                    onTouchStart={(e) => {
+                      // Always allow drag-to-dismiss from header
+                      e.stopPropagation();
+                      handleDragStart(e);
+                    }}
                   >
-                    {getFilteredOptions(options, name).map(option => {
-                      const optionId = `${id}-${option.id}`;
-                      return (
-                        <div key={option.id} className="filter-dropdown__option">
-                          <input
-                            type="checkbox"
-                            id={optionId}
-                            name={name}
-                            value={option.id}
-                            checked={selectedItems[name]?.some(selectedItem => selectedItem.id === option.id)}
-                            onChange={() => handleSelect(name, option)}
-                            className="filter-dropdown__option-input"
-                          />
-                          <span onClick={() => handleSelect(name, option)} className="filter-dropdown__option-text">
-                            {option.name} <span className="filter-dropdown__option-text-count">{option.count}</span>
-                          </span>
-                        </div>
-                      );
-                    })}
+                    Filter {label}
                   </div>
-                  <div className="filter-dropdown__actions">
-                    <Button size="small" variant="transparent" className="filter-dropdown__clear-button" onClick={() => handleClear(name)}>Clear</Button>
-                    <Button size="small" className="filter-dropdown__close-button" variant='primary' onClick={(e) => toggleDropdown(name, e)}>Done</Button>
-                  </div>
-                </div>,
-                document.getElementById('root')
-              )
-            }
+                )}
+                <div className="filter-dropdown__search">
+                  <input
+                    type="text"
+                    name={`search-${name}`} 
+                    id={`search-${name}`}
+                    placeholder={`Search ${label?.toLowerCase()}...`} 
+                    value={searchTerms[name] || ''} 
+                    onChange={(e) => handleSearch(name, e.target.value)} 
+                    className="filter-dropdown__search-input"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+                <div 
+                  className="filter-dropdown__list"
+                  ref={listRef}
+                >
+                  {getFilteredOptions(options, name).map(option => {
+                    const optionId = `${id}-${option.id}`;
+                    return (
+                      <div key={option.id} className="filter-dropdown__option">
+                        <input
+                          type="checkbox"
+                          id={optionId}
+                          name={name}
+                          value={option.id}
+                          checked={selectedItems[name]?.some(selectedItem => selectedItem.id === option.id)}
+                          onChange={() => handleSelect(name, option)}
+                          className="filter-dropdown__option-input"
+                        />
+                        <span onClick={() => handleSelect(name, option)} className="filter-dropdown__option-text">
+                          {option.name} <span className="filter-dropdown__option-text-count">{option.count}</span>
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="filter-dropdown__actions">
+                  <Button size="small" variant="transparent" className="filter-dropdown__clear-button" onClick={() => handleClear(name)}>Clear</Button>
+                  <Button size="small" className="filter-dropdown__close-button" variant='primary' onClick={(e) => toggleDropdown(name, e)}>Done</Button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
