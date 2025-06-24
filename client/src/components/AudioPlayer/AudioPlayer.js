@@ -441,17 +441,12 @@ const AudioPlayer = ({
       }
     };
 
-    const handleEnded = () => {
-      onNext();
-    };
-
     mainAudio.addEventListener('timeupdate', handleTimeUpdate);
     mainAudio.addEventListener('loadedmetadata', handleLoadedMetadata);
     mainAudio.addEventListener('loadeddata', handleLoadedData);
     mainAudio.addEventListener('canplay', handleCanPlay);
     mainAudio.addEventListener('play', handlePlay);
     mainAudio.addEventListener('pause', handlePause);
-    mainAudio.addEventListener('ended', handleEnded);
     
     // Initial sync - force update even when paused
     const initialSync = () => {
@@ -473,7 +468,6 @@ const AudioPlayer = ({
       mainAudio.removeEventListener('canplay', handleCanPlay);
       mainAudio.removeEventListener('play', handlePlay);
       mainAudio.removeEventListener('pause', handlePause);
-      mainAudio.removeEventListener('ended', handleEnded);
     };
   }, [playerRef.current?.audio.current, onNext, setIsPlaying]);
 
