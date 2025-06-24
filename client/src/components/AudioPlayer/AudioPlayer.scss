@@ -102,6 +102,10 @@ $indicator-half-size: math.div($indicator-size, 2);
     justify-content: space-between;
     align-items: center;
 
+     .rhap_progress-section {
+      padding: 28px 0;
+    }
+
     &-overlay {
       position: fixed;
       top: 0;
@@ -195,10 +199,6 @@ $indicator-half-size: math.div($indicator-size, 2);
     .rhap_progress-bar {
       border-radius: 0;
       height: 6px;
-    }
-
-    .rhap_progress-section {
-      padding: 0;
     }
 
     .rhap_controls-section,

@@ -789,7 +789,7 @@ const AudioPlayer = ({
         <>
           <div
             ref={fullPageOverlayRef}
-            className={`audio-player__full-page-overlay ${isFullPageVisible ? 'visible' : ''}`}
+            className={`audio-player--mobile audio-player__full-page-overlay ${isFullPageVisible ? 'visible' : ''}`}
           />
           <div
             ref={fullPagePlayerRef}
