@@ -19,7 +19,11 @@ $indicator-half-size: math.div($indicator-size, 2);
   background-color: $color-black;
   padding: 0 20px;
 
-
+  &--desktop {
+    .rhap_progress-section {
+      padding: 40px 0;
+    } 
+  }
 
   &--lyrics-modal-open {
     position: absolute;
@@ -39,10 +43,6 @@ $indicator-half-size: math.div($indicator-size, 2);
   .rhap_progress-container {
     position: relative;
     touch-action: none;
-  }
-
-  .rhap_progress-section {
-    padding: 40px 0;
   }
 
   .waveform {
