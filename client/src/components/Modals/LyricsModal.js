@@ -108,7 +108,7 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
       console.error('Failed to update/create lyrics:', err);
     }
   };
-
+/* 
   useEffect(() => {
     updateDimensions();
     const resizeObserver = new ResizeObserver(updateDimensions);
@@ -136,7 +136,7 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
 
     observer.observe(document.body, { childList: true, subtree: true });
     return () => observer.disconnect();
-  }, [dimensions]);
+  }, [dimensions]); */
 
   if (isAuthRoute) return null;
 
