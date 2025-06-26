@@ -164,10 +164,6 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
             <ResizableBox
               width={dimensions.width}
               height={dimensions.height}
-              resizeHandles={['se', 'e', 's']}
-              onResizeStop={(e, data) =>
-                setDimensions({ width: data.size.width, height: data.size.height })
-              }
             >
               <div className="modal-content" ref={modalRef}>
                 <IconButton className="modal__close-button" onClick={handleCancel}>
