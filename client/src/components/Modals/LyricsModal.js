@@ -61,13 +61,6 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
 
   const handleCancel = useCallback(() => setLyricsModal(false), [setLyricsModal]);
 
-  const updateDimensions = useCallback(() => {
-    if (modalRef.current) {
-      const { offsetWidth, offsetHeight } = modalRef.current;
-      setDimensions({ width: offsetWidth, height: offsetHeight });
-    }
-  }, []);
-
   useLocalStorageSync({ dimensions });
 
   useEffect(() => {
@@ -108,35 +101,6 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
       console.error('Failed to update/create lyrics:', err);
     }
   };
-/* 
-  useEffect(() => {
-    updateDimensions();
-    const resizeObserver = new ResizeObserver(updateDimensions);
-    const modalEl = modalRef.current;
-
-    const timeoutId = setTimeout(() => {
-      if (modalEl instanceof Element) resizeObserver.observe(modalEl);
-    }, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (modalEl instanceof Element) resizeObserver.unobserve(modalEl);
-      resizeObserver.disconnect();
-    };
-  }, [updateDimensions]);
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      const el = document.querySelector('.lyrics-modal .form-group__input');
-      if (el) {
-        el.style.minHeight = `${dimensions.height - 70}px`;
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
-  }, [dimensions]); */
 
   if (isAuthRoute) return null;
 
