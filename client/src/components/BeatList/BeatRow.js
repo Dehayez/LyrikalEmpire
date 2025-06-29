@@ -5,8 +5,8 @@ import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, I
 import classNames from 'classnames';
 
 import { useBpmHandlers } from '../../hooks';
-import { addBeatsToPlaylist, getBeatsByPlaylistId, replaceAudio } from '../../services';
-import { isMobileOrTablet, formatDuration } from '../../utils';
+import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services';
+import { isMobileOrTablet, formatDuration, replaceAudioWithToast } from '../../utils';
 import { usePlaylist, useBeat, useData, useUser, useHeaderWidths } from '../../contexts';
 
 import { IconButton } from '../Buttons';
@@ -260,10 +260,10 @@ const BeatRow = ({
 
   const handleReplaceAudio = useCallback(async () => {
     const newAudioFile = await selectNewAudioFile();
-  
+
     if (newAudioFile) {
       try {
-        await replaceAudio(beat.id, newAudioFile, user.id);
+        await replaceAudioWithToast(beat.id, newAudioFile, user.id);
         console.log('Audio replaced successfully');
       } catch (error) {
         console.error('Failed to replace audio:', error);

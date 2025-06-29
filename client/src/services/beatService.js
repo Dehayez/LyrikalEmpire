@@ -80,7 +80,7 @@ export const getBeatsByAssociation = async (associationType, associationIds, all
   return allBeats ? fetchedBeats.filter(beat => allBeats.some(b => b.id === beat.id)) : fetchedBeats;
 };
 
-export const replaceAudio = async (beatId, audioFile, userId) => {
+export const replaceAudio = async (beatId, audioFile, userId, onProgress) => {
   const formData = new FormData();
   formData.append('audio', audioFile, audioFile.name);
   formData.append('userId', userId);
@@ -93,6 +93,11 @@ export const replaceAudio = async (beatId, audioFile, userId) => {
 
   return await apiRequest('put', `/${beatId}/replace-audio`, API_URL, formData, null, true, {
     'Content-Type': 'multipart/form-data'
+  }, (progressEvent) => {
+    if (onProgress) {
+      const percentage = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+      onProgress(percentage);
+    }
   });
 };
 

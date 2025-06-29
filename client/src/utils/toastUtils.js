@@ -2,10 +2,12 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import { IoCheckmarkSharp, IoCloseSharp, IoCloudUploadSharp } from "react-icons/io5";
 
-export const createUploadToast = (fileName) => {
+export const createUploadToast = (fileName, actionType = 'upload') => {
+  const actionText = actionType === 'replace' ? 'Replacing' : 'Uploading';
+  
   const toastId = toast.dark(
     <div>
-      <strong>Uploading:</strong> {fileName}
+      <strong>{actionText}:</strong> {fileName}
     </div>,
     {
       autoClose: false,
@@ -20,22 +22,26 @@ export const createUploadToast = (fileName) => {
   return toastId;
 };
 
-export const updateUploadToast = (toastId, fileName, percentage) => {
-    toast.update(toastId, {
-      render: (
-        <div>
-          <strong>Uploading:</strong> {fileName} ({percentage}%)
-        </div>
-      ),
-      progress: percentage / 100, 
-    });
-  };
-
-export const completeUploadToast = (toastId, title) => {
+export const updateUploadToast = (toastId, fileName, percentage, actionType = 'upload') => {
+  const actionText = actionType === 'replace' ? 'Replacing' : 'Uploading';
+  
   toast.update(toastId, {
     render: (
       <div>
-        <strong>{title}</strong> uploaded successfully!
+        <strong>{actionText}:</strong> {fileName} ({percentage}%)
+      </div>
+    ),
+    progress: percentage / 100, 
+  });
+};
+
+export const completeUploadToast = (toastId, title, actionType = 'upload') => {
+  const actionText = actionType === 'replace' ? 'replaced' : 'uploaded';
+  
+  toast.update(toastId, {
+    render: (
+      <div>
+        <strong>{title}</strong> {actionText} successfully!
       </div>
     ),
     icon: <IoCheckmarkSharp size={24} />,
