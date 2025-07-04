@@ -1,243 +1,235 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useHeaderWidths } from '../contexts';
 
 export const useResizableColumns = (tableRef) => {
-  const { setHeaderWidths } = useHeaderWidths();
+  const { headerWidths, setHeaderWidths } = useHeaderWidths();
+  const resizeTimeoutRef = useRef(null);
+
+  // Default percentages for each column (total should equal 100%)
+  const defaultPercentages = {
+    0: 5,   // number
+    1: 20,  // title
+    2: 3,   // tierlist
+    3: 3,   // bpm
+    4: 15,  // feature
+    5: 15,  // mood
+    6: 15,  // genre
+    7: 11,  // keywords
+    8: 5,   // duration
+    9: 3    // menu
+  };
+
+  // Function to recalculate percentages for visible columns
+  const recalculatePercentages = useCallback(() => {
+    if (!tableRef.current) return;
+    
+    const table = tableRef.current.closest('table');
+    if (!table) return;
+    
+    const headers = table.querySelectorAll('th');
+    const tableBody = table.querySelector('tbody');
+    
+    // Get current widths of resizable columns
+    const resizableIndices = [1, 4, 5, 6, 7]; // title, feature, mood, genre, keywords
+    const currentWidths = {};
+    let totalResizableWidth = 0;
+    
+    resizableIndices.forEach(index => {
+      const header = headers[index];
+      if (header) {
+        const width = parseFloat(header.style.width) || defaultPercentages[index];
+        currentWidths[index] = width;
+        totalResizableWidth += width;
+      }
+    });
+    
+    // If total is not 100%, redistribute proportionally
+    if (Math.abs(totalResizableWidth - 76) > 1) { // 76% is the total for resizable columns (100% - 24% for fixed columns)
+      const scaleFactor = 76 / totalResizableWidth;
+      
+      resizableIndices.forEach(index => {
+        const header = headers[index];
+        if (header) {
+          const newWidth = Math.max(5, Math.min(50, currentWidths[index] * scaleFactor));
+          header.style.width = `${newWidth}%`;
+          
+          // Apply to corresponding data cells
+          if (tableBody) {
+            const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
+            dataCells.forEach(cell => {
+              cell.style.width = `${newWidth}%`;
+            });
+          }
+          
+          localStorage.setItem(`headerWidth${index}`, newWidth);
+          setHeaderWidths((prev) => ({
+            ...prev,
+            [`headerWidth${index}`]: newWidth,
+          }));
+        }
+      });
+    }
+    
+    // Ensure non-resizable columns stay at their fixed widths
+    const nonResizableIndices = [0, 2, 3, 8, 9]; // number, tierlist, bpm, duration, menu
+    nonResizableIndices.forEach(nonResizableIndex => {
+      const nonResizableHeader = headers[nonResizableIndex];
+      if (nonResizableHeader) {
+        const fixedWidth = defaultPercentages[nonResizableIndex];
+        nonResizableHeader.style.width = `${fixedWidth}%`;
+        
+        // Apply to corresponding data cells
+        if (tableBody) {
+          const nonResizableDataCells = tableBody.querySelectorAll(`td:nth-child(${nonResizableIndex + 1})`);
+          nonResizableDataCells.forEach(cell => {
+            cell.style.width = `${fixedWidth}%`;
+          });
+        }
+      }
+    });
+  }, [defaultPercentages, setHeaderWidths]);
+
+  // Debounced version of recalculatePercentages
+  const debouncedRecalculate = useCallback(() => {
+    if (resizeTimeoutRef.current) {
+      clearTimeout(resizeTimeoutRef.current);
+    }
+    resizeTimeoutRef.current = setTimeout(() => {
+      recalculatePercentages();
+    }, 100);
+  }, [recalculatePercentages]);
 
   useEffect(() => {
     if (!tableRef.current) return;
 
-    const headers = Array.from(tableRef.current.querySelectorAll('th'));
-    const handlerMap = new Map();
+    const table = tableRef.current.closest('table');
+    if (!table) return;
 
-    // Define default percentage widths for each column
-    const defaultPercentages = {
-      0: 3,   // # column (decreased from 5%)
-      1: 36,  // title (increased from 34%)
-      2: 3,   // tierlist
-      3: 3,   // bpm
-      4: 15,  // genre
-      5: 15,  // mood
-      6: 15,  // keyword
-      7: 15,  // feature
-      8: 3,   // duration (decreased from 5%)
-      9: 3    // menu
-    };
-
-    // Function to recalculate percentages for visible columns
-    const recalculatePercentages = () => {
-      const visibleHeaders = headers.filter(header => {
-        const style = window.getComputedStyle(header);
-        return style.display !== 'none' && style.visibility !== 'hidden';
-      });
-
-      const visibleIndices = visibleHeaders.map(header => headers.indexOf(header));
-      
-      // Calculate total current percentage of visible columns
-      const totalCurrentPercentage = visibleIndices.reduce((sum, index) => {
-        const savedPercentage = localStorage.getItem(`headerWidth${index}`);
-        return sum + (savedPercentage ? parseFloat(savedPercentage) : defaultPercentages[index] || 10);
-      }, 0);
-
-      // If total is not 100%, redistribute
-      if (Math.abs(totalCurrentPercentage - 100) > 1) {
-        const redistributionFactor = 100 / totalCurrentPercentage;
-        
-        visibleIndices.forEach(index => {
-          const savedPercentage = localStorage.getItem(`headerWidth${index}`);
-          const currentPercentage = savedPercentage ? parseFloat(savedPercentage) : defaultPercentages[index] || 10;
-          const newPercentage = currentPercentage * redistributionFactor;
-          
-          const header = headers[index];
-          if (header) {
-            header.style.width = `${newPercentage}%`;
-            
-            // Also apply width to corresponding data cells
-            const tableBody = tableRef.current.closest('table')?.querySelector('tbody');
-            if (tableBody) {
-              const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
-              dataCells.forEach(cell => {
-                cell.style.width = `${newPercentage}%`;
-              });
-            }
-            
-            localStorage.setItem(`headerWidth${index}`, newPercentage);
-          }
-        });
-      }
-    };
+    const headers = table.querySelectorAll('th');
 
     // Migration: Clear old pixel-based values and set percentage defaults
-    const migrateToPercentages = () => {
-      const hasOldValues = localStorage.getItem('headerWidth1') && 
-                          !isNaN(parseFloat(localStorage.getItem('headerWidth1'))) && 
-                          parseFloat(localStorage.getItem('headerWidth1')) > 100; // Old pixel values were > 100
-      
-      if (hasOldValues) {
-        // Clear all old header width values
-        for (let i = 0; i < 10; i++) {
-          localStorage.removeItem(`headerWidth${i}`);
+    const clearOldValues = () => {
+      for (let i = 0; i < headers.length; i++) {
+        const oldKey = `headerWidth${i}`;
+        const oldValue = localStorage.getItem(oldKey);
+        
+        if (oldValue && oldValue.includes('px')) {
+          localStorage.removeItem(oldKey);
+        }
+        
+        // Set default percentage if no value exists
+        if (!localStorage.getItem(oldKey)) {
+          localStorage.setItem(oldKey, defaultPercentages[i]);
         }
       }
     };
 
-    // Run migration
-    migrateToPercentages();
+    clearOldValues();
 
-    // Initial recalculation
-    recalculatePercentages();
-
-    const cleanupHeaders = () => {
-      handlerMap.forEach((handler, header) => {
-        const hoverTarget = header.querySelector('.hover-target');
-        if (hoverTarget) {
-          hoverTarget.removeEventListener('mousedown', handler);
-          hoverTarget.remove();
-        }
-
-        const resizeHandle = header.querySelector('.resize-handle');
-        if (resizeHandle) resizeHandle.remove();
-
-        header.classList.remove('resizable-header', 'dragging');
-        header.style.width = '';
-      });
-    };
-
+    // Apply saved or default widths
     headers.forEach((header, index) => {
-      const columnText = header.querySelector('.table-header__cell-text')?.textContent?.toLowerCase();
-      if (!columnText || ['bpm', 'tierlist'].includes(columnText) || header.classList.contains('non-draggable')) {
-        return;
-      }
-
-      header.classList.add('resizable-header');
-
-      // Get saved percentage or use default
-      const savedPercentage = localStorage.getItem(`headerWidth${index}`);
-      const currentPercentage = savedPercentage ? parseFloat(savedPercentage) : defaultPercentages[index] || 10;
-      
-      header.style.width = `${currentPercentage}%`;
-
-      // Also apply width to corresponding data cells
-      const tableBody = tableRef.current.closest('table')?.querySelector('tbody');
-      if (tableBody) {
-        const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
-        dataCells.forEach(cell => {
-          cell.style.width = `${currentPercentage}%`;
-        });
-      }
-
-      // Visual element
-      const resizeHandle = document.createElement('div');
-      resizeHandle.classList.add('resize-handle');
-      header.appendChild(resizeHandle);
-
-      // Hover + drag zone
-      const hoverTarget = document.createElement('div');
-      hoverTarget.classList.add('hover-target');
-      header.appendChild(hoverTarget);
-
-      const handleMouseDown = (e) => {
-        e.preventDefault();
-        const startX = e.clientX;
-        const startWidth = header.offsetWidth;
-        const tableWidth = tableRef.current.offsetWidth;
-
-        header.classList.add('dragging');
-
-        const handleMouseMove = (e) => {
-          const deltaX = e.clientX - startX;
-          const deltaPercentage = (deltaX / tableWidth) * 100;
-          const newPercentage = Math.max(5, Math.min(50, (startWidth / tableWidth) * 100 + deltaPercentage));
-          
-          header.style.width = `${newPercentage}%`;
-          
-          // Also apply width to corresponding data cells
-          const tableBody = tableRef.current.closest('table')?.querySelector('tbody');
-          if (tableBody) {
-            const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
-            dataCells.forEach(cell => {
-              cell.style.width = `${newPercentage}%`;
-            });
-          }
-          
-          localStorage.setItem(`headerWidth${index}`, newPercentage);
-          setHeaderWidths((prev) => ({
-            ...prev,
-            [`headerWidth${index}`]: newPercentage,
-          }));
-        };
-
-        const handleMouseUp = () => {
-          header.classList.remove('dragging');
-          document.removeEventListener('mousemove', handleMouseMove);
-          document.removeEventListener('mouseup', handleMouseUp);
-          
-          // Recalculate percentages after resize
-          recalculatePercentages();
-        };
-
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-      };
-
-      hoverTarget.addEventListener('mousedown', handleMouseDown);
-      handlerMap.set(header, handleMouseDown);
+      const savedWidth = localStorage.getItem(`headerWidth${index}`);
+      const width = savedWidth ? parseFloat(savedWidth) : defaultPercentages[index];
+      header.style.width = `${width}%`;
     });
 
-    // Listen for window resize to recalculate when columns might show/hide
-    const handleResize = () => {
-      setTimeout(recalculatePercentages, 100); // Small delay to ensure DOM updates
-    };
+    // Apply widths to data cells
+    const tableBody = table.querySelector('tbody');
+    if (tableBody) {
+      headers.forEach((header, index) => {
+        const savedWidth = localStorage.getItem(`headerWidth${index}`);
+        const width = savedWidth ? parseFloat(savedWidth) : defaultPercentages[index];
+        const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
+        dataCells.forEach(cell => {
+          cell.style.width = `${width}%`;
+        });
+      });
+    }
 
-    window.addEventListener('resize', handleResize);
+    // Add resize functionality to resizable columns
+    const resizableIndices = [1, 4, 5, 6, 7]; // title, feature, mood, genre, keywords
 
+    resizableIndices.forEach(index => {
+      const header = headers[index];
+      if (!header) return;
+
+      const resizeHandle = document.createElement('div');
+      resizeHandle.className = 'resize-handle';
+      resizeHandle.style.cssText = `
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        cursor: col-resize;
+        background: transparent;
+        z-index: 10;
+      `;
+
+      header.style.position = 'relative';
+      header.appendChild(resizeHandle);
+
+      let isResizing = false;
+      let startX = 0;
+      let startWidth = 0;
+
+      const handleMouseDown = (e) => {
+        isResizing = true;
+        startX = e.clientX;
+        startWidth = header.offsetWidth;
+        header.classList.add('dragging');
+        
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        e.preventDefault();
+      };
+
+      const handleMouseMove = (e) => {
+        const deltaX = e.clientX - startX;
+        const tableWidth = table.offsetWidth;
+        const deltaPercentage = (deltaX / tableWidth) * 100;
+        const newPercentage = Math.max(5, Math.min(50, (startWidth / tableWidth) * 100 + deltaPercentage));
+        
+        header.style.width = `${newPercentage}%`;
+        
+        // Also apply width to corresponding data cells
+        const tableBody = tableRef.current.closest('table')?.querySelector('tbody');
+        if (tableBody) {
+          const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
+          dataCells.forEach(cell => {
+            cell.style.width = `${newPercentage}%`;
+          });
+        }
+        
+        localStorage.setItem(`headerWidth${index}`, newPercentage);
+        setHeaderWidths((prev) => ({
+          ...prev,
+          [`headerWidth${index}`]: newPercentage,
+        }));
+      };
+
+      const handleMouseUp = () => {
+        header.classList.remove('dragging');
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        
+        // Use debounced recalculation to prevent glitches
+        debouncedRecalculate();
+      };
+
+      resizeHandle.addEventListener('mousedown', handleMouseDown);
+    });
+
+    // Cleanup function
     return () => {
-      cleanupHeaders();
-      window.removeEventListener('resize', handleResize);
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
     };
-  }, [tableRef, setHeaderWidths]);
+  }, [tableRef, defaultPercentages, setHeaderWidths, debouncedRecalculate]);
 
   // Export the recalculate function so it can be called from outside
-  return { recalculatePercentages: () => {
-    if (tableRef.current) {
-      const headers = Array.from(tableRef.current.querySelectorAll('th'));
-      const visibleHeaders = headers.filter(header => {
-        const style = window.getComputedStyle(header);
-        return style.display !== 'none' && style.visibility !== 'hidden';
-      });
-      
-      const visibleIndices = visibleHeaders.map(header => headers.indexOf(header));
-      const totalCurrentPercentage = visibleIndices.reduce((sum, index) => {
-        const savedPercentage = localStorage.getItem(`headerWidth${index}`);
-        return sum + (savedPercentage ? parseFloat(savedPercentage) : 10);
-      }, 0);
-      
-      if (Math.abs(totalCurrentPercentage - 100) > 1) {
-        const redistributionFactor = 100 / totalCurrentPercentage;
-        visibleIndices.forEach(index => {
-          const savedPercentage = localStorage.getItem(`headerWidth${index}`);
-          const currentPercentage = savedPercentage ? parseFloat(savedPercentage) : 10;
-          const newPercentage = currentPercentage * redistributionFactor;
-          
-          const header = headers[index];
-          if (header) {
-            header.style.width = `${newPercentage}%`;
-            
-            // Also apply width to corresponding data cells
-            const tableBody = tableRef.current.closest('table')?.querySelector('tbody');
-            if (tableBody) {
-              const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
-              dataCells.forEach(cell => {
-                cell.style.width = `${newPercentage}%`;
-              });
-            }
-            
-            localStorage.setItem(`headerWidth${index}`, newPercentage);
-          }
-        });
-      }
-    }
-  }};
+  return { recalculatePercentages };
 };
 
 export default useResizableColumns;

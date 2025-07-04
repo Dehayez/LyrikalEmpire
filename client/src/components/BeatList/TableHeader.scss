@@ -64,8 +64,8 @@
         }
 
         &.non-draggable {
-            width: 3% !important;
-            min-width: 25px !important;
+            width: 2% !important;
+            min-width: 20px !important;
 
             &::after {
                 display: none;
@@ -74,8 +74,8 @@
 
         &--center {
             text-align: center;
-            width: 3%;
-            min-width: 25px;
+            width: 2%;
+            min-width: 20px;
             padding: 0;
         }
 
