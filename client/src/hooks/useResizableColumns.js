@@ -53,16 +53,6 @@ export const useResizableColumns = (tableRef) => {
           const newWidth = Math.max(5, Math.min(50, currentWidths[index] * scaleFactor));
           header.style.width = `${newWidth}%`;
           
-          // Apply to corresponding data cells
-          if (tableBody) {
-            const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
-            dataCells.forEach(cell => {
-              cell.style.width = `${newWidth}%`;
-              cell.style.maxWidth = `${newWidth}%`;
-              cell.style.minWidth = `${newWidth}%`;
-            });
-          }
-          
           localStorage.setItem(`headerWidth${index}`, newWidth);
           setHeaderWidths((prev) => ({
             ...prev,
@@ -79,16 +69,6 @@ export const useResizableColumns = (tableRef) => {
       if (nonResizableHeader) {
         const fixedWidth = defaultPercentages[nonResizableIndex];
         nonResizableHeader.style.width = `${fixedWidth}%`;
-        
-        // Apply to corresponding data cells
-        if (tableBody) {
-          const nonResizableDataCells = tableBody.querySelectorAll(`td:nth-child(${nonResizableIndex + 1})`);
-          nonResizableDataCells.forEach(cell => {
-            cell.style.width = `${fixedWidth}%`;
-            cell.style.maxWidth = `${fixedWidth}%`;
-            cell.style.minWidth = `${fixedWidth}%`;
-          });
-        }
       }
     });
   }, [defaultPercentages, setHeaderWidths]);
@@ -137,21 +117,6 @@ export const useResizableColumns = (tableRef) => {
       header.style.width = `${width}%`;
     });
 
-    // Apply widths to data cells
-    const tableBody = table.querySelector('tbody');
-    if (tableBody) {
-      headers.forEach((header, index) => {
-        const savedWidth = localStorage.getItem(`headerWidth${index}`);
-        const width = savedWidth ? parseFloat(savedWidth) : defaultPercentages[index];
-        const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
-        dataCells.forEach(cell => {
-          cell.style.width = `${width}%`;
-          cell.style.maxWidth = `${width}%`;
-          cell.style.minWidth = `${width}%`;
-        });
-      });
-    }
-
     // Add resize functionality to resizable columns
     const resizableIndices = [1, 4, 5, 6, 7]; // title, feature, mood, genre, keywords
 
@@ -195,17 +160,6 @@ export const useResizableColumns = (tableRef) => {
         const newPercentage = Math.max(5, Math.min(50, (startWidth / tableWidth) * 100 + deltaPercentage));
         
         header.style.width = `${newPercentage}%`;
-        
-        // Also apply width to corresponding data cells
-        const tableBody = tableRef.current.closest('table')?.querySelector('tbody');
-        if (tableBody) {
-          const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
-          dataCells.forEach(cell => {
-            cell.style.width = `${newPercentage}%`;
-            cell.style.maxWidth = `${newPercentage}%`;
-            cell.style.minWidth = `${newPercentage}%`;
-          });
-        }
         
         localStorage.setItem(`headerWidth${index}`, newPercentage);
         setHeaderWidths((prev) => ({

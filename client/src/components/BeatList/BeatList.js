@@ -425,29 +425,6 @@ useEffect(() => {
     }
   }, []);
 
-  // Ensure table cell widths are maintained when rows change
-  useEffect(() => {
-    if (tableRef.current) {
-      const table = tableRef.current;
-      const headers = table.querySelectorAll('th');
-      const tableBody = table.querySelector('tbody');
-      
-      if (tableBody) {
-        headers.forEach((header, index) => {
-          const width = header.style.width;
-          if (width) {
-            const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
-            dataCells.forEach(cell => {
-              cell.style.width = width;
-              cell.style.maxWidth = width;
-              cell.style.minWidth = width;
-            });
-          }
-        });
-      }
-    }
-  }, [virtualizedBeats, filteredAndSortedBeats.length]);
-
   return (
     <div ref={containerRef} className="beat-list">
         <div
