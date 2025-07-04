@@ -61,6 +61,22 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
       }
       
       newState[filterType] = true;
+      
+      // Calculate position for desktop dropdown to follow the item when scrolled
+      if (!isMobileOrTablet()) {
+        setTimeout(() => {
+          const dropdownRef = dropdownRefs.current[filterType];
+          const wrapper = dropdownRef?.querySelector('.filter-dropdown__wrapper');
+          if (dropdownRef && wrapper) {
+            const rect = dropdownRef.getBoundingClientRect();
+            
+            // Position the dropdown just below the item and perfectly aligned
+            wrapper.style.left = `${rect.left - 6}px`;
+            wrapper.style.top = `36px`;
+          }
+        }, 0);
+      }
+      
       return newState;
     });
   };
@@ -187,10 +203,38 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
+    
+    // Add scroll listener to update dropdown positions when container scrolls
+    const container = document.querySelector('.filter-dropdowns-container');
+    if (container && !isMobileOrTablet()) {
+      const handleScroll = () => {
+        // Update position of any open dropdowns
+        Object.keys(isDropdownOpen).forEach(filterType => {
+          if (isDropdownOpen[filterType]) {
+            const dropdownRef = dropdownRefs.current[filterType];
+            const wrapper = dropdownRef?.querySelector('.filter-dropdown__wrapper');
+            if (dropdownRef && wrapper) {
+              const rect = dropdownRef.getBoundingClientRect();
+              
+              // Position the dropdown just below the item and perfectly aligned
+              wrapper.style.left = `${rect.left - 6}px`;
+              wrapper.style.top = `36px`;
+            }
+          }
+        });
+      };
+      
+      container.addEventListener('scroll', handleScroll);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        container.removeEventListener('scroll', handleScroll);
+      };
+    }
+    
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [isDropdownOpen]);
 
   useEffect(() => {
     const element = dismissRef.current;
@@ -235,7 +279,7 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
 
             {isDropdownOpen[name] && (
               <div 
-                className="filter-dropdown__wrapper"
+                className={`filter-dropdown__wrapper ${isMobileOrTablet() ? 'filter-dropdown__wrapper--mobile' : ''}`}
                 ref={isMobileOrTablet() ? dismissRef : null}
                 onTouchStart={handleTouchStartWrapper}
                 onTouchMove={handleTouchMoveWrapper}
@@ -290,7 +334,7 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
                     );
                   })}
                 </div>
-                <div className="filter-dropdown__actions">
+                <div className={`filter-dropdown__actions ${isMobileOrTablet() ? 'filter-dropdown__actions--mobile' : ''}`}>
                   <Button size="small" variant="transparent" className="filter-dropdown__clear-button" onClick={() => handleClear(name)}>Clear</Button>
                   <Button size="small" className="filter-dropdown__close-button" variant='primary' onClick={(e) => toggleDropdown(name, e)}>Done</Button>
                 </div>

@@ -107,7 +107,7 @@
     box-shadow: $box-shadow;
 
     // Mobile styles - make it full width at bottom like context menu
-    @media (max-width: 768px) {
+    &--mobile {
       position: fixed;
       bottom: 0;
       left: 0;
@@ -152,7 +152,7 @@
     border-radius: 0 0 6px 6px;
     background-color: $color-gray-dark;
 
-    @media (max-width: 768px) {
+    &--mobile {
       border-radius: 0;
     }
   }
