@@ -108,18 +108,18 @@ const createBeat = async (req, res) => {
 
 const convertToAAC = (inputPath, outputPath) => {
   return new Promise((resolve, reject) => {
-    ffmpeg()
+      ffmpeg()
       .input(inputPath)
-      .audioCodec('aac')
-      .audioBitrate('192k')
-      .toFormat('adts')
-      .on('end', () => {
-        resolve(outputPath);
-      })
-      .on('error', (err) => {
-        reject(err);
-      })
-      .save(outputPath);
+        .audioCodec('aac')
+        .audioBitrate('192k')
+        .toFormat('adts')
+        .on('end', () => {
+          resolve(outputPath);
+        })
+        .on('error', (err) => {
+          reject(err);
+        })
+        .save(outputPath);
   });
 };
 
@@ -160,26 +160,26 @@ const deleteBeat = async (req, res) => {
     const fileName = results[0]?.audio;
 
     if (fileName) {
-      // Construct the file path
-      const filePath = `audio/users/${userId}/${fileName}`;
+        // Construct the file path
+        const filePath = `audio/users/${userId}/${fileName}`;
 
-      // Delete file from Backblaze B2
-      await b2.authorize();
+        // Delete file from Backblaze B2
+        await b2.authorize();
 
-      // Retrieve the fileId from Backblaze B2
-      const fileListResponse = await b2.listFileNames({
-        bucketId: process.env.B2_BUCKET_ID,
-        prefix: filePath,
-        maxFileCount: 1,
-      });
+        // Retrieve the fileId from Backblaze B2
+        const fileListResponse = await b2.listFileNames({
+          bucketId: process.env.B2_BUCKET_ID,
+          prefix: filePath,
+          maxFileCount: 1,
+        });
 
       if (fileListResponse.data.files.length > 0) {
-        const fileId = fileListResponse.data.files[0].fileId;
-      
-        await b2.deleteFileVersion({
-          fileName: filePath,
-          fileId: fileId,
-        });
+          const fileId = fileListResponse.data.files[0].fileId;
+
+          await b2.deleteFileVersion({
+            fileName: filePath,
+            fileId: fileId,
+          });
       }
     }
 
@@ -230,7 +230,7 @@ const replaceAudio = async (req, res) => {
         // File not found in Backblaze, continuing with upload
       } else {
         const fileId = fileListResponse.data.files[0].fileId;
-      
+
         await b2.deleteFileVersion({
           fileName: `audio/users/${userId}/${fileName}`,
           fileId: fileId,

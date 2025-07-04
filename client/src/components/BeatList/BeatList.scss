@@ -162,6 +162,7 @@
     overflow: visible;
     border: none;
     border-collapse: collapse;
+    container-type: inline-size;
 
     // Ensure table cells respect width constraints
     th, td {
@@ -200,56 +201,56 @@
     }
 
     // Responsive column visibility - order: feature, keywords, mood, genre, bpm, tierlist, duration, number
-    @media (max-width: 1200px) {
+    @container (max-width: 1200px) {
       th:nth-child(8), // feature column (8th position)
       td:nth-child(8) {
         display: none;
       }
     }
 
-    @media (max-width: 1000px) {
+    @container (max-width: 1000px) {
       th:nth-child(7), // keywords column (7th position)
       td:nth-child(7) {
         display: none;
       }
     }
 
-    @media (max-width: 800px) {
+    @container (max-width: 800px) {
       th:nth-child(6), // mood column (6th position)
       td:nth-child(6) {
         display: none;
       }
     }
 
-    @media (max-width: 600px) {
+    @container (max-width: 600px) {
       th:nth-child(5), // genre column (5th position)
       td:nth-child(5) {
         display: none;
       }
     }
 
-    @media (max-width: 500px) {
+    @container (max-width: 500px) {
       th:nth-child(4), // bpm column (4th position)
       td:nth-child(4) {
         display: none;
       }
     }
 
-    @media (max-width: 400px) {
+    @container (max-width: 400px) {
       th:nth-child(3), // tierlist column (3rd position)
       td:nth-child(3) {
         display: none;
       }
     }
 
-    @media (max-width: 300px) {
+    @container (max-width: 300px) {
       th:nth-child(9), // duration column (9th position)
       td:nth-child(9) {
         display: none;
       }
     }
 
-    @media (max-width: 200px) {
+    @container (max-width: 200px) {
       th:nth-child(1), // number column (1st position) - last to hide
       td:nth-child(1) {
         display: none;
