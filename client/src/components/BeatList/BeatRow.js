@@ -48,7 +48,7 @@ const BeatRow = ({
   const location = useLocation();
   const { user } = useUser();
   const { genres, moods, keywords, features } = useData();
-  const { setHoveredBeat } = useBeat();
+  const { setHoveredBeat, setRefreshBeats } = useBeat();
   const { playlists, isSamePlaylist } = usePlaylist();
   const { handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const { headerWidths } = useHeaderWidths();
@@ -263,13 +263,13 @@ const BeatRow = ({
 
     if (newAudioFile) {
       try {
-        await replaceAudioWithToast(beat.id, newAudioFile, user.id);
+        await replaceAudioWithToast(beat.id, newAudioFile, user.id, setRefreshBeats);
         console.log('Audio replaced successfully');
       } catch (error) {
         console.error('Failed to replace audio:', error);
       }
     }
-  }, [beat.id, selectNewAudioFile, user.id]);
+  }, [beat.id, selectNewAudioFile, user.id, setRefreshBeats]);
 
   const handleAddToCustomQueueClick = useCallback(() => {
     addToCustomQueue(selectedBeats);
