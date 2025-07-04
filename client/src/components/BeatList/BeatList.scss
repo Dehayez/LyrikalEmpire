@@ -163,6 +163,20 @@
     border: none;
     border-collapse: collapse;
 
+    // Ensure table cells respect width constraints
+    th, td {
+      box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    // Ensure table cells don't expand beyond their allocated width
+    td {
+      max-width: 0; // Forces text-overflow to work
+      word-wrap: break-word;
+    }
+
     &__table-head:hover {
       background-color: $color-gray-dark;
     }

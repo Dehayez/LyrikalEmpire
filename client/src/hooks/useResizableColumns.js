@@ -58,6 +58,8 @@ export const useResizableColumns = (tableRef) => {
             const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
             dataCells.forEach(cell => {
               cell.style.width = `${newWidth}%`;
+              cell.style.maxWidth = `${newWidth}%`;
+              cell.style.minWidth = `${newWidth}%`;
             });
           }
           
@@ -83,6 +85,8 @@ export const useResizableColumns = (tableRef) => {
           const nonResizableDataCells = tableBody.querySelectorAll(`td:nth-child(${nonResizableIndex + 1})`);
           nonResizableDataCells.forEach(cell => {
             cell.style.width = `${fixedWidth}%`;
+            cell.style.maxWidth = `${fixedWidth}%`;
+            cell.style.minWidth = `${fixedWidth}%`;
           });
         }
       }
@@ -126,7 +130,7 @@ export const useResizableColumns = (tableRef) => {
 
     clearOldValues();
 
-    // Apply saved or default widths
+    // Apply saved or default widths to headers
     headers.forEach((header, index) => {
       const savedWidth = localStorage.getItem(`headerWidth${index}`);
       const width = savedWidth ? parseFloat(savedWidth) : defaultPercentages[index];
@@ -142,6 +146,8 @@ export const useResizableColumns = (tableRef) => {
         const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
         dataCells.forEach(cell => {
           cell.style.width = `${width}%`;
+          cell.style.maxWidth = `${width}%`;
+          cell.style.minWidth = `${width}%`;
         });
       });
     }
@@ -153,18 +159,14 @@ export const useResizableColumns = (tableRef) => {
       const header = headers[index];
       if (!header) return;
 
+      // Remove any existing resize handle
+      const existingHandle = header.querySelector('.resize-handle');
+      if (existingHandle) {
+        existingHandle.remove();
+      }
+
       const resizeHandle = document.createElement('div');
       resizeHandle.className = 'resize-handle';
-      resizeHandle.style.cssText = `
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        cursor: col-resize;
-        background: transparent;
-        z-index: 10;
-      `;
 
       header.style.position = 'relative';
       header.appendChild(resizeHandle);
@@ -185,6 +187,8 @@ export const useResizableColumns = (tableRef) => {
       };
 
       const handleMouseMove = (e) => {
+        if (!isResizing) return;
+        
         const deltaX = e.clientX - startX;
         const tableWidth = table.offsetWidth;
         const deltaPercentage = (deltaX / tableWidth) * 100;
@@ -198,6 +202,8 @@ export const useResizableColumns = (tableRef) => {
           const dataCells = tableBody.querySelectorAll(`td:nth-child(${index + 1})`);
           dataCells.forEach(cell => {
             cell.style.width = `${newPercentage}%`;
+            cell.style.maxWidth = `${newPercentage}%`;
+            cell.style.minWidth = `${newPercentage}%`;
           });
         }
         
@@ -209,6 +215,7 @@ export const useResizableColumns = (tableRef) => {
       };
 
       const handleMouseUp = () => {
+        isResizing = false;
         header.classList.remove('dragging');
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);

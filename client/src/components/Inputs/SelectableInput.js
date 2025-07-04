@@ -167,13 +167,6 @@ export const SelectableInput = ({
   }, []);
 
   useEffect(() => {
-    const width = localStorage.getItem(`headerWidth${headerIndex}`);
-    if (width && inputRef.current) {
-      inputContainerRef.current.style.width = `${width}px`;
-    }
-  }, [headerWidths, headerIndex]);
-
-  useEffect(() => {
     if (form && newBeatId && pendingAssociations.length > 0) {
       const uploadPendingAssociations = async () => {
         try {
