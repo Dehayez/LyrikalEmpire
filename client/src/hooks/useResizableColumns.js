@@ -7,8 +7,8 @@ export const useResizableColumns = (tableRef) => {
 
   // Default percentages for each column (total should equal 100%)
   const defaultPercentages = {
-    0: 5,   // number
-    1: 20,  // title
+    0: 1,   // number
+    1: 24,  // title
     2: 3,   // tierlist
     3: 3,   // bpm
     4: 15,  // feature
