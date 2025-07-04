@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useResizableColumns } from '../../hooks';
 import { addGenre, addMood, addKeyword, addFeature } from '../../services';
@@ -16,9 +16,16 @@ const TableHeader = ({ onSort, sortConfig, mode, topOffset }) => {
   const [showForm, setShowForm] = useState(false);
   const [formType, setFormType] = useState('');
   const { fetchGenres, fetchMoods, fetchKeywords, fetchFeatures, genres, moods, keywords, features } = useData();
-  const columns = ['title', 'bpm', 'tierlist', 'genre', 'mood', 'keyword', 'feature'];
+  const columns = ['title', 'tierlist', 'bpm', 'genre', 'mood', 'keyword', 'feature'];
 
-  useResizableColumns(tableRef, mode, setIsDragging);
+  const { recalculatePercentages } = useResizableColumns(tableRef, mode, setIsDragging);
+
+  // Expose recalculatePercentages to parent components if needed
+  useEffect(() => {
+    if (window.recalculateTablePercentages) {
+      window.recalculateTablePercentages = recalculatePercentages;
+    }
+  }, [recalculatePercentages]);
 
   const handleMouseEvents = (eventName, columnName) => {
     if (eventName === 'click') {

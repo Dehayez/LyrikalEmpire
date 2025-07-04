@@ -22,10 +22,6 @@
         padding-right: 16px;
         cursor: default;
 
-        &--bpm, &--tierlist {
-            width: 70px;
-        }
-
         &-left {
             display: inline-flex;
             align-items: center;
@@ -68,7 +64,8 @@
         }
 
         &.non-draggable {
-            width: 50px !important;
+            width: 3% !important;
+            min-width: 25px !important;
 
             &::after {
                 display: none;
@@ -77,8 +74,21 @@
 
         &--center {
             text-align: center;
-            width: 50px;
+            width: 3%;
+            min-width: 25px;
             padding: 0;
+        }
+
+        // Specific widths for tierlist, bpm, and menu columns
+        &--tierlist, &--bpm {
+            width: 3% !important;
+            min-width: 25px !important;
+        }
+
+        // Menu column (last column) should be 3%
+        &:last-child {
+            width: 3% !important;
+            min-width: 25px !important;
         }
 
         &.no-transition {

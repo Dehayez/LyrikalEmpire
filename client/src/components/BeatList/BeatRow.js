@@ -336,13 +336,6 @@ const BeatRow = ({
     setDisableFocus(mode !== 'edit');
   }, [mode]);
 
-   useEffect(() => {
-      const width = localStorage.getItem(`headerWidth1`);
-      if (width && inputTitleRef.current) {
-        inputTitleRef.current.style.width = `${width}px`;
-      }
-    }, [headerWidths, mode]);
-
   // Mouse event handlers
   const handleMouseEnter = useCallback((e) => {
     if (!isMobileOrTablet()) { 
@@ -488,29 +481,6 @@ const BeatRow = ({
           <td className="beat-row__data">
             {mode === 'edit' ? (
               <>
-                <label htmlFor={`beat-bpm-input-${beat.id}`} className="sr-only">BPM</label>
-                <input 
-                  id={`beat-bpm-input-${beat.id}`}
-                  className='beat-row__input beat-row__input--bpm'
-                  type="text" 
-                  defaultValue={beat.bpm} 
-                  onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
-                  onBlur={(e) => {
-                    handleInputChange('bpm', e.target.value);
-                    handleBpmBlur(e);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  spellCheck="false"
-                  autoComplete="off"
-                />
-              </>
-            ) : (
-              <div className='beat-row__input beat-row__input--static beat-row__input--bpm'>{beat.bpm}</div>
-            )}
-          </td>
-          <td className="beat-row__data">
-            {mode === 'edit' ? (
-              <>
                 <label htmlFor={`beat-tierlist-select-${beat.id}`} className="sr-only">Tierlist</label>
                 <div className="form-group">
                   <div className="select-wrapper">
@@ -543,6 +513,29 @@ const BeatRow = ({
               </>
             ) : (
               <div className="beat-row__input beat-row__input--static">{beat.tierlist}</div>
+            )}
+          </td>
+          <td className="beat-row__data">
+            {mode === 'edit' ? (
+              <>
+                <label htmlFor={`beat-bpm-input-${beat.id}`} className="sr-only">BPM</label>
+                <input 
+                  id={`beat-bpm-input-${beat.id}`}
+                  className='beat-row__input beat-row__input--bpm'
+                  type="text" 
+                  defaultValue={beat.bpm} 
+                  onKeyDown={(e) => { if (e.key === "Enter") e.target.blur(); }}
+                  onBlur={(e) => {
+                    handleInputChange('bpm', e.target.value);
+                    handleBpmBlur(e);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  spellCheck="false"
+                  autoComplete="off"
+                />
+              </>
+            ) : (
+              <div className='beat-row__input beat-row__input--static beat-row__input--bpm'>{beat.bpm}</div>
             )}
           </td>
           <td className="beat-row__data">
@@ -586,7 +579,7 @@ const BeatRow = ({
       {!(isMobileOrTablet() && mode === 'lock') && (
         <td className='beat-row__data'>{formatDuration(beat.duration)}</td>
       )}
-      <td className="beat-row__data">
+      <td className="beat-row__data beat-row__menu">
       <IconButton
         className={`icon-button--menu interactive-button ${isMobileOrTablet() ? 'icon-button--menu--mobile' : ''}`}
         onClick={(e) => handleMenuButtonClick(e, beat)}

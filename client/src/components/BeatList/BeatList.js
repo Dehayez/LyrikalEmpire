@@ -418,6 +418,13 @@ useEffect(() => {
     setBeats
   ]);
 
+  // Manual trigger for column recalculation
+  const triggerColumnRecalculation = useCallback(() => {
+    if (window.recalculateTablePercentages) {
+      window.recalculateTablePercentages();
+    }
+  }, []);
+
   return (
     <div ref={containerRef} className="beat-list">
         <div
