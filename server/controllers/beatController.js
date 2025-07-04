@@ -87,13 +87,10 @@ const createBeat = async (req, res) => {
       throw new Error('No file uploaded');
     }
 
-    const inputBuffer = req.file.buffer;
     const originalNameWithoutExt = path.parse(req.file.originalname).name;
-    const inputFormat = path.extname(req.file.originalname).slice(1); // Get the file extension without the dot
-    const outputPath = path.join(__dirname, '../uploads', `${originalNameWithoutExt}.aac`);
-
-    // Convert the audio file to AAC format
-    await convertToAAC(inputBuffer, outputPath, inputFormat);
+    const inputPath = req.file.path;
+    const outputPath = path.join(__dirname, '../uploads', `${path.parse(req.file.originalname).name}-${Date.now()}.aac`);
+    await convertToAAC(inputPath, outputPath);
 
     // Upload the converted file to Backblaze
     const audioFileName = await uploadToBackblaze({ path: outputPath, originalname: `${originalNameWithoutExt}.aac` }, user_id);
@@ -111,44 +108,20 @@ const createBeat = async (req, res) => {
   }
 };
 
-const convertToAAC = (inputBuffer, outputPath, inputFormat) => {
-  // Create a temporary input file path
-  const tempInputPath = path.join(__dirname, '../uploads', `temp-${Date.now()}.${inputFormat}`);
-
+const convertToAAC = (inputPath, outputPath) => {
   return new Promise((resolve, reject) => {
-    // Write the input buffer to a temporary file
-    fs.writeFile(tempInputPath, inputBuffer, (writeErr) => {
-      if (writeErr) {
-        return reject(writeErr);
-      }
-
-      ffmpeg()
-        .input(tempInputPath)
-        .audioCodec('aac')
-        .audioBitrate('192k')
-        .toFormat('adts')
-        .on('end', () => {
-          // Clean up the temporary input file
-          fs.unlink(tempInputPath, (unlinkErr) => {
-            if (unlinkErr) {
-              console.error('Error deleting temporary input file:', unlinkErr);
-            }
-          });
-          
-          resolve(outputPath);
-        })
-        .on('error', (err) => {
-          // Clean up the temporary input file in case of error
-          fs.unlink(tempInputPath, (unlinkErr) => {
-            if (unlinkErr) {
-              console.error('Error deleting temporary input file:', unlinkErr);
-            }
-          });
-          
-          reject(err);
-        })
-        .save(outputPath);
-    });
+    ffmpeg()
+      .input(inputPath)
+      .audioCodec('aac')
+      .audioBitrate('192k')
+      .toFormat('adts')
+      .on('end', () => {
+        resolve(outputPath);
+      })
+      .on('error', (err) => {
+        reject(err);
+      })
+      .save(outputPath);
   });
 };
 
@@ -191,7 +164,6 @@ const deleteBeat = async (req, res) => {
     if (fileName) {
       // Construct the file path
       const filePath = `audio/users/${userId}/${fileName}`;
-      console.log(`Deleting file at path: ${filePath}`);
 
       // Delete file from Backblaze B2
       await b2.authorize();
@@ -203,19 +175,14 @@ const deleteBeat = async (req, res) => {
         maxFileCount: 1,
       });
 
-      console.log(`File list response: ${JSON.stringify(fileListResponse.data.files)}`);
-
-      if (fileListResponse.data.files.length === 0) {
-        throw new Error(`File not found: ${fileName}`);
+      if (fileListResponse.data.files.length > 0) {
+        const fileId = fileListResponse.data.files[0].fileId;
+      
+        await b2.deleteFileVersion({
+          fileName: filePath,
+          fileId: fileId,
+        });
       }
-
-      const fileId = fileListResponse.data.files[0].fileId;
-      console.log(`Deleting file with ID: ${fileId}`);
-
-      await b2.deleteFileVersion({
-        fileName: filePath,
-        fileId: fileId,
-      });
     }
 
     const queries = [
@@ -239,19 +206,11 @@ const replaceAudio = async (req, res) => {
   const newAudioFile = req.file;
   const { userId } = req.body;
 
-  console.log('Received replace audio request with payload:', {
-    id,
-    newAudioFile: newAudioFile ? newAudioFile.originalname : null,
-    userId,
-  });
-
   if (!newAudioFile) {
-    console.error('No audio file provided');
     return res.status(400).json({ error: 'No audio file provided' });
   }
 
   if (!userId) {
-    console.error('User ID is required');
     return res.status(400).json({ error: 'User ID is required' });
   }
 
@@ -263,7 +222,6 @@ const replaceAudio = async (req, res) => {
       // Delete old file from Backblaze B2
       await b2.authorize();
       const fileName = oldFilePath.split('/').pop();
-      console.log(`Deleting old file from Backblaze B2: ${fileName}`);
 
       const fileListResponse = await b2.listFileNames({
         bucketId: process.env.B2_BUCKET_ID,
@@ -272,19 +230,23 @@ const replaceAudio = async (req, res) => {
       });
 
       if (fileListResponse.data.files.length === 0) {
-        throw new Error(`File not found: ${fileName}`);
+        console.warn(`File not found in Backblaze: ${fileName}, continuing with upload...`);
+      } else {
+        const fileId = fileListResponse.data.files[0].fileId;
+      
+        await b2.deleteFileVersion({
+          fileName: `audio/users/${userId}/${fileName}`,
+          fileId: fileId,
+        });
       }
-
-      const fileId = fileListResponse.data.files[0].fileId;
-      console.log(`Deleting file with ID: ${fileId}`);
-
-      await b2.deleteFileVersion({
-        fileName: `audio/users/${userId}/${fileName}`,
-        fileId: fileId,
-      });
     }
 
-    const inputPath = newAudioFile.path;
+    const inputPath = newAudioFile ? newAudioFile.path : undefined;
+
+    if (!inputPath || !fs.existsSync(inputPath)) {
+      return res.status(400).json({ error: 'Uploaded file not found on server.' });
+    }
+
     const outputPath = path.join(__dirname, '../uploads', `${newAudioFile.filename}.aac`);
 
     // Convert the audio file to AAC format

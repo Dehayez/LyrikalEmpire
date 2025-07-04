@@ -85,12 +85,6 @@ export const replaceAudio = async (beatId, audioFile, userId, onProgress) => {
   formData.append('audio', audioFile, audioFile.name);
   formData.append('userId', userId);
 
-  console.log('Sending replace audio request with payload:', {
-    beatId,
-    audioFile: audioFile.name,
-    userId,
-  });
-
   return await apiRequest('put', `/${beatId}/replace-audio`, API_URL, formData, null, true, {
     'Content-Type': 'multipart/form-data'
   }, (progressEvent) => {
