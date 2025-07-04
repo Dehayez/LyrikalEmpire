@@ -70,14 +70,6 @@
         text-align: left;
       }
     }
-
-    &--bpm {
-      text-align: right;
-    }
-
-    &--title, &--bpm {
-      color: $color-white;
-    }
   }
 
   &__icon-button {
@@ -94,7 +86,7 @@
     }
   }
 
-  &__number, &__data, &__button-cell {
+  &__number, &__data, &__button-cell, &__tierlist, &__bpm {
     margin: 8px;
     text-align: center;
     color: $color-white;
