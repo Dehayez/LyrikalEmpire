@@ -11,7 +11,6 @@ export const getSignedUrl = async (userId, fileName) => {
     });
     return response.data.signedUrl;
   } catch (error) {
-    console.error('Error fetching signed URL:', error);
     throw new Error('Error fetching signed URL');
   }
 };
@@ -80,10 +79,11 @@ export const getBeatsByAssociation = async (associationType, associationIds, all
   return allBeats ? fetchedBeats.filter(beat => allBeats.some(b => b.id === beat.id)) : fetchedBeats;
 };
 
-export const replaceAudio = async (beatId, audioFile, userId, onProgress) => {
+export const replaceAudio = async (beatId, audioFile, userId, duration, onProgress) => {
   const formData = new FormData();
   formData.append('audio', audioFile, audioFile.name);
   formData.append('userId', userId);
+  formData.append('duration', duration);
 
   return await apiRequest('put', `/${beatId}/replace-audio`, API_URL, formData, null, true, {
     'Content-Type': 'multipart/form-data'
@@ -100,7 +100,6 @@ export const addAssociationsToBeat = async (beatId, associationType, association
     const response = await apiRequest('post', `/${beatId}/${associationType}`, API_URL, { association_id: associationId });
     return response.data;
   } catch (error) {
-    console.error(`Failed to add ${associationType} to beat:`, error);
     throw error;
   }
 };

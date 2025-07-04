@@ -53,11 +53,11 @@ export const uploadBeatWithToast = async (beat, file, userId, setRefreshBeats) =
   }
 };
 
-export const replaceAudioWithToast = async (beatId, file, userId, setRefreshBeats) => {
+export const replaceAudioWithToast = async (beatId, file, userId, setRefreshBeats, duration) => {
   const toastId = createUploadToast(file.name, 'replace');
 
   try {
-    await replaceAudio(beatId, file, userId, (percentage) => {
+    await replaceAudio(beatId, file, userId, duration, (percentage) => {
       updateUploadToast(toastId, file.name, percentage, 'replace');
     });
 

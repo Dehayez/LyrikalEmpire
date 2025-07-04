@@ -258,18 +258,31 @@ const BeatRow = ({
     });
   }, []);
 
+  const getAudioDuration = useCallback((file) => {
+    return new Promise((resolve, reject) => {
+      const audio = new Audio();
+      audio.src = URL.createObjectURL(file);
+      audio.addEventListener('loadedmetadata', () => {
+        resolve(audio.duration);
+        URL.revokeObjectURL(audio.src);
+      });
+      audio.onerror = () => reject(new Error('Failed to load audio metadata'));
+    });
+  }, []);
+
   const handleReplaceAudio = useCallback(async () => {
     const newAudioFile = await selectNewAudioFile();
 
     if (newAudioFile) {
       try {
-        await replaceAudioWithToast(beat.id, newAudioFile, user.id, setRefreshBeats);
+        const duration = await getAudioDuration(newAudioFile);
+        await replaceAudioWithToast(beat.id, newAudioFile, user.id, setRefreshBeats, duration);
         console.log('Audio replaced successfully');
       } catch (error) {
         console.error('Failed to replace audio:', error);
       }
     }
-  }, [beat.id, selectNewAudioFile, user.id, setRefreshBeats]);
+  }, [beat.id, selectNewAudioFile, user.id, setRefreshBeats, getAudioDuration]);
 
   const handleAddToCustomQueueClick = useCallback(() => {
     addToCustomQueue(selectedBeats);

@@ -42,7 +42,6 @@ const getSignedUrl = async (req, res) => {
 
     res.status(200).json({ signedUrl });
   } catch (error) {
-    console.error('Error getting signed URL:', error);
     res.status(500).json({ error: 'An error occurred while getting the signed URL', details: error.message });
   }
 };
@@ -103,7 +102,6 @@ const createBeat = async (req, res) => {
 
     handleQuery(query, params, res, 'Beat added successfully');
   } catch (error) {
-    console.error('Error creating beat:', error);
     res.status(500).json({ error: 'An error occurred while creating the beat' });
   }
 };
@@ -196,7 +194,6 @@ const deleteBeat = async (req, res) => {
 
     handleTransaction(queries, res, 'Beat and all associated data deleted successfully');
   } catch (error) {
-    console.error(`Failed to delete beat with id: ${id}`, error);
     res.status(500).json({ error: 'An error occurred while deleting the beat' });
   }
 };
@@ -204,7 +201,7 @@ const deleteBeat = async (req, res) => {
 const replaceAudio = async (req, res) => {
   const { id } = req.params;
   const newAudioFile = req.file;
-  const { userId } = req.body;
+  const { userId, duration } = req.body;
 
   if (!newAudioFile) {
     return res.status(400).json({ error: 'No audio file provided' });
@@ -230,7 +227,7 @@ const replaceAudio = async (req, res) => {
       });
 
       if (fileListResponse.data.files.length === 0) {
-        console.warn(`File not found in Backblaze: ${fileName}, continuing with upload...`);
+        // File not found in Backblaze, continuing with upload
       } else {
         const fileId = fileListResponse.data.files[0].fileId;
       
@@ -259,13 +256,19 @@ const replaceAudio = async (req, res) => {
     fs.unlinkSync(inputPath);
     fs.unlinkSync(outputPath);
 
-    const query = 'UPDATE beats SET audio = ? WHERE id = ?';
-    const params = [newFileUrl, id];
+    // Convert duration to number (FormData values are strings)
+    const durationNumber = parseFloat(duration);
+
+    const query = 'UPDATE beats SET audio = ?, duration = ? WHERE id = ?';
+    const params = [newFileUrl, durationNumber, id];
 
     await db.query(query, params);
+    
+    // Verify the update
+    const [verifyResults] = await db.query('SELECT audio, duration FROM beats WHERE id = ?', [id]);
+    
     res.status(200).json({ message: 'Audio replaced successfully', fileUrl: newFileUrl });
   } catch (error) {
-    console.error(`Failed to replace audio for beat with id: ${id}`, error);
     res.status(500).json({ error: 'An error occurred while replacing the audio' });
   }
 };
