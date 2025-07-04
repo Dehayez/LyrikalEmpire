@@ -577,7 +577,7 @@ const BeatRow = ({
         </>
       )}
       {!(isMobileOrTablet() && mode === 'lock') && (
-        <td className='beat-row__data'>{formatDuration(beat.duration)}</td>
+        <td className='beat-row__data beat-row__duration'>{formatDuration(beat.duration)}</td>
       )}
       <td className="beat-row__data beat-row__menu">
       <IconButton

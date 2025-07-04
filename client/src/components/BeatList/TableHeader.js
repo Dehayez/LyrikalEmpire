@@ -137,10 +137,10 @@ const TableHeader = ({ onSort, sortConfig, mode, topOffset }) => {
               )}
           </th>
         ))}
-          <th className="table-header__cell table-header__cell--center non-draggable">
+          <th className="table-header__cell table-header__cell--center table-header__cell--duration non-draggable">
             <IoTimeOutline />
           </th>
-        <th className="table-header__cell table-header__cell--center non-draggable"></th>
+        <th className="table-header__cell table-header__cell--center table-header__cell--menu non-draggable"></th>
       </tr>
       {showForm &&
         ReactDOM.createPortal(
