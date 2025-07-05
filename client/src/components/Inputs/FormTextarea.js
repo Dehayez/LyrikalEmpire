@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './FormTextarea.scss';
 
-export const FormTextarea = ({ label, placeholder, value, onChange, required, rows, maxLength }) => {
+export const FormTextarea = ({ id, label, placeholder, value, onChange, required, rows, maxLength }) => {
     const textareaRef = useRef(null);
     const [remainingChars, setRemainingChars] = useState(maxLength);
 
@@ -12,6 +12,7 @@ export const FormTextarea = ({ label, placeholder, value, onChange, required, ro
     return (
         <div className="form-group form-textarea">
             <textarea
+                id={id}
                 ref={textareaRef}
                 className={`form-group__input form-textarea__input ${value ? 'form-group__input--filled' : ''}`}
                 value={value}

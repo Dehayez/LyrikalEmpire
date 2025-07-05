@@ -134,7 +134,7 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
                   <IoCloseSharp />
                 </IconButton>
                 <h2 className="modal__title">{title}</h2>
-                <FormTextarea value={lyrics} onChange={handleLyricsChange} />
+                <FormTextarea id="lyrics-modal__textarea" value={lyrics} onChange={handleLyricsChange} />
               </div>
             </ResizableBox>
           </div>
