@@ -69,10 +69,34 @@ export const FilterDropdown = React.forwardRef(({ filters, onFilterChange }, ref
           const wrapper = dropdownRef?.querySelector('.filter-dropdown__wrapper');
           if (dropdownRef && wrapper) {
             const rect = dropdownRef.getBoundingClientRect();
+            const container = document.querySelector('.filter-dropdowns-container');
+            const containerRect = container?.getBoundingClientRect();
             
-            // Position the dropdown just below the item and perfectly aligned
-            wrapper.style.left = `${rect.left - 6}px`;
-            wrapper.style.top = `36px`;
+            // Calculate initial position
+            let left = rect.left - 6;
+            let top = 36;
+            
+            // Check if dropdown would overflow the right edge of the container
+            if (containerRect) {
+              const dropdownWidth = 280; // max-width from CSS
+              const rightEdge = left + dropdownWidth;
+              const containerRightEdge = containerRect.right;
+              
+                              if (rightEdge > containerRightEdge) {
+                  // Calculate how much we need to shift left
+                  const overflow = rightEdge - containerRightEdge;
+                  // Shift left by only a portion of the overflow to keep it more to the right
+                  left -= (overflow * 0.5);
+                  
+                  // Ensure we don't go too far left (keep at least some of the dropdown visible)
+                  const minLeft = containerRect.left + 10;
+                  left = Math.max(left, minLeft);
+                }
+            }
+            
+            // Position the dropdown
+            wrapper.style.left = `${left}px`;
+            wrapper.style.top = `${top}px`;
           }
         }, 0);
       }
