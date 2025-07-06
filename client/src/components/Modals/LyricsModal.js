@@ -63,13 +63,10 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     return JSON.parse(localStorage.getItem('modalPosition')) || { x: 0, y: 0 };
   });
   const [preFullscreenState, setPreFullscreenState] = useState(null);
-  const [lastNormalDimensions, setLastNormalDimensions] = useState(() => {
-    return JSON.parse(localStorage.getItem('lastNormalDimensions')) || { width: 400, height: 300 };
-  });
 
   const handleCancel = useCallback(() => setLyricsModal(false), [setLyricsModal]);
 
-  useLocalStorageSync({ dimensions, position, lastNormalDimensions });
+  useLocalStorageSync({ dimensions, position });
 
   useEffect(() => {
     if (!beatId) return;
@@ -112,8 +109,8 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
 
   const handleFullscreenToggle = useCallback(() => {
     if (isFullscreen) {
-      // Exit fullscreen - restore to last normal dimensions
-      setDimensions(lastNormalDimensions);
+      // Exit fullscreen - restore to previous dimensions
+      setDimensions(preFullscreenState?.dimensions || { width: 400, height: 300 });
       setPosition(preFullscreenState?.position || { x: 0, y: 0 });
       setIsFullscreen(false);
       setPreFullscreenState(null);
@@ -125,13 +122,11 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
       });
       setIsFullscreen(true);
     }
-  }, [isFullscreen, preFullscreenState, dimensions, position, lastNormalDimensions]);
+  }, [isFullscreen, preFullscreenState, dimensions, position]);
 
   const handleResize = useCallback((event, { size }) => {
     if (!isFullscreen) {
-      const newDimensions = { width: size.width, height: size.height };
-      setDimensions(newDimensions);
-      setLastNormalDimensions(newDimensions);
+      setDimensions({ width: size.width, height: size.height });
     }
   }, [isFullscreen]);
 
