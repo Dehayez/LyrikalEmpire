@@ -95,11 +95,11 @@
   .form-group {
     height: calc(100% - 48px);
     margin: 0;
-    padding: 0 20px;
+    padding: 0 20px 20px 20px;
 
     &__input {
-        padding: 0 0 80px 0;
         height: 100%;
+        padding-top: 0;
         overflow: auto;
         border: none;
 
@@ -116,5 +116,6 @@
       &:hover {
           border: none !important;
       }
+      padding-bottom: 40px !important;
   }
 }
