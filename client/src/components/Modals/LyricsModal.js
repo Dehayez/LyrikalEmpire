@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
 import Modal from 'react-modal';
-import { IoCloseSharp } from 'react-icons/io5';
+import { IoCloseSharp, IoExpand, IoContract } from 'react-icons/io5';
 
 import { isAuthPage, isMobileOrTablet } from '../../utils';
 import { useLocalStorageSync } from '../../hooks';
@@ -55,13 +55,21 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
 
   const [lyrics, setLyrics] = useState('');
   const [lyricsId, setLyricsId] = useState(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [dimensions, setDimensions] = useState(() => {
     return JSON.parse(localStorage.getItem('dimensions')) || { width: 400, height: 300 };
+  });
+  const [position, setPosition] = useState(() => {
+    return JSON.parse(localStorage.getItem('modalPosition')) || { x: 0, y: 0 };
+  });
+  const [preFullscreenState, setPreFullscreenState] = useState(null);
+  const [lastNormalDimensions, setLastNormalDimensions] = useState(() => {
+    return JSON.parse(localStorage.getItem('lastNormalDimensions')) || { width: 400, height: 300 };
   });
 
   const handleCancel = useCallback(() => setLyricsModal(false), [setLyricsModal]);
 
-  useLocalStorageSync({ dimensions });
+  useLocalStorageSync({ dimensions, position, lastNormalDimensions });
 
   useEffect(() => {
     if (!beatId) return;
@@ -102,11 +110,76 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     }
   };
 
+  const handleFullscreenToggle = useCallback(() => {
+    if (isFullscreen) {
+      // Exit fullscreen - restore to last normal dimensions
+      setDimensions(lastNormalDimensions);
+      setPosition(preFullscreenState?.position || { x: 0, y: 0 });
+      setIsFullscreen(false);
+      setPreFullscreenState(null);
+    } else {
+      // Enter fullscreen - save current state
+      setPreFullscreenState({
+        dimensions: { ...dimensions },
+        position: { ...position }
+      });
+      setIsFullscreen(true);
+    }
+  }, [isFullscreen, preFullscreenState, dimensions, position, lastNormalDimensions]);
+
+  const handleResize = useCallback((event, { size }) => {
+    if (!isFullscreen) {
+      const newDimensions = { width: size.width, height: size.height };
+      setDimensions(newDimensions);
+      setLastNormalDimensions(newDimensions);
+    }
+  }, [isFullscreen]);
+
+  const handleDrag = useCallback((event, data) => {
+    if (!isFullscreen) {
+      setPosition({ x: data.x, y: data.y });
+    }
+  }, [isFullscreen]);
+
+  // Handle Escape key to exit fullscreen
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && isFullscreen) {
+        handleFullscreenToggle();
+      }
+    };
+
+    if (lyricsModal) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [lyricsModal, isFullscreen, handleFullscreenToggle]);
+
   if (isAuthRoute) return null;
+
+  const modalContent = (
+    <div className="modal-content" ref={modalRef}>
+      <IconButton className="modal__close-button" onClick={handleCancel}>
+        <IoCloseSharp />
+      </IconButton>
+      <IconButton 
+        className="modal__fullscreen-button" 
+        onClick={handleFullscreenToggle}
+        text={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+      >
+        {isFullscreen ? <IoContract /> : <IoExpand />}
+      </IconButton>
+      <h2 className="modal__title">{title}</h2>
+      <FormTextarea id="lyrics-modal__textarea" value={lyrics} onChange={handleLyricsChange} />
+    </div>
+  );
 
   return (
     <Modal
-      className="lyrics-modal"
+      className={`lyrics-modal ${isFullscreen ? 'lyrics-modal--fullscreen' : ''}`}
       isOpen={lyricsModal}
       onRequestClose={handleCancel}
       style={MODAL_STYLE}
@@ -114,29 +187,32 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     >
       {isMobile ? (
         <div className="modal modal--mobile">
-          <div className="modal-content" ref={modalRef}>
-            <IconButton className="modal__close-button" onClick={handleCancel}>
-              <IoCloseSharp />
-            </IconButton>
-            <h2 className="modal__title">{title}</h2>
-            <FormTextarea value={lyrics} onChange={handleLyricsChange} />
-          </div>
+          {modalContent}
         </div>
       ) : (
-        <Draggable handle=".modal__title" nodeRef={draggableRef}>
+        <Draggable 
+          handle=".modal__title" 
+          nodeRef={draggableRef}
+          position={isFullscreen ? { x: 0, y: 0 } : position}
+          onDrag={handleDrag}
+          disabled={isFullscreen}
+        >
           <div ref={draggableRef} className="modal">
-            <ResizableBox
-              width={dimensions.width}
-              height={dimensions.height}
-            >
-              <div className="modal-content" ref={modalRef}>
-                <IconButton className="modal__close-button" onClick={handleCancel}>
-                  <IoCloseSharp />
-                </IconButton>
-                <h2 className="modal__title">{title}</h2>
-                <FormTextarea id="lyrics-modal__textarea" value={lyrics} onChange={handleLyricsChange} />
+            {isFullscreen ? (
+              <div className="modal-content-fullscreen">
+                {modalContent}
               </div>
-            </ResizableBox>
+            ) : (
+              <ResizableBox
+                width={dimensions.width}
+                height={dimensions.height}
+                onResize={handleResize}
+                minConstraints={[300, 200]}
+                maxConstraints={[window.innerWidth - 100, window.innerHeight - 100]}
+              >
+                {modalContent}
+              </ResizableBox>
+            )}
           </div>
         </Draggable>
       )}
