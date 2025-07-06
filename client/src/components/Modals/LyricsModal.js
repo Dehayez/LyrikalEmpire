@@ -136,10 +136,17 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     }
   }, [isFullscreen]);
 
-  // Handle Escape key to exit fullscreen
+  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event) => {
+      // Don't trigger shortcuts if user is typing in the textarea
+      if (event.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      
       if (event.key === 'Escape' && isFullscreen) {
+        handleFullscreenToggle();
+      } else if (event.key === 'f' || event.key === 'F') {
         handleFullscreenToggle();
       }
     };
@@ -157,15 +164,21 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
 
   const modalContent = (
     <div className="modal-content" ref={modalRef}>
-      <IconButton className="modal__close-button" onClick={handleCancel}>
-        <IoCloseSharp />
-      </IconButton>
       <IconButton 
         className="modal__fullscreen-button" 
         onClick={handleFullscreenToggle}
-        text={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+        text={isFullscreen ? "Exit fullscreen (f)" : "Enter fullscreen (f)"}
+        tooltipPosition="left"
       >
         {isFullscreen ? <IoContract /> : <IoExpand />}
+      </IconButton>
+      <IconButton 
+        className="modal__close-button" 
+        onClick={handleCancel}
+        text="Close (esc)"
+        tooltipPosition="left"
+      >
+        <IoCloseSharp />
       </IconButton>
       <h2 className="modal__title">{title}</h2>
       <FormTextarea id="lyrics-modal__textarea" value={lyrics} onChange={handleLyricsChange} />
