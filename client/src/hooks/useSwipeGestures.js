@@ -9,11 +9,6 @@ import {
   updateSwipeTransform
 } from '../components/AudioPlayer/AudioPlayerSwipeHandlers';
 
-/**
- * Custom hook to handle swipe gestures for the full page player
- * @param {Object} props - Properties for the hook
- * @returns {Object} Swipe gesture handlers
- */
 export const useSwipeGestures = ({
   swipeStartX,
   swipeCurrentX,

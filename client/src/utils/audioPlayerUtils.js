@@ -1,11 +1,6 @@
 import React from 'react';
 import { slideIn, slideOut } from './';
 
-/**
- * Format time in seconds to MM:SS format
- * @param {number} time - Time in seconds
- * @returns {string} Formatted time string
- */
 export const formatTime = (time) => {
   if (isNaN(time)) return '0:00';
   const minutes = Math.floor(time / 60);
@@ -13,11 +8,6 @@ export const formatTime = (time) => {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-/**
- * Creates slide content for the full page player
- * @param {Object} currentBeat - Current beat object
- * @returns {Array} Array of slide objects
- */
 export const createSlides = (currentBeat) => [
   {
     id: 'image',
@@ -51,20 +41,6 @@ export const createSlides = (currentBeat) => [
   }
 ];
 
-/**
- * Toggle full page player visibility with animation
- * @param {boolean} isFullPage - Current full page state
- * @param {Function} setIsFullPage - State setter for isFullPage
- * @param {boolean} isFullPageVisible - Current visibility state
- * @param {Function} setIsFullPageVisible - State setter for isFullPageVisible
- * @param {Object} fullPagePlayerRef - Ref to full page player element
- * @param {Object} fullPageOverlayRef - Ref to full page overlay element
- * @param {boolean} lyricsModal - Whether lyrics modal is open
- * @param {boolean} isMobileOrTablet - Whether device is mobile or tablet
- * @param {boolean} isReturningFromLyrics - Whether returning from lyrics modal
- * @param {Function} setIsReturningFromLyrics - State setter for isReturningFromLyrics
- * @returns {void}
- */
 export const toggleFullPagePlayer = ({
   isFullPage,
   setIsFullPage,
@@ -101,22 +77,6 @@ export const toggleFullPagePlayer = ({
   }
 };
 
-/**
- * Sync all display players with main audio element
- * @param {Object} playerRef - Reference to main player
- * @param {Function} setCurrentTimeState - State setter for current time
- * @param {Function} setDuration - State setter for duration
- * @param {Function} setProgress - State setter for progress
- * @param {Object} wavesurfer - Reference to wavesurfer instance
- * @param {boolean} shouldShowMobilePlayer - Whether mobile player should be shown
- * @param {Object} mobilePlayerRef - Reference to mobile player
- * @param {boolean} isMobileOrTablet - Whether device is mobile or tablet
- * @param {Object} desktopPlayerRef - Reference to desktop player
- * @param {boolean} shouldShowFullPagePlayer - Whether full page player should be shown
- * @param {boolean} isFullPageVisible - Whether full page player is visible
- * @param {Object} fullPageProgressRef - Reference to full page progress bar
- * @param {boolean} forceUpdate - Whether to force update
- */
 export const syncAllPlayers = ({
   playerRef,
   setCurrentTimeState,

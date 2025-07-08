@@ -1,11 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { syncAllPlayers as syncAllPlayersUtil } from '../utils';
 
-/**
- * Custom hook to handle audio synchronization
- * @param {Object} props - Properties for the hook
- * @returns {Object} Audio sync methods
- */
 export const useAudioSync = ({
   playerRef,
   setCurrentTimeState,

@@ -2,13 +2,6 @@
  * Handlers for swipe gestures in the audio player
  */
 
-/**
- * Handle touch start event for swipeable content
- * @param {Object} e - Touch event
- * @param {Object} swipeStartX - Ref to store start X position
- * @param {Object} isSwipeDragging - Ref to track dragging state
- * @param {Object} swipeableContainerRef - Ref to swipeable container
- */
 export const handleSwipeTouchStart = (e, swipeStartX, isSwipeDragging, swipeableContainerRef) => {
   swipeStartX.current = e.touches[0].clientX;
   isSwipeDragging.current = true;
@@ -18,15 +11,6 @@ export const handleSwipeTouchStart = (e, swipeStartX, isSwipeDragging, swipeable
   }
 };
 
-/**
- * Handle touch move event for swipeable content
- * @param {Object} e - Touch event
- * @param {Object} swipeStartX - Ref with start X position
- * @param {Object} swipeCurrentX - Ref to store current X position
- * @param {Object} isSwipeDragging - Ref with dragging state
- * @param {Object} swipeableContainerRef - Ref to swipeable container
- * @param {number} activeSlideIndex - Current active slide index
- */
 export const handleSwipeTouchMove = (e, swipeStartX, swipeCurrentX, isSwipeDragging, swipeableContainerRef, activeSlideIndex) => {
   if (!isSwipeDragging.current) return;
   
@@ -39,16 +23,6 @@ export const handleSwipeTouchMove = (e, swipeStartX, swipeCurrentX, isSwipeDragg
   }
 };
 
-/**
- * Handle touch end event for swipeable content
- * @param {Object} swipeStartX - Ref with start X position
- * @param {Object} swipeCurrentX - Ref with current X position
- * @param {Object} isSwipeDragging - Ref with dragging state
- * @param {Object} swipeableContainerRef - Ref to swipeable container
- * @param {number} activeSlideIndex - Current active slide index
- * @param {Function} setActiveSlideIndex - State setter for active slide index
- * @param {number} slidesLength - Number of slides
- */
 export const handleSwipeTouchEnd = (
   swipeStartX, 
   swipeCurrentX, 
@@ -81,13 +55,6 @@ export const handleSwipeTouchEnd = (
   updateSwipeTransform(swipeableContainerRef, activeSlideIndex);
 };
 
-/**
- * Handle mouse down event for swipeable content (desktop)
- * @param {Object} e - Mouse event
- * @param {Object} swipeStartX - Ref to store start X position
- * @param {Object} isSwipeDragging - Ref to track dragging state
- * @param {Object} swipeableContainerRef - Ref to swipeable container
- */
 export const handleSwipeMouseDown = (e, swipeStartX, isSwipeDragging, swipeableContainerRef) => {
   swipeStartX.current = e.clientX;
   isSwipeDragging.current = true;
@@ -100,15 +67,6 @@ export const handleSwipeMouseDown = (e, swipeStartX, isSwipeDragging, swipeableC
   e.preventDefault();
 };
 
-/**
- * Handle mouse move event for swipeable content
- * @param {Object} e - Mouse event
- * @param {Object} swipeStartX - Ref with start X position
- * @param {Object} swipeCurrentX - Ref to store current X position
- * @param {Object} isSwipeDragging - Ref with dragging state
- * @param {Object} swipeableContainerRef - Ref to swipeable container
- * @param {number} activeSlideIndex - Current active slide index
- */
 export const handleSwipeMouseMove = (e, swipeStartX, swipeCurrentX, isSwipeDragging, swipeableContainerRef, activeSlideIndex) => {
   if (!isSwipeDragging.current) return;
   
@@ -121,16 +79,6 @@ export const handleSwipeMouseMove = (e, swipeStartX, swipeCurrentX, isSwipeDragg
   }
 };
 
-/**
- * Handle mouse up event for swipeable content
- * @param {Object} swipeStartX - Ref with start X position
- * @param {Object} swipeCurrentX - Ref with current X position
- * @param {Object} isSwipeDragging - Ref with dragging state
- * @param {Object} swipeableContainerRef - Ref to swipeable container
- * @param {number} activeSlideIndex - Current active slide index
- * @param {Function} setActiveSlideIndex - State setter for active slide index
- * @param {number} slidesLength - Number of slides
- */
 export const handleSwipeMouseUp = (
   swipeStartX, 
   swipeCurrentX, 
@@ -161,11 +109,6 @@ export const handleSwipeMouseUp = (
   updateSwipeTransform(swipeableContainerRef, activeSlideIndex);
 };
 
-/**
- * Update transform property of swipeable container
- * @param {Object} swipeableContainerRef - Ref to swipeable container
- * @param {number} activeSlideIndex - Current active slide index
- */
 export const updateSwipeTransform = (swipeableContainerRef, activeSlideIndex) => {
   if (swipeableContainerRef.current) {
     swipeableContainerRef.current.style.transform = `translateX(-${activeSlideIndex * 100}%)`;

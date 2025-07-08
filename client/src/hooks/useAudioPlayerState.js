@@ -3,11 +3,6 @@ import { useLocalStorageSync } from './useLocalStorageSync';
 import { isMobileOrTablet } from '../utils';
 import { getSignedUrl, getUserById } from '../services';
 
-/**
- * Custom hook to manage audio player state
- * @param {Object} props - Properties for the hook
- * @returns {Object} Audio player state and methods
- */
 export const useAudioPlayerState = ({
   currentBeat,
   setCurrentBeat,

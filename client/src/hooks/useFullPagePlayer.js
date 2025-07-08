@@ -1,11 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { isMobileOrTablet, slideIn, slideOut } from '../utils';
 
-/**
- * Custom hook to manage full page player functionality
- * @param {Object} props - Properties for the hook
- * @returns {Object} Full page player methods
- */
 export const useFullPagePlayer = ({
   isFullPage,
   setIsFullPage,

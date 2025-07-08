@@ -1,10 +1,5 @@
 import { useEffect } from 'react';
 
-/**
- * Custom hook to handle media session functionality
- * @param {Object} props - Properties for the hook
- * @returns {void}
- */
 export const useMediaSession = ({
   handlePlayPause,
   handlePrevClick,

@@ -2,11 +2,6 @@ import { useEffect } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import { isMobileOrTablet } from '../utils';
 
-/**
- * Custom hook to manage waveform functionality
- * @param {Object} props - Properties for the hook
- * @returns {void}
- */
 export const useWaveform = ({
   audioSrc,
   isFullPage,
