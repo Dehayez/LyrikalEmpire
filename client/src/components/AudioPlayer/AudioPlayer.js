@@ -1,11 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
+import H5AudioPlayer from 'react-h5-audio-player';
 import WaveSurfer from 'wavesurfer.js';
-import { LiaMicrophoneAltSolid } from "react-icons/lia";
-import { PiWaveform } from "react-icons/pi";
-import { IoChevronDownSharp, IoEllipsisHorizontalSharp, IoAddSharp, IoListSharp, IoRemoveCircleOutline, IoOptionsSharp } from "react-icons/io5";
-import { LuDisc3 } from "react-icons/lu";
-import { Queue02 } from "../../assets/icons";
 
 import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
 import { useAudioPlayer, useLocalStorageSync, useDragToDismiss } from '../../hooks';
@@ -13,11 +8,24 @@ import { getSignedUrl, getUserById } from '../../services';
 import { usePlaylist } from '../../contexts';
 
 import { ContextMenu } from '../ContextMenu';
-import { NextButton, PlayPauseButton, PrevButton, VolumeSlider, ShuffleButton, RepeatButton } from './AudioControls';
-import { IconButton } from '../Buttons';
+import MobileAudioPlayer from './MobileAudioPlayer';
+import DesktopAudioPlayer from './DesktopAudioPlayer';
+import FullPageAudioPlayer from './FullPageAudioPlayer';
+import { formatTime, createSlides, syncAllPlayers as syncAllPlayersUtil } from './AudioPlayerUtils';
+import { 
+  handleSwipeTouchStart, 
+  handleSwipeTouchMove, 
+  handleSwipeTouchEnd, 
+  handleSwipeMouseDown,
+  handleSwipeMouseMove,
+  handleSwipeMouseUp,
+  updateSwipeTransform
+} from './AudioPlayerSwipeHandlers';
 
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
+import { IoAddSharp, IoRemoveCircleOutline } from 'react-icons/io5';
+import { Queue02 } from '../../assets/icons';
 
 const AudioPlayer = ({
   currentBeat, setCurrentBeat,
@@ -104,39 +112,8 @@ const AudioPlayer = ({
   });
   const [isFullPageVisible, setIsFullPageVisible] = useState(false);
 
-  // Swipeable slides configuration
-  const slides = [
-    {
-      id: 'image',
-      content: (
-        <div className="audio-player__full-page-image">
-          {currentBeat.artworkUrl ? (
-            <img
-              src={currentBeat.artworkUrl}
-              alt={currentBeat.title || 'Audio Cover'}
-              className="audio-player__cover-image"
-            />
-          ) : (
-            <img
-              src="https://www.lyrikalempire.com/placeholder.png"
-              alt="Placeholder Cover"
-              className="audio-player__cover-image"
-            />
-          )}
-        </div>
-      )
-    },
-    {
-      id: 'info',
-      content: (
-        <div className="audio-player__full-page-info-content">
-          <p className="audio-player__full-page-description">
-            {currentBeat.description || 'No description available.'}
-          </p>
-        </div>
-      )
-    }
-  ];
+  // Generate slides for the full page player
+  const slides = createSlides(currentBeat);
 
   // Determine which player to show based on isFullPage AND lyricsModal state
   const shouldShowFullPagePlayer = isFullPage && !(isMobileOrTablet() && lyricsModal);
@@ -173,102 +150,28 @@ const AudioPlayer = ({
   };
 
   // Swipeable content handlers
-  const handleSwipeTouchStart = (e) => {
-    swipeStartX.current = e.touches[0].clientX;
-    isSwipeDragging.current = true;
-    
-    if (swipeableContainerRef.current) {
-      swipeableContainerRef.current.style.transition = 'none';
-    }
+  const handleSwipeTouchStartWrapper = (e) => {
+    handleSwipeTouchStart(e, swipeStartX, isSwipeDragging, swipeableContainerRef);
   };
 
-  const handleSwipeTouchMove = (e) => {
-    if (!isSwipeDragging.current) return;
-    
-    swipeCurrentX.current = e.touches[0].clientX;
-    const diffX = swipeCurrentX.current - swipeStartX.current;
-    
-    if (swipeableContainerRef.current) {
-      const translateX = -activeSlideIndex * 100 + (diffX / swipeableContainerRef.current.offsetWidth) * 100;
-      swipeableContainerRef.current.style.transform = `translateX(${translateX}%)`;
-    }
+  const handleSwipeTouchMoveWrapper = (e) => {
+    handleSwipeTouchMove(e, swipeStartX, swipeCurrentX, isSwipeDragging, swipeableContainerRef, activeSlideIndex);
   };
 
-  const handleSwipeTouchEnd = () => {
-    if (!isSwipeDragging.current) return;
-    
-    const diffX = swipeCurrentX.current - swipeStartX.current;
-    const threshold = 50; // Minimum distance to trigger slide
-    
-    if (swipeableContainerRef.current) {
-      swipeableContainerRef.current.style.transition = 'transform 0.3s ease-out';
-    }
-    
-    if (Math.abs(diffX) > threshold) {
-      if (diffX > 0 && activeSlideIndex > 0) {
-        // Swipe right - go to previous slide
-        setActiveSlideIndex(activeSlideIndex - 1);
-      } else if (diffX < 0 && activeSlideIndex < slides.length - 1) {
-        // Swipe left - go to next slide
-        setActiveSlideIndex(activeSlideIndex + 1);
-      }
-    }
-    
-    isSwipeDragging.current = false;
-    updateSwipeTransform();
+  const handleSwipeTouchEndWrapper = () => {
+    handleSwipeTouchEnd(swipeStartX, swipeCurrentX, isSwipeDragging, swipeableContainerRef, activeSlideIndex, setActiveSlideIndex, slides.length);
   };
 
-  // Mouse events for desktop swipe
-  const handleSwipeMouseDown = (e) => {
-    swipeStartX.current = e.clientX;
-    isSwipeDragging.current = true;
-    
-    if (swipeableContainerRef.current) {
-      swipeableContainerRef.current.style.transition = 'none';
-    }
-    
-    // Prevent text selection during drag
-    e.preventDefault();
+  const handleSwipeMouseDownWrapper = (e) => {
+    handleSwipeMouseDown(e, swipeStartX, isSwipeDragging, swipeableContainerRef);
   };
 
-  const handleSwipeMouseMove = (e) => {
-    if (!isSwipeDragging.current) return;
-    
-    swipeCurrentX.current = e.clientX;
-    const diffX = swipeCurrentX.current - swipeStartX.current;
-    
-    if (swipeableContainerRef.current) {
-      const translateX = -activeSlideIndex * 100 + (diffX / swipeableContainerRef.current.offsetWidth) * 100;
-      swipeableContainerRef.current.style.transform = `translateX(${translateX}%)`;
-    }
+  const handleSwipeMouseMoveWrapper = (e) => {
+    handleSwipeMouseMove(e, swipeStartX, swipeCurrentX, isSwipeDragging, swipeableContainerRef, activeSlideIndex);
   };
 
-  const handleSwipeMouseUp = () => {
-    if (!isSwipeDragging.current) return;
-    
-    const diffX = swipeCurrentX.current - swipeStartX.current;
-    const threshold = 50;
-    
-    if (swipeableContainerRef.current) {
-      swipeableContainerRef.current.style.transition = 'transform 0.3s ease-out';
-    }
-    
-    if (Math.abs(diffX) > threshold) {
-      if (diffX > 0 && activeSlideIndex > 0) {
-        setActiveSlideIndex(activeSlideIndex - 1);
-      } else if (diffX < 0 && activeSlideIndex < slides.length - 1) {
-        setActiveSlideIndex(activeSlideIndex + 1);
-      }
-    }
-    
-    isSwipeDragging.current = false;
-    updateSwipeTransform();
-  };
-
-  const updateSwipeTransform = () => {
-    if (swipeableContainerRef.current) {
-      swipeableContainerRef.current.style.transform = `translateX(-${activeSlideIndex * 100}%)`;
-    }
+  const handleSwipeMouseUpWrapper = () => {
+    handleSwipeMouseUp(swipeStartX, swipeCurrentX, isSwipeDragging, swipeableContainerRef, activeSlideIndex, setActiveSlideIndex, slides.length);
   };
 
   const goToSlide = (index) => {
@@ -277,8 +180,8 @@ const AudioPlayer = ({
 
   // Add mouse event listeners to document for desktop drag
   useEffect(() => {
-    const handleDocumentMouseMove = (e) => handleSwipeMouseMove(e);
-    const handleDocumentMouseUp = () => handleSwipeMouseUp();
+    const handleDocumentMouseMove = (e) => handleSwipeMouseMoveWrapper(e);
+    const handleDocumentMouseUp = () => handleSwipeMouseUpWrapper();
 
     if (isSwipeDragging.current) {
       document.addEventListener('mousemove', handleDocumentMouseMove);
@@ -292,7 +195,7 @@ const AudioPlayer = ({
   }, [activeSlideIndex]);
 
   useEffect(() => {
-    updateSwipeTransform();
+    updateSwipeTransform(swipeableContainerRef, activeSlideIndex);
   }, [activeSlideIndex]);
 
   // Close full page player when lyrics modal opens on mobile
@@ -337,72 +240,60 @@ const AudioPlayer = ({
 
   // Sync all display players with main audio element
   const syncAllPlayers = (forceUpdate = false) => {
-    const mainAudio = playerRef.current?.audio.current;
-    if (!mainAudio) return;
+    syncAllPlayersUtil({
+      playerRef,
+      setCurrentTimeState,
+      setDuration,
+      setProgress,
+      wavesurfer,
+      shouldShowMobilePlayer,
+      mobilePlayerRef,
+      isMobileOrTablet: isMobileOrTablet(),
+      desktopPlayerRef,
+      shouldShowFullPagePlayer,
+      isFullPageVisible,
+      fullPageProgressRef,
+      forceUpdate
+    });
+  };
 
-    const currentTime = mainAudio.currentTime || 0;
-    const duration = mainAudio.duration || 0;
-    
-    // Update state
-    setCurrentTimeState(currentTime);
-    setDuration(duration);
-    setProgress(duration ? currentTime / duration : 0);
-
-    // Update waveform
-    if (wavesurfer.current && duration) {
-      wavesurfer.current.seekTo(currentTime / duration);
-    }
-
-    // Force update display players by manipulating their progress bars directly
-    const updateProgressBar = (playerRef) => {
-      if (playerRef?.current) {
-        // Use requestAnimationFrame for smoother updates
-        requestAnimationFrame(() => {
-          const progressBar = playerRef.current.container.current?.querySelector('.rhap_progress-filled');
-          const progressIndicator = playerRef.current.container.current?.querySelector('.rhap_progress-indicator');
-          const currentTimeEl = playerRef.current.container.current?.querySelector('.rhap_current-time');
-          const durationEl = playerRef.current.container.current?.querySelector('.rhap_total-time');
-          
-          if (progressBar) {
-            const progressPercent = duration ? (currentTime / duration) * 100 : 0;
-            progressBar.style.width = `${progressPercent}%`;
-            progressBar.style.transition = 'none';
-            
-            if (progressIndicator) {
-              progressIndicator.style.left = `${progressPercent}%`;
-              progressIndicator.style.transition = 'none';
-            }
-          }
-          
-          if (currentTimeEl) {
-            currentTimeEl.textContent = formatTime(currentTime);
-          }
-          
-          if (durationEl) {
-            durationEl.textContent = formatTime(duration);
-          }
-        });
+  // Handle play/pause from UI
+  const handlePlayPause = (play) => {
+    const audio = playerRef.current?.audio.current;
+    if (audio) {
+      if (play) {
+        audio.play().catch(console.error);
+      } else {
+        audio.pause();
       }
-    };
-
-    // Update all display players that are currently rendered
-    if (shouldShowMobilePlayer) {
-      updateProgressBar(mobilePlayerRef);
-    }
-    if (!isMobileOrTablet()) {
-      updateProgressBar(desktopPlayerRef);
-    }
-    if (shouldShowFullPagePlayer && isFullPageVisible) {
-      updateProgressBar(fullPageProgressRef);
     }
   };
 
-  // Format time helper function
-  const formatTime = (time) => {
-    if (isNaN(time)) return '0:00';
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  // Handle seeking from display players
+  const handleSeeked = (e) => {
+    const mainAudio = playerRef.current?.audio.current;
+    const newTime = e.target.currentTime;
+    
+    if (mainAudio && Math.abs(mainAudio.currentTime - newTime) > 0.1) {
+      mainAudio.currentTime = newTime;
+      syncAllPlayers();
+    }
+  };
+
+  // Override H5AudioPlayer events to prevent conflicts
+  const preventDefaultAudioEvents = {
+    onPlay: (e) => {
+      e.preventDefault();
+      handlePlayPause(true);
+    },
+    onPause: (e) => {
+      e.preventDefault();
+      handlePlayPause(false);
+    },
+    onLoadStart: () => {},
+    onCanPlay: () => {},
+    onLoadedData: () => {},
+    onSeeked: handleSeeked,
   };
 
   // Set up main audio player event listeners
@@ -470,81 +361,6 @@ const AudioPlayer = ({
       mainAudio.removeEventListener('pause', handlePause);
     };
   }, [playerRef.current?.audio.current, onNext, setIsPlaying]);
-
-  // Handle play/pause from UI
-  const handlePlayPause = (play) => {
-    const audio = playerRef.current?.audio.current;
-    if (audio) {
-      if (play) {
-        audio.play().catch(console.error);
-      } else {
-        audio.pause();
-      }
-    }
-  };
-
-  // Handle seeking from display players
-  const handleSeeked = (e) => {
-    const mainAudio = playerRef.current?.audio.current;
-    const newTime = e.target.currentTime;
-    
-    if (mainAudio && Math.abs(mainAudio.currentTime - newTime) > 0.1) {
-      mainAudio.currentTime = newTime;
-      syncAllPlayers();
-    }
-  };
-
-  // Handle manual seeking on progress bar
-  const handleProgressClick = (e) => {
-    const mainAudio = playerRef.current?.audio.current;
-    if (!mainAudio || !mainAudio.duration) return;
-
-    const progressBar = e.currentTarget;
-    const rect = progressBar.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const progressPercent = clickX / rect.width;
-    const newTime = progressPercent * mainAudio.duration;
-    
-    mainAudio.currentTime = newTime;
-    syncAllPlayers();
-  };
-
-  // Get current audio state for immediate rendering
-  const getCurrentAudioState = () => {
-    const mainAudio = playerRef.current?.audio.current;
-    if (!mainAudio) return { currentTime: 0, duration: 0, progress: 0 };
-    
-    const currentTime = mainAudio.currentTime || 0;
-    const duration = mainAudio.duration || 0;
-    const progress = duration ? (currentTime / duration) * 100 : 0;
-    
-    return { currentTime, duration, progress };
-  };
-
-  // Override H5AudioPlayer events to prevent conflicts
-  const preventDefaultAudioEvents = {
-    onPlay: (e) => {
-      e.preventDefault();
-      handlePlayPause(true);
-    },
-    onPause: (e) => {
-      e.preventDefault();
-      handlePlayPause(false);
-    },
-    onLoadStart: () => {},
-    onCanPlay: () => {},
-    onLoadedData: () => {},
-    onSeeked: handleSeeked,
-  };
-
-  // Pre-calculate progress for immediate rendering
-  const audioState = getCurrentAudioState();
-  const progressStyle = {
-    width: `${audioState.progress}%`
-  };
-  const progressIndicatorStyle = {
-    left: `${audioState.progress}%`
-  };
 
   // Effect to sync display players when they're rendered or view changes
   useEffect(() => {
@@ -786,206 +602,89 @@ const AudioPlayer = ({
 
       {/* Mobile full page player */}
       {shouldShowFullPagePlayer && (
-        <>
-          <div
-            ref={fullPageOverlayRef}
-            className={`audio-player--mobile audio-player__full-page-overlay ${isFullPageVisible ? 'visible' : ''}`}
-          />
-          <div
-            ref={fullPagePlayerRef}
-            className="audio-player audio-player__full-page"
-            onTouchStart={handleDragStart}
-            onTouchMove={handleDragMove}
-            onTouchEnd={handleDragEnd}
-          >
-            {/* HEADER */}
-            <div className="audio-player__full-page-header">
-              <IconButton
-                className="audio-player__close-button"
-                onClick={toggleFullPagePlayer}
-                text="Close"
-                ariaLabel="Close full-page player"
-              >
-                <IoChevronDownSharp />
-              </IconButton>
-              <p className="audio-player__full-page-title">
-                {playedPlaylistTitle || 'All Tracks'}
-              </p>
-              <IconButton
-                className="audio-player__ellipsis-button"
-                onClick={handleEllipsisClick}
-              >
-                <IoEllipsisHorizontalSharp />
-              </IconButton>
-            </div>
-
-            {/* SWIPEABLE CONTENT */}
-            <div className="audio-player__full-page-content">
-              <div 
-                className="swipeable-container"
-                onTouchStart={handleSwipeTouchStart}
-                onTouchMove={handleSwipeTouchMove}
-                onTouchEnd={handleSwipeTouchEnd}
-                onMouseDown={handleSwipeMouseDown}
-              >
-                <div 
-                  ref={swipeableContainerRef}
-                  className="swipeable-content"
-                  style={{
-                    transform: `translateX(-${activeSlideIndex * 50}%)`,
-                    transition: 'transform 0.3s ease-out'
-                  }}
-                >
-                  {slides.map((slide, index) => (
-                    <div key={slide.id} className="swipeable-slide">
-                      {slide.content}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Navigation dots */}
-              <div className="swipeable-dots">
-                {slides.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`swipeable-dot ${index === activeSlideIndex ? 'active' : ''}`}
-                    onClick={() => goToSlide(index)}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* CONTROLS */}
-            <div className="audio-player__full-page-controls">
-              <div className="audio-player__full-page-info">
-                <div className="audio-player__full-page-text">
-                  <p className="audio-player__title">
-                    {currentBeat.title || 'Audio Player'}
-                  </p>
-                  <p className="audio-player__artist">
-                    {artistCache.current.get(currentBeat.user_id) || 'Unknown Artist'}
-                  </p>
-                </div>
-              </div>
-              
-              <H5AudioPlayer
-                ref={fullPageProgressRef}
-                className="smooth-progress-bar smooth-progress-bar--full-page"
-                autoPlayAfterSrcChange={false}
-                src={audioSrc}
-                {...preventDefaultAudioEvents}
-                customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-                onLoadedMetadata={() => {
-                  requestAnimationFrame(() => syncAllPlayers(true));
-                }}
-                customControlsSection={[
-                  <>
-                    <IconButton
-                      onClick={toggleWaveform}
-                      text={waveform ? 'Hide waveform' : 'Show waveform'}
-                      ariaLabel={waveform ? 'Hide waveform' : 'Show waveform'}
-                    >
-                      <PiWaveform className={waveform ? 'icon-primary' : ''} />
-                    </IconButton>
-                    <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
-                    <PrevButton onPrev={handlePrevClick} />
-                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} />
-                    <NextButton onNext={onNext} />
-                    <RepeatButton repeat={repeat} setRepeat={setRepeat} />
-                    <IconButton
-                      onClick={toggleLyricsModal}
-                      text={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
-                      ariaLabel={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
-                    >
-                      <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
-                    </IconButton>
-                  </>
-                ]}
-                style={{ marginBottom: '20px' }}
-              />
-              
-              <div ref={waveformRefFullPage} className={`waveform ${waveform ? 'waveform--active' : ''}`}></div>
-            </div>
-          </div>
-        </>
+        <FullPageAudioPlayer
+          fullPagePlayerRef={fullPagePlayerRef}
+          fullPageOverlayRef={fullPageOverlayRef}
+          playerRef={fullPageProgressRef}
+          audioSrc={audioSrc}
+          currentBeat={currentBeat}
+          isPlaying={isPlaying}
+          handlePlayPause={handlePlayPause}
+          handlePrevClick={handlePrevClick}
+          onNext={onNext}
+          preventDefaultAudioEvents={preventDefaultAudioEvents}
+          artistName={artistName}
+          shuffle={shuffle}
+          setShuffle={setShuffle}
+          repeat={repeat}
+          setRepeat={setRepeat}
+          toggleWaveform={toggleWaveform}
+          toggleLyricsModal={toggleLyricsModal}
+          waveform={waveform}
+          waveformRef={waveformRefFullPage}
+          syncAllPlayers={syncAllPlayers}
+          lyricsModal={lyricsModal}
+          isFullPageVisible={isFullPageVisible}
+          toggleFullPagePlayer={toggleFullPagePlayer}
+          handleDragStart={handleDragStart}
+          handleDragMove={handleDragMove}
+          handleDragEnd={handleDragEnd}
+          playedPlaylistTitle={playedPlaylistTitle}
+          handleEllipsisClick={handleEllipsisClick}
+          swipeableContainerRef={swipeableContainerRef}
+          activeSlideIndex={activeSlideIndex}
+          slides={slides}
+          handleSwipeTouchStart={handleSwipeTouchStartWrapper}
+          handleSwipeTouchMove={handleSwipeTouchMoveWrapper}
+          handleSwipeTouchEnd={handleSwipeTouchEndWrapper}
+          handleSwipeMouseDown={handleSwipeMouseDownWrapper}
+          goToSlide={goToSlide}
+        />
       )}
 
       {/* Mobile bottom audio player */}
       {!shouldShowFullPagePlayer && (
         shouldShowMobilePlayer ? (
-          <div
-            className={`audio-player audio-player--mobile ${lyricsModal ? 'audio-player--lyrics-modal-open' : ''}`}
-            onClick={toggleFullPagePlayer}
-          >
-            <H5AudioPlayer
-              ref={mobilePlayerRef}
-              className="smooth-progress-bar smooth-progress-bar--mobile"
-              autoPlayAfterSrcChange={false}
-              src={audioSrc}
-              {...preventDefaultAudioEvents}
-              customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-              customControlsSection={[]}
-            />
-            
-            <div  className="audio-player__text" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchMove={handleTouchMove} style={{ transform: `translateX(${dragPosition}px)` }}>
-              <p className="audio-player__title">{currentBeat.title}</p>
-              <p className="audio-player__artist">{artistName}</p>
-            </div>
-            <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} className="small" />
-          </div>
+          <MobileAudioPlayer
+            playerRef={mobilePlayerRef}
+            audioSrc={audioSrc}
+            currentBeat={currentBeat}
+            isPlaying={isPlaying}
+            handlePlayPause={handlePlayPause}
+            preventDefaultAudioEvents={preventDefaultAudioEvents}
+            artistName={artistName}
+            toggleFullPagePlayer={toggleFullPagePlayer}
+            handleTouchStart={handleTouchStart}
+            handleTouchMove={handleTouchMove}
+            handleTouchEnd={handleTouchEnd}
+            dragPosition={dragPosition}
+            lyricsModal={lyricsModal}
+            syncAllPlayers={syncAllPlayers}
+          />
         ) : (
-          <div className="audio-player audio-player--desktop audio">
-            {/* Desktop bottom audio player */}
-            <div className='audio-player__text audio-player__text--desktop' style={{ flex: '1' }}>
-              <p className="audio-player__title">{currentBeat.title}</p>
-              <p className="audio-player__artist">{artistName}</p>
-            </div>
-            <div style={{ flex: '3' }}>
-              <H5AudioPlayer
-                ref={desktopPlayerRef}
-                className="smooth-progress-bar smooth-progress-bar--desktop"
-                autoPlayAfterSrcChange={false}
-                src={audioSrc}
-                {...preventDefaultAudioEvents}
-                customProgressBarSection={[RHAP_UI.CURRENT_TIME, RHAP_UI.PROGRESS_BAR, RHAP_UI.DURATION]}
-                onLoadedMetadata={() => {
-                  requestAnimationFrame(() => syncAllPlayers(true));
-                }}
-                customControlsSection={[
-                  <>
-                    <ShuffleButton shuffle={shuffle} setShuffle={setShuffle} />
-                    <PrevButton onPrev={handlePrevClick} />
-                    <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} />
-                    <NextButton onNext={onNext} />
-                    <RepeatButton repeat={repeat} setRepeat={setRepeat} />
-                  </>
-                ]}
-              />
-              <div
-                ref={waveformRefDesktop}
-                className={`waveform ${waveform ? 'waveform--active' : ''}`}
-              ></div>
-            </div>
-            <div className='audio-player__settings' style={{ flex: '1' }}>
-              <IconButton
-                onClick={toggleWaveform}
-                text={waveform ? 'Hide waveform' : 'Show waveform'}
-                ariaLabel={waveform ? 'Hide waveform' : 'Show waveform'}
-              >
-                <PiWaveform className={waveform ? 'icon-primary' : ''} />
-              </IconButton>
-              <IconButton
-                onClick={toggleLyricsModal}
-                text={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
-                ariaLabel={lyricsModal ? 'Hide lyrics' : 'Show lyrics'}
-              >
-                <LiaMicrophoneAltSolid className={lyricsModal ? 'icon-primary' : ''} />
-              </IconButton>
-              <VolumeSlider volume={volume} handleVolumeChange={handleVolumeChange} />
-            </div>
-          </div>
+          <DesktopAudioPlayer
+            playerRef={desktopPlayerRef}
+            audioSrc={audioSrc}
+            currentBeat={currentBeat}
+            isPlaying={isPlaying}
+            handlePlayPause={handlePlayPause}
+            handlePrevClick={handlePrevClick}
+            onNext={onNext}
+            preventDefaultAudioEvents={preventDefaultAudioEvents}
+            artistName={artistName}
+            shuffle={shuffle}
+            setShuffle={setShuffle}
+            repeat={repeat}
+            setRepeat={setRepeat}
+            toggleWaveform={toggleWaveform}
+            toggleLyricsModal={toggleLyricsModal}
+            volume={volume}
+            handleVolumeChange={handleVolumeChange}
+            waveform={waveform}
+            waveformRef={waveformRefDesktop}
+            syncAllPlayers={syncAllPlayers}
+            lyricsModal={lyricsModal}
+          />
         )
       )}
 
