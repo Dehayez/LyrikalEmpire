@@ -1,5 +1,5 @@
 import React from 'react';
-import { slideIn, slideOut } from '../../utils';
+import { slideIn, slideOut } from './';
 
 /**
  * Format time in seconds to MM:SS format

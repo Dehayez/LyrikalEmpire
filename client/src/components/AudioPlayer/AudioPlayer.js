@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import H5AudioPlayer from 'react-h5-audio-player';
 import WaveSurfer from 'wavesurfer.js';
 
-import { isMobileOrTablet, slideIn, slideOut } from '../../utils';
+import { isMobileOrTablet, slideIn, slideOut, createSlides, syncAllPlayers as syncAllPlayersUtil } from '../../utils';
 import { useAudioPlayer, useLocalStorageSync, useDragToDismiss } from '../../hooks';
 import { getSignedUrl, getUserById } from '../../services';
 import { usePlaylist } from '../../contexts';
@@ -11,7 +11,6 @@ import { ContextMenu } from '../ContextMenu';
 import MobileAudioPlayer from './MobileAudioPlayer';
 import DesktopAudioPlayer from './DesktopAudioPlayer';
 import FullPageAudioPlayer from './FullPageAudioPlayer';
-import { formatTime, createSlides, syncAllPlayers as syncAllPlayersUtil } from './AudioPlayerUtils';
 import { 
   handleSwipeTouchStart, 
   handleSwipeTouchMove, 
