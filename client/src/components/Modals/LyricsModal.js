@@ -19,6 +19,7 @@ import {
 
 import { IconButton } from '../Buttons';
 import { FormTextarea } from '../Inputs';
+import useOs from '../../hooks/useOs';
 
 import './LyricsModal.scss';
 
@@ -49,6 +50,7 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
   const location = useLocation();
   const isAuthRoute = useMemo(() => isAuthPage(location.pathname), [location.pathname]);
   const isMobile = useMemo(() => isMobileOrTablet(), []);
+  const os = useOs();
 
   const draggableRef = useRef(null);
   const modalRef = useRef(null);
@@ -139,14 +141,13 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
   // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event) => {
-      // Don't trigger shortcuts if user is typing in the textarea
-      if (event.target.tagName === 'TEXTAREA') {
-        return;
-      }
-      
+      const isMac = os === 'mac';
+      const isCmdF = isMac && event.metaKey && event.key.toLowerCase() === 'f';
+      const isCtrlF = !isMac && event.ctrlKey && event.key.toLowerCase() === 'f';
       if (event.key === 'Escape' && isFullscreen) {
         handleFullscreenToggle();
-      } else if (event.key === 'f' || event.key === 'F') {
+      } else if (isCmdF || isCtrlF) {
+        event.preventDefault();
         handleFullscreenToggle();
       }
     };
@@ -158,7 +159,7 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [lyricsModal, isFullscreen, handleFullscreenToggle]);
+  }, [lyricsModal, isFullscreen, handleFullscreenToggle, os]);
 
   if (isAuthRoute) return null;
 
@@ -167,7 +168,8 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
       <IconButton 
         className="modal__fullscreen-button" 
         onClick={handleFullscreenToggle}
-        text={isFullscreen ? "Exit fullscreen (f)" : "Enter fullscreen (f)"}
+        text={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+        shortcutText={os === 'mac' ? '⌘F' : 'Ctrl+F'}
         tooltipPosition="left"
       >
         {isFullscreen ? <IoContract /> : <IoExpand />}
@@ -175,7 +177,8 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
       <IconButton 
         className="modal__close-button" 
         onClick={handleCancel}
-        text="Close (esc)"
+        text="Close"
+        shortcutText="Esc"
         tooltipPosition="left"
       >
         <IoCloseSharp />

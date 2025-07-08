@@ -10,7 +10,7 @@
     transition: opacity 0.2s ease-in-out;
     padding: 8px 12px;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
     background-color: $color-gray-dark;
     color: $color-white;
@@ -33,3 +33,10 @@
       margin-right: 12px;
     }
   }
+
+.tooltip__shortcut {
+  display: block;
+  text-align: left;
+  margin-top: 2px;
+  color: $color-gray-default;
+}

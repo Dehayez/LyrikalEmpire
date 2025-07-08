@@ -11,6 +11,7 @@ const IconButton = ({
   onClick,
   children,
   text,
+  shortcutText,
   tooltipPosition = 'top',
   ariaLabel,
   bottomLabel,
@@ -23,7 +24,7 @@ const IconButton = ({
   return (
     <button className={classes} style={style} onClick={onClick} aria-label={ariaLabel}>
       {children}
-      {!isMobileOrTablet() && text && <Tooltip text={text} position={tooltipPosition} />}
+      {!isMobileOrTablet() && text && <Tooltip text={text} position={tooltipPosition} shortcutText={shortcutText} />}
       {bottomLabel && (
         <span className="icon-button__bottom-label">{bottomLabel}</span>
       )}
