@@ -16,7 +16,8 @@ export const useAudioSync = ({
   fullPageProgressRef,
   onNext,
   setIsPlaying,
-  repeat
+  repeat,
+  volume
 }) => {
   // Sync all players with main audio element
   const syncAllPlayers = useCallback((forceUpdate = false) => {
@@ -210,6 +211,14 @@ export const useAudioSync = ({
       timeouts.forEach(timeout => clearTimeout(timeout));
     };
   }, [playerRef, syncAllPlayers]);
+
+  // Apply volume to main audio element
+  useEffect(() => {
+    const mainAudio = playerRef.current?.audio.current;
+    if (mainAudio && typeof volume === 'number') {
+      mainAudio.volume = volume;
+    }
+  }, [playerRef, volume]);
 
   return {
     syncAllPlayers,

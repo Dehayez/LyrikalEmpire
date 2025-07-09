@@ -162,7 +162,8 @@ const AudioPlayer = ({
     fullPageProgressRef,
     onNext,
     setIsPlaying,
-    repeat
+    repeat,
+    volume
   });
 
   // Set up media session
