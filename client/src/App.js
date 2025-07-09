@@ -385,6 +385,7 @@ function App() {
             setRepeat={setRepeat}
             lyricsModal={lyricsModal}
             setLyricsModal={setLyricsModal}
+            onUpdateBeat={updateBeat}
           />
         }
        {!isAuthRoute && isMobileOrTablet() && (

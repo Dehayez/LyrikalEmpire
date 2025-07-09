@@ -17,6 +17,7 @@ import { ContextMenu } from '../ContextMenu';
 import MobileAudioPlayer from './MobileAudioPlayer';
 import DesktopAudioPlayer from './DesktopAudioPlayer';
 import FullPageAudioPlayer from './FullPageAudioPlayer';
+import BeatEditInputs from './BeatEditInputs';
 
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
@@ -29,7 +30,8 @@ const AudioPlayer = ({
   onNext, onPrev,
   shuffle, setShuffle,
   repeat, setRepeat,
-  lyricsModal, setLyricsModal
+  lyricsModal, setLyricsModal,
+  onUpdateBeat
 }) => {
   // Guard clause: Don't render if there's no current beat
   if (!currentBeat) {
@@ -185,8 +187,18 @@ const AudioPlayer = ({
     isFullPageVisible
   });
 
+  // Create edit inputs content for the third slide
+  const editInputsContent = (
+    <div className="audio-player__full-page-edit-content">
+      <BeatEditInputs 
+        currentBeat={currentBeat} 
+        onUpdateBeat={onUpdateBeat}
+      />
+    </div>
+  );
+
   // Generate slides for the full page player
-  const slides = createSlides(currentBeat);
+  const slides = createSlides(currentBeat, editInputsContent);
 
   // Get swipe gesture handlers
   const {
