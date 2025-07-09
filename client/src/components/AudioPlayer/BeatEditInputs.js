@@ -84,7 +84,6 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
           items={genres}
           newBeatId={currentBeat.id}
           form
-          mode="edit"
         />
 
         <SelectableInput
@@ -93,7 +92,6 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
           items={moods}
           newBeatId={currentBeat.id}
           form
-          mode="edit"
         />
 
         <SelectableInput
@@ -102,7 +100,6 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
           items={keywords}
           newBeatId={currentBeat.id}
           form
-          mode="edit"
         />
 
         <SelectableInput
@@ -111,7 +108,6 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
           items={features}
           newBeatId={currentBeat.id}
           form
-          mode="edit"
         />
       </div>
     </div>
