@@ -106,7 +106,8 @@ const AudioPlayer = ({
     toggleLyricsModal,
     toggleWaveform,
     handleEllipsisClick,
-    handleCloseContextMenu
+    handleCloseContextMenu,
+    handleAudioReady
   } = useAudioPlayerState({
     currentBeat,
     setCurrentBeat,
@@ -214,6 +215,7 @@ const AudioPlayer = ({
         autoPlayAfterSrcChange={autoPlay}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
+        onCanPlay={handleAudioReady}
         style={{ display: 'none' }}
       />
 

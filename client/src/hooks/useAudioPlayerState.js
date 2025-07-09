@@ -67,6 +67,14 @@ export const useAudioPlayerState = ({
     setActiveContextMenu(false);
   }, []);
 
+  const handleAudioReady = useCallback(() => {
+    // Set autoPlay to true only after the audio player has loaded the source
+    // and only if this is not the first render
+    if (!isFirstRender) {
+      setAutoPlay(true);
+    }
+  }, [isFirstRender]);
+
   // Fetch artist name and audio URL
   useEffect(() => {
     const fetchArtistName = async () => {
@@ -93,11 +101,8 @@ export const useAudioPlayerState = ({
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           setAudioSrc(signedUrl);
 
-          // Set autoPlay to true only after the first render
-          if (!isFirstRender) {
-            setAutoPlay(true);
-          } else {
-            setIsFirstRender(false); // Mark first render as complete
+          if (isFirstRender) {
+            setIsFirstRender(false);
           }
         } catch (error) {
           console.error('Error fetching signed URL:', error);
@@ -170,6 +175,7 @@ export const useAudioPlayerState = ({
     toggleLyricsModal,
     toggleWaveform,
     handleEllipsisClick,
-    handleCloseContextMenu
+    handleCloseContextMenu,
+    handleAudioReady
   };
 }; 
