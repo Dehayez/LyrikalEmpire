@@ -264,6 +264,8 @@ useEffect(() => {
 
   const filterBeats = () => {
     let filtered = beats;
+    
+    console.log('🔍 Filtering beats client-side. Total beats:', beats.length);
 
     // Filter by associations (genres, moods, keywords, features)
     const serviceAssocs = [
@@ -274,6 +276,7 @@ useEffect(() => {
     ].filter((a) => a.selected.length > 0);
 
     if (serviceAssocs.length > 0) {
+      console.log('🏷️ Active filters:', serviceAssocs.map(a => `${a.type}: ${a.selected.length}`));
       filtered = filtered.filter(beat => {
         return serviceAssocs.every(assoc => {
           const beatAssociations = beat[assoc.type] || [];
@@ -292,6 +295,7 @@ useEffect(() => {
       );
     }
 
+    console.log('✅ Filtered beats:', filtered.length);
     setFilteredBeats(filtered);
   };
 

@@ -144,12 +144,14 @@ export const SelectableInput = ({
   useEffect(() => {
     // Use associations from beat prop instead of making API call
     if (beat && beat[associationType]) {
+      console.log(`✅ Using ${associationType} from beat prop:`, beat[associationType]);
       const associations = beat[associationType].map(item => ({
         beat_id: beatId,
         [`${singularAssociationType}_id`]: item[`${singularAssociationType}_id`]
       }));
       setSelectedItems(associations);
     } else {
+      console.log(`⚠️ Falling back to API call for ${associationType} - beatId: ${beatId}`);
       // Fallback to API call if beat prop doesn't have associations (for backward compatibility)
       const fetchAssociations = async () => {
         try {

@@ -73,85 +73,146 @@ const getBeats = (req, res) => {
 
     handleQuery(query, [...ids, user_id], res, `Beats with ${associationType} fetched successfully`, true);
   } else {
-    // Modified query to include all associations in one call
-    const query = `
-      SELECT 
-        b.*,
-        COALESCE(
-          JSON_ARRAYAGG(
-            CASE WHEN g.id IS NOT NULL THEN 
-              JSON_OBJECT('genre_id', g.id, 'name', g.name) 
-            END
-          ), 
-          JSON_ARRAY()
-        ) as genres,
-        COALESCE(
-          JSON_ARRAYAGG(
-            CASE WHEN m.id IS NOT NULL THEN 
-              JSON_OBJECT('mood_id', m.id, 'name', m.name) 
-            END
-          ), 
-          JSON_ARRAY()
-        ) as moods,
-        COALESCE(
-          JSON_ARRAYAGG(
-            CASE WHEN k.id IS NOT NULL THEN 
-              JSON_OBJECT('keyword_id', k.id, 'name', k.name) 
-            END
-          ), 
-          JSON_ARRAY()
-        ) as keywords,
-        COALESCE(
-          JSON_ARRAYAGG(
-            CASE WHEN f.id IS NOT NULL THEN 
-              JSON_OBJECT('feature_id', f.id, 'name', f.name) 
-            END
-          ), 
-          JSON_ARRAY()
-        ) as features,
-        COALESCE(
-          JSON_ARRAYAGG(
-            CASE WHEN l.id IS NOT NULL THEN 
-              JSON_OBJECT('lyrics_id', l.id) 
-            END
-          ), 
-          JSON_ARRAY()
-        ) as lyrics
+    // 🧪 DEBUGGING: Let's test with a simpler query first
+    console.log('🧪 Testing simple query for user:', user_id);
+    
+    // First, let's test if there are any associations at all
+    db.query('SELECT COUNT(*) as count FROM beats_genres WHERE beat_id IN (SELECT id FROM beats WHERE user_id = ?)', [user_id])
+      .then(([countResult]) => {
+        console.log('📊 Total genre associations for user:', countResult[0].count);
+      });
+    
+    db.query('SELECT COUNT(*) as count FROM beats_moods WHERE beat_id IN (SELECT id FROM beats WHERE user_id = ?)', [user_id])
+      .then(([countResult]) => {
+        console.log('😊 Total mood associations for user:', countResult[0].count);
+      });
+
+    // Test a simple version of the query first
+    const simpleQuery = `
+      SELECT b.id, b.title, b.bpm,
+             JSON_ARRAYAGG(g.name) as genres
       FROM beats b
       LEFT JOIN beats_genres bg ON b.id = bg.beat_id
       LEFT JOIN genres g ON bg.genre_id = g.id
-      LEFT JOIN beats_moods bm ON b.id = bm.beat_id
-      LEFT JOIN moods m ON bm.mood_id = m.id
-      LEFT JOIN beats_keywords bk ON b.id = bk.beat_id
-      LEFT JOIN keywords k ON bk.keyword_id = k.id
-      LEFT JOIN beats_features bf ON b.id = bf.beat_id
-      LEFT JOIN features f ON bf.feature_id = f.id
-      LEFT JOIN beats_lyrics bl ON b.id = bl.beat_id
-      LEFT JOIN lyrics l ON bl.lyrics_id = l.id
       WHERE b.user_id = ?
       GROUP BY b.id
-      ORDER BY b.created_at DESC
+      LIMIT 1
     `;
+    
+    console.log('🧪 Testing simple JSON aggregation query...');
+    db.query(simpleQuery, [user_id])
+      .then(([simpleResults]) => {
+        console.log('🔍 Simple query result:', simpleResults[0]);
+      })
+      .catch(error => {
+        console.error('❌ Simple query failed:', error);
+      });
 
-    // Custom handler to process the JSON fields
-    db.query(query, [user_id])
-      .then(([results]) => {
-        // Process the JSON fields to remove null values
-        const processedResults = results.map(beat => ({
+    // Use a simpler approach with separate queries for each association type
+    const beatsQuery = 'SELECT * FROM beats WHERE user_id = ? ORDER BY created_at DESC';
+    
+    db.query(beatsQuery, [user_id])
+      .then(async ([beats]) => {
+        console.log(`🎵 Found ${beats.length} beats for user ${user_id}`);
+        
+        if (beats.length === 0) {
+          return res.status(200).json([]);
+        }
+        
+        const beatIds = beats.map(beat => beat.id);
+        const placeholders = beatIds.map(() => '?').join(',');
+        
+        // Fetch all associations in parallel
+        const [
+          [genreResults],
+          [moodResults], 
+          [keywordResults],
+          [featureResults],
+          [lyricsResults]
+        ] = await Promise.all([
+          db.query(`
+            SELECT bg.beat_id, bg.genre_id, g.name 
+            FROM beats_genres bg 
+            JOIN genres g ON bg.genre_id = g.id 
+            WHERE bg.beat_id IN (${placeholders})
+          `, beatIds),
+          db.query(`
+            SELECT bm.beat_id, bm.mood_id, m.name 
+            FROM beats_moods bm 
+            JOIN moods m ON bm.mood_id = m.id 
+            WHERE bm.beat_id IN (${placeholders})
+          `, beatIds),
+          db.query(`
+            SELECT bk.beat_id, bk.keyword_id, k.name 
+            FROM beats_keywords bk 
+            JOIN keywords k ON bk.keyword_id = k.id 
+            WHERE bk.beat_id IN (${placeholders})
+          `, beatIds),
+          db.query(`
+            SELECT bf.beat_id, bf.feature_id, f.name 
+            FROM beats_features bf 
+            JOIN features f ON bf.feature_id = f.id 
+            WHERE bf.beat_id IN (${placeholders})
+          `, beatIds),
+          db.query(`
+            SELECT bl.beat_id, bl.lyrics_id 
+            FROM beats_lyrics bl 
+            WHERE bl.beat_id IN (${placeholders})
+          `, beatIds)
+        ]);
+        
+        // Group associations by beat_id
+        const genresByBeat = {};
+        const moodsByBeat = {};
+        const keywordsByBeat = {};
+        const featuresByBeat = {};
+        const lyricsByBeat = {};
+        
+        genreResults.forEach(row => {
+          if (!genresByBeat[row.beat_id]) genresByBeat[row.beat_id] = [];
+          genresByBeat[row.beat_id].push({ genre_id: row.genre_id, name: row.name });
+        });
+        
+        moodResults.forEach(row => {
+          if (!moodsByBeat[row.beat_id]) moodsByBeat[row.beat_id] = [];
+          moodsByBeat[row.beat_id].push({ mood_id: row.mood_id, name: row.name });
+        });
+        
+        keywordResults.forEach(row => {
+          if (!keywordsByBeat[row.beat_id]) keywordsByBeat[row.beat_id] = [];
+          keywordsByBeat[row.beat_id].push({ keyword_id: row.keyword_id, name: row.name });
+        });
+        
+        featureResults.forEach(row => {
+          if (!featuresByBeat[row.beat_id]) featuresByBeat[row.beat_id] = [];
+          featuresByBeat[row.beat_id].push({ feature_id: row.feature_id, name: row.name });
+        });
+        
+        lyricsResults.forEach(row => {
+          if (!lyricsByBeat[row.beat_id]) lyricsByBeat[row.beat_id] = [];
+          lyricsByBeat[row.beat_id].push({ lyrics_id: row.lyrics_id });
+        });
+        
+        // Combine beats with their associations
+        const beatsWithAssociations = beats.map(beat => ({
           ...beat,
-          genres: JSON.parse(beat.genres).filter(g => g !== null),
-          moods: JSON.parse(beat.moods).filter(m => m !== null),
-          keywords: JSON.parse(beat.keywords).filter(k => k !== null),
-          features: JSON.parse(beat.features).filter(f => f !== null),
-          lyrics: JSON.parse(beat.lyrics).filter(l => l !== null)
+          genres: genresByBeat[beat.id] || [],
+          moods: moodsByBeat[beat.id] || [],
+          keywords: keywordsByBeat[beat.id] || [],
+          features: featuresByBeat[beat.id] || [],
+          lyrics: lyricsByBeat[beat.id] || []
         }));
         
-        res.status(200).json(processedResults);
+        console.log('✅ First beat with associations:', beatsWithAssociations[0]);
+        
+        res.status(200).json(beatsWithAssociations);
       })
       .catch(error => {
         console.error('Database error:', error);
         res.status(500).json({ error: 'An error occurred while fetching beats' });
       });
+      
+    
   }
 };
 
