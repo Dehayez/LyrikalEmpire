@@ -35,8 +35,6 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
 
   return (
     <div className="beat-edit-inputs">
-      <h3 className="beat-edit-inputs__title">Edit Track</h3>
-      
       <div className="beat-edit-inputs__form">
         <FormInput 
           label="Title" 
