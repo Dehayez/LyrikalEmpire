@@ -229,6 +229,7 @@ function App() {
           <LyricsModal 
             beatId={currentBeat.id} 
             title={currentBeat.title} 
+            beat={currentBeat}
             lyricsModal={lyricsModal}
             setLyricsModal={setLyricsModal}
           />

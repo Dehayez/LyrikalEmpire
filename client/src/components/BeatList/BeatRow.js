@@ -360,6 +360,7 @@ const BeatRow = ({
     beatId: beat.id,
     mode: mode,
     disableFocus: disableFocus,
+    beat: beat, // Pass beat object so SelectableInput can access associations directly
     onUpdate: (updatedItems, type) => {
       // This callback will be triggered when the associations are updated
       if (onUpdateBeat) {

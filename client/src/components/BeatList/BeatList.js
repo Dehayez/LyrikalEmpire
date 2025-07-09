@@ -7,7 +7,6 @@ import { toast, Slide } from 'react-toastify';
 import { usePlaylist, useBeat, useData, useUser } from '../../contexts';
 import { isMobileOrTablet, getInitialState } from '../../utils';
 import { useHandleBeatClick, useBeatActions, useSort, useLocalStorageSync } from '../../hooks';
-import { getBeatsByAssociation } from '../../services/beatService';
 
 import BeatRow from './BeatRow';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
@@ -255,7 +254,7 @@ const handlePlayPause = useCallback((beat) => {
     }, 50);
 };
 
-// Main filtering effect: service + tierlist
+// Main filtering effect: service + tierlist (now using client-side filtering)
 useEffect(() => {
   // Only run filter if beats are loaded
   if (!beats || beats.length === 0) {
@@ -263,7 +262,10 @@ useEffect(() => {
     return;
   }
 
-  const fetchFiltered = async () => {
+  const filterBeats = () => {
+    let filtered = beats;
+
+    // Filter by associations (genres, moods, keywords, features)
     const serviceAssocs = [
       { type: 'genres', selected: selectedGenre },
       { type: 'moods', selected: selectedMood },
@@ -271,24 +273,30 @@ useEffect(() => {
       { type: 'features', selected: selectedFeature },
     ].filter((a) => a.selected.length > 0);
 
-    let base = beats;
-    if (serviceAssocs.length) {
-      const lists = await Promise.all(
-        serviceAssocs.map((assoc) => {
-          const ids = assoc.selected.map((i) => i.id);
-          // Use 'beats' as the base, not 'currentBeats'
-          return getBeatsByAssociation(assoc.type, ids, beats, user.id);
-        })
+    if (serviceAssocs.length > 0) {
+      filtered = filtered.filter(beat => {
+        return serviceAssocs.every(assoc => {
+          const beatAssociations = beat[assoc.type] || [];
+          const selectedIds = assoc.selected.map(item => item.id);
+          return beatAssociations.some(beatAssoc => 
+            selectedIds.includes(beatAssoc[`${assoc.type.slice(0, -1)}_id`])
+          );
+        });
+      });
+    }
+
+    // Filter by tierlist
+    if (selectedTierlist.length > 0) {
+      filtered = filtered.filter(beat => 
+        selectedTierlist.some(tierlist => beat.tierlist === tierlist.id)
       );
-      base = lists.flat();
     }
-    if (selectedTierlist.length) {
-      base = base.filter((b) => selectedTierlist.some((t) => b.tierlist === t.id));
-    }
-    setFilteredBeats(base);
+
+    setFilteredBeats(filtered);
   };
-  fetchFiltered();
-}, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, selectedTierlist, user.id, beats]);
+
+  filterBeats();
+}, [selectedGenre, selectedMood, selectedKeyword, selectedFeature, selectedTierlist, beats]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

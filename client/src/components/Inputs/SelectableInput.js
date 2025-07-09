@@ -14,7 +14,8 @@ export const SelectableInput = ({
   disableFocus,
   form,
   newBeatId,
-  mode
+  mode,
+  beat // Add beat prop to access associations directly
 }) => {
   const { headerWidths } = useHeaderWidths();
   const { genres, moods, keywords, features } = useData();
@@ -141,17 +142,26 @@ export const SelectableInput = ({
   }, [associationItems, focusedIndex, scrollToFocusedItem, handleItemSelect]);
 
   useEffect(() => {
-    const fetchAssociations = async () => {
-      try {
-        const associations = await getAssociationsByBeatId(beatId, associationType);
-        setSelectedItems(associations);
-      } catch (error) {
-        console.error('Error fetching associations:', error);
-      }
-    };
-
-    fetchAssociations();
-  }, [beatId, associationType]);
+    // Use associations from beat prop instead of making API call
+    if (beat && beat[associationType]) {
+      const associations = beat[associationType].map(item => ({
+        beat_id: beatId,
+        [`${singularAssociationType}_id`]: item[`${singularAssociationType}_id`]
+      }));
+      setSelectedItems(associations);
+    } else {
+      // Fallback to API call if beat prop doesn't have associations (for backward compatibility)
+      const fetchAssociations = async () => {
+        try {
+          const associations = await getAssociationsByBeatId(beatId, associationType);
+          setSelectedItems(associations);
+        } catch (error) {
+          console.error('Error fetching associations:', error);
+        }
+      };
+      fetchAssociations();
+    }
+  }, [beatId, associationType, beat, singularAssociationType]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

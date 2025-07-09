@@ -46,7 +46,7 @@ const MODAL_STYLE = {
   },
 };
 
-const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
+const LyricsModal = ({ beatId, title, beat, lyricsModal, setLyricsModal }) => {
   const location = useLocation();
   const isAuthRoute = useMemo(() => isAuthPage(location.pathname), [location.pathname]);
   const isMobile = useMemo(() => isMobileOrTablet(), []);
@@ -75,14 +75,28 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
 
     const fetchLyrics = async () => {
       try {
-        const [assoc] = await getAssociationsByBeatId(beatId, 'lyrics');
-        if (assoc?.lyrics_id) {
-          const [lyricData] = await getLyricsById(assoc.lyrics_id);
-          setLyrics(lyricData?.lyrics || '');
-          setLyricsId(assoc.lyrics_id);
+        // Use lyrics from beat prop if available, otherwise fallback to API
+        if (beat && beat.lyrics && beat.lyrics.length > 0) {
+          const lyricsAssoc = beat.lyrics[0];
+          if (lyricsAssoc?.lyrics_id) {
+            const [lyricData] = await getLyricsById(lyricsAssoc.lyrics_id);
+            setLyrics(lyricData?.lyrics || '');
+            setLyricsId(lyricsAssoc.lyrics_id);
+          } else {
+            setLyrics('');
+            setLyricsId(null);
+          }
         } else {
-          setLyrics('');
-          setLyricsId(null);
+          // Fallback to API call if beat prop doesn't have lyrics
+          const [assoc] = await getAssociationsByBeatId(beatId, 'lyrics');
+          if (assoc?.lyrics_id) {
+            const [lyricData] = await getLyricsById(assoc.lyrics_id);
+            setLyrics(lyricData?.lyrics || '');
+            setLyricsId(assoc.lyrics_id);
+          } else {
+            setLyrics('');
+            setLyricsId(null);
+          }
         }
       } catch (err) {
         console.error('Failed to fetch lyrics:', err);
@@ -90,7 +104,7 @@ const LyricsModal = ({ beatId, title, lyricsModal, setLyricsModal }) => {
     };
 
     fetchLyrics();
-  }, [beatId]);
+  }, [beatId, beat]);
 
   const handleLyricsChange = async (e) => {
     const newLyrics = e.target.value;

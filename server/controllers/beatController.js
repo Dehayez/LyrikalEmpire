@@ -73,7 +73,85 @@ const getBeats = (req, res) => {
 
     handleQuery(query, [...ids, user_id], res, `Beats with ${associationType} fetched successfully`, true);
   } else {
-    handleQuery('SELECT * FROM beats WHERE user_id = ? ORDER BY created_at DESC', [user_id], res, 'Beats fetched successfully', true);
+    // Modified query to include all associations in one call
+    const query = `
+      SELECT 
+        b.*,
+        COALESCE(
+          JSON_ARRAYAGG(
+            CASE WHEN g.id IS NOT NULL THEN 
+              JSON_OBJECT('genre_id', g.id, 'name', g.name) 
+            END
+          ), 
+          JSON_ARRAY()
+        ) as genres,
+        COALESCE(
+          JSON_ARRAYAGG(
+            CASE WHEN m.id IS NOT NULL THEN 
+              JSON_OBJECT('mood_id', m.id, 'name', m.name) 
+            END
+          ), 
+          JSON_ARRAY()
+        ) as moods,
+        COALESCE(
+          JSON_ARRAYAGG(
+            CASE WHEN k.id IS NOT NULL THEN 
+              JSON_OBJECT('keyword_id', k.id, 'name', k.name) 
+            END
+          ), 
+          JSON_ARRAY()
+        ) as keywords,
+        COALESCE(
+          JSON_ARRAYAGG(
+            CASE WHEN f.id IS NOT NULL THEN 
+              JSON_OBJECT('feature_id', f.id, 'name', f.name) 
+            END
+          ), 
+          JSON_ARRAY()
+        ) as features,
+        COALESCE(
+          JSON_ARRAYAGG(
+            CASE WHEN l.id IS NOT NULL THEN 
+              JSON_OBJECT('lyrics_id', l.id) 
+            END
+          ), 
+          JSON_ARRAY()
+        ) as lyrics
+      FROM beats b
+      LEFT JOIN beats_genres bg ON b.id = bg.beat_id
+      LEFT JOIN genres g ON bg.genre_id = g.id
+      LEFT JOIN beats_moods bm ON b.id = bm.beat_id
+      LEFT JOIN moods m ON bm.mood_id = m.id
+      LEFT JOIN beats_keywords bk ON b.id = bk.beat_id
+      LEFT JOIN keywords k ON bk.keyword_id = k.id
+      LEFT JOIN beats_features bf ON b.id = bf.beat_id
+      LEFT JOIN features f ON bf.feature_id = f.id
+      LEFT JOIN beats_lyrics bl ON b.id = bl.beat_id
+      LEFT JOIN lyrics l ON bl.lyrics_id = l.id
+      WHERE b.user_id = ?
+      GROUP BY b.id
+      ORDER BY b.created_at DESC
+    `;
+
+    // Custom handler to process the JSON fields
+    db.query(query, [user_id])
+      .then(([results]) => {
+        // Process the JSON fields to remove null values
+        const processedResults = results.map(beat => ({
+          ...beat,
+          genres: JSON.parse(beat.genres).filter(g => g !== null),
+          moods: JSON.parse(beat.moods).filter(m => m !== null),
+          keywords: JSON.parse(beat.keywords).filter(k => k !== null),
+          features: JSON.parse(beat.features).filter(f => f !== null),
+          lyrics: JSON.parse(beat.lyrics).filter(l => l !== null)
+        }));
+        
+        res.status(200).json(processedResults);
+      })
+      .catch(error => {
+        console.error('Database error:', error);
+        res.status(500).json({ error: 'An error occurred while fetching beats' });
+      });
   }
 };
 
