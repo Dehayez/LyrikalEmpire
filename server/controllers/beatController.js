@@ -73,48 +73,11 @@ const getBeats = (req, res) => {
 
     handleQuery(query, [...ids, user_id], res, `Beats with ${associationType} fetched successfully`, true);
   } else {
-    // 🧪 DEBUGGING: Let's test with a simpler query first
-    console.log('🧪 Testing simple query for user:', user_id);
-    
-    // First, let's test if there are any associations at all
-    db.query('SELECT COUNT(*) as count FROM beats_genres WHERE beat_id IN (SELECT id FROM beats WHERE user_id = ?)', [user_id])
-      .then(([countResult]) => {
-        console.log('📊 Total genre associations for user:', countResult[0].count);
-      });
-    
-    db.query('SELECT COUNT(*) as count FROM beats_moods WHERE beat_id IN (SELECT id FROM beats WHERE user_id = ?)', [user_id])
-      .then(([countResult]) => {
-        console.log('😊 Total mood associations for user:', countResult[0].count);
-      });
-
-    // Test a simple version of the query first
-    const simpleQuery = `
-      SELECT b.id, b.title, b.bpm,
-             JSON_ARRAYAGG(g.name) as genres
-      FROM beats b
-      LEFT JOIN beats_genres bg ON b.id = bg.beat_id
-      LEFT JOIN genres g ON bg.genre_id = g.id
-      WHERE b.user_id = ?
-      GROUP BY b.id
-      LIMIT 1
-    `;
-    
-    console.log('🧪 Testing simple JSON aggregation query...');
-    db.query(simpleQuery, [user_id])
-      .then(([simpleResults]) => {
-        console.log('🔍 Simple query result:', simpleResults[0]);
-      })
-      .catch(error => {
-        console.error('❌ Simple query failed:', error);
-      });
-
     // Use a simpler approach with separate queries for each association type
     const beatsQuery = 'SELECT * FROM beats WHERE user_id = ? ORDER BY created_at DESC';
     
     db.query(beatsQuery, [user_id])
       .then(async ([beats]) => {
-        console.log(`🎵 Found ${beats.length} beats for user ${user_id}`);
-        
         if (beats.length === 0) {
           return res.status(200).json([]);
         }
@@ -202,8 +165,6 @@ const getBeats = (req, res) => {
           features: featuresByBeat[beat.id] || [],
           lyrics: lyricsByBeat[beat.id] || []
         }));
-        
-        console.log('✅ First beat with associations:', beatsWithAssociations[0]);
         
         res.status(200).json(beatsWithAssociations);
       })

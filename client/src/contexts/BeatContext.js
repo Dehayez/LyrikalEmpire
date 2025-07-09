@@ -19,17 +19,6 @@ export const BeatProvider = ({ children }) => {
     const fetchBeats = async () => {
       try {
         const data = await getBeats(user.id);
-        
-        // 🧪 TEST: Log the first beat to see if associations are included
-        if (data && data.length > 0) {
-          console.log('🎵 Beat with associations:', data[0]);
-          console.log('📊 Beat genres:', data[0].genres);
-          console.log('😊 Beat moods:', data[0].moods);
-          console.log('🔑 Beat keywords:', data[0].keywords);
-          console.log('⭐ Beat features:', data[0].features);
-          console.log('📝 Beat lyrics:', data[0].lyrics);
-        }
-        
         setAllBeats(data);
         setBeats(data);
       } catch (error) {
