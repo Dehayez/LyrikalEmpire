@@ -15,7 +15,8 @@ export const useAudioSync = ({
   isFullPageVisible,
   fullPageProgressRef,
   onNext,
-  setIsPlaying
+  setIsPlaying,
+  repeat
 }) => {
   // Sync all players with main audio element
   const syncAllPlayers = useCallback((forceUpdate = false) => {
@@ -88,6 +89,19 @@ export const useAudioSync = ({
     }
   }, [playerRef]);
 
+  // Handle when song ends - trigger next track or repeat
+  const handleEnded = useCallback(() => {
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      if (repeat === 'Repeat One') {
+        audioElement.currentTime = 0;
+        audioElement.play();
+      } else {
+        onNext();
+      }
+    }
+  }, [onNext, repeat, playerRef]);
+
   // Set up main audio player event listeners
   useEffect(() => {
     const mainAudio = playerRef.current?.audio.current;
@@ -130,6 +144,7 @@ export const useAudioSync = ({
     mainAudio.addEventListener('canplay', handleCanPlay);
     mainAudio.addEventListener('play', handlePlay);
     mainAudio.addEventListener('pause', handlePause);
+    mainAudio.addEventListener('ended', handleEnded);
     
     // Initial sync - force update even when paused
     const initialSync = () => {
@@ -151,8 +166,9 @@ export const useAudioSync = ({
       mainAudio.removeEventListener('canplay', handleCanPlay);
       mainAudio.removeEventListener('play', handlePlay);
       mainAudio.removeEventListener('pause', handlePause);
+      mainAudio.removeEventListener('ended', handleEnded);
     };
-  }, [playerRef.current?.audio.current, onNext, setIsPlaying, syncAllPlayers]);
+      }, [playerRef.current?.audio.current, onNext, setIsPlaying, syncAllPlayers, handleEnded]);
 
   // Effect to sync display players when they're rendered or view changes
   useEffect(() => {

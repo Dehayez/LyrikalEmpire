@@ -160,7 +160,8 @@ const AudioPlayer = ({
     isFullPageVisible,
     fullPageProgressRef,
     onNext,
-    setIsPlaying
+    setIsPlaying,
+    repeat
   });
 
   // Set up media session
