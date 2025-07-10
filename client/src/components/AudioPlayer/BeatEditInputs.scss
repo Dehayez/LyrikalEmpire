@@ -12,6 +12,17 @@
     padding-top: 8px;
     gap: 20px;
   }
+
+  // Apply form-like styling to SelectableInput components
+  .selectable-input__input-container {
+    border: 1px solid $color-gray-mid;
+    
+    &:hover {
+      transition: background-color 0.4s ease, box-shadow 0.4s ease;
+      background-color: transparent;
+      border: 1px solid $color-gray-mid;
+    }
+  }
 }
 
 // Responsive adjustments
