@@ -6,6 +6,7 @@ import { IoChevronDownSharp, IoEllipsisHorizontalSharp } from "react-icons/io5";
 
 import { IconButton } from '../Buttons';
 import { NextButton, PlayPauseButton, PrevButton, ShuffleButton, RepeatButton } from './AudioControls';
+import SwipeableContent from './SwipeableContent';
 
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
@@ -83,42 +84,16 @@ const FullPageAudioPlayer = ({
         </div>
 
         {/* SWIPEABLE CONTENT */}
-        <div className="audio-player__full-page-content">
-          <div 
-            className="swipeable-container"
-            onTouchStart={handleSwipeTouchStart}
-            onTouchMove={handleSwipeTouchMove}
-            onTouchEnd={handleSwipeTouchEnd}
-            onMouseDown={handleSwipeMouseDown}
-          >
-            <div 
-              ref={swipeableContainerRef}
-              className="swipeable-content"
-              style={{
-                transform: `translateX(-${activeSlideIndex * 50}%)`,
-                transition: 'transform 0.3s ease-out'
-              }}
-            >
-              {slides.map((slide, index) => (
-                <div key={slide.id} className="swipeable-slide">
-                  {slide.content}
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Navigation dots */}
-          <div className="swipeable-dots">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                className={`swipeable-dot ${index === activeSlideIndex ? 'active' : ''}`}
-                onClick={() => goToSlide(index)}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
+        <SwipeableContent
+          swipeableContainerRef={swipeableContainerRef}
+          activeSlideIndex={activeSlideIndex}
+          slides={slides}
+          handleSwipeTouchStart={handleSwipeTouchStart}
+          handleSwipeTouchMove={handleSwipeTouchMove}
+          handleSwipeTouchEnd={handleSwipeTouchEnd}
+          handleSwipeMouseDown={handleSwipeMouseDown}
+          goToSlide={goToSlide}
+        />
 
         {/* CONTROLS */}
         <div className="audio-player__full-page-controls">
