@@ -167,19 +167,6 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                         spellCheck="false" 
                         isWarning={isTitleEmpty}
                     />
-                    <SelectableInput label="Genre" associationType="genres" items={genres} newBeatId={beatId} form/>
-                    <FormInput
-                        id="bpm"
-                        name="bpm"
-                        label="BPM"
-                        type="text"
-                        value={bpm}
-                        onChange={handleBpmChangeExtended}
-                        onKeyDown={handleOnKeyDown}
-                        onBlur={handleBpmBlur}
-                        spellCheck="false"
-                        isWarning={isBpmInvalid}
-                    />
                     <SelectInput 
                         id="tierlist"
                         name="tierlist"
@@ -199,6 +186,19 @@ const AddBeatForm = ({ isOpen, setIsOpen }) => {
                             { value: 'F', label: 'F' },
                         ]}
                     />
+                    <FormInput
+                        id="bpm"
+                        name="bpm"
+                        label="BPM"
+                        type="text"
+                        value={bpm}
+                        onChange={handleBpmChangeExtended}
+                        onKeyDown={handleOnKeyDown}
+                        onBlur={handleBpmBlur}
+                        spellCheck="false"
+                        isWarning={isBpmInvalid}
+                    />
+                    <SelectableInput label="Genres" associationType="genres" items={genres} newBeatId={beatId} form/>
                     <SelectableInput label="Moods" associationType="moods" items={moods} newBeatId={beatId} form/>
                     <SelectableInput label="Keywords" associationType="keywords" items={keywords} newBeatId={beatId} form/>
                     <SelectableInput label="Features" associationType="features" items={features} newBeatId={beatId} form/>
