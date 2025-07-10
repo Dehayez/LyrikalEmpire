@@ -56,6 +56,15 @@ export const handleSwipeTouchEnd = (
 };
 
 export const handleSwipeMouseDown = (e, swipeStartX, isSwipeDragging, swipeableContainerRef) => {
+  // Don't prevent default if user is trying to interact with form elements
+  const target = e.target;
+  const isFormElement = target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA' || target.tagName === 'BUTTON';
+  
+  if (isFormElement) {
+    // Don't start swiping if user is interacting with form elements
+    return;
+  }
+  
   swipeStartX.current = e.clientX;
   isSwipeDragging.current = true;
   

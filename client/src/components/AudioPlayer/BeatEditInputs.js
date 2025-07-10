@@ -80,32 +80,60 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
           label="Genres"
           associationType="genres"
           items={genres}
-          newBeatId={currentBeat.id}
-          form
+          beatId={currentBeat.id}
+          mode="edit"
+          disableFocus={false}
+          beat={currentBeat}
+          onUpdate={(updatedItems, type) => {
+            if (onUpdateBeat) {
+              onUpdateBeat(currentBeat.id, { [type]: updatedItems });
+            }
+          }}
         />
 
         <SelectableInput
           label="Moods"
           associationType="moods"
           items={moods}
-          newBeatId={currentBeat.id}
-          form
+          beatId={currentBeat.id}
+          mode="edit"
+          disableFocus={false}
+          beat={currentBeat}
+          onUpdate={(updatedItems, type) => {
+            if (onUpdateBeat) {
+              onUpdateBeat(currentBeat.id, { [type]: updatedItems });
+            }
+          }}
         />
 
         <SelectableInput
           label="Keywords"
           associationType="keywords"
           items={keywords}
-          newBeatId={currentBeat.id}
-          form
+          beatId={currentBeat.id}
+          mode="edit"
+          disableFocus={false}
+          beat={currentBeat}
+          onUpdate={(updatedItems, type) => {
+            if (onUpdateBeat) {
+              onUpdateBeat(currentBeat.id, { [type]: updatedItems });
+            }
+          }}
         />
 
         <SelectableInput
           label="Features"
           associationType="features"
           items={features}
-          newBeatId={currentBeat.id}
-          form
+          beatId={currentBeat.id}
+          mode="edit"
+          disableFocus={false}
+          beat={currentBeat}
+          onUpdate={(updatedItems, type) => {
+            if (onUpdateBeat) {
+              onUpdateBeat(currentBeat.id, { [type]: updatedItems });
+            }
+          }}
         />
       </div>
     </div>
