@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import H5AudioPlayer from 'react-h5-audio-player';
-import { isMobileOrTablet } from '../../utils';
+import { isMobileOrTablet, slideOut } from '../../utils';
 import { 
   useAudioPlayer, 
   useDragToDismiss, 
@@ -36,29 +36,34 @@ const AudioPlayer = ({
     return null;
   }
 
-  // Main player ref
-  const playerRef = useRef(null);
+  const playerRef = useRef();
 
-  // Get audio player controls and state from hooks
+  // Get playlists
+  const { playlists, playedPlaylistTitle } = usePlaylist();
+
+  // Get audio player functionality
   const {
     volume,
     handleVolumeChange,
-    isDragging,
-    dragPosition,
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
+    dragPosition,
     handlePrevClick,
+    handlePlay,
+    handleNext,
+    handlePrev,
+    currentTime,
   } = useAudioPlayer({
-    currentBeat, setCurrentBeat,
-    isPlaying, setIsPlaying,
-    onNext, onPrev,
-    shuffle, setShuffle,
-    repeat, setRepeat
+    currentBeat,
+    setCurrentBeat,
+    isPlaying,
+    setIsPlaying,
+    onNext,
+    onPrev,
+    shuffle,
+    repeat,
   });
-
-  // Get playlist context
-  const { playedPlaylistTitle, playlists } = usePlaylist();
 
   // Get audio player state
   const {
@@ -118,11 +123,16 @@ const AudioPlayer = ({
     handleDragMove,
     handleDragEnd,
   } = useDragToDismiss(() => {
-      setIsFullPage(false);
-      setIsFullPageVisible(false);
+      // Use the same toggle function that handles proper slide-out animation
+      if (isFullPage) {
+        slideOut(fullPagePlayerRef.current, fullPageOverlayRef.current, () => {
+          setIsFullPage(false);
+          setIsFullPageVisible(false);
+        });
+      }
     });
 
-  // Get full page player functionality
+  // Get full page player functionality  
   const { toggleFullPagePlayer } = useFullPagePlayer({
     isFullPage,
     setIsFullPage,
