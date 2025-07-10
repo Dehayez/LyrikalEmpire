@@ -1,15 +1,47 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
+import { useSwipeGestures } from '../../hooks';
 
 const SwipeableContent = ({
-  swipeableContainerRef,
-  activeSlideIndex,
   slides,
-  handleSwipeTouchStart,
-  handleSwipeTouchMove,
-  handleSwipeTouchEnd,
-  handleSwipeMouseDown,
-  goToSlide
+  onSlideChange
 }) => {
+  // Set up refs and state for swipe functionality
+  const swipeableContainerRef = useRef(null);
+  const swipeStartX = useRef(0);
+  const swipeCurrentX = useRef(0);
+  const isSwipeDragging = useRef(false);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+
+  // Handle slide change with callback
+  const handleSlideChange = (index) => {
+    setActiveSlideIndex(index);
+    if (onSlideChange) {
+      onSlideChange(index);
+    }
+  };
+
+  // Get swipe gesture handlers
+  const {
+    handleSwipeTouchStart,
+    handleSwipeTouchMove,
+    handleSwipeTouchEnd,
+    handleSwipeMouseDown,
+    goToSlide
+  } = useSwipeGestures({
+    swipeStartX,
+    swipeCurrentX,
+    isSwipeDragging,
+    swipeableContainerRef,
+    activeSlideIndex,
+    setActiveSlideIndex: handleSlideChange,
+    slidesLength: slides.length
+  });
+
+  const handleGoToSlide = (index) => {
+    goToSlide(index);
+    handleSlideChange(index);
+  };
+
   return (
     <div className="audio-player__full-page-content">
       <div 
@@ -23,11 +55,11 @@ const SwipeableContent = ({
           ref={swipeableContainerRef}
           className="swipeable-content"
           style={{
-            transform: `translateX(-${activeSlideIndex * 50}%)`,
+            transform: `translateX(-${activeSlideIndex * 100}%)`,
             transition: 'transform 0.3s ease-out'
           }}
         >
-          {slides.map((slide, index) => (
+          {slides.map((slide) => (
             <div key={slide.id} className="swipeable-slide">
               {slide.content}
             </div>
@@ -41,7 +73,7 @@ const SwipeableContent = ({
           <button
             key={index}
             className={`swipeable-dot ${index === activeSlideIndex ? 'active' : ''}`}
-            onClick={() => goToSlide(index)}
+            onClick={() => handleGoToSlide(index)}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}

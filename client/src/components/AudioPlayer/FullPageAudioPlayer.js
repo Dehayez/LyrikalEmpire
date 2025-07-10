@@ -4,9 +4,11 @@ import { PiWaveform } from "react-icons/pi";
 import { LiaMicrophoneAltSolid } from "react-icons/lia";
 import { IoChevronDownSharp, IoEllipsisHorizontalSharp } from "react-icons/io5";
 
+import { createSlides } from '../../utils';
 import { IconButton } from '../Buttons';
 import { NextButton, PlayPauseButton, PrevButton, ShuffleButton, RepeatButton } from './AudioControls';
 import SwipeableContent from './SwipeableContent';
+import BeatEditInputs from './BeatEditInputs';
 
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
@@ -17,6 +19,7 @@ const FullPageAudioPlayer = ({
   playerRef,
   audioSrc,
   currentBeat,
+  onUpdateBeat,
   isPlaying,
   handlePlayPause,
   handlePrevClick,
@@ -39,16 +42,21 @@ const FullPageAudioPlayer = ({
   handleDragMove,
   handleDragEnd,
   playedPlaylistTitle,
-  handleEllipsisClick,
-  swipeableContainerRef,
-  activeSlideIndex,
-  slides,
-  handleSwipeTouchStart,
-  handleSwipeTouchMove,
-  handleSwipeTouchEnd,
-  handleSwipeMouseDown,
-  goToSlide
+  handleEllipsisClick
 }) => {
+  // Create edit inputs content for the third slide
+  const editInputsContent = (
+    <div className="audio-player__full-page-edit-content">
+      <BeatEditInputs 
+        currentBeat={currentBeat} 
+        onUpdateBeat={onUpdateBeat}
+      />
+    </div>
+  );
+
+  // Generate slides for the full page player
+  const slides = createSlides(currentBeat, editInputsContent);
+
   return (
     <>
       <div
@@ -85,14 +93,7 @@ const FullPageAudioPlayer = ({
 
         {/* SWIPEABLE CONTENT */}
         <SwipeableContent
-          swipeableContainerRef={swipeableContainerRef}
-          activeSlideIndex={activeSlideIndex}
           slides={slides}
-          handleSwipeTouchStart={handleSwipeTouchStart}
-          handleSwipeTouchMove={handleSwipeTouchMove}
-          handleSwipeTouchEnd={handleSwipeTouchEnd}
-          handleSwipeMouseDown={handleSwipeMouseDown}
-          goToSlide={goToSlide}
         />
 
         {/* CONTROLS */}

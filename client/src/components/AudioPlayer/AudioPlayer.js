@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import H5AudioPlayer from 'react-h5-audio-player';
-import { isMobileOrTablet, createSlides } from '../../utils';
+import { isMobileOrTablet } from '../../utils';
 import { 
   useAudioPlayer, 
   useDragToDismiss, 
@@ -8,8 +8,7 @@ import {
   useWaveform,
   useFullPagePlayer,
   useMediaSession,
-  useAudioSync,
-  useSwipeGestures
+  useAudioSync
 } from '../../hooks';
 import { usePlaylist } from '../../contexts';
 
@@ -17,7 +16,6 @@ import { ContextMenu } from '../ContextMenu';
 import MobileAudioPlayer from './MobileAudioPlayer';
 import DesktopAudioPlayer from './DesktopAudioPlayer';
 import FullPageAudioPlayer from './FullPageAudioPlayer';
-import BeatEditInputs from './BeatEditInputs';
 
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
@@ -72,10 +70,6 @@ const AudioPlayer = ({
     mobilePlayerRef,
     desktopPlayerRef,
     fullPageProgressRef,
-    swipeableContainerRef,
-    swipeStartX,
-    swipeCurrentX,
-    isSwipeDragging,
     
     // State
     artistName,
@@ -90,8 +84,6 @@ const AudioPlayer = ({
     setCurrentTimeState,
     isReturningFromLyrics,
     setIsReturningFromLyrics,
-    activeSlideIndex,
-    setActiveSlideIndex,
     audioSrc,
     autoPlay,
     waveform,
@@ -187,38 +179,6 @@ const AudioPlayer = ({
     isFullPageVisible
   });
 
-  // Create edit inputs content for the third slide
-  const editInputsContent = (
-    <div className="audio-player__full-page-edit-content">
-      <BeatEditInputs 
-        currentBeat={currentBeat} 
-        onUpdateBeat={onUpdateBeat}
-      />
-    </div>
-  );
-
-  // Generate slides for the full page player
-  const slides = createSlides(currentBeat, editInputsContent);
-
-  // Get swipe gesture handlers
-  const {
-    handleSwipeTouchStart,
-    handleSwipeTouchMove,
-    handleSwipeTouchEnd,
-    handleSwipeMouseDown,
-    handleSwipeMouseMove,
-    handleSwipeMouseUp,
-    goToSlide
-  } = useSwipeGestures({
-    swipeStartX,
-    swipeCurrentX,
-    isSwipeDragging,
-    swipeableContainerRef,
-    activeSlideIndex,
-    setActiveSlideIndex,
-    slidesLength: slides.length
-  });
-
   return (
     <>
       {/* Main audio player */}
@@ -240,6 +200,7 @@ const AudioPlayer = ({
           playerRef={fullPageProgressRef}
           audioSrc={audioSrc}
           currentBeat={currentBeat}
+          onUpdateBeat={onUpdateBeat}
           isPlaying={isPlaying}
           handlePlayPause={handlePlayPause}
           handlePrevClick={handlePrevClick}
@@ -263,14 +224,6 @@ const AudioPlayer = ({
           handleDragEnd={handleDragEnd}
           playedPlaylistTitle={playedPlaylistTitle}
           handleEllipsisClick={handleEllipsisClick}
-          swipeableContainerRef={swipeableContainerRef}
-          activeSlideIndex={activeSlideIndex}
-          slides={slides}
-          handleSwipeTouchStart={handleSwipeTouchStart}
-          handleSwipeTouchMove={handleSwipeTouchMove}
-          handleSwipeTouchEnd={handleSwipeTouchEnd}
-          handleSwipeMouseDown={handleSwipeMouseDown}
-          goToSlide={goToSlide}
         />
       )}
 
