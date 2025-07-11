@@ -67,7 +67,7 @@ export const useAudioPlayerState = ({
           artistCache.current.set(currentBeat.user_id, username);
           setArtistName(username);
         } catch (error) {
-          console.warn('Could not fetch artist name. Using fallback.', error);
+          // Could not fetch artist name. Using fallback.
           setArtistName('Unknown Artist');
         }
       }
@@ -123,12 +123,12 @@ export const useAudioPlayerState = ({
                 }
               }).catch((cacheError) => {
                 // Silently fail caching - we're already using the direct URL
-                console.warn('Background caching failed:', cacheError);
+                // Background caching failed
               });
             }
           } catch (cacheError) {
             // Cache check failed, but we have the signed URL as fallback
-            console.warn('Audio cache check failed, using direct URL:', cacheError);
+            // Audio cache check failed, using direct URL
           }
           
           // Always set the audio source (either cached or direct)
@@ -138,7 +138,7 @@ export const useAudioPlayerState = ({
           setIsFirstRender(false);
           
         } catch (error) {
-          console.error('❌ Error loading audio:', error);
+          // Error loading audio
           setAudioSrc('');
           setIsCachedAudio(false);
         } finally {

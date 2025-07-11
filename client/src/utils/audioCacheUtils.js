@@ -63,7 +63,7 @@ export const cleanupCache = async () => {
     await audioCacheService.cleanupExpiredEntries();
     return true;
   } catch (error) {
-    console.error('Error cleaning up cache:', error);
+    // Error cleaning up cache
     return false;
   }
 };
@@ -91,7 +91,7 @@ export const getCacheStatistics = async () => {
       }
     };
   } catch (error) {
-    console.error('Error getting cache statistics:', error);
+    // Error getting cache statistics
     return null;
   }
 };
@@ -103,7 +103,7 @@ export const isBeatCached = async (beat) => {
   try {
     return await audioCacheService.isAudioCached(beat.user_id, beat.audio);
   } catch (error) {
-    console.error('Error checking if beat is cached:', error);
+    // Error checking if beat is cached
     return false;
   }
 };
@@ -114,7 +114,7 @@ export const clearAllCache = async () => {
     await audioCacheService.clearCache();
     return true;
   } catch (error) {
-    console.error('Error clearing cache:', error);
+    // Error clearing cache
     return false;
   }
 };

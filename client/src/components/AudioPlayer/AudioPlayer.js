@@ -265,30 +265,28 @@ const AudioPlayer = ({
             
             const errorType = errorTypes[error.code] || `Unknown error code: ${error.code}`;
             
-            console.group('🔴 Audio MediaError Details');
-            console.log('Error Type:', errorType);
-            console.log('Error Code:', error.code);
-            console.log('Error Message:', error.message);
-            console.log('Audio Source:', audio.src);
-            console.log('Network State:', audio.networkState);
-            console.log('Ready State:', audio.readyState);
-            console.log('Current Beat:', currentBeat);
-            console.groupEnd();
+            // Audio MediaError Details
+            // Error Type: errorType
+            // Error Code: error.code
+            // Error Message: error.message
+            // Audio Source: audio.src
+            // Network State: audio.networkState
+            // Ready State: audio.readyState
+            // Current Beat: currentBeat
             
             // Test if it's a network/CORS issue by trying to fetch the URL directly
             if (error.code === 2 && audio.src) {
-              console.log('🧪 Testing direct fetch of audio URL...');
+              // Testing direct fetch of audio URL
               fetch(audio.src, { method: 'HEAD' })
                 .then(response => {
-                  console.log('✅ Direct fetch successful:', response.status, response.statusText);
-                  console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                  // Direct fetch successful
                 })
                 .catch(fetchError => {
-                  console.log('❌ Direct fetch failed:', fetchError);
+                  // Direct fetch failed
                 });
             }
           } else {
-            console.log('Audio error without error details:', e);
+            // Audio error without error details
           }
         }}
         style={{ display: 'none' }}
@@ -388,18 +386,24 @@ const AudioPlayer = ({
               text: 'Add to playlist',
               subItems: playlists.map((playlist) => ({
                 text: playlist.title,
-                onClick: () => console.log(`Add to playlist: ${playlist.title}`)
+                onClick: () => {
+                  // Add to playlist functionality
+                }
               }))
             },
             {
               icon: Queue02,
               text: 'Add to queue',
-              onClick: () => console.log('Add to queue')
+              onClick: () => {
+                // Add to queue functionality
+              }
             },
             {
               icon: IoRemoveCircleOutline,
               text: 'Remove from queue',
-              onClick: () => console.log('Remove from queue')
+              onClick: () => {
+                // Remove from queue functionality
+              }
             }
           ]}
         />

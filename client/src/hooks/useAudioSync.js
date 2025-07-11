@@ -149,7 +149,7 @@ export const useAudioSync = ({
         if (hasValidSrc && audioCore.isPaused()) {
           audioCore.play().catch(error => {
             if (error.name !== 'AbortError') {
-              console.warn('Audio play failed after data loaded:', error);
+              // Audio play failed after data loaded
             }
           });
         }
@@ -167,7 +167,7 @@ export const useAudioSync = ({
         if (hasValidSrc && audioCore.isPaused()) {
           audioCore.play().catch(error => {
             if (error.name !== 'AbortError') {
-              console.warn('Audio play failed after src ready:', error);
+              // Audio play failed after src ready
             }
           });
         }
@@ -291,7 +291,7 @@ export const useAudioSync = ({
           audioCore.play().catch(error => {
             // Ignore AbortError - it's usually from rapid play/pause calls
             if (error.name !== 'AbortError') {
-              console.warn('Audio play failed:', error);
+              // Audio play failed
             }
           });
         }

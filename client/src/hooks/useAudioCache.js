@@ -23,7 +23,7 @@ export const useAudioCache = () => {
       const stats = await getCacheStatistics();
       setCacheStats(stats);
     } catch (error) {
-      console.error('Error updating cache stats:', error);
+      // Error updating cache stats
     }
   }, []);
 
@@ -47,7 +47,7 @@ export const useAudioCache = () => {
       
       return cached;
     } catch (error) {
-      console.error('Error checking if beat is cached:', error);
+      // Error checking if beat is cached
       return false;
     }
   }, []);
@@ -71,7 +71,7 @@ export const useAudioCache = () => {
       
       return true;
     } catch (error) {
-      console.error('Error preloading beat:', error);
+      // Error preloading beat
       return false;
     }
   }, []);
@@ -113,7 +113,7 @@ export const useAudioCache = () => {
       await updateCacheStats();
       return results;
     } catch (error) {
-      console.error('Error preloading beats:', error);
+      // Error preloading beats
       return [];
     } finally {
       setIsPreloading(false);
@@ -140,7 +140,7 @@ export const useAudioCache = () => {
       await updateCacheStats();
       return true;
     } catch (error) {
-      console.error('Error clearing cache:', error);
+      // Error clearing cache
       return false;
     }
   }, [updateCacheStats]);
@@ -175,7 +175,7 @@ export const useAudioCache = () => {
         return newSet;
       });
     } else {
-      console.warn('⚠️ Could not generate cache key for beat:', beat);
+      // Could not generate cache key for beat
     }
   }, [getBeatCacheKey]);
 

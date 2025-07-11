@@ -11,7 +11,7 @@ export const useAudioCore = () => {
       return audio.play().catch(error => {
         // Only log non-AbortError issues
         if (error.name !== 'AbortError') {
-          console.error('Audio play failed:', error);
+          // Audio play failed
         }
         throw error;
       });
@@ -28,7 +28,7 @@ export const useAudioCore = () => {
         audio.pause();
       } catch (error) {
         // Ignore errors during pause - they're usually harmless
-        console.warn('Audio pause failed:', error);
+        // Audio pause failed
       }
     }
   }, []);
