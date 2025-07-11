@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { useSwipeGestures } from '../../hooks';
+import React, { useRef, useState, useEffect } from 'react';
+import { useSwipeGestures, useLocalStorageSync } from '../../hooks';
 
 const SwipeableContent = ({
   slides,
@@ -10,7 +10,29 @@ const SwipeableContent = ({
   const swipeStartX = useRef(0);
   const swipeCurrentX = useRef(0);
   const isSwipeDragging = useRef(false);
-  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  
+  // Initialize state from localStorage or default to 0
+  const [activeSlideIndex, setActiveSlideIndex] = useState(() => {
+    try {
+      const saved = localStorage.getItem('activeSlideIndex');
+      const parsed = saved ? JSON.parse(saved) : 0;
+      return parsed >= 0 && parsed < slides.length ? parsed : 0;
+    } catch (error) {
+      return 0;
+    }
+  });
+
+  // Use localStorage sync hook
+  useLocalStorageSync({
+    activeSlideIndex
+  });
+
+  // Handle cases where slides array changes and current index becomes invalid
+  useEffect(() => {
+    if (activeSlideIndex >= slides.length && slides.length > 0) {
+      setActiveSlideIndex(0);
+    }
+  }, [slides.length, activeSlideIndex]);
 
   // Handle slide change with callback
   const handleSlideChange = (index) => {

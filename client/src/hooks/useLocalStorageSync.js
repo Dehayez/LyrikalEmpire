@@ -13,7 +13,7 @@ export const useLocalStorageSync = ({
   isRightPanelVisible, viewState, customQueue, sortConfig,
   mode, searchText, urlKey, currentPage,
   volume, currentTime, selectedItems, isDropdownOpen, lyricsModal, dimensions,
-  waveform, isFullPage, position
+  waveform, isFullPage, position, activeSlideIndex
 }) => {
   useLocalStorageEffect('shuffle', shuffle);
   useLocalStorageEffect('repeat', repeat);
@@ -36,4 +36,5 @@ export const useLocalStorageSync = ({
   useLocalStorageEffect('waveform', waveform);
   useLocalStorageEffect('isFullPage', isFullPage);
   useLocalStorageEffect('modalPosition', position);
+  useLocalStorageEffect('activeSlideIndex', activeSlideIndex);
 };
