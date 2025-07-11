@@ -105,6 +105,8 @@ const AudioPlayer = ({
     setIsReturningFromLyrics,
     audioSrc,
     autoPlay,
+    isLoadingAudio,
+    isCachedAudio,
     waveform,
     isFullPage,
     setIsFullPage,
@@ -236,15 +238,55 @@ const AudioPlayer = ({
       {/* Main audio player */}
       <H5AudioPlayer
         ref={playerRef}
-        src={audioSrc}
+        src={audioSrc || undefined}
         autoPlayAfterSrcChange={false}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onCanPlay={handleAudioReady}
         onError={(e) => {
-          // Ignore AbortError and other common audio errors during initialization
-          if (e.target?.error?.message && !e.target.error.message.includes('AbortError')) {
-            console.warn('Audio error:', e.target.error);
+          // Enhanced error handling for debugging
+          const audio = e.target;
+          const error = audio?.error;
+          
+          // Skip errors for empty src (during initialization)
+          if (!audioSrc || audioSrc === '') {
+            return;
+          }
+          
+          if (error) {
+            const errorTypes = {
+              1: 'MEDIA_ERR_ABORTED - The fetching of the audio was aborted',
+              2: 'MEDIA_ERR_NETWORK - A network error occurred while fetching the audio',
+              3: 'MEDIA_ERR_DECODE - A decoding error occurred',
+              4: 'MEDIA_ERR_SRC_NOT_SUPPORTED - The audio format is not supported'
+            };
+            
+            const errorType = errorTypes[error.code] || `Unknown error code: ${error.code}`;
+            
+            console.group('🔴 Audio MediaError Details');
+            console.log('Error Type:', errorType);
+            console.log('Error Code:', error.code);
+            console.log('Error Message:', error.message);
+            console.log('Audio Source:', audio.src);
+            console.log('Network State:', audio.networkState);
+            console.log('Ready State:', audio.readyState);
+            console.log('Current Beat:', currentBeat);
+            console.groupEnd();
+            
+            // Test if it's a network/CORS issue by trying to fetch the URL directly
+            if (error.code === 2 && audio.src) {
+              console.log('🧪 Testing direct fetch of audio URL...');
+              fetch(audio.src, { method: 'HEAD' })
+                .then(response => {
+                  console.log('✅ Direct fetch successful:', response.status, response.statusText);
+                  console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                })
+                .catch(fetchError => {
+                  console.log('❌ Direct fetch failed:', fetchError);
+                });
+            }
+          } else {
+            console.log('Audio error without error details:', e);
           }
         }}
         style={{ display: 'none' }}
@@ -297,6 +339,8 @@ const AudioPlayer = ({
             preventDefaultAudioEvents={preventDefaultAudioEvents}
             artistName={artistName}
             toggleFullPagePlayer={toggleFullPagePlayer}
+            isLoadingAudio={isLoadingAudio}
+            isCachedAudio={isCachedAudio}
             handleTouchStart={handleTouchStart}
             handleTouchMove={handleTouchMove}
             handleTouchEnd={handleTouchEnd}

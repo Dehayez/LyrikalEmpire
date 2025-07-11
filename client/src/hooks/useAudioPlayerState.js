@@ -79,12 +79,15 @@ export const useAudioPlayerState = ({
   useEffect(() => {
     const updateAudioSource = async () => {
       if (currentBeat?.audio && currentBeat?.user_id) {
+        console.log('🔄 Loading audio for beat:', currentBeat.title, currentBeat.audio);
         setIsLoadingAudio(true);
         setIsCachedAudio(false);
         
         try {
           // First, always get the signed URL to ensure we have a fallback
+          console.log('📡 Getting signed URL for:', currentBeat.user_id, currentBeat.audio);
           const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
+          console.log('✅ Signed URL received:', signedUrl);
           
           // Try to use cached audio if available
           let finalAudioSrc = signedUrl;
@@ -96,9 +99,11 @@ export const useAudioPlayerState = ({
             
             if (cachedAudio) {
               // Use cached audio
+              console.log('✅ Using cached audio');
               finalAudioSrc = cachedAudio;
               isCached = true;
             } else {
+              console.log('ℹ️ No cached audio found, using signed URL');
               // Try to preload and cache the audio in background (non-blocking)
               audioCacheService.preloadAudio(
                 currentBeat.user_id, 
@@ -107,6 +112,7 @@ export const useAudioPlayerState = ({
               ).then((cachedObjectUrl) => {
                 // Update to cached version once available (if still the same beat)
                 if (currentBeat?.audio === currentBeat.audio && currentBeat?.user_id === currentBeat.user_id) {
+                  console.log('✅ Background caching completed, updating to cached audio');
                   setAudioSrc(cachedObjectUrl);
                   setIsCachedAudio(true);
                 }
@@ -121,13 +127,16 @@ export const useAudioPlayerState = ({
           }
           
           // Always set the audio source (either cached or direct)
+          console.log('🎵 Setting audio source:', finalAudioSrc);
           setAudioSrc(finalAudioSrc);
           setIsCachedAudio(isCached);
           setAutoPlay(!isFirstRender);
           setIsFirstRender(false);
           
         } catch (error) {
-          console.error('Error loading audio:', error);
+          console.error('❌ Error loading audio:', error);
+          console.error('Error details:', error.message);
+          console.error('Error stack:', error.stack);
           setAudioSrc('');
           setIsCachedAudio(false);
         } finally {
@@ -135,6 +144,7 @@ export const useAudioPlayerState = ({
         }
       } else {
         // Clear audio source if no beat
+        console.log('🔄 Clearing audio source (no beat)');
         setAudioSrc('');
         setIsCachedAudio(false);
         setIsLoadingAudio(false);

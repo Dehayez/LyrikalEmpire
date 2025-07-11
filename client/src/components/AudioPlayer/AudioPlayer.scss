@@ -213,6 +213,47 @@ $indicator-half-size: math.div($indicator-size, 2);
       display: none;
     }
   }
+
+  &__text {
+    flex: 1;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0; // Allow text to shrink
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0; // Allow text to shrink
+  }
+
+  &__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $color-white;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__artist {
+    font-size: 14px;
+    color: $color-gray-light;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__cache-indicator {
+    flex-shrink: 0;
+  }
 }
 
 .smooth-progress-bar--mobile {

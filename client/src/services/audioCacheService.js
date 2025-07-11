@@ -1,11 +1,19 @@
-// Fallback for environments without IndexedDB
-let idb;
-try {
-  idb = require('idb');
-} catch (error) {
-  console.warn('IndexedDB not available, audio caching will use memory only');
-  idb = null;
-}
+// Import idb for IndexedDB operations
+let idb = null;
+
+// Dynamic import to handle missing package gracefully
+const loadIDB = async () => {
+  try {
+    const idbModule = await import('idb');
+    idb = idbModule;
+    console.log('✅ idb package imported successfully');
+    return true;
+  } catch (error) {
+    console.warn('⚠️ idb package not available:', error.message);
+    console.warn('🔄 Audio caching will use memory only');
+    return false;
+  }
+};
 
 class AudioCacheService {
   constructor() {
@@ -22,23 +30,37 @@ class AudioCacheService {
   }
 
   async init() {
-    if (!idb) {
-      console.warn('IndexedDB not available, using memory cache only');
+    console.log('🎵 Initializing audio cache service...');
+    
+    // Try to load the idb package
+    const idbLoaded = await loadIDB();
+    
+    if (!idbLoaded || !idb) {
+      console.warn('⚠️ idb package not available, using memory cache only');
       return;
     }
     
     try {
+      console.log('📦 idb package loaded successfully');
+      console.log(`🗃️ Opening database: ${this.dbName} version ${this.version}`);
+      
       this.db = await idb.openDB(this.dbName, this.version, {
         upgrade(db) {
+          console.log('🔧 Upgrading database schema...');
           if (!db.objectStoreNames.contains('audioFiles')) {
+            console.log('📁 Creating audioFiles object store...');
             const store = db.createObjectStore('audioFiles', { keyPath: 'id' });
             store.createIndex('lastAccessed', 'lastAccessed');
             store.createIndex('size', 'size');
+            console.log('✅ Object store created successfully');
           }
         },
       });
+      
+      console.log('✅ Audio cache database initialized successfully');
     } catch (error) {
-      console.error('Failed to initialize audio cache:', error);
+      console.error('❌ Failed to initialize audio cache:', error);
+      console.error('Error details:', error.message);
     }
   }
 

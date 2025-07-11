@@ -16,6 +16,12 @@ import NotFound from './components/NotFound';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 
+// Load audio cache debug utilities (development only)
+if (process.env.NODE_ENV === 'development') {
+  import('./utils/audioCacheDebug');
+  import('./utils/audioCacheTest');
+}
+
 function App() {
   const location = useLocation();
   const isAuthRoute = isAuthPage(location.pathname);
