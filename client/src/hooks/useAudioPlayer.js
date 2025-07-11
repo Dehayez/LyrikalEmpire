@@ -31,10 +31,14 @@ export const useAudioPlayer = ({
     } else if (currentBeat?.id === beat.id) {
       setIsPlaying(play);
     } else {
+      // For new beats, first pause the current audio to prevent overlap
+      if (audioCore.playerRef.current?.audio?.current) {
+        audioCore.pause();
+      }
       setCurrentBeat(beat);
       setTimeout(() => setIsPlaying(true), 0);
     }
-  }, [currentBeat?.id, setCurrentBeat, setIsPlaying]);
+  }, [currentBeat?.id, setCurrentBeat, setIsPlaying, audioCore]);
 
   const handleNext = useCallback((beats) => {
     let nextIndex;

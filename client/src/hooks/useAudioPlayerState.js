@@ -80,6 +80,8 @@ export const useAudioPlayerState = ({
   useEffect(() => {
     const updateAudioSource = async () => {
       if (currentBeat?.audio && currentBeat?.user_id) {
+        // First, clear the current audio source to prevent old audio from playing
+        setAudioSrc('');
         setIsLoadingAudio(true);
         setIsCachedAudio(false);
         
