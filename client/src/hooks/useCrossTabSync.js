@@ -11,43 +11,28 @@ export const useCrossTabSync = ({
 }) => {
   const { socket, emitAudioPlay, emitAudioPause, emitAudioSeek, emitBeatChange } = useWebSocket();
   const isProcessingRemoteEvent = useRef(false);
-  
-  console.log('🔄 useCrossTabSync initialized with:', {
-    currentBeat: currentBeat?.id,
-    isPlaying,
-    hasSocket: !!socket,
-    hasEmitFunctions: !!(emitAudioPlay && emitAudioPause)
-  });
 
   // Emit play event to other tabs
   const broadcastPlay = useCallback(() => {
     if (currentBeat && !isProcessingRemoteEvent.current) {
-      console.log('📡 Broadcasting play event to other tabs for beat:', currentBeat.id);
+      console.log('📡 Broadcasting play:', currentBeat.id);
       emitAudioPlay({
         beatId: currentBeat.id,
         timestamp: Date.now(),
         currentTime: audioCore.getCurrentTime()
       });
-    } else if (isProcessingRemoteEvent.current) {
-      console.log('⏭️ Skipping broadcast - processing remote event');
-    } else {
-      console.log('⏭️ Skipping broadcast - no current beat');
     }
   }, [currentBeat, emitAudioPlay, audioCore]);
 
   // Emit pause event to other tabs
   const broadcastPause = useCallback(() => {
     if (currentBeat && !isProcessingRemoteEvent.current) {
-      console.log('📡 Broadcasting pause event to other tabs for beat:', currentBeat.id);
+      console.log('📡 Broadcasting pause:', currentBeat.id);
       emitAudioPause({
         beatId: currentBeat.id,
         timestamp: Date.now(),
         currentTime: audioCore.getCurrentTime()
       });
-    } else if (isProcessingRemoteEvent.current) {
-      console.log('⏭️ Skipping broadcast - processing remote event');
-    } else {
-      console.log('⏭️ Skipping broadcast - no current beat');
     }
   }, [currentBeat, emitAudioPause, audioCore]);
 
@@ -154,13 +139,6 @@ export const useCrossTabSync = ({
       socket.off('beat-change', handleRemoteBeatChange);
     };
   }, [socket, currentBeat, isPlaying, audioCore, setIsPlaying, setCurrentBeat]);
-
-  console.log('🔄 useCrossTabSync returning functions:', {
-    broadcastPlay: !!broadcastPlay,
-    broadcastPause: !!broadcastPause,
-    broadcastSeek: !!broadcastSeek,
-    broadcastBeatChange: !!broadcastBeatChange
-  });
 
   return {
     broadcastPlay,

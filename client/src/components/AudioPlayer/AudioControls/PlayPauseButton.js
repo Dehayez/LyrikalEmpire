@@ -13,7 +13,6 @@ const PlayPauseButton = ({ isPlaying, setIsPlaying, className }) => {
 
   const togglePlayPause = () => {
     const newPlayState = !isPlaying;
-    console.log('🎯 PlayPauseButton togglePlayPause called, isPlaying:', isPlaying, 'newPlayState:', newPlayState);
     setIsPlaying(newPlayState);
     setAnimatePlayPause(true);
     setTimeout(() => setAnimatePlayPause(false), 200);

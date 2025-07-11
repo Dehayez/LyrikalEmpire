@@ -62,26 +62,20 @@ export const WebSocketProvider = ({ children }) => {
   }, []);
 
   const emitAudioPlay = (data) => {
-    console.log('📤 emitAudioPlay called with:', data);
-    console.log('📤 Socket state:', { exists: !!socket, isConnected, socketId: socket?.id });
     if (socket && isConnected) {
-      console.log('📤 Emitting audio-play to server:', data);
+      console.log('📤 Emitting audio-play:', data.beatId);
       socket.emit('audio-play', data);
-      console.log('📤 Audio-play emitted successfully');
     } else {
-      console.log('⚠️ Cannot emit audio-play - not connected', { socket: !!socket, isConnected });
+      console.log('⚠️ Cannot emit audio-play - not connected');
     }
   };
 
   const emitAudioPause = (data) => {
-    console.log('📤 emitAudioPause called with:', data);
-    console.log('📤 Socket state:', { exists: !!socket, isConnected, socketId: socket?.id });
     if (socket && isConnected) {
-      console.log('📤 Emitting audio-pause to server:', data);
+      console.log('📤 Emitting audio-pause:', data.beatId);
       socket.emit('audio-pause', data);
-      console.log('📤 Audio-pause emitted successfully');
     } else {
-      console.log('⚠️ Cannot emit audio-pause - not connected', { socket: !!socket, isConnected });
+      console.log('⚠️ Cannot emit audio-pause - not connected');
     }
   };
 
@@ -111,13 +105,6 @@ export const WebSocketProvider = ({ children }) => {
     emitAudioSeek,
     emitBeatChange,
   };
-
-  console.log('🔌 WebSocket context value:', {
-    hasSocket: !!socket,
-    isConnected,
-    socketId: socket?.id,
-    hasEmitFunctions: !!(emitAudioPlay && emitAudioPause)
-  });
 
   return (
     <WebSocketContext.Provider value={value}>

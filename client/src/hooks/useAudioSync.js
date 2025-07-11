@@ -33,8 +33,6 @@ export const useAudioSync = ({
     currentTime: audioCore.getCurrentTime()
   });
   
-  console.log('🔧 useAudioSync - broadcastPlay available:', !!broadcastPlay);
-  console.log('🔧 useAudioSync - broadcastPause available:', !!broadcastPause);
   // Sync all players with main audio element
   const syncAllPlayers = useCallback((forceUpdate = false) => {
     syncAllPlayersUtil({
@@ -96,15 +94,12 @@ export const useAudioSync = ({
 
   // Handle play/pause from UI
   const handlePlayPause = useCallback((play) => {
-    console.log('🎯 handlePlayPause called with:', play);
     audioCore.togglePlayPause(play);
     
     // Also broadcast directly since UI-triggered play/pause might not trigger audio events immediately
     if (play) {
-      console.log('🎯 Triggering broadcastPlay from handlePlayPause');
       broadcastPlay();
     } else {
-      console.log('🎯 Triggering broadcastPause from handlePlayPause');
       broadcastPause();
     }
   }, [audioCore, broadcastPlay, broadcastPause]);
@@ -178,24 +173,20 @@ export const useAudioSync = ({
     };
 
     const handlePlay = () => {
-      console.log('🎵 Audio element play event fired');
       setIsPlaying(true);
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'playing';
       }
       // Broadcast to other tabs
-      console.log('🎵 About to call broadcastPlay from audio event');
       broadcastPlay();
     };
 
     const handlePause = () => {
-      console.log('⏸️ Audio element pause event fired');
       setIsPlaying(false);
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'paused';
       }
       // Broadcast to other tabs
-      console.log('⏸️ About to call broadcastPause from audio event');
       broadcastPause();
     };
 
