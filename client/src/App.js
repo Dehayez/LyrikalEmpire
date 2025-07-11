@@ -23,7 +23,13 @@ function App() {
   const navigate = useNavigate();
   const { user } = useUser();
   const { username } = user;
-  const { emitBeatChange } = useWebSocket();
+  const webSocketContext = useWebSocket();
+  const { emitBeatChange } = webSocketContext;
+  console.log('🔌 App.js WebSocket context:', {
+    hasContext: !!webSocketContext,
+    isConnected: webSocketContext?.isConnected,
+    hasEmitBeatChange: !!emitBeatChange
+  });
   const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats, user.id);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);

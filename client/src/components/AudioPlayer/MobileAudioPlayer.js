@@ -44,7 +44,7 @@ const MobileAudioPlayer = ({
         <p className="audio-player__title">{currentBeat.title}</p>
         <p className="audio-player__artist">{artistName}</p>
       </div>
-      <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} className="small" />
+              <PlayPauseButton isPlaying={isPlaying} setIsPlaying={handlePlayPause} className="small" />
     </div>
   );
 };

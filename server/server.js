@@ -60,30 +60,36 @@ app.get('*', (req, res) => {
 // WebSocket connection handling
 io.on('connection', (socket) => {
   console.log('🔌 Client connected:', socket.id);
+  console.log('🔌 Total connected clients:', io.engine.clientsCount);
   
   // Handle audio player events
   socket.on('audio-play', (data) => {
-    console.log('🎵 Audio play event:', data);
+    console.log('🎵 Server received audio-play event from', socket.id, ':', data);
+    console.log('🎵 Broadcasting to', socket.broadcast.sockets?.size || 'unknown number of', 'other clients');
     socket.broadcast.emit('audio-play', data);
+    console.log('🎵 Audio-play broadcast complete');
   });
   
   socket.on('audio-pause', (data) => {
-    console.log('⏸️ Audio pause event:', data);
+    console.log('⏸️ Server received audio-pause event from', socket.id, ':', data);
+    console.log('⏸️ Broadcasting to', socket.broadcast.sockets?.size || 'unknown number of', 'other clients');
     socket.broadcast.emit('audio-pause', data);
+    console.log('⏸️ Audio-pause broadcast complete');
   });
   
   socket.on('audio-seek', (data) => {
-    console.log('⏭️ Audio seek event:', data);
+    console.log('⏭️ Server received audio-seek event from', socket.id, ':', data);
     socket.broadcast.emit('audio-seek', data);
   });
   
   socket.on('beat-change', (data) => {
-    console.log('🎶 Beat change event:', data);
+    console.log('🎶 Server received beat-change event from', socket.id, ':', data);
     socket.broadcast.emit('beat-change', data);
   });
   
   socket.on('disconnect', () => {
     console.log('🔌 Client disconnected:', socket.id);
+    console.log('🔌 Remaining connected clients:', io.engine.clientsCount);
   });
 });
 
