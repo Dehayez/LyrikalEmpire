@@ -2,20 +2,20 @@ import { useEffect, useCallback, useRef } from 'react';
 import { useHeaderWidths } from '../contexts';
 
 export const useResizableColumns = (tableRef) => {
-  const { headerWidths, setHeaderWidths } = useHeaderWidths();
+  const { setHeaderWidths } = useHeaderWidths();
   const resizeTimeoutRef = useRef(null);
 
   // Default percentages for each column (total should equal 100%)
   const defaultPercentages = {
-    0: 1,   // number
-    1: 24,  // title
+    0: 5,   // number - make it more reasonable
+    1: 23,  // title - slightly reduced
     2: 3,   // tierlist
     3: 3,   // bpm
     4: 15,  // feature
     5: 15,  // mood
     6: 15,  // genre
     7: 11,  // keywords
-    8: 5,   // duration
+    8: 7,   // duration - increased slightly
     9: 3    // menu
   };
 
@@ -27,7 +27,6 @@ export const useResizableColumns = (tableRef) => {
     if (!table) return;
     
     const headers = table.querySelectorAll('th');
-    const tableBody = table.querySelector('tbody');
     
     // Get current widths of resizable columns
     const resizableIndices = [1, 4, 5, 6, 7]; // title, feature, mood, genre, keywords

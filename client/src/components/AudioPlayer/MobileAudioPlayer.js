@@ -1,7 +1,6 @@
 import React from 'react';
 import H5AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import { PlayPauseButton } from './AudioControls';
-import { CacheIndicator } from '../CacheIndicator';
 
 import 'react-h5-audio-player/lib/styles.css';
 import './AudioPlayer.scss';
@@ -20,9 +19,7 @@ const MobileAudioPlayer = ({
   handleTouchEnd,
   dragPosition,
   lyricsModal,
-  syncAllPlayers,
-  isLoadingAudio,
-  isCachedAudio
+  syncAllPlayers
 }) => {
   return (
     <div
@@ -46,12 +43,6 @@ const MobileAudioPlayer = ({
            style={{ transform: `translateX(${dragPosition}px)` }}>
         <div className="audio-player__title-row">
           <p className="audio-player__title">{currentBeat.title}</p>
-          <CacheIndicator 
-            isCached={isCachedAudio} 
-            isLoading={isLoadingAudio}
-            size="small" 
-            className="audio-player__cache-indicator"
-          />
         </div>
         <p className="audio-player__artist">{artistName}</p>
       </div>
