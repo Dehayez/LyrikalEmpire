@@ -7,16 +7,21 @@ export const useBeatActions = () => {
   const { user } = useUser();
 
   const handleUpdate = async (id, key, value) => {
-    const updatedValue = key === 'created_at' || key === 'edited_at' 
-      ? new Date(value).toISOString().replace('T', ' ').replace('.000Z', '') 
-      : value;
-    const updatedBeat = { ...beats.find(beat => beat.id === id), [key]: updatedValue };
-    
-    await updateBeat(id, updatedBeat);
-    
-    const updatedBeats = beats.map(beat => beat.id === id ? updatedBeat : beat);
-    setBeats(updatedBeats);
-    setGlobalBeats(updatedBeats);
+    try {
+      const updatedValue = key === 'created_at' || key === 'edited_at' 
+        ? new Date(value).toISOString().replace('T', ' ').replace('.000Z', '') 
+        : value;
+      const updatedBeat = { ...beats.find(beat => beat.id === id), [key]: updatedValue };
+      
+      await updateBeat(id, updatedBeat);
+      
+      const updatedBeats = beats.map(beat => beat.id === id ? updatedBeat : beat);
+      setBeats(updatedBeats);
+      setGlobalBeats(updatedBeats);
+    } catch (error) {
+      console.error('Error updating beat on server:', error);
+      // Don't update local state if server update fails
+    }
   };
 
   const handleDelete = async (id) => {

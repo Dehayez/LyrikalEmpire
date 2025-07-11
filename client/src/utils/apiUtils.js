@@ -39,7 +39,9 @@ export const apiRequest = async (method, url = '', baseURL, data = null, params 
       },
       ...(onUploadProgress && { onUploadProgress }),
     };
+    
     const response = await axios(config);
+    
     return response.data;
   } catch (error) {
     handleApiError(error);

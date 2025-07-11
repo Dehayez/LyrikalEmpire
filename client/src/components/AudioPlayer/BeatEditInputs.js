@@ -25,15 +25,14 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
   const handleTitleChange = useCallback((e) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
+    // Only update local state during typing
     handleInputChange('title', newTitle);
   }, [handleInputChange]);
 
-  const handleTitleBlur = useCallback((e) => {
-    const newTitle = e.target.value;
-    handleUpdate(currentBeat.id, 'title', newTitle);
-    // Also update the currentBeat state in App.js through the prop
-    handleInputChange('title', newTitle);
-  }, [currentBeat.id, handleUpdate, handleInputChange]);
+  const handleTitleBlur = useCallback(() => {
+    // Use state value instead of input value to avoid timing issues
+    handleUpdate(currentBeat.id, 'title', title);
+  }, [currentBeat.id, handleUpdate, title]);
 
   const handleBpmChange = useCallback((e) => {
     const newBpm = e.target.value;

@@ -46,7 +46,13 @@ export const addBeat = async (beat, audioFile, user_id, onProgress) => {
 };
 
 export const updateBeat = async (beatId, beatData) => {
-  return await apiRequest('put', `/${beatId}`, API_URL, beatData);
+  try {
+    const result = await apiRequest('put', `/${beatId}`, API_URL, beatData);
+    return result;
+  } catch (error) {
+    console.error('Beat update API error:', error);
+    throw error;
+  }
 };
 
 export const deleteBeat = async (beatId, userId) => {
