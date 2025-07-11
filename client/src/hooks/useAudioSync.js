@@ -141,15 +141,12 @@ export const useAudioSync = ({
     const handleLoadedData = () => {
       syncAllPlayers(true);
       
-      // Check if we should start playback now that the correct audio data is loaded
+      // Check if we should start playback now that the audio data is loaded
       if (currentBeat?.audio && isPlaying) {
         const currentSrc = mainAudio.src;
-        const expectedAudioFileName = currentBeat.audio;
-        const srcMatchesBeat = currentSrc && expectedAudioFileName && 
-          currentSrc.includes(expectedAudioFileName);
+        const hasValidSrc = currentSrc && currentSrc !== '';
         
-        if (srcMatchesBeat && audioCore.isPaused()) {
-          console.log('Audio data loaded, starting playback...');
+        if (hasValidSrc && audioCore.isPaused()) {
           audioCore.play().catch(error => {
             if (error.name !== 'AbortError') {
               console.warn('Audio play failed after data loaded:', error);
@@ -162,15 +159,12 @@ export const useAudioSync = ({
     const handleCanPlay = () => {
       syncAllPlayers(true);
       
-      // Check if we should start playback now that the correct audio is ready
+      // Check if we should start playback now that the audio is ready
       if (currentBeat?.audio && isPlaying) {
         const currentSrc = mainAudio.src;
-        const expectedAudioFileName = currentBeat.audio;
-        const srcMatchesBeat = currentSrc && expectedAudioFileName && 
-          currentSrc.includes(expectedAudioFileName);
+        const hasValidSrc = currentSrc && currentSrc !== '';
         
-        if (srcMatchesBeat && audioCore.isPaused()) {
-          console.log('Audio src ready, starting playback...');
+        if (hasValidSrc && audioCore.isPaused()) {
           audioCore.play().catch(error => {
             if (error.name !== 'AbortError') {
               console.warn('Audio play failed after src ready:', error);
@@ -289,25 +283,17 @@ export const useAudioSync = ({
     // Add a small delay to prevent race conditions during initialization
     const timeoutId = setTimeout(() => {
       if (currentBeat?.audio && isPlaying && audioCore.isReady()) {
-        // CRITICAL: Only play if the audio src matches the current beat
-        // This prevents playing the wrong track during src changes
+        // Check if audio source is available (handles both blob URLs and signed URLs)
         const currentSrc = audio.src;
-        const expectedAudioFileName = currentBeat.audio;
+        const hasValidSrc = currentSrc && currentSrc !== '';
         
-        // Check if the current audio source contains the expected filename
-        const srcMatchesBeat = currentSrc && expectedAudioFileName && 
-          currentSrc.includes(expectedAudioFileName);
-        
-        if (srcMatchesBeat && audioCore.isPaused()) {
+        if (hasValidSrc && audioCore.isPaused()) {
           audioCore.play().catch(error => {
             // Ignore AbortError - it's usually from rapid play/pause calls
             if (error.name !== 'AbortError') {
               console.warn('Audio play failed:', error);
             }
           });
-        } else if (!srcMatchesBeat) {
-          // Audio src doesn't match - wait for it to update
-          console.log('Waiting for audio src to update before playing...');
         }
       } else if (!isPlaying && !audioCore.isPaused()) {
         // Always allow pausing regardless of src
