@@ -8,7 +8,6 @@ export const useAudioCore = () => {
     const audio = playerRef.current?.audio?.current;
     
     if (audio && audio.paused && audio.readyState >= 2) {
-      console.log('▶️ Audio play');
       return audio.play().catch(error => {
         // Only log non-AbortError issues
         if (error.name !== 'AbortError') {
@@ -25,7 +24,6 @@ export const useAudioCore = () => {
     const audio = playerRef.current?.audio?.current;
     
     if (audio && !audio.paused) {
-      console.log('⏸️ Audio pause');
       try {
         audio.pause();
       } catch (error) {

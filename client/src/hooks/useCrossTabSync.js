@@ -15,7 +15,6 @@ export const useCrossTabSync = ({
   // Emit play event to other tabs
   const broadcastPlay = useCallback(() => {
     if (currentBeat && !isProcessingRemoteEvent.current) {
-      console.log('📡 Broadcasting play:', currentBeat.id);
       emitAudioPlay({
         beatId: currentBeat.id,
         timestamp: Date.now(),
@@ -27,7 +26,6 @@ export const useCrossTabSync = ({
   // Emit pause event to other tabs
   const broadcastPause = useCallback(() => {
     if (currentBeat && !isProcessingRemoteEvent.current) {
-      console.log('📡 Broadcasting pause:', currentBeat.id);
       emitAudioPause({
         beatId: currentBeat.id,
         timestamp: Date.now(),
@@ -39,7 +37,6 @@ export const useCrossTabSync = ({
   // Emit seek event to other tabs
   const broadcastSeek = useCallback((time) => {
     if (currentBeat) {
-      console.log('📡 Broadcasting seek event to other tabs');
       emitAudioSeek({
         beatId: currentBeat.id,
         timestamp: Date.now(),
@@ -50,7 +47,6 @@ export const useCrossTabSync = ({
 
   // Emit beat change event to other tabs
   const broadcastBeatChange = useCallback((beat) => {
-    console.log('📡 Broadcasting beat change event to other tabs');
     emitBeatChange({
       beatId: beat.id,
       timestamp: Date.now(),
@@ -63,52 +59,34 @@ export const useCrossTabSync = ({
     if (!socket) return;
 
     const handleRemotePlay = (data) => {
-      console.log('📥 Received play event from another tab:', data);
-      console.log('Current beat:', currentBeat?.id, 'Data beat:', data.beatId);
-      console.log('Current isPlaying:', isPlaying, 'Audio paused:', audioCore.isPaused());
-      
       if (currentBeat && data.beatId === currentBeat.id) {
         // Check actual audio state rather than React state
         if (audioCore.isPaused()) {
-          console.log('🎵 Starting remote play...');
           isProcessingRemoteEvent.current = true;
           setIsPlaying(true);
           audioCore.play().then(() => {
             isProcessingRemoteEvent.current = false;
-            console.log('✅ Remote play successful');
           }).catch((error) => {
             isProcessingRemoteEvent.current = false;
-            console.warn('❌ Remote play failed:', error);
           });
-        } else {
-          console.log('🔄 Audio already playing, skipping remote play');
         }
       }
     };
 
     const handleRemotePause = (data) => {
-      console.log('📥 Received pause event from another tab:', data);
-      console.log('Current beat:', currentBeat?.id, 'Data beat:', data.beatId);
-      console.log('Current isPlaying:', isPlaying, 'Audio paused:', audioCore.isPaused());
-      
       if (currentBeat && data.beatId === currentBeat.id) {
         // Check actual audio state rather than React state
         if (!audioCore.isPaused()) {
-          console.log('⏸️ Starting remote pause...');
           isProcessingRemoteEvent.current = true;
           setIsPlaying(false);
           audioCore.pause();
           // pause() doesn't return a promise, so clear the flag immediately
           isProcessingRemoteEvent.current = false;
-          console.log('✅ Remote pause successful');
-        } else {
-          console.log('🔄 Audio already paused, skipping remote pause');
         }
       }
     };
 
     const handleRemoteSeek = (data) => {
-      console.log('📥 Received seek event from another tab:', data);
       if (currentBeat && data.beatId === currentBeat.id) {
         isProcessingRemoteEvent.current = true;
         audioCore.setCurrentTime(data.currentTime);
@@ -120,7 +98,6 @@ export const useCrossTabSync = ({
     };
 
     const handleRemoteBeatChange = (data) => {
-      console.log('📥 Received beat change event from another tab:', data);
       // Only update if it's a different beat
       if (!currentBeat || currentBeat.id !== data.beatId) {
         setCurrentBeat(data.beat);
