@@ -31,7 +31,9 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
   const handleTitleBlur = useCallback((e) => {
     const newTitle = e.target.value;
     handleUpdate(currentBeat.id, 'title', newTitle);
-  }, [currentBeat.id, handleUpdate]);
+    // Also update the currentBeat state in App.js through the prop
+    handleInputChange('title', newTitle);
+  }, [currentBeat.id, handleUpdate, handleInputChange]);
 
   const handleBpmChange = useCallback((e) => {
     const newBpm = e.target.value;
@@ -43,6 +45,7 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
     const value = e.target.value;
     if (value === '') {
       handleUpdate(currentBeat.id, 'bpm', null);
+      handleInputChange('bpm', null);
       return;
     }
     let bpm = parseFloat(value.replace(',', '.'));
@@ -53,8 +56,9 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
     } else {
       e.target.value = bpm;
       handleUpdate(currentBeat.id, 'bpm', bpm);
+      handleInputChange('bpm', bpm);
     }
-  }, [currentBeat.id, handleUpdate]);
+  }, [currentBeat.id, handleUpdate, handleInputChange]);
 
   const handleTierlistChange = useCallback((e) => {
     const newTierlist = e.target.value;

@@ -128,6 +128,10 @@ function App() {
     setBeats(currentBeats =>
       currentBeats.map(beat => beat.id === id ? { ...beat, ...newData } : beat)
     );
+    // Also update currentBeat if it matches the updated beat
+    if (currentBeat && currentBeat.id === id) {
+      setCurrentBeat(prevBeat => ({ ...prevBeat, ...newData }));
+    }
   };
 
   const onUpdate = (id, field, value) => {
