@@ -12,6 +12,8 @@ export { useAudioPlayerState } from './useAudioPlayerState';
 export { useWaveform } from './useWaveform';
 export { useFullPagePlayer } from './useFullPagePlayer';
 export { useMediaSession } from './useMediaSession';
+export { useAudioCore } from './useAudioCore';
+export { useAudioInteractions } from './useAudioInteractions';
 export { useAudioSync } from './useAudioSync';
 export { default as useOs } from './useOs';
 export { useSwipeGestures } from './useSwipeGestures';

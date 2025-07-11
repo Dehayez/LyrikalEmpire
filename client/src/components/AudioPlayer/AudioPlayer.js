@@ -36,13 +36,24 @@ const AudioPlayer = ({
     return null;
   }
 
-  const playerRef = useRef();
-
   // Get playlists
   const { playlists, playedPlaylistTitle } = usePlaylist();
 
-  // Get audio player functionality
+  // Get audio player functionality (now includes audioCore and audioInteractions)
+  const audioPlayer = useAudioPlayer({
+    currentBeat,
+    setCurrentBeat,
+    isPlaying,
+    setIsPlaying,
+    onNext,
+    onPrev,
+    shuffle,
+    repeat,
+  });
+
+  // Extract the properties we need for backward compatibility
   const {
+    playerRef,
     volume,
     handleVolumeChange,
     handleTouchStart,
@@ -54,16 +65,18 @@ const AudioPlayer = ({
     handleNext,
     handlePrev,
     currentTime,
-  } = useAudioPlayer({
-    currentBeat,
-    setCurrentBeat,
-    isPlaying,
-    setIsPlaying,
-    onNext,
-    onPrev,
-    shuffle,
-    repeat,
-  });
+    // Core audio functions
+    play,
+    pause,
+    togglePlayPause,
+    setVolume,
+    setCurrentTime,
+    getCurrentTime,
+    getDuration,
+    isReady,
+    // Interactions
+    updateCurrentTime,
+  } = audioPlayer;
 
   // Get audio player state
   const {
@@ -145,6 +158,28 @@ const AudioPlayer = ({
     setIsReturningFromLyrics
   });
 
+  // Create audioCore and audioInteractions objects for useAudioSync
+  const audioCore = {
+    playerRef,
+    play,
+    pause,
+    togglePlayPause,
+    setVolume,
+    setCurrentTime,
+    getCurrentTime,
+    getDuration,
+    isReady,
+    getReadyState: () => playerRef.current?.audio?.current?.readyState || 0,
+    isEnded: () => playerRef.current?.audio?.current?.ended || false,
+    isPaused: () => playerRef.current?.audio?.current?.paused ?? true
+  };
+
+  const audioInteractions = {
+    volume,
+    updateCurrentTime,
+    setVolume: (vol) => setVolume(vol)
+  };
+
   // Get audio sync functionality
   const {
     syncAllPlayers,
@@ -152,7 +187,8 @@ const AudioPlayer = ({
     preventDefaultAudioEvents,
     handlePlayPause
   } = useAudioSync({
-    playerRef,
+    audioCore,
+    audioInteractions,
     setCurrentTimeState,
     setDuration,
     setProgress,
@@ -167,7 +203,8 @@ const AudioPlayer = ({
     onNext,
     setIsPlaying,
     repeat,
-    volume
+    currentBeat,
+    isPlaying
   });
 
   // Set up media session
@@ -195,10 +232,16 @@ const AudioPlayer = ({
       <H5AudioPlayer
         ref={playerRef}
         src={audioSrc}
-        autoPlayAfterSrcChange={autoPlay}
+        autoPlayAfterSrcChange={false}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onCanPlay={handleAudioReady}
+        onError={(e) => {
+          // Ignore AbortError and other common audio errors during initialization
+          if (e.target?.error?.message && !e.target.error.message.includes('AbortError')) {
+            console.warn('Audio error:', e.target.error);
+          }
+        }}
         style={{ display: 'none' }}
       />
 

@@ -2,7 +2,8 @@ import { useEffect, useCallback } from 'react';
 import { syncAllPlayers as syncAllPlayersUtil } from '../utils';
 
 export const useAudioSync = ({
-  playerRef,
+  audioCore,
+  audioInteractions,
   setCurrentTimeState,
   setDuration,
   setProgress,
@@ -17,12 +18,13 @@ export const useAudioSync = ({
   onNext,
   setIsPlaying,
   repeat,
-  volume
+  currentBeat,
+  isPlaying
 }) => {
   // Sync all players with main audio element
   const syncAllPlayers = useCallback((forceUpdate = false) => {
     syncAllPlayersUtil({
-      playerRef,
+      playerRef: audioCore.playerRef,
       setCurrentTimeState,
       setDuration,
       setProgress,
@@ -37,7 +39,7 @@ export const useAudioSync = ({
       forceUpdate
     });
   }, [
-    playerRef,
+    audioCore.playerRef,
     setCurrentTimeState,
     setDuration,
     setProgress,
@@ -53,14 +55,14 @@ export const useAudioSync = ({
 
   // Handle seeking from display players
   const handleSeeked = useCallback((e) => {
-    const mainAudio = playerRef.current?.audio.current;
     const newTime = e.target.currentTime;
+    const currentTime = audioCore.getCurrentTime();
     
-    if (mainAudio && Math.abs(mainAudio.currentTime - newTime) > 0.1) {
-      mainAudio.currentTime = newTime;
+    if (Math.abs(currentTime - newTime) > 0.1) {
+      audioCore.setCurrentTime(newTime);
       syncAllPlayers();
     }
-  }, [playerRef, syncAllPlayers]);
+  }, [audioCore, syncAllPlayers]);
 
   // Override H5AudioPlayer events to prevent conflicts
   const preventDefaultAudioEvents = {
@@ -80,35 +82,27 @@ export const useAudioSync = ({
 
   // Handle play/pause from UI
   const handlePlayPause = useCallback((play) => {
-    const audio = playerRef.current?.audio.current;
-    if (audio) {
-      if (play) {
-        audio.play().catch(console.error);
-      } else {
-        audio.pause();
-      }
-    }
-  }, [playerRef]);
+    audioCore.togglePlayPause(play);
+  }, [audioCore]);
 
   // Handle when song ends - trigger next track or repeat
   const handleEnded = useCallback(() => {
-    const audioElement = playerRef.current?.audio?.current;
-    if (audioElement) {
-      if (repeat === 'Repeat One') {
-        audioElement.currentTime = 0;
-        audioElement.play();
-      } else {
-        onNext();
-      }
+    if (repeat === 'Repeat One') {
+      audioCore.setCurrentTime(0);
+      audioCore.play();
+    } else {
+      onNext();
     }
-  }, [onNext, repeat, playerRef]);
+  }, [onNext, repeat, audioCore]);
 
   // Set up main audio player event listeners
   useEffect(() => {
-    const mainAudio = playerRef.current?.audio.current;
+    const mainAudio = audioCore.playerRef.current?.audio.current;
     if (!mainAudio) return;
 
     const handleTimeUpdate = () => {
+      // Update interaction state with current time
+      audioInteractions.updateCurrentTime(audioCore.getCurrentTime());
       syncAllPlayers();
     };
 
@@ -139,6 +133,15 @@ export const useAudioSync = ({
       }
     };
 
+    const handleVolumeChange = () => {
+      // Sync volume changes back to interactions
+      const newVolume = mainAudio.volume;
+      if (Math.abs(newVolume - audioInteractions.volume) > 0.01) {
+        audioInteractions.setVolume(newVolume);
+      }
+    };
+
+    // Add all event listeners
     mainAudio.addEventListener('timeupdate', handleTimeUpdate);
     mainAudio.addEventListener('loadedmetadata', handleLoadedMetadata);
     mainAudio.addEventListener('loadeddata', handleLoadedData);
@@ -146,10 +149,11 @@ export const useAudioSync = ({
     mainAudio.addEventListener('play', handlePlay);
     mainAudio.addEventListener('pause', handlePause);
     mainAudio.addEventListener('ended', handleEnded);
+    mainAudio.addEventListener('volumechange', handleVolumeChange);
     
     // Initial sync - force update even when paused
     const initialSync = () => {
-      if (mainAudio.readyState >= 1) {
+      if (audioCore.getReadyState() >= 1) {
         syncAllPlayers(true);
       }
     };
@@ -168,8 +172,9 @@ export const useAudioSync = ({
       mainAudio.removeEventListener('play', handlePlay);
       mainAudio.removeEventListener('pause', handlePause);
       mainAudio.removeEventListener('ended', handleEnded);
+      mainAudio.removeEventListener('volumechange', handleVolumeChange);
     };
-      }, [playerRef.current?.audio.current, onNext, setIsPlaying, syncAllPlayers, handleEnded]);
+  }, [audioCore.playerRef.current?.audio.current, audioCore, audioInteractions, setIsPlaying, syncAllPlayers, handleEnded]);
 
   // Effect to sync display players when they're rendered or view changes
   useEffect(() => {
@@ -192,8 +197,7 @@ export const useAudioSync = ({
   // Additional effect to ensure sync after display players are mounted
   useEffect(() => {
     const ensureSync = () => {
-      const mainAudio = playerRef.current?.audio.current;
-      if (mainAudio && (mainAudio.readyState >= 1 || mainAudio.duration)) {
+      if (audioCore.isReady() || audioCore.getDuration()) {
         syncAllPlayers(true);
       }
     };
@@ -210,15 +214,30 @@ export const useAudioSync = ({
     return () => {
       timeouts.forEach(timeout => clearTimeout(timeout));
     };
-  }, [playerRef, syncAllPlayers]);
+  }, [audioCore, syncAllPlayers]);
 
-  // Apply volume to main audio element
+  // Apply current beat and playing state to auto-manage audio lifecycle
   useEffect(() => {
-    const mainAudio = playerRef.current?.audio.current;
-    if (mainAudio && typeof volume === 'number') {
-      mainAudio.volume = volume;
-    }
-  }, [playerRef, volume]);
+    // Add a small delay to prevent race conditions during initialization
+    const timeoutId = setTimeout(() => {
+      if (currentBeat?.audio && isPlaying && audioCore.isReady()) {
+        // Only play if we're not already playing and audio is ready
+        if (audioCore.isPaused()) {
+          audioCore.play().catch(error => {
+            // Ignore AbortError - it's usually from rapid play/pause calls
+            if (error.name !== 'AbortError') {
+              console.warn('Audio play failed:', error);
+            }
+          });
+        }
+      } else if (!isPlaying && !audioCore.isPaused()) {
+        // Only pause if we're actually playing
+        audioCore.pause();
+      }
+    }, 100); // 100ms delay to let initialization settle
+
+    return () => clearTimeout(timeoutId);
+  }, [currentBeat, isPlaying, audioCore]);
 
   return {
     syncAllPlayers,
