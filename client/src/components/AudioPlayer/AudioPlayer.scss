@@ -192,6 +192,10 @@ $indicator-half-size: math.div($indicator-size, 2);
     display: flex;
     justify-content: space-between;
 
+    .audio-player__text {
+      padding: 8px 0;
+    }
+
     .icon-button.play-pause {
       background-color: $color-black;
       padding: 0 20px;
