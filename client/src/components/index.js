@@ -14,6 +14,7 @@ export * from './Highlight';
 export * from './History';
 export * from './Inputs';
 export * from './Modals';
+export { default as PlayingIndicator } from './PlayingIndicator';
 export * from './Playlists';
 export * from './Queue';
 export * from './SidePanel';

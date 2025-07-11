@@ -24,7 +24,15 @@ export const useAudioSync = ({
   setCurrentBeat
 }) => {
   // Cross-tab synchronization
-  const { broadcastPlay, broadcastPause, broadcastSeek, broadcastBeatChange } = useCrossTabSync({
+  const { 
+    broadcastPlay, 
+    broadcastPause, 
+    broadcastSeek, 
+    broadcastBeatChange,
+    masterSession,
+    currentSessionId,
+    isCurrentSessionMaster
+  } = useCrossTabSync({
     currentBeat,
     isPlaying,
     audioCore,
@@ -316,6 +324,9 @@ export const useAudioSync = ({
     syncAllPlayers,
     handleSeeked,
     preventDefaultAudioEvents,
-    handlePlayPause
+    handlePlayPause,
+    masterSession,
+    currentSessionId,
+    isCurrentSessionMaster
   };
 }; 

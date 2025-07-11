@@ -1,5 +1,10 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 import { useWebSocket } from '../contexts';
+
+// Generate a unique session ID for this tab
+const generateSessionId = () => {
+  return `tab_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+};
 
 export const useCrossTabSync = ({
   currentBeat,
@@ -11,14 +16,26 @@ export const useCrossTabSync = ({
 }) => {
   const { socket, emitAudioPlay, emitAudioPause, emitAudioSeek, emitBeatChange } = useWebSocket();
   const isProcessingRemoteEvent = useRef(false);
+  const sessionId = useRef(generateSessionId());
+  const [masterSession, setMasterSession] = useState(null);
+
+  // Set this session as master when it starts playing
+  useEffect(() => {
+    if (isPlaying && currentBeat && !masterSession) {
+      setMasterSession(sessionId.current);
+    }
+  }, [isPlaying, currentBeat, masterSession]);
 
   // Emit play event to other tabs
   const broadcastPlay = useCallback(() => {
     if (currentBeat && !isProcessingRemoteEvent.current) {
+      setMasterSession(sessionId.current);
       emitAudioPlay({
         beatId: currentBeat.id,
         timestamp: Date.now(),
-        currentTime: audioCore.getCurrentTime()
+        currentTime: audioCore.getCurrentTime(),
+        sessionId: sessionId.current,
+        sessionName: `Tab ${sessionId.current.split('_')[1]?.slice(-4) || 'Unknown'}`
       });
     }
   }, [currentBeat, emitAudioPlay, audioCore]);
@@ -29,7 +46,9 @@ export const useCrossTabSync = ({
       emitAudioPause({
         beatId: currentBeat.id,
         timestamp: Date.now(),
-        currentTime: audioCore.getCurrentTime()
+        currentTime: audioCore.getCurrentTime(),
+        sessionId: sessionId.current,
+        sessionName: `Tab ${sessionId.current.split('_')[1]?.slice(-4) || 'Unknown'}`
       });
     }
   }, [currentBeat, emitAudioPause, audioCore]);
@@ -59,30 +78,43 @@ export const useCrossTabSync = ({
     if (!socket) return;
 
     const handleRemotePlay = (data) => {
+      // Update master session info
+      setMasterSession(data.sessionId);
+      
       if (currentBeat && data.beatId === currentBeat.id) {
-        // Check actual audio state rather than React state
-        if (audioCore.isPaused()) {
-          isProcessingRemoteEvent.current = true;
-          setIsPlaying(true);
-          audioCore.play().then(() => {
+        isProcessingRemoteEvent.current = true;
+        setIsPlaying(true);
+        
+        // Force audio to play - browsers require user interaction for autoplay
+        const startTime = Date.now();
+        const tryPlay = () => {
+          if (audioCore.isReady() && audioCore.getReadyState() >= 2) {
+            audioCore.play().then(() => {
+              isProcessingRemoteEvent.current = false;
+            }).catch((error) => {
+              // If play fails (usually due to lack of user interaction), just update state
+              // This allows the UI to show the correct play state even if audio can't play
+              isProcessingRemoteEvent.current = false;
+            });
+          } else if (Date.now() - startTime < 1000) {
+            // If audio isn't ready, try again after a short delay (max 1 second)
+            setTimeout(tryPlay, 100);
+          } else {
+            // Give up after 1 second and just clear the flag
             isProcessingRemoteEvent.current = false;
-          }).catch((error) => {
-            isProcessingRemoteEvent.current = false;
-          });
-        }
+          }
+        };
+        
+        tryPlay();
       }
     };
 
     const handleRemotePause = (data) => {
       if (currentBeat && data.beatId === currentBeat.id) {
-        // Check actual audio state rather than React state
-        if (!audioCore.isPaused()) {
-          isProcessingRemoteEvent.current = true;
-          setIsPlaying(false);
-          audioCore.pause();
-          // pause() doesn't return a promise, so clear the flag immediately
-          isProcessingRemoteEvent.current = false;
-        }
+        isProcessingRemoteEvent.current = true;
+        setIsPlaying(false);
+        audioCore.pause();
+        isProcessingRemoteEvent.current = false;
       }
     };
 
@@ -122,6 +154,9 @@ export const useCrossTabSync = ({
     broadcastPause,
     broadcastSeek,
     broadcastBeatChange,
-    isProcessingRemoteEvent: () => isProcessingRemoteEvent.current
+    isProcessingRemoteEvent: () => isProcessingRemoteEvent.current,
+    masterSession,
+    currentSessionId: sessionId.current,
+    isCurrentSessionMaster: masterSession === sessionId.current
   };
 }; 

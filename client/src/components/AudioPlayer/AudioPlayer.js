@@ -13,6 +13,7 @@ import {
 import { usePlaylist } from '../../contexts';
 
 import { ContextMenu } from '../ContextMenu';
+import PlayingIndicator from '../PlayingIndicator';
 import MobileAudioPlayer from './MobileAudioPlayer';
 import DesktopAudioPlayer from './DesktopAudioPlayer';
 import FullPageAudioPlayer from './FullPageAudioPlayer';
@@ -185,7 +186,10 @@ const AudioPlayer = ({
     syncAllPlayers,
     handleSeeked,
     preventDefaultAudioEvents,
-    handlePlayPause
+    handlePlayPause,
+    masterSession,
+    currentSessionId,
+    isCurrentSessionMaster
   } = useAudioSync({
     audioCore,
     audioInteractions,
@@ -354,6 +358,15 @@ const AudioPlayer = ({
           ]}
         />
       )}
+
+      {/* Playing Indicator */}
+      <PlayingIndicator
+        masterSession={masterSession}
+        currentSessionId={currentSessionId}
+        isCurrentSessionMaster={isCurrentSessionMaster}
+        isPlaying={isPlaying}
+        currentBeat={currentBeat}
+      />
     </>
   );
 };
