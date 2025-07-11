@@ -156,14 +156,64 @@ export const useAudioCache = () => {
   // Get cache key for a beat
   const getBeatCacheKey = useCallback((beat) => {
     if (!beat?.audio || !beat?.user_id) return null;
-    return `${beat.user_id}_${beat.audio}`;
+    const key = `${beat.user_id}_${beat.audio}`;
+    
+    // Debug logging for Belost track
+    if (beat.title === 'Belost') {
+      console.log('🔑 Cache key generation for Belost:', {
+        beatTitle: beat.title,
+        beatAudio: beat.audio,
+        beatUserId: beat.user_id,
+        generatedKey: key
+      });
+    }
+    
+    return key;
   }, []);
 
   // Check if a beat is cached (synchronous check using cached state)
   const isBeatCachedSync = useCallback((beat) => {
     const cacheKey = getBeatCacheKey(beat);
-    return cacheKey ? cachedBeats.has(cacheKey) : false;
+    const isCached = cacheKey ? cachedBeats.has(cacheKey) : false;
+    
+    // Debug logging for Belost track
+    if (beat.title === 'Belost') {
+      console.log('🔍 Cache check for Belost:', {
+        beatTitle: beat.title,
+        beatAudio: beat.audio,
+        beatUserId: beat.user_id,
+        cacheKey,
+        isCached,
+        cachedBeatsSize: cachedBeats.size,
+        cachedKeys: Array.from(cachedBeats)
+      });
+    }
+    
+    return isCached;
   }, [cachedBeats, getBeatCacheKey]);
+
+  // Mark a beat as cached (for external cache updates)
+  const markBeatAsCached = useCallback((beat) => {
+    const cacheKey = getBeatCacheKey(beat);
+    if (cacheKey) {
+      setCachedBeats(prev => {
+        const newSet = new Set([...prev, cacheKey]);
+        return newSet;
+      });
+    } else {
+      console.warn('⚠️ Could not generate cache key for beat:', beat);
+    }
+  }, [getBeatCacheKey]);
+
+  // Initialize cache status for beats on mount
+  useEffect(() => {
+    const initializeCacheStatus = async () => {
+      // This will be called when the hook is first used
+      // It will check and update the cache status for any beats that are passed to it
+    };
+    
+    initializeCacheStatus();
+  }, []);
 
   return {
     // State
@@ -181,6 +231,7 @@ export const useAudioCache = () => {
     isBeatCached,
     isBeatCachedSync,
     checkBeatsCacheStatus,
-    getBeatCacheKey
+    getBeatCacheKey,
+    markBeatAsCached
   };
 }; 

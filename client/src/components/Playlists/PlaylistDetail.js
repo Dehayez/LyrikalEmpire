@@ -14,7 +14,7 @@ import { UpdatePlaylistForm } from './UpdatePlaylistForm';
 
 import './PlaylistDetail.scss';
 
-const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBeats, addToCustomQueue, onBeatClick, onUpdate }) => {
+const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBeats, addToCustomQueue, onBeatClick, onUpdate, isBeatCachedSync }) => {
   const { id } = useParams();
   const { playlists, updatePlaylist } = usePlaylist();
 
@@ -118,6 +118,7 @@ const PlaylistDetail = ({ onPlay, selectedBeat, isPlaying, currentBeat, sortedBe
                   onUpdate={onUpdate}
                   moveBeat={moveBeat}
                   setBeats={setBeats}
+                  isBeatCachedSync={isBeatCachedSync}
                   headerContent={
                     <div className='playlist__text' onClick={() => setIsOpen(true)}>
                       <h2 className='playlist__title'>{playlist.title}</h2>

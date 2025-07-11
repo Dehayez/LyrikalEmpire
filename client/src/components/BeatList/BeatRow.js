@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline, IoRefreshSharp } from "react-icons/io5";
 import classNames from 'classnames';
 
-import { useBpmHandlers, useAudioCache } from '../../hooks';
+import { useBpmHandlers } from '../../hooks';
 import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services';
 import { isMobileOrTablet, formatDuration, replaceAudioWithToast } from '../../utils';
 import { usePlaylist, useBeat, useData, useUser, useHeaderWidths } from '../../contexts';
@@ -43,6 +43,7 @@ const BeatRow = ({
   setBeats, 
   setHoverIndex, 
   setHoverPosition,
+  isBeatCachedSync,
 }) => {
   const ref = useRef(null);
   const inputTitleRef = useRef(null);
@@ -53,7 +54,6 @@ const BeatRow = ({
   const { playlists, isSamePlaylist } = usePlaylist();
   const { handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const { headerWidths } = useHeaderWidths();
-  const { isBeatCachedSync } = useAudioCache();
 
   // Compute derived state with useMemo to avoid recalculations
   const beatIndices = useMemo(() => 
@@ -583,7 +583,16 @@ const BeatRow = ({
         <td className='beat-row__data beat-row__duration'>
           <div className="beat-row__duration-content">
             <CacheIndicator 
-              isCached={isBeatCachedSync(beat)} 
+              isCached={(() => {
+                const isCached = isBeatCachedSync ? isBeatCachedSync(beat) : false;
+                if (beat.title === 'Belost') {
+                  console.log('🔵 BeatRow cache check for Belost:', {
+                    isBeatCachedSyncExists: !!isBeatCachedSync,
+                    isCached
+                  });
+                }
+                return isCached;
+              })()} 
               size="small" 
               className="beat-row__cache-indicator"
             />
@@ -616,16 +625,4 @@ const BeatRow = ({
   );
 };
 
-export default React.memo(BeatRow, (prevProps, nextProps) => {
-  return (
-    prevProps.beat.id === nextProps.beat.id &&
-    prevProps.index === nextProps.index &&
-    prevProps.isPlaying === nextProps.isPlaying &&
-    prevProps.mode === nextProps.mode &&
-    prevProps.currentBeat?.id === nextProps.currentBeat?.id &&
-    prevProps.activeContextMenu === nextProps.activeContextMenu &&
-    JSON.stringify(prevProps.selectedBeats) === JSON.stringify(nextProps.selectedBeats) &&
-    prevProps.searchText === nextProps.searchText &&
-    JSON.stringify(prevProps.beats) === JSON.stringify(nextProps.beats)
-  );
-});
+export default BeatRow;

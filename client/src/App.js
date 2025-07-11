@@ -31,7 +31,7 @@ function App() {
   const { username } = user;
   const { emitBeatChange } = useWebSocket();
   const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats, user.id);
-  const { preloadQueue, checkBeatsCacheStatus } = useAudioCache();
+  const { preloadQueue, checkBeatsCacheStatus, markBeatAsCached, isBeatCachedSync } = useAudioCache();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [viewState, setViewState] = useState(() => getInitialState('lastView', 'queue'));
@@ -322,6 +322,7 @@ function App() {
                       onBeatClick={handleBeatClick} 
                       onUpdateBeat={updateBeat}
                       onUpdate={onUpdate}
+                      isBeatCachedSync={isBeatCachedSync}
                     />
                     <AddBeatButton setIsOpen={setIsOpen} />
                   </>
@@ -338,6 +339,7 @@ function App() {
                     addToCustomQueue={addToCustomQueue}
                     onBeatClick={handleBeatClick}  
                     onUpdate={onUpdate}
+                    isBeatCachedSync={isBeatCachedSync}
                   />
                 } />
               } />
@@ -432,6 +434,7 @@ function App() {
             lyricsModal={lyricsModal}
             setLyricsModal={setLyricsModal}
             onUpdateBeat={updateBeat}
+            markBeatAsCached={markBeatAsCached}
           />
         }
        {!isAuthRoute && isMobileOrTablet() && (

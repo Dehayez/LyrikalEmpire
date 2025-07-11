@@ -30,7 +30,8 @@ const AudioPlayer = ({
   shuffle, setShuffle,
   repeat, setRepeat,
   lyricsModal, setLyricsModal,
-  onUpdateBeat
+  onUpdateBeat,
+  markBeatAsCached
 }) => {
   // Guard clause: Don't render if there's no current beat
   if (!currentBeat) {
@@ -129,7 +130,8 @@ const AudioPlayer = ({
     isPlaying,
     setIsPlaying,
     lyricsModal,
-    setLyricsModal
+    setLyricsModal,
+    markBeatAsCached
   });
 
   // Get full page drag dismiss functionality

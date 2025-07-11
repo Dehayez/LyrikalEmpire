@@ -17,7 +17,7 @@ import { SearchInput } from '../Inputs/SearchInput';
 
 import './BeatList.scss';
 
-const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addToCustomQueue, onBeatClick, externalBeats, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats }) => {
+const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addToCustomQueue, onBeatClick, externalBeats, headerContent, onDeleteFromPlaylist, deleteMode = 'default', playlistName, playlistId, onUpdateBeat, onUpdate, setBeats, isBeatCachedSync }) => {
   const tableRef = useRef(null);
   const containerRef = useRef(null);
   const tbodyRef = useRef(null);
@@ -382,6 +382,7 @@ useEffect(() => {
           setBeats={setBeats}
           setHoverIndex={setHoverIndex}
           setHoverPosition={setHoverPosition}
+          isBeatCachedSync={isBeatCachedSync}
         />
         {hoverIndex === absoluteIndex && hoverPosition === 'bottom' && <tr className="drop-line" />}
       </React.Fragment>
