@@ -1,13 +1,22 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useData } from '../../contexts';
+import { useBeatActions } from '../../hooks';
 import { FormInput, SelectInput, SelectableInput } from '../Inputs';
 import './BeatEditInputs.scss';
 
 const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
   const { genres, moods, keywords, features } = useData();
+  const { handleUpdate } = useBeatActions();
   const [title, setTitle] = useState(currentBeat.title || '');
   const [bpm, setBpm] = useState(currentBeat.bpm || '');
   const [tierlist, setTierlist] = useState(currentBeat.tierlist || '');
+
+  // Sync local state with currentBeat prop changes
+  useEffect(() => {
+    setTitle(currentBeat.title || '');
+    setBpm(currentBeat.bpm || '');
+    setTierlist(currentBeat.tierlist || '');
+  }, [currentBeat.title, currentBeat.bpm, currentBeat.tierlist]);
 
   const handleInputChange = useCallback((property, value) => {
     onUpdateBeat?.(currentBeat.id, { [property]: value });
@@ -19,19 +28,46 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
     handleInputChange('title', newTitle);
   }, [handleInputChange]);
 
+  const handleTitleBlur = useCallback((e) => {
+    const newTitle = e.target.value;
+    handleUpdate(currentBeat.id, 'title', newTitle);
+  }, [currentBeat.id, handleUpdate]);
+
   const handleBpmChange = useCallback((e) => {
     const newBpm = e.target.value;
     setBpm(newBpm);
     handleInputChange('bpm', newBpm);
   }, [handleInputChange]);
 
+  const handleBpmBlur = useCallback((e) => {
+    const value = e.target.value;
+    if (value === '') {
+      handleUpdate(currentBeat.id, 'bpm', null);
+      return;
+    }
+    let bpm = parseFloat(value.replace(',', '.'));
+    bpm = Math.round(bpm);
+    if (isNaN(bpm) || bpm <= 0 || bpm > 240) {
+      alert('Please enter a valid BPM (1-240) or leave it empty.');
+      e.target.focus();
+    } else {
+      e.target.value = bpm;
+      handleUpdate(currentBeat.id, 'bpm', bpm);
+    }
+  }, [currentBeat.id, handleUpdate]);
+
   const handleTierlistChange = useCallback((e) => {
     const newTierlist = e.target.value;
     setTierlist(newTierlist);
     handleInputChange('tierlist', newTierlist);
-  }, [handleInputChange]);
+    handleUpdate(currentBeat.id, 'tierlist', newTierlist);
+  }, [handleInputChange, currentBeat.id, handleUpdate]);
 
-
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === "Enter") {
+      e.target.blur();
+    }
+  }, []);
 
   return (
     <div className="beat-edit-inputs">
@@ -43,6 +79,8 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
           type="text" 
           value={title} 
           onChange={handleTitleChange}
+          onBlur={handleTitleBlur}
+          onKeyDown={handleKeyDown}
           spellCheck="false" 
         />
 
@@ -73,6 +111,8 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
           type="text"
           value={bpm}
           onChange={handleBpmChange}
+          onBlur={handleBpmBlur}
+          onKeyDown={handleKeyDown}
           spellCheck="false"
         />
 

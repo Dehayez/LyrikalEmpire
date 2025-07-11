@@ -30,16 +30,6 @@ export const createSlides = (currentBeat, editInputs) => [
     )
   },
   {
-    id: 'info',
-    content: (
-      <div className="audio-player__full-page-info-content">
-        <p className="audio-player__full-page-description">
-          {currentBeat.description || 'No description available.'}
-        </p>
-      </div>
-    )
-  },
-  {
     id: 'edit',
     content: editInputs || (
       <div className="audio-player__full-page-edit-content">
