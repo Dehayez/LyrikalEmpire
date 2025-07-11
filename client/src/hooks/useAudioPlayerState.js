@@ -83,41 +83,49 @@ export const useAudioPlayerState = ({
         setIsCachedAudio(false);
         
         try {
-          // Check if audio is already cached
-          const cachedAudio = await audioCacheService.getAudio(currentBeat.user_id, currentBeat.audio);
+          // First, always get the signed URL to ensure we have a fallback
+          const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
           
-          if (cachedAudio) {
-            // Use cached audio
-            setAudioSrc(cachedAudio);
-            setIsCachedAudio(true);
-            setAutoPlay(!isFirstRender);
-            setIsFirstRender(false);
-            setIsLoadingAudio(false);
-          } else {
-            // Fetch signed URL and cache the audio
-            const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
+          // Try to use cached audio if available
+          let finalAudioSrc = signedUrl;
+          let isCached = false;
+          
+          try {
+            // Check if audio is already cached
+            const cachedAudio = await audioCacheService.getAudio(currentBeat.user_id, currentBeat.audio);
             
-            try {
-              // Try to preload and cache the audio
-              const cachedObjectUrl = await audioCacheService.preloadAudio(
+            if (cachedAudio) {
+              // Use cached audio
+              finalAudioSrc = cachedAudio;
+              isCached = true;
+            } else {
+              // Try to preload and cache the audio in background (non-blocking)
+              audioCacheService.preloadAudio(
                 currentBeat.user_id, 
                 currentBeat.audio, 
                 signedUrl
-              );
-              
-              // Use the cached version
-              setAudioSrc(cachedObjectUrl);
-              setIsCachedAudio(true);
-            } catch (cacheError) {
-              // If caching fails, fall back to direct signed URL
-              console.warn('Audio caching failed, using direct URL:', cacheError);
-              setAudioSrc(signedUrl);
-              setIsCachedAudio(false);
+              ).then((cachedObjectUrl) => {
+                // Update to cached version once available (if still the same beat)
+                if (currentBeat?.audio === currentBeat.audio && currentBeat?.user_id === currentBeat.user_id) {
+                  setAudioSrc(cachedObjectUrl);
+                  setIsCachedAudio(true);
+                }
+              }).catch((cacheError) => {
+                // Silently fail caching - we're already using the direct URL
+                console.warn('Background caching failed:', cacheError);
+              });
             }
-            
-            setAutoPlay(!isFirstRender);
-            setIsFirstRender(false);
+          } catch (cacheError) {
+            // Cache check failed, but we have the signed URL as fallback
+            console.warn('Audio cache check failed, using direct URL:', cacheError);
           }
+          
+          // Always set the audio source (either cached or direct)
+          setAudioSrc(finalAudioSrc);
+          setIsCachedAudio(isCached);
+          setAutoPlay(!isFirstRender);
+          setIsFirstRender(false);
+          
         } catch (error) {
           console.error('Error loading audio:', error);
           setAudioSrc('');

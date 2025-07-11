@@ -49,36 +49,41 @@ class AudioCacheService {
 
   // Get audio from cache (memory first, then IndexedDB)
   async getAudio(userId, fileName) {
-    const cacheKey = this.getCacheKey(userId, fileName);
-    
-    // Check memory cache first
-    const memoryEntry = this.memoryCache.get(cacheKey);
-    if (memoryEntry) {
-      memoryEntry.lastAccessed = Date.now();
-      return memoryEntry.objectUrl;
-    }
-
-    // Check IndexedDB
-    if (this.db) {
-      try {
-        const entry = await this.db.get(this.storeName, cacheKey);
-        if (entry) {
-          // Update last accessed time
-          entry.lastAccessed = Date.now();
-          await this.db.put(this.storeName, entry);
-          
-          // Create object URL and add to memory cache
-          const objectUrl = URL.createObjectURL(entry.blob);
-          this.addToMemoryCache(cacheKey, objectUrl, entry.blob.size);
-          
-          return objectUrl;
-        }
-      } catch (error) {
-        console.error('Error reading from audio cache:', error);
+    try {
+      const cacheKey = this.getCacheKey(userId, fileName);
+      
+      // Check memory cache first
+      const memoryEntry = this.memoryCache.get(cacheKey);
+      if (memoryEntry) {
+        memoryEntry.lastAccessed = Date.now();
+        return memoryEntry.objectUrl;
       }
-    }
 
-    return null;
+      // Check IndexedDB
+      if (this.db) {
+        try {
+          const entry = await this.db.get(this.storeName, cacheKey);
+          if (entry) {
+            // Update last accessed time
+            entry.lastAccessed = Date.now();
+            await this.db.put(this.storeName, entry);
+            
+            // Create object URL and add to memory cache
+            const objectUrl = URL.createObjectURL(entry.blob);
+            this.addToMemoryCache(cacheKey, objectUrl, entry.blob.size);
+            
+            return objectUrl;
+          }
+        } catch (error) {
+          console.error('Error reading from audio cache:', error);
+        }
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error in getAudio:', error);
+      return null;
+    }
   }
 
   // Store audio in cache
@@ -194,24 +199,29 @@ class AudioCacheService {
 
   // Check if audio is cached
   async isAudioCached(userId, fileName) {
-    const cacheKey = this.getCacheKey(userId, fileName);
-    
-    // Check memory cache
-    if (this.memoryCache.has(cacheKey)) {
-      return true;
-    }
-
-    // Check IndexedDB
-    if (this.db) {
-      try {
-        const entry = await this.db.get(this.storeName, cacheKey);
-        return !!entry;
-      } catch (error) {
-        console.error('Error checking cache:', error);
+    try {
+      const cacheKey = this.getCacheKey(userId, fileName);
+      
+      // Check memory cache
+      if (this.memoryCache.has(cacheKey)) {
+        return true;
       }
-    }
 
-    return false;
+      // Check IndexedDB
+      if (this.db) {
+        try {
+          const entry = await this.db.get(this.storeName, cacheKey);
+          return !!entry;
+        } catch (error) {
+          console.error('Error checking cache:', error);
+        }
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error in isAudioCached:', error);
+      return false;
+    }
   }
 
   // Clear all cached audio
@@ -295,14 +305,14 @@ class AudioCacheService {
 
   // Preload audio for a beat
   async preloadAudio(userId, fileName, signedUrl) {
-    const cacheKey = this.getCacheKey(userId, fileName);
-    
-    // Check if already cached
-    if (await this.isAudioCached(userId, fileName)) {
-      return await this.getAudio(userId, fileName);
-    }
-
     try {
+      const cacheKey = this.getCacheKey(userId, fileName);
+      
+      // Check if already cached
+      if (await this.isAudioCached(userId, fileName)) {
+        return await this.getAudio(userId, fileName);
+      }
+
       // Fetch audio blob
       const response = await fetch(signedUrl);
       if (!response.ok) {
