@@ -113,10 +113,44 @@ export const useAudioSync = ({
 
     const handleLoadedData = () => {
       syncAllPlayers(true);
+      
+      // Check if we should start playback now that the correct audio data is loaded
+      if (currentBeat?.audio && isPlaying) {
+        const currentSrc = mainAudio.src;
+        const expectedAudioFileName = currentBeat.audio;
+        const srcMatchesBeat = currentSrc && expectedAudioFileName && 
+          currentSrc.includes(expectedAudioFileName);
+        
+        if (srcMatchesBeat && audioCore.isPaused()) {
+          console.log('Audio data loaded, starting playback...');
+          audioCore.play().catch(error => {
+            if (error.name !== 'AbortError') {
+              console.warn('Audio play failed after data loaded:', error);
+            }
+          });
+        }
+      }
     };
 
     const handleCanPlay = () => {
       syncAllPlayers(true);
+      
+      // Check if we should start playback now that the correct audio is ready
+      if (currentBeat?.audio && isPlaying) {
+        const currentSrc = mainAudio.src;
+        const expectedAudioFileName = currentBeat.audio;
+        const srcMatchesBeat = currentSrc && expectedAudioFileName && 
+          currentSrc.includes(expectedAudioFileName);
+        
+        if (srcMatchesBeat && audioCore.isPaused()) {
+          console.log('Audio src ready, starting playback...');
+          audioCore.play().catch(error => {
+            if (error.name !== 'AbortError') {
+              console.warn('Audio play failed after src ready:', error);
+            }
+          });
+        }
+      }
     };
 
     const handlePlay = () => {
@@ -174,7 +208,7 @@ export const useAudioSync = ({
       mainAudio.removeEventListener('ended', handleEnded);
       mainAudio.removeEventListener('volumechange', handleVolumeChange);
     };
-  }, [audioCore.playerRef.current?.audio.current, audioCore, audioInteractions, setIsPlaying, syncAllPlayers, handleEnded]);
+  }, [audioCore.playerRef.current?.audio.current, audioCore, audioInteractions, setIsPlaying, syncAllPlayers, handleEnded, currentBeat, isPlaying]);
 
   // Effect to sync display players when they're rendered or view changes
   useEffect(() => {
@@ -218,26 +252,42 @@ export const useAudioSync = ({
 
   // Apply current beat and playing state to auto-manage audio lifecycle
   useEffect(() => {
+    const audio = audioCore.playerRef.current?.audio?.current;
+    if (!audio) return;
+
     // Add a small delay to prevent race conditions during initialization
     const timeoutId = setTimeout(() => {
       if (currentBeat?.audio && isPlaying && audioCore.isReady()) {
-        // Only play if we're not already playing and audio is ready
-        if (audioCore.isPaused()) {
+        // CRITICAL: Only play if the audio src matches the current beat
+        // This prevents playing the wrong track during src changes
+        const currentSrc = audio.src;
+        const expectedAudioFileName = currentBeat.audio;
+        
+        // Check if the current audio source contains the expected filename
+        const srcMatchesBeat = currentSrc && expectedAudioFileName && 
+          currentSrc.includes(expectedAudioFileName);
+        
+        if (srcMatchesBeat && audioCore.isPaused()) {
           audioCore.play().catch(error => {
             // Ignore AbortError - it's usually from rapid play/pause calls
             if (error.name !== 'AbortError') {
               console.warn('Audio play failed:', error);
             }
           });
+        } else if (!srcMatchesBeat) {
+          // Audio src doesn't match - wait for it to update
+          console.log('Waiting for audio src to update before playing...');
         }
       } else if (!isPlaying && !audioCore.isPaused()) {
-        // Only pause if we're actually playing
+        // Always allow pausing regardless of src
         audioCore.pause();
       }
     }, 100); // 100ms delay to let initialization settle
 
     return () => clearTimeout(timeoutId);
   }, [currentBeat, isPlaying, audioCore]);
+
+
 
   return {
     syncAllPlayers,
