@@ -210,20 +210,7 @@ if (typeof window !== 'undefined') {
     testAudioLoading: testAudioLoading
   };
   
-  // Show quick help
-  console.log(`
-🎵 Audio Cache Debug Utilities Available:
-  
-  audioCacheDebug.getStats()           - Show cache statistics
-  audioCacheDebug.getCurrentTrackCache() - Check current track cache status
-  audioCacheDebug.isTrackCached(userId, fileName) - Check specific track
-  audioCacheDebug.listCachedTracks()   - List all cached tracks
-  audioCacheDebug.clearCache()         - Clear all cached audio
-  audioCacheDebug.cleanupExpired()     - Clean up expired entries
-  audioCacheDebug.testAudioLoading(userId, fileName) - Manually test audio loading
-  
-Type any command in the console to use!
-  `);
+  // Debug utilities loaded silently
 }
 
 export default AudioCacheDebug; 

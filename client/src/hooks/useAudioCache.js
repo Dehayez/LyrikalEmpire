@@ -156,39 +156,13 @@ export const useAudioCache = () => {
   // Get cache key for a beat
   const getBeatCacheKey = useCallback((beat) => {
     if (!beat?.audio || !beat?.user_id) return null;
-    const key = `${beat.user_id}_${beat.audio}`;
-    
-    // Debug logging for Belost track
-    if (beat.title === 'Belost') {
-      console.log('🔑 Cache key generation for Belost:', {
-        beatTitle: beat.title,
-        beatAudio: beat.audio,
-        beatUserId: beat.user_id,
-        generatedKey: key
-      });
-    }
-    
-    return key;
+    return `${beat.user_id}_${beat.audio}`;
   }, []);
 
   // Check if a beat is cached (synchronous check using cached state)
   const isBeatCachedSync = useCallback((beat) => {
     const cacheKey = getBeatCacheKey(beat);
     const isCached = cacheKey ? cachedBeats.has(cacheKey) : false;
-    
-    // Debug logging for Belost track
-    if (beat.title === 'Belost') {
-      console.log('🔍 Cache check for Belost:', {
-        beatTitle: beat.title,
-        beatAudio: beat.audio,
-        beatUserId: beat.user_id,
-        cacheKey,
-        isCached,
-        cachedBeatsSize: cachedBeats.size,
-        cachedKeys: Array.from(cachedBeats)
-      });
-    }
-    
     return isCached;
   }, [cachedBeats, getBeatCacheKey]);
 

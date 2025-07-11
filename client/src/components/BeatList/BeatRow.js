@@ -583,16 +583,7 @@ const BeatRow = ({
         <td className='beat-row__data beat-row__duration'>
           <div className="beat-row__duration-content">
             <CacheIndicator 
-              isCached={(() => {
-                const isCached = isBeatCachedSync ? isBeatCachedSync(beat) : false;
-                if (beat.title === 'Belost') {
-                  console.log('🔵 BeatRow cache check for Belost:', {
-                    isBeatCachedSyncExists: !!isBeatCachedSync,
-                    isCached
-                  });
-                }
-                return isCached;
-              })()} 
+              isCached={isBeatCachedSync ? isBeatCachedSync(beat) : false} 
               size="small" 
               className="beat-row__cache-indicator"
             />

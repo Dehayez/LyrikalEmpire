@@ -55,5 +55,4 @@ export const testAudioCache = async () => {
 // Make available globally
 if (typeof window !== 'undefined') {
   window.testAudioCache = testAudioCache;
-  console.log('🧪 Test utility loaded! Run: testAudioCache()');
 } 

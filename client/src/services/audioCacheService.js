@@ -6,11 +6,8 @@ const loadIDB = async () => {
   try {
     const idbModule = await import('idb');
     idb = idbModule;
-    console.log('✅ idb package imported successfully');
     return true;
   } catch (error) {
-    console.warn('⚠️ idb package not available:', error.message);
-    console.warn('🔄 Audio caching will use memory only');
     return false;
   }
 };
@@ -30,37 +27,25 @@ class AudioCacheService {
   }
 
   async init() {
-    console.log('🎵 Initializing audio cache service...');
-    
     // Try to load the idb package
     const idbLoaded = await loadIDB();
     
     if (!idbLoaded || !idb) {
-      console.warn('⚠️ idb package not available, using memory cache only');
       return;
     }
     
     try {
-      console.log('📦 idb package loaded successfully');
-      console.log(`🗃️ Opening database: ${this.dbName} version ${this.version}`);
-      
       this.db = await idb.openDB(this.dbName, this.version, {
         upgrade(db) {
-          console.log('🔧 Upgrading database schema...');
           if (!db.objectStoreNames.contains('audioFiles')) {
-            console.log('📁 Creating audioFiles object store...');
             const store = db.createObjectStore('audioFiles', { keyPath: 'id' });
             store.createIndex('lastAccessed', 'lastAccessed');
             store.createIndex('size', 'size');
-            console.log('✅ Object store created successfully');
           }
         },
       });
-      
-      console.log('✅ Audio cache database initialized successfully');
     } catch (error) {
-      console.error('❌ Failed to initialize audio cache:', error);
-      console.error('Error details:', error.message);
+      // Silently fail initialization
     }
   }
 
@@ -97,13 +82,12 @@ class AudioCacheService {
             return objectUrl;
           }
         } catch (error) {
-          console.error('Error reading from audio cache:', error);
+          // Silently handle error
         }
       }
 
       return null;
     } catch (error) {
-      console.error('Error in getAudio:', error);
       return null;
     }
   }
@@ -135,7 +119,6 @@ class AudioCacheService {
       
       return objectUrl;
     } catch (error) {
-      console.error('Error storing audio in cache:', error);
       throw error;
     }
   }
@@ -202,7 +185,7 @@ class AudioCacheService {
         }
       }
     } catch (error) {
-      console.error('Error managing IndexedDB space:', error);
+      // Silently handle error
     }
   }
 
@@ -214,7 +197,6 @@ class AudioCacheService {
       const entries = await this.db.getAll(this.storeName);
       return entries.reduce((total, entry) => total + entry.size, 0);
     } catch (error) {
-      console.error('Error calculating DB size:', error);
       return 0;
     }
   }
@@ -235,13 +217,12 @@ class AudioCacheService {
           const entry = await this.db.get(this.storeName, cacheKey);
           return !!entry;
         } catch (error) {
-          console.error('Error checking cache:', error);
+          // Silently handle error
         }
       }
 
       return false;
     } catch (error) {
-      console.error('Error in isAudioCached:', error);
       return false;
     }
   }
@@ -260,7 +241,7 @@ class AudioCacheService {
       try {
         await this.db.clear(this.storeName);
       } catch (error) {
-        console.error('Error clearing IndexedDB cache:', error);
+        // Silently handle error
       }
     }
   }
@@ -285,7 +266,7 @@ class AudioCacheService {
         dbStats.count = entries.length;
         dbStats.size = entries.reduce((total, entry) => total + entry.size, 0);
       } catch (error) {
-        console.error('Error getting DB stats:', error);
+        // Silently handle error
       }
     }
 
@@ -321,7 +302,7 @@ class AudioCacheService {
         }
       }
     } catch (error) {
-      console.error('Error cleaning up expired entries:', error);
+      // Silently handle error
     }
   }
 
@@ -344,7 +325,6 @@ class AudioCacheService {
       const audioBlob = await response.blob();
       return await this.storeAudio(userId, fileName, audioBlob);
     } catch (error) {
-      console.error('Error preloading audio:', error);
       throw error;
     }
   }
