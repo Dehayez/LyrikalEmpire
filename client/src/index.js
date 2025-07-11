@@ -8,7 +8,7 @@ import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import { PlaylistProvider, BeatProvider, DataProvider, HeaderWidthProvider, UserProvider } from './contexts'; 
+import { PlaylistProvider, BeatProvider, DataProvider, HeaderWidthProvider, UserProvider, WebSocketProvider } from './contexts'; 
 
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
@@ -17,17 +17,19 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
-        <PlaylistProvider> 
-          <BeatProvider>
-            <DataProvider>
-              <HeaderWidthProvider>
-                <DndProvider backend={HTML5Backend}>
-                  <App />
-                </DndProvider>
-              </HeaderWidthProvider>
-            </DataProvider>
-          </BeatProvider>
-        </PlaylistProvider>
+        <WebSocketProvider>
+          <PlaylistProvider> 
+            <BeatProvider>
+              <DataProvider>
+                <HeaderWidthProvider>
+                  <DndProvider backend={HTML5Backend}>
+                    <App />
+                  </DndProvider>
+                </HeaderWidthProvider>
+              </DataProvider>
+            </BeatProvider>
+          </PlaylistProvider>
+        </WebSocketProvider>
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>

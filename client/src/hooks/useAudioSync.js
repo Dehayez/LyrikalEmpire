@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { syncAllPlayers as syncAllPlayersUtil } from '../utils';
+import { useCrossTabSync } from './useCrossTabSync';
 
 export const useAudioSync = ({
   audioCore,
@@ -19,8 +20,18 @@ export const useAudioSync = ({
   setIsPlaying,
   repeat,
   currentBeat,
-  isPlaying
+  isPlaying,
+  setCurrentBeat
 }) => {
+  // Cross-tab synchronization
+  const { broadcastPlay, broadcastPause, broadcastSeek, broadcastBeatChange } = useCrossTabSync({
+    currentBeat,
+    isPlaying,
+    audioCore,
+    setIsPlaying,
+    setCurrentBeat,
+    currentTime: audioCore.getCurrentTime()
+  });
   // Sync all players with main audio element
   const syncAllPlayers = useCallback((forceUpdate = false) => {
     syncAllPlayersUtil({
@@ -158,6 +169,8 @@ export const useAudioSync = ({
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'playing';
       }
+      // Broadcast to other tabs
+      broadcastPlay();
     };
 
     const handlePause = () => {
@@ -165,6 +178,8 @@ export const useAudioSync = ({
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'paused';
       }
+      // Broadcast to other tabs
+      broadcastPause();
     };
 
     const handleVolumeChange = () => {

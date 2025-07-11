@@ -5,7 +5,7 @@ import { IoPersonSharp } from "react-icons/io5";
 
 import { isMobileOrTablet, getInitialState, isAuthPage } from './utils';
 import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
-import { useBeat, useUser } from './contexts';
+import { useBeat, useUser, useWebSocket } from './contexts';
 import ProtectedRoute from './routes/ProtectedRoute';
 import userService from './services/userService';
 
@@ -23,6 +23,7 @@ function App() {
   const navigate = useNavigate();
   const { user } = useUser();
   const { username } = user;
+  const { emitBeatChange } = useWebSocket();
   const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats, user.id);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -85,6 +86,14 @@ function App() {
     updateHistory(beat);
     if (window.electron) {
       window.electron.setActivity(beat.title);
+    }
+    // Broadcast beat change to other tabs if it's a new beat
+    if (emitBeatChange && beat.id !== currentBeat?.id) {
+      emitBeatChange({
+        beatId: beat.id,
+        timestamp: Date.now(),
+        beat: beat
+      });
     }
   };
 
@@ -177,6 +186,14 @@ function App() {
   const handleBeatClick = (beat) => {
     setCurrentBeat(beat);
     setIsPlaying(true);
+    // Broadcast beat change to other tabs
+    if (emitBeatChange) {
+      emitBeatChange({
+        beatId: beat.id,
+        timestamp: Date.now(),
+        beat: beat
+      });
+    }
   };
 
   const toggleView = (view) => {

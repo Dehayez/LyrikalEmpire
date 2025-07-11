@@ -15,5 +15,6 @@ export { useMediaSession } from './useMediaSession';
 export { useAudioCore } from './useAudioCore';
 export { useAudioInteractions } from './useAudioInteractions';
 export { useAudioSync } from './useAudioSync';
+export { useCrossTabSync } from './useCrossTabSync';
 export { default as useOs } from './useOs';
 export { useSwipeGestures } from './useSwipeGestures';

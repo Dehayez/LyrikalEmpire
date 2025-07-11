@@ -204,7 +204,8 @@ const AudioPlayer = ({
     setIsPlaying,
     repeat,
     currentBeat,
-    isPlaying
+    isPlaying,
+    setCurrentBeat
   });
 
   // Set up media session
