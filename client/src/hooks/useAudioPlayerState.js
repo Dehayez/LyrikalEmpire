@@ -86,56 +86,50 @@ export const useAudioPlayerState = ({
         setIsCachedAudio(false);
         
         try {
-          // First, always get the signed URL to ensure we have a fallback
-          const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
+          // First, check if audio is already cached
+          const cachedAudio = await audioCacheService.getAudio(currentBeat.user_id, currentBeat.audio);
           
-          // Try to use cached audio if available
-          let finalAudioSrc = signedUrl;
-          let isCached = false;
-          
-          try {
-            // Check if audio is already cached
-            const cachedAudio = await audioCacheService.getAudio(currentBeat.user_id, currentBeat.audio);
+          if (cachedAudio) {
+            // Use cached audio immediately - no API call needed
+            setAudioSrc(cachedAudio);
+            setIsCachedAudio(true);
+            setAutoPlay(!isFirstRender);
+            setIsFirstRender(false);
             
-            if (cachedAudio) {
-              // Use cached audio
-              finalAudioSrc = cachedAudio;
-              isCached = true;
-              // Update the cache indicators state
-              if (markBeatAsCached) {
-                markBeatAsCached(currentBeat);
-              }
-            } else {
-              // Try to preload and cache the audio in background (non-blocking)
-              audioCacheService.preloadAudio(
-                currentBeat.user_id, 
-                currentBeat.audio, 
-                signedUrl
-              ).then((cachedObjectUrl) => {
-                // Update to cached version once available (if still the same beat)
-                if (currentBeat?.audio === currentBeat.audio && currentBeat?.user_id === currentBeat.user_id) {
-                  setAudioSrc(cachedObjectUrl);
-                  setIsCachedAudio(true);
-                  // Update the cache indicators state
-                  if (markBeatAsCached) {
-                    markBeatAsCached(currentBeat);
-                  }
-                }
-              }).catch((cacheError) => {
-                // Silently fail caching - we're already using the direct URL
-                // Background caching failed
-              });
+            // Update the cache indicators state
+            if (markBeatAsCached) {
+              markBeatAsCached(currentBeat);
             }
-          } catch (cacheError) {
-            // Cache check failed, but we have the signed URL as fallback
-            // Audio cache check failed, using direct URL
+          } else {
+            // Not cached, get signed URL and start caching process
+            const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
+            
+            // Set signed URL as audio source
+            setAudioSrc(signedUrl);
+            setIsCachedAudio(false);
+            setAutoPlay(!isFirstRender);
+            setIsFirstRender(false);
+            
+            // Try to preload and cache the audio in background (non-blocking)
+            audioCacheService.preloadAudio(
+              currentBeat.user_id, 
+              currentBeat.audio, 
+              signedUrl
+            ).then((cachedObjectUrl) => {
+              // Update to cached version once available (if still the same beat)
+              if (currentBeat?.audio === currentBeat.audio && currentBeat?.user_id === currentBeat.user_id) {
+                setAudioSrc(cachedObjectUrl);
+                setIsCachedAudio(true);
+                // Update the cache indicators state
+                if (markBeatAsCached) {
+                  markBeatAsCached(currentBeat);
+                }
+              }
+            }).catch((cacheError) => {
+              // Silently fail caching - we're already using the direct URL
+              // Background caching failed
+            });
           }
-          
-          // Always set the audio source (either cached or direct)
-          setAudioSrc(finalAudioSrc);
-          setIsCachedAudio(isCached);
-          setAutoPlay(!isFirstRender);
-          setIsFirstRender(false);
           
         } catch (error) {
           // Error loading audio
