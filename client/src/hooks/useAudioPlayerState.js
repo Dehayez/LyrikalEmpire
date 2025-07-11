@@ -5,9 +5,6 @@ import { getSignedUrl, getUserById, audioCacheService } from '../services';
 
 export const useAudioPlayerState = ({
   currentBeat,
-  setCurrentBeat,
-  isPlaying,
-  setIsPlaying,
   lyricsModal,
   setLyricsModal,
   markBeatAsCached
@@ -147,7 +144,7 @@ export const useAudioPlayerState = ({
     };
 
     updateAudioSource();
-  }, [currentBeat?.audio, currentBeat?.user_id, isFirstRender, markBeatAsCached, currentBeat]);
+  }, [currentBeat?.audio, currentBeat?.user_id, isFirstRender, markBeatAsCached]);
 
   // Handlers
   const toggleLyricsModal = useCallback(() => {
