@@ -6,3 +6,4 @@ export * from './featureService';
 export * from './playlistService';
 export * from './lyricsService';
 export * from './userService';
+export { default as audioCacheService } from './audioCacheService';

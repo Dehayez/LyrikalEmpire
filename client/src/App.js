@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { IoPersonSharp } from "react-icons/io5";
 
 import { isMobileOrTablet, getInitialState, isAuthPage } from './utils';
-import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels } from './hooks';
+import { useSort, useDragAndDrop, useLocalStorageSync, useAudioPlayer, usePanels, useAudioCache } from './hooks';
 import { useBeat, useUser, useWebSocket } from './contexts';
 import ProtectedRoute from './routes/ProtectedRoute';
 import userService from './services/userService';
@@ -25,6 +25,7 @@ function App() {
   const { username } = user;
   const { emitBeatChange } = useWebSocket();
   const { isDraggingOver, droppedFiles, clearDroppedFiles } = useDragAndDrop(setRefreshBeats, user.id);
+  const { preloadQueue, checkBeatsCacheStatus } = useAudioCache();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [viewState, setViewState] = useState(() => getInitialState('lastView', 'queue'));
@@ -62,6 +63,24 @@ function App() {
       window.removeEventListener('auth:tokenExpired', handleTokenExpired);
     };
   }, []);
+
+  // Initialize cache status for beats
+  useEffect(() => {
+    if (beats && beats.length > 0) {
+      checkBeatsCacheStatus(beats);
+    }
+  }, [beats, checkBeatsCacheStatus]);
+
+  // Preload beats around current beat for better user experience
+  useEffect(() => {
+    if (currentBeat && queue.length > 0) {
+      const currentIndex = queue.findIndex(beat => beat.id === currentBeat.id);
+      if (currentIndex !== -1) {
+        // Preload current beat and next 2 beats
+        preloadQueue(queue, currentIndex, 3);
+      }
+    }
+  }, [currentBeat, queue, preloadQueue]);
 
   const {
     isLeftPanelVisible,

@@ -6,6 +6,7 @@ export { useSort } from './useSort';
 export { useDragAndDrop } from './useDragAndDrop';
 export { useLocalStorageSync } from './useLocalStorageSync';
 export { useAudioPlayer } from './useAudioPlayer';
+export { useAudioCache } from './useAudioCache';
 export { usePanels } from './usePanels';
 export { useDragToDismiss } from './useDragToDismiss';
 export { useAudioPlayerState } from './useAudioPlayerState';

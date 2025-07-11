@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocalStorageSync } from './useLocalStorageSync';
 import { isMobileOrTablet } from '../utils';
-import { getSignedUrl, getUserById } from '../services';
+import { getSignedUrl, getUserById, audioCacheService } from '../services';
 
 export const useAudioPlayerState = ({
   currentBeat,
@@ -33,6 +33,8 @@ export const useAudioPlayerState = ({
   const [isReturningFromLyrics, setIsReturningFromLyrics] = useState(false);
   const [audioSrc, setAudioSrc] = useState('');
   const [autoPlay, setAutoPlay] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const [isCachedAudio, setIsCachedAudio] = useState(false);
   const [waveform, setWaveform] = useState(() => JSON.parse(localStorage.getItem('waveform')) || false);
   const [isFullPage, setIsFullPage] = useState(() => {
     return JSON.parse(localStorage.getItem('isFullPage')) || false;
@@ -73,18 +75,61 @@ export const useAudioPlayerState = ({
     fetchArtistName();
   }, [currentBeat?.user_id]);
 
-  // Handle audio source changes
+  // Handle audio source changes with caching
   useEffect(() => {
     const updateAudioSource = async () => {
-      if (currentBeat?.audio) {
+      if (currentBeat?.audio && currentBeat?.user_id) {
+        setIsLoadingAudio(true);
+        setIsCachedAudio(false);
+        
         try {
-          const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
-          setAudioSrc(signedUrl);
-          setAutoPlay(!isFirstRender);
-          setIsFirstRender(false);
+          // Check if audio is already cached
+          const cachedAudio = await audioCacheService.getAudio(currentBeat.user_id, currentBeat.audio);
+          
+          if (cachedAudio) {
+            // Use cached audio
+            setAudioSrc(cachedAudio);
+            setIsCachedAudio(true);
+            setAutoPlay(!isFirstRender);
+            setIsFirstRender(false);
+            setIsLoadingAudio(false);
+          } else {
+            // Fetch signed URL and cache the audio
+            const signedUrl = await getSignedUrl(currentBeat.user_id, currentBeat.audio);
+            
+            try {
+              // Try to preload and cache the audio
+              const cachedObjectUrl = await audioCacheService.preloadAudio(
+                currentBeat.user_id, 
+                currentBeat.audio, 
+                signedUrl
+              );
+              
+              // Use the cached version
+              setAudioSrc(cachedObjectUrl);
+              setIsCachedAudio(true);
+            } catch (cacheError) {
+              // If caching fails, fall back to direct signed URL
+              console.warn('Audio caching failed, using direct URL:', cacheError);
+              setAudioSrc(signedUrl);
+              setIsCachedAudio(false);
+            }
+            
+            setAutoPlay(!isFirstRender);
+            setIsFirstRender(false);
+          }
         } catch (error) {
-          console.error('Error getting signed URL:', error);
+          console.error('Error loading audio:', error);
+          setAudioSrc('');
+          setIsCachedAudio(false);
+        } finally {
+          setIsLoadingAudio(false);
         }
+      } else {
+        // Clear audio source if no beat
+        setAudioSrc('');
+        setIsCachedAudio(false);
+        setIsLoadingAudio(false);
       }
     };
 
@@ -140,6 +185,8 @@ export const useAudioPlayerState = ({
     setIsReturningFromLyrics,
     audioSrc,
     autoPlay,
+    isLoadingAudio,
+    isCachedAudio,
     waveform,
     isFullPage,
     setIsFullPage,

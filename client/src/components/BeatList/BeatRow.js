@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { IoRemoveCircleOutline, IoAddSharp, IoListSharp, IoEllipsisHorizontal, IoTrashBinOutline, IoRefreshSharp } from "react-icons/io5";
 import classNames from 'classnames';
 
-import { useBpmHandlers } from '../../hooks';
+import { useBpmHandlers, useAudioCache } from '../../hooks';
 import { addBeatsToPlaylist, getBeatsByPlaylistId } from '../../services';
 import { isMobileOrTablet, formatDuration, replaceAudioWithToast } from '../../utils';
 import { usePlaylist, useBeat, useData, useUser, useHeaderWidths } from '../../contexts';
@@ -15,6 +15,7 @@ import PlayPauseButton from './PlayPauseButton';
 import { ContextMenu } from '../ContextMenu';
 import { Highlight } from '../Highlight';
 import { SelectableInput } from '../Inputs';
+import { CacheIndicator } from '../CacheIndicator';
 
 import './BeatRow.scss';
 
@@ -52,6 +53,7 @@ const BeatRow = ({
   const { playlists, isSamePlaylist } = usePlaylist();
   const { handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
   const { headerWidths } = useHeaderWidths();
+  const { isBeatCachedSync } = useAudioCache();
 
   // Compute derived state with useMemo to avoid recalculations
   const beatIndices = useMemo(() => 
@@ -578,7 +580,18 @@ const BeatRow = ({
         </>
       )}
       {!(isMobileOrTablet() && mode === 'lock') && (
-        <td className='beat-row__data beat-row__duration'>{formatDuration(beat.duration)}</td>
+        <td className='beat-row__data beat-row__duration'>
+          <div className="beat-row__duration-content">
+            <CacheIndicator 
+              isCached={isBeatCachedSync(beat)} 
+              size="small" 
+              className="beat-row__cache-indicator"
+            />
+            <span className="beat-row__duration-text">
+              {formatDuration(beat.duration)}
+            </span>
+          </div>
+        </td>
       )}
       <td className="beat-row__data beat-row__menu">
       <IconButton

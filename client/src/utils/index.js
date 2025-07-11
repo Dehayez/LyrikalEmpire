@@ -8,6 +8,7 @@ export { isMobileOrTablet } from './isMobileOrTablet';
 export { isAuthPage } from './isAuthPage';
 export { sortBeats } from './sortBeats';
 export * from './animationUtils';
+export * from './audioCacheUtils';
 export * from './stateUtils';
 export * from './toastUtils';
 export * from './uploadUtils';

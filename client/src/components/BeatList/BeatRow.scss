@@ -163,3 +163,22 @@
       opacity: 1 !important;
     }
 }
+
+.beat-row {
+  &__duration {
+    &-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    &-text {
+      font-size: 14px;
+    }
+  }
+  
+  &__cache-indicator {
+    flex-shrink: 0;
+  }
+}
