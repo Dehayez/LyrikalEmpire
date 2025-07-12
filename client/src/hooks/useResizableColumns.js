@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useHeaderWidths } from '../contexts';
 
 export const useResizableColumns = (tableRef) => {
@@ -70,8 +70,6 @@ export const useResizableColumns = (tableRef) => {
       }
     });
   }, [defaultPercentages, setHeaderWidths]);
-
-
 
   useEffect(() => {
     if (!tableRef.current) return;
@@ -170,7 +168,6 @@ export const useResizableColumns = (tableRef) => {
 
       resizeHandle.addEventListener('mousedown', handleMouseDown);
     });
-
 
   }, [tableRef, defaultPercentages, setHeaderWidths]);
 

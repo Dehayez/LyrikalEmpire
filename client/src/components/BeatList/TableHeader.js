@@ -10,7 +10,6 @@ import './TableHeader.scss';
 
 const TableHeader = ({ onSort, sortConfig, mode, topOffset }) => {
   const tableRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
   const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
   const [showForm, setShowForm] = useState(false);
@@ -18,7 +17,7 @@ const TableHeader = ({ onSort, sortConfig, mode, topOffset }) => {
   const { fetchGenres, fetchMoods, fetchKeywords, fetchFeatures, genres, moods, keywords, features } = useData();
   const columns = ['title', 'tierlist', 'bpm', 'genre', 'mood', 'keyword', 'feature'];
 
-  const { recalculatePercentages } = useResizableColumns(tableRef, mode, setIsDragging);
+  const { recalculatePercentages } = useResizableColumns(tableRef);
 
   // Expose recalculatePercentages to parent components if needed
   useEffect(() => {
@@ -103,7 +102,7 @@ const TableHeader = ({ onSort, sortConfig, mode, topOffset }) => {
           <th
             key={column}
             onContextMenu={(e) => handleRightClick(e, column)}
-            className={`table-header__cell table-header__cell--${column} ${isDragging ? 'no-transition' : ''}`}
+            className={`table-header__cell table-header__cell--${column}`}
           >
             <div
               className="table-header__cell-left"
