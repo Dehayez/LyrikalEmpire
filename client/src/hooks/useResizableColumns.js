@@ -184,6 +184,7 @@ export const useResizableColumns = (tableRef) => {
         
         // Calculate available width based on visible columns
         const visibleStaticColumns = staticColumns.filter(i => isColumnVisible(headers[i]));
+        const visibleResizableColumns = resizableColumns.filter(i => isColumnVisible(headers[i]));
         const totalStaticWidth = visibleStaticColumns.reduce((sum, i) => sum + staticWidths[i], 0);
         const availableWidth = tableWidth - totalStaticWidth;
         
@@ -191,16 +192,55 @@ export const useResizableColumns = (tableRef) => {
         const deltaPercentage = (deltaX / availableWidth) * 100;
         const newPercentage = Math.max(10, Math.min(60, startPercentage + deltaPercentage));
         
-        // Update localStorage and context
-        localStorage.setItem(`headerWidth${index}`, newPercentage);
-        setHeaderWidths((prev) => ({
-          ...prev,
-          [`headerWidth${index}`]: newPercentage,
-        }));
-
-        // Apply the new width immediately
-        const pixelWidth = (availableWidth * newPercentage) / 100;
-        header.style.width = `${pixelWidth}px`;
+        // Calculate how much space was gained/lost
+        const percentageChange = newPercentage - startPercentage;
+        
+        // Get current percentages for all visible resizable columns
+        const currentPercentages = {};
+        let totalOtherPercentages = 0;
+        
+        visibleResizableColumns.forEach(colIndex => {
+          if (colIndex === index) {
+            currentPercentages[colIndex] = newPercentage;
+          } else {
+            const savedPercentage = localStorage.getItem(`headerWidth${colIndex}`);
+            const percentage = savedPercentage ? parseFloat(savedPercentage) : defaultPercentages[colIndex];
+            currentPercentages[colIndex] = percentage;
+            totalOtherPercentages += percentage;
+          }
+        });
+        
+        // Redistribute the space among other columns proportionally
+        if (totalOtherPercentages > 0 && percentageChange !== 0) {
+          const scaleFactor = (100 - newPercentage) / totalOtherPercentages;
+          
+          visibleResizableColumns.forEach(colIndex => {
+            if (colIndex !== index) {
+              const originalPercentage = currentPercentages[colIndex];
+              const adjustedPercentage = Math.max(10, Math.min(60, originalPercentage * scaleFactor));
+              currentPercentages[colIndex] = adjustedPercentage;
+            }
+          });
+        }
+        
+        // Apply all the new widths immediately
+        visibleResizableColumns.forEach(colIndex => {
+          const columnHeader = headers[colIndex];
+          if (columnHeader) {
+            const percentage = currentPercentages[colIndex];
+            const pixelWidth = (availableWidth * percentage) / 100;
+            columnHeader.style.width = `${pixelWidth}px`;
+            
+            // Update localStorage and context for the column being dragged
+            if (colIndex === index) {
+              localStorage.setItem(`headerWidth${colIndex}`, percentage);
+              setHeaderWidths((prev) => ({
+                ...prev,
+                [`headerWidth${colIndex}`]: percentage,
+              }));
+            }
+          }
+        });
       };
 
       const handleMouseUp = () => {
