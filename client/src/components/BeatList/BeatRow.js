@@ -180,11 +180,7 @@ const BeatRow = ({
     onUpdateBeat?.(beat.id, { [property]: value });
   }, [beat.id, onUpdateBeat]);
   
-  const handleTierlistChange = useCallback((e) => {
-    const newTierlist = e.target.value;
-    setTierlist(newTierlist);
-    handleUpdate(beat.id, 'tierlist', newTierlist);
-  }, [beat.id, handleUpdate]);
+
 
   const handleBlur = useCallback((id, field, value) => {
     handleUpdate(id, field, value);
@@ -492,8 +488,10 @@ const BeatRow = ({
                       className="select-wrapper__select" 
                       value={tierlist}
                       onChange={(e) => {
-                        handleInputChange('tierlist', e.target.value);
-                        handleTierlistChange(e);
+                        const value = e.target.value === '' ? null : e.target.value;
+                        setTierlist(e.target.value);
+                        handleInputChange('tierlist', value);
+                        handleUpdate(beat.id, 'tierlist', value);
                       }}
                       onFocus={(e) => e.target.style.color = 'white'}
                       onBlur={(e) => e.target.style.color = tierlist ? 'white' : 'grey'}

@@ -94,7 +94,7 @@ const BeatEditInputs = ({ currentBeat, onUpdateBeat }) => {
           selectedValue={tierlist} 
           onChange={handleTierlistChange} 
           options={[
-            { value: '', label: 'No tierlist' },
+            { value: null, label: 'No tierlist' },
             { value: 'M', label: 'M' },
             { value: 'G', label: 'G' },
             { value: 'S', label: 'S' },
