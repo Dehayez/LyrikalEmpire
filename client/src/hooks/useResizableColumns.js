@@ -3,7 +3,6 @@ import { useHeaderWidths } from '../contexts';
 
 export const useResizableColumns = (tableRef) => {
   const { setHeaderWidths } = useHeaderWidths();
-  const resizeTimeoutRef = useRef(null);
 
   // Default percentages for each column (total should equal 100%)
   const defaultPercentages = {
@@ -72,15 +71,7 @@ export const useResizableColumns = (tableRef) => {
     });
   }, [defaultPercentages, setHeaderWidths]);
 
-  // Debounced version of recalculatePercentages
-  const debouncedRecalculate = useCallback(() => {
-    if (resizeTimeoutRef.current) {
-      clearTimeout(resizeTimeoutRef.current);
-    }
-    resizeTimeoutRef.current = setTimeout(() => {
-      recalculatePercentages();
-    }, 100);
-  }, [recalculatePercentages]);
+
 
   useEffect(() => {
     if (!tableRef.current) return;
@@ -173,20 +164,14 @@ export const useResizableColumns = (tableRef) => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
         
-        // Use debounced recalculation to prevent glitches
-        debouncedRecalculate();
+        // No recalculation needed - user has set the exact width they want
       };
 
       resizeHandle.addEventListener('mousedown', handleMouseDown);
     });
 
-    // Cleanup function
-    return () => {
-      if (resizeTimeoutRef.current) {
-        clearTimeout(resizeTimeoutRef.current);
-      }
-    };
-  }, [tableRef, defaultPercentages, setHeaderWidths, debouncedRecalculate]);
+
+  }, [tableRef, defaultPercentages, setHeaderWidths]);
 
   // Export the recalculate function so it can be called from outside
   return { recalculatePercentages };
