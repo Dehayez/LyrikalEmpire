@@ -223,7 +223,7 @@ export const useResizableColumns = (tableRef) => {
           });
         }
         
-        // Apply all the new widths immediately
+        // Apply all the new widths immediately and save to localStorage
         visibleResizableColumns.forEach(colIndex => {
           const columnHeader = headers[colIndex];
           if (columnHeader) {
@@ -231,14 +231,14 @@ export const useResizableColumns = (tableRef) => {
             const pixelWidth = (availableWidth * percentage) / 100;
             columnHeader.style.width = `${pixelWidth}px`;
             
-            // Update localStorage and context for the column being dragged
-            if (colIndex === index) {
-              localStorage.setItem(`headerWidth${colIndex}`, percentage);
-              setHeaderWidths((prev) => ({
-                ...prev,
-                [`headerWidth${colIndex}`]: percentage,
-              }));
-            }
+            // Save to localStorage for ALL affected columns
+            localStorage.setItem(`headerWidth${colIndex}`, percentage);
+            
+            // Update context for ALL affected columns
+            setHeaderWidths((prev) => ({
+              ...prev,
+              [`headerWidth${colIndex}`]: percentage,
+            }));
           }
         });
       };
@@ -249,8 +249,7 @@ export const useResizableColumns = (tableRef) => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
         
-        // Recalculate to ensure all columns fit properly
-        recalculatePercentages();
+        // No need to recalculate - everything is already properly set during drag
       };
 
       resizeHandle.addEventListener('mousedown', handleMouseDown);
