@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { IoPersonSharp } from "react-icons/io5";
@@ -10,7 +10,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import userService from './services/userService';
 
 import { DashboardPage, BeatsPage, PlaylistsPage, GenresPage, MoodsPage, KeywordsPage, FeaturesPage, LoginPage, RegisterPage, ConfirmEmailPage, RequestPasswordResetPage, ResetPasswordPage, ProfilePage } from './pages';
-import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Footer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal, IconButton } from './components';
+import { Header, BeatList, AddBeatForm, AddBeatButton, AudioPlayer, Footer, Queue, Playlists, RightSidePanel, LeftSidePanel, History, PlaylistDetail, LyricsModal, IconButton, PlayingIndicator } from './components';
 import NotFound from './components/NotFound';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -43,6 +43,11 @@ function App() {
   const [shuffle, setShuffle] = useState(() => getInitialState('shuffle', false));
   const [repeat, setRepeat] = useState(() => getInitialState('repeat', 'Disabled Repeat'));
   const [lyricsModal, setLyricsModal] = useState(getInitialState('lyricsModal', false));
+  const [sessionProps, setSessionProps] = useState({
+    masterSession: null,
+    currentSessionId: null,
+    isCurrentSessionMaster: false
+  });
 
   useEffect(() => {
     // Initialize token refresh mechanism
@@ -222,6 +227,10 @@ function App() {
     setViewState(view);
     localStorage.setItem('lastView', view);
   };
+
+  const handleSessionUpdate = useCallback((props) => {
+    setSessionProps(props);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -432,6 +441,7 @@ function App() {
             setLyricsModal={setLyricsModal}
             onUpdateBeat={updateBeat}
             markBeatAsCached={markBeatAsCached}
+            onSessionUpdate={handleSessionUpdate}
           />
         }
        {!isAuthRoute && isMobileOrTablet() && (
@@ -448,6 +458,16 @@ function App() {
             isAuthPage={isAuthRoute}
             closeSidePanel={closeSidePanel}
             lyricsModal={lyricsModal}
+          />
+        )}
+        {/* Playing Indicator - only shows on desktop */}
+        {!isAuthRoute && (
+          <PlayingIndicator
+            masterSession={sessionProps.masterSession}
+            currentSessionId={sessionProps.currentSessionId}
+            isCurrentSessionMaster={sessionProps.isCurrentSessionMaster}
+            isPlaying={isPlaying}
+            currentBeat={currentBeat}
           />
         )}
       </div>

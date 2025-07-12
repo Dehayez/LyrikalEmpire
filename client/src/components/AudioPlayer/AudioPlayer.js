@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import H5AudioPlayer from 'react-h5-audio-player';
 import { isMobileOrTablet, slideOut } from '../../utils';
 import { 
@@ -13,7 +13,7 @@ import {
 import { usePlaylist } from '../../contexts';
 
 import { ContextMenu } from '../ContextMenu';
-import PlayingIndicator from '../PlayingIndicator';
+
 import MobileAudioPlayer from './MobileAudioPlayer';
 import DesktopAudioPlayer from './DesktopAudioPlayer';
 import FullPageAudioPlayer from './FullPageAudioPlayer';
@@ -31,7 +31,8 @@ const AudioPlayer = ({
   repeat, setRepeat,
   lyricsModal, setLyricsModal,
   onUpdateBeat,
-  markBeatAsCached
+  markBeatAsCached,
+  onSessionUpdate
 }) => {
   // Guard clause: Don't render if there's no current beat
   if (!currentBeat) {
@@ -223,6 +224,17 @@ const AudioPlayer = ({
     onNext
   });
 
+  // Pass session props up to App level for PlayingIndicator
+  useEffect(() => {
+    if (onSessionUpdate) {
+      onSessionUpdate({
+        masterSession,
+        currentSessionId,
+        isCurrentSessionMaster
+      });
+    }
+  }, [masterSession, currentSessionId, isCurrentSessionMaster, onSessionUpdate]);
+
   // Set up waveform
   useWaveform({
     audioSrc,
@@ -409,14 +421,7 @@ const AudioPlayer = ({
         />
       )}
 
-      {/* Playing Indicator */}
-      <PlayingIndicator
-        masterSession={masterSession}
-        currentSessionId={currentSessionId}
-        isCurrentSessionMaster={isCurrentSessionMaster}
-        isPlaying={isPlaying}
-        currentBeat={currentBeat}
-      />
+
     </>
   );
 };

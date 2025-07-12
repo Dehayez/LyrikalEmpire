@@ -1,5 +1,6 @@
 import React from 'react';
 import './PlayingIndicator.scss';
+import { IoHeadsetSharp } from "react-icons/io5";
 
 const PlayingIndicator = ({ 
   masterSession, 
@@ -26,16 +27,10 @@ const PlayingIndicator = ({
   const masterDisplayName = getSessionDisplayName(masterSession);
 
   return (
-    <div className="playing-indicator playing-indicator--remote">
-      <div className="playing-indicator__icon">
-        📻
-      </div>
-      <div className="playing-indicator__text">
+    <div className="playing-indicator">
         <span className="playing-indicator__label">
-          Playing on {masterDisplayName}
+          <IoHeadsetSharp /> Playing on {masterDisplayName}
         </span>
-      </div>
-      <div className="playing-indicator__pulse"></div>
     </div>
   );
 };

@@ -1,85 +1,26 @@
+@import '../../globals/variables.scss';
+
 .playing-indicator {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 12px;
+  justify-content: right;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin: 6px;
+  background-color: $color-primary-bg;
+  color: $color-white;
+  font-size: 14px;
   font-weight: 500;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-  
-  &--current {
-    background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
-    border-color: rgba(34, 197, 94, 0.3);
-  }
-  
-  &--remote {
-    background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
-    border-color: rgba(59, 130, 246, 0.3);
-  }
-  
-  &__icon {
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-  }
-  
-  &__text {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-  }
-  
+
   &__label {
-    font-weight: 500;
-  }
-  
-  &__pulse {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  
-  &--current &__pulse {
-    background: #22c55e;
-  }
-  
-  &--remote &__pulse {
-    background: #3b82f6;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(1.2);
-  }
-}
-
-// Mobile adjustments
-@media (max-width: 768px) {
+// Hide on mobile and tablet
+@media (max-width: 1024px) {
   .playing-indicator {
-    top: 10px;
-    right: 10px;
-    font-size: 11px;
-    padding: 6px 10px;
-    
-    &__icon {
-      font-size: 12px;
-    }
+    display: none;
   }
 } 
