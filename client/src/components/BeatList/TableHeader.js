@@ -95,7 +95,7 @@ const TableHeader = ({ onSort, sortConfig, mode, topOffset }) => {
     <thead className="table-header" ref={tableRef}
       style={{
         position: 'sticky',
-        top: `${topOffset}px`, // Use the dynamic top offset
+        top: `${topOffset}px`,
       }}>
       <tr>
         <th className="table-header__cell table-header__cell--center non-draggable">#</th>

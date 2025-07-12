@@ -21,7 +21,6 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
   const tableRef = useRef(null);
   const containerRef = useRef(null);
   const tbodyRef = useRef(null);
-  const { user } = useUser();
   const { genres, moods, keywords, features } = useData();
   const location = useLocation();
 
@@ -39,7 +38,7 @@ const BeatList = ({ onPlay, selectedBeat, isPlaying, moveBeat, currentBeat, addT
 
   // Virtual scrolling state
   const [visibleRange, setVisibleRange] = useState({ start: 0, end: 20 });
-  const [rowHeight, setRowHeight] = useState(60); // Default row height in pixels
+  const [rowHeight, setRowHeight] = useState(60);
   
   const { sortedItems: sortedBeats, sortConfig, onSort } = useSort(filteredBeats);
   
@@ -79,7 +78,6 @@ const filteredAndSortedBeats = useMemo(() => {
   const [isOpen, setIsOpen] = useState(false);
   const [beatsToDelete, setBeatsToDelete] = useState([]);
   const [activeContextMenu, setActiveContextMenu] = useState(null);
-  const [headerOpacity, setHeaderOpacity] = useState(1);
   const [hoverPosition, setHoverPosition] = useState(null);
   const [mode, setMode] = useState(() => getInitialState('mode', 'listen'));
 
@@ -90,16 +88,13 @@ const filteredAndSortedBeats = useMemo(() => {
     currentPage
   });
 
-  // Calculate which rows should be visible based on scroll position
   const calculateVisibleRows = useCallback(() => {
     if (!containerRef.current || !tableRef.current) return;
 
-    const containerRect = containerRef.current.getBoundingClientRect();
     const scrollTop = containerRef.current.scrollTop;
     const viewportHeight = containerRef.current.clientHeight;
     
-    // Calculate visible range with buffer
-    const buffer = 5; // Number of extra rows to render above and below
+    const buffer = 5;
     const startIndex = Math.max(0, Math.floor(scrollTop / rowHeight) - buffer);
     const endIndex = Math.min(
       filteredAndSortedBeats.length - 1,
@@ -109,7 +104,6 @@ const filteredAndSortedBeats = useMemo(() => {
     setVisibleRange({ start: startIndex, end: endIndex });
   }, [filteredAndSortedBeats.length, rowHeight]);
 
-  // Measure actual row height on first render
   useEffect(() => {
     if (tbodyRef.current && tbodyRef.current.firstChild) {
       const actualHeight = tbodyRef.current.firstChild.getBoundingClientRect().height;
@@ -119,7 +113,6 @@ const filteredAndSortedBeats = useMemo(() => {
     }
   }, [paginatedBeats]);
 
-  // Set up scroll event listener for virtualization
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
@@ -265,7 +258,6 @@ useEffect(() => {
   const filterBeats = () => {
     let filtered = beats;
     
-    // Filter by associations (genres, moods, keywords, features)
     const serviceAssocs = [
       { type: 'genres', selected: selectedGenre },
       { type: 'moods', selected: selectedMood },
@@ -285,7 +277,6 @@ useEffect(() => {
       });
     }
 
-    // Filter by tierlist
     if (selectedTierlist.length > 0) {
       filtered = filtered.filter(beat => 
         selectedTierlist.some(tierlist => beat.tierlist === tierlist.id)
@@ -311,7 +302,6 @@ useEffect(() => {
       const maxScroll = 50; 
       const scrollPosition = containerRef.current.scrollTop;
       const opacity = Math.max(1 - scrollPosition / maxScroll, 0);
-      setHeaderOpacity(opacity);
     };
 
     const container = containerRef.current;
@@ -333,7 +323,6 @@ useEffect(() => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedBeats, handlePlayPause, inputFocused]);
 
-  // Create virtualized beat list
   const virtualizedBeats = useMemo(() => {
     // Generate the visible beats plus spacers
     const result = [];
@@ -345,7 +334,6 @@ useEffect(() => {
       );
     }
     
-    // Add visible beats
   const visibleBeats = filteredAndSortedBeats.slice(visibleRange.start, visibleRange.end + 1);
   visibleBeats.forEach((beat, relativeIndex) => {
     const absoluteIndex = visibleRange.start + relativeIndex;
@@ -389,7 +377,6 @@ useEffect(() => {
     );
   });
     
-    // Add bottom spacer if needed
     const remainingRows = filteredAndSortedBeats.length - visibleRange.end - 1;
     if (remainingRows > 0) {
       result.push(
@@ -426,13 +413,6 @@ useEffect(() => {
     playlistId, 
     setBeats
   ]);
-
-  // Manual trigger for column recalculation
-  const triggerColumnRecalculation = useCallback(() => {
-    if (window.recalculateTablePercentages) {
-      window.recalculateTablePercentages();
-    }
-  }, []);
 
   return (
     <div ref={containerRef} className="beat-list">
