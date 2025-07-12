@@ -172,6 +172,14 @@
       white-space: nowrap;
     }
 
+    // Allow overflow for cells with SelectableInput dropdowns
+    td:nth-child(5), // genre column
+    td:nth-child(6), // mood column  
+    td:nth-child(7), // keyword column
+    td:nth-child(8) { // feature column
+      overflow: visible;
+    }
+
     // Ensure table cells don't expand beyond their allocated width
     td {
       max-width: 0; // Forces text-overflow to work
