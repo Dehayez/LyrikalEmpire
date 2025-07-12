@@ -22,6 +22,13 @@ export const useResizableColumns = (tableRef) => {
     7: 20   // feature
   };
 
+  // Function to check if a column is visible (not hidden by CSS)
+  const isColumnVisible = useCallback((header) => {
+    if (!header) return false;
+    const computedStyle = window.getComputedStyle(header);
+    return computedStyle.display !== 'none';
+  }, []);
+
   const recalculatePercentages = useCallback(() => {
     if (!tableRef.current) return;
     
@@ -30,8 +37,12 @@ export const useResizableColumns = (tableRef) => {
     
     const headers = table.querySelectorAll('th');
     
-    // Set static widths for fixed columns
-    staticColumns.forEach(index => {
+    // Determine which columns are visible
+    const visibleStaticColumns = staticColumns.filter(index => isColumnVisible(headers[index]));
+    const visibleResizableColumns = resizableColumns.filter(index => isColumnVisible(headers[index]));
+    
+    // Set static widths for visible fixed columns
+    visibleStaticColumns.forEach(index => {
       const header = headers[index];
       if (header) {
         const width = staticWidths[index];
@@ -43,14 +54,17 @@ export const useResizableColumns = (tableRef) => {
 
     // Calculate available width for percentage columns
     const tableWidth = table.offsetWidth;
-    const totalStaticWidth = Object.values(staticWidths).reduce((sum, width) => sum + width, 0);
+    const totalStaticWidth = visibleStaticColumns.reduce((sum, index) => sum + staticWidths[index], 0);
     const availableWidth = tableWidth - totalStaticWidth;
 
-    // Get current widths of resizable columns
+    // If no resizable columns are visible, we're done
+    if (visibleResizableColumns.length === 0) return;
+
+    // Get current widths of visible resizable columns
     const currentWidths = {};
     let totalResizablePercentage = 0;
     
-    resizableColumns.forEach(index => {
+    visibleResizableColumns.forEach(index => {
       const header = headers[index];
       if (header) {
         // Get saved percentage or default
@@ -61,11 +75,11 @@ export const useResizableColumns = (tableRef) => {
       }
     });
     
-    // Normalize percentages to ensure they total 100%
-    if (Math.abs(totalResizablePercentage - 100) > 1) {
+    // Normalize percentages to ensure they total 100% for visible columns
+    if (totalResizablePercentage > 0) {
       const scaleFactor = 100 / totalResizablePercentage;
       
-      resizableColumns.forEach(index => {
+      visibleResizableColumns.forEach(index => {
         const header = headers[index];
         if (header) {
           const newPercentage = Math.max(10, Math.min(60, currentWidths[index] * scaleFactor));
@@ -79,8 +93,8 @@ export const useResizableColumns = (tableRef) => {
       });
     }
 
-    // Apply percentage widths to resizable columns
-    resizableColumns.forEach(index => {
+    // Apply percentage widths to visible resizable columns
+    visibleResizableColumns.forEach(index => {
       const header = headers[index];
       if (header) {
         const percentage = currentWidths[index];
@@ -90,7 +104,7 @@ export const useResizableColumns = (tableRef) => {
         header.style.maxWidth = `${pixelWidth * 2}px`;
       }
     });
-  }, [setHeaderWidths]);
+  }, [setHeaderWidths, isColumnVisible]);
 
   useEffect(() => {
     if (!tableRef.current) return;
@@ -167,7 +181,10 @@ export const useResizableColumns = (tableRef) => {
         
         const deltaX = e.clientX - startX;
         const tableWidth = table.offsetWidth;
-        const totalStaticWidth = Object.values(staticWidths).reduce((sum, width) => sum + width, 0);
+        
+        // Calculate available width based on visible columns
+        const visibleStaticColumns = staticColumns.filter(i => isColumnVisible(headers[i]));
+        const totalStaticWidth = visibleStaticColumns.reduce((sum, i) => sum + staticWidths[i], 0);
         const availableWidth = tableWidth - totalStaticWidth;
         
         // Calculate percentage change based on available width
@@ -204,13 +221,23 @@ export const useResizableColumns = (tableRef) => {
       recalculatePercentages();
     };
 
+    // Use ResizeObserver to detect container size changes (more reliable than window resize)
+    const resizeObserver = new ResizeObserver(() => {
+      recalculatePercentages();
+    });
+
+    if (table) {
+      resizeObserver.observe(table);
+    }
+
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
     };
 
-  }, [tableRef, setHeaderWidths, recalculatePercentages]);
+  }, [tableRef, setHeaderWidths, recalculatePercentages, isColumnVisible]);
 
   // Export the recalculate function so it can be called from outside
   return { recalculatePercentages };
