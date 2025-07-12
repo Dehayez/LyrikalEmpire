@@ -128,12 +128,13 @@ export const useResizableColumns = (tableRef) => {
 
       let isResizing = false;
       let startX = 0;
-      let startWidth = 0;
+      let startPercentage = 0;
 
       const handleMouseDown = (e) => {
         isResizing = true;
         startX = e.clientX;
-        startWidth = header.offsetWidth;
+        // Get the current percentage from the style, not pixels
+        startPercentage = parseFloat(header.style.width) || defaultPercentages[index];
         header.classList.add('dragging');
         
         document.addEventListener('mousemove', handleMouseMove);
@@ -147,7 +148,7 @@ export const useResizableColumns = (tableRef) => {
         const deltaX = e.clientX - startX;
         const tableWidth = table.offsetWidth;
         const deltaPercentage = (deltaX / tableWidth) * 100;
-        const newPercentage = Math.max(5, Math.min(50, (startWidth / tableWidth) * 100 + deltaPercentage));
+        const newPercentage = Math.max(5, Math.min(50, startPercentage + deltaPercentage));
         
         header.style.width = `${newPercentage}%`;
         
