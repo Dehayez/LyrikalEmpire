@@ -4,21 +4,24 @@ import { useHeaderWidths } from '../contexts';
 export const useResizableColumns = (tableRef) => {
   const { setHeaderWidths } = useHeaderWidths();
 
-  // Default percentages for each column (total should equal 100%)
-  const defaultPercentages = {
-    0: 5,   // number - make it more reasonable
-    1: 23,  // title - slightly reduced
-    2: 3,   // tierlist
-    3: 3,   // bpm
-    4: 15,  // feature
-    5: 15,  // mood
-    6: 15,  // genre
-    7: 11,  // keywords
-    8: 7,   // duration - increased slightly
-    9: 3    // menu
+  const staticColumns = [0, 2, 3, 8, 9];
+  const staticWidths = {
+    0: 60,  // number
+    2: 95,  // tierlist
+    3: 80,  // bpm
+    8: 60,  // duration
+    9: 40   // menu
   };
 
-  // Function to recalculate percentages for visible columns
+  const resizableColumns = [1, 4, 5, 6, 7];
+  const defaultPercentages = {
+    1: 20,  // title
+    4: 20,  // genre
+    5: 20,  // mood
+    6: 20,  // keyword
+    7: 20   // feature
+  };
+
   const recalculatePercentages = useCallback(() => {
     if (!tableRef.current) return;
     
@@ -27,49 +30,67 @@ export const useResizableColumns = (tableRef) => {
     
     const headers = table.querySelectorAll('th');
     
-    // Get current widths of resizable columns
-    const resizableIndices = [1, 4, 5, 6, 7]; // title, feature, mood, genre, keywords
-    const currentWidths = {};
-    let totalResizableWidth = 0;
-    
-    resizableIndices.forEach(index => {
+    // Set static widths for fixed columns
+    staticColumns.forEach(index => {
       const header = headers[index];
       if (header) {
-        const width = parseFloat(header.style.width) || defaultPercentages[index];
-        currentWidths[index] = width;
-        totalResizableWidth += width;
+        const width = staticWidths[index];
+        header.style.width = `${width}px`;
+        header.style.minWidth = `${width}px`;
+        header.style.maxWidth = `${width}px`;
+      }
+    });
+
+    // Calculate available width for percentage columns
+    const tableWidth = table.offsetWidth;
+    const totalStaticWidth = Object.values(staticWidths).reduce((sum, width) => sum + width, 0);
+    const availableWidth = tableWidth - totalStaticWidth;
+
+    // Get current widths of resizable columns
+    const currentWidths = {};
+    let totalResizablePercentage = 0;
+    
+    resizableColumns.forEach(index => {
+      const header = headers[index];
+      if (header) {
+        // Get saved percentage or default
+        const savedPercentage = localStorage.getItem(`headerWidth${index}`);
+        const percentage = savedPercentage ? parseFloat(savedPercentage) : defaultPercentages[index];
+        currentWidths[index] = percentage;
+        totalResizablePercentage += percentage;
       }
     });
     
-    // If total is not 100%, redistribute proportionally
-    if (Math.abs(totalResizableWidth - 76) > 1) { // 76% is the total for resizable columns (100% - 24% for fixed columns)
-      const scaleFactor = 76 / totalResizableWidth;
+    // Normalize percentages to ensure they total 100%
+    if (Math.abs(totalResizablePercentage - 100) > 1) {
+      const scaleFactor = 100 / totalResizablePercentage;
       
-      resizableIndices.forEach(index => {
+      resizableColumns.forEach(index => {
         const header = headers[index];
         if (header) {
-          const newWidth = Math.max(5, Math.min(50, currentWidths[index] * scaleFactor));
-          header.style.width = `${newWidth}%`;
-          
-          localStorage.setItem(`headerWidth${index}`, newWidth);
+          const newPercentage = Math.max(10, Math.min(60, currentWidths[index] * scaleFactor));
+          currentWidths[index] = newPercentage;
+          localStorage.setItem(`headerWidth${index}`, newPercentage);
           setHeaderWidths((prev) => ({
             ...prev,
-            [`headerWidth${index}`]: newWidth,
+            [`headerWidth${index}`]: newPercentage,
           }));
         }
       });
     }
-    
-    // Ensure non-resizable columns stay at their fixed widths
-    const nonResizableIndices = [0, 2, 3, 8, 9]; // number, tierlist, bpm, duration, menu
-    nonResizableIndices.forEach(nonResizableIndex => {
-      const nonResizableHeader = headers[nonResizableIndex];
-      if (nonResizableHeader) {
-        const fixedWidth = defaultPercentages[nonResizableIndex];
-        nonResizableHeader.style.width = `${fixedWidth}%`;
+
+    // Apply percentage widths to resizable columns
+    resizableColumns.forEach(index => {
+      const header = headers[index];
+      if (header) {
+        const percentage = currentWidths[index];
+        const pixelWidth = (availableWidth * percentage) / 100;
+        header.style.width = `${pixelWidth}px`;
+        header.style.minWidth = `${Math.max(80, pixelWidth * 0.5)}px`;
+        header.style.maxWidth = `${pixelWidth * 2}px`;
       }
     });
-  }, [defaultPercentages, setHeaderWidths]);
+  }, [setHeaderWidths]);
 
   useEffect(() => {
     if (!tableRef.current) return;
@@ -79,10 +100,16 @@ export const useResizableColumns = (tableRef) => {
 
     const headers = table.querySelectorAll('th');
 
-    // Migration: Clear old pixel-based values and set percentage defaults
+    // Migration: Clear old values for static columns
     const clearOldValues = () => {
-      for (let i = 0; i < headers.length; i++) {
-        const oldKey = `headerWidth${i}`;
+      staticColumns.forEach(index => {
+        const oldKey = `headerWidth${index}`;
+        localStorage.removeItem(oldKey); // Remove any old values for static columns
+      });
+
+      // For resizable columns, clear old pixel-based values
+      resizableColumns.forEach(index => {
+        const oldKey = `headerWidth${index}`;
         const oldValue = localStorage.getItem(oldKey);
         
         if (oldValue && oldValue.includes('px')) {
@@ -91,24 +118,18 @@ export const useResizableColumns = (tableRef) => {
         
         // Set default percentage if no value exists
         if (!localStorage.getItem(oldKey)) {
-          localStorage.setItem(oldKey, defaultPercentages[i]);
+          localStorage.setItem(oldKey, defaultPercentages[index]);
         }
-      }
+      });
     };
 
     clearOldValues();
 
-    // Apply saved or default widths to headers
-    headers.forEach((header, index) => {
-      const savedWidth = localStorage.getItem(`headerWidth${index}`);
-      const width = savedWidth ? parseFloat(savedWidth) : defaultPercentages[index];
-      header.style.width = `${width}%`;
-    });
+    // Initial column setup
+    recalculatePercentages();
 
-    // Add resize functionality to resizable columns
-    const resizableIndices = [1, 4, 5, 6, 7]; // title, feature, mood, genre, keywords
-
-    resizableIndices.forEach(index => {
+    // Add resize functionality to resizable columns only
+    resizableColumns.forEach(index => {
       const header = headers[index];
       if (!header) return;
 
@@ -131,8 +152,9 @@ export const useResizableColumns = (tableRef) => {
       const handleMouseDown = (e) => {
         isResizing = true;
         startX = e.clientX;
-        // Get the current percentage from the style, not pixels
-        startPercentage = parseFloat(header.style.width) || defaultPercentages[index];
+        // Get the current percentage from localStorage or default
+        const savedPercentage = localStorage.getItem(`headerWidth${index}`);
+        startPercentage = savedPercentage ? parseFloat(savedPercentage) : defaultPercentages[index];
         header.classList.add('dragging');
         
         document.addEventListener('mousemove', handleMouseMove);
@@ -145,16 +167,23 @@ export const useResizableColumns = (tableRef) => {
         
         const deltaX = e.clientX - startX;
         const tableWidth = table.offsetWidth;
-        const deltaPercentage = (deltaX / tableWidth) * 100;
-        const newPercentage = Math.max(5, Math.min(50, startPercentage + deltaPercentage));
+        const totalStaticWidth = Object.values(staticWidths).reduce((sum, width) => sum + width, 0);
+        const availableWidth = tableWidth - totalStaticWidth;
         
-        header.style.width = `${newPercentage}%`;
+        // Calculate percentage change based on available width
+        const deltaPercentage = (deltaX / availableWidth) * 100;
+        const newPercentage = Math.max(10, Math.min(60, startPercentage + deltaPercentage));
         
+        // Update localStorage and context
         localStorage.setItem(`headerWidth${index}`, newPercentage);
         setHeaderWidths((prev) => ({
           ...prev,
           [`headerWidth${index}`]: newPercentage,
         }));
+
+        // Apply the new width immediately
+        const pixelWidth = (availableWidth * newPercentage) / 100;
+        header.style.width = `${pixelWidth}px`;
       };
 
       const handleMouseUp = () => {
@@ -163,13 +192,25 @@ export const useResizableColumns = (tableRef) => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
         
-        // No recalculation needed - user has set the exact width they want
+        // Recalculate to ensure all columns fit properly
+        recalculatePercentages();
       };
 
       resizeHandle.addEventListener('mousedown', handleMouseDown);
     });
 
-  }, [tableRef, defaultPercentages, setHeaderWidths]);
+    // Listen for window resize to recalculate column widths
+    const handleResize = () => {
+      recalculatePercentages();
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+
+  }, [tableRef, setHeaderWidths, recalculatePercentages]);
 
   // Export the recalculate function so it can be called from outside
   return { recalculatePercentages };

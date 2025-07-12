@@ -2,10 +2,6 @@
 
 .beat-row {
   height: 62px;
-
-  & .icon-button--menu {
-    padding: 0 16px;
-  }
   
   td:first-child {
     border-top-left-radius: 4px;
@@ -157,7 +153,6 @@
 
 .icon-button--menu {
     opacity: 1;
-    padding: 0;
     
     &--mobile {
       opacity: 1 !important;

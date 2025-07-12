@@ -185,20 +185,6 @@
       word-wrap: break-word;
     }
 
-    // Ensure duration column respects its width
-    .beat-row__duration,
-    .table-header__cell--duration {
-      width: 5% !important;
-      max-width: 5% !important;
-    }
-
-    // Ensure menu column respects its width
-    .beat-row__menu,
-    .table-header__cell--menu {
-      width: 3% !important;
-      max-width: 3% !important;
-    }
-
     &__table-head:hover {
       background-color: $color-gray-dark;
     }
