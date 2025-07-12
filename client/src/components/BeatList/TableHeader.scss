@@ -6,12 +6,6 @@
     text-align: left;
     z-index: 3;
     background-color: $color-black;
-
-    &:hover {
-        .resize-handle {
-            background-color: $color-gray-dark-hover;
-        }
-    }
     
     &__cell {
         position: relative;
@@ -81,13 +75,6 @@
     }
 }
 
-.resizable-header {
-    &.dragging {
-        .resize-handle {
-            background-color: $color-gray-default;
-        }
-    }
-}
 
 .hover-target {
     position: absolute;
@@ -109,11 +96,28 @@
     z-index: 10;
     transition: all 0.2s ease-in-out;
     cursor: col-resize;
-    background-color: transparent;
-    
+    background-color: $color-gray-default;
+    opacity: 0;
+
     &:hover {
-        background-color: $color-primary;
-        opacity: 0.5;
+        opacity: 0.7;
+    }
+}
+
+.table-header {
+    &:hover {
+        .resize-handle {
+            opacity: 0.5;
+        }
+    }
+
+    &__cell {
+        &.dragging {
+            .resize-handle {
+                background-color: $color-primary;
+                opacity: 0.8;
+            }
+        }
     }
 }
   

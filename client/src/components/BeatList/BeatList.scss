@@ -167,7 +167,6 @@
     // Ensure table cells respect width constraints
     th, td {
       box-sizing: border-box;
-      overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
