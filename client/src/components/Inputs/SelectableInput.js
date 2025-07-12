@@ -146,7 +146,8 @@ export const SelectableInput = ({
     if (beat && beat[associationType]) {
       const associations = beat[associationType].map(item => ({
         beat_id: beatId,
-        [`${singularAssociationType}_id`]: item.id
+        [`${singularAssociationType}_id`]: item[`${singularAssociationType}_id`],
+        name: item.name
       }));
       setSelectedItems(associations);
     } else {

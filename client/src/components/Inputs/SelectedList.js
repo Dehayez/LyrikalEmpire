@@ -9,9 +9,12 @@ const findNameById = (id, items) => {
 };
 
 const renderName = (item, genres, moods, keywords, features) => {
+  // If the item has a name directly, use it (from beat object associations)
   if (item.name) {
     return item.name;
-  } else if (item.genre_id) {
+  } 
+  // Otherwise, fall back to finding by ID (for backward compatibility)
+  else if (item.genre_id) {
     return findNameById(item.genre_id, genres);
   } else if (item.mood_id) {
     return findNameById(item.mood_id, moods);

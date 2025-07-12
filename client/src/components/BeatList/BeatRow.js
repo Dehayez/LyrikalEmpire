@@ -49,7 +49,7 @@ const BeatRow = ({
   const inputTitleRef = useRef(null);
   const location = useLocation();
   const { user } = useUser();
-  const { genres, moods, keywords, features } = useData();
+  // Remove useData dependency - associations are now in beat object
   const { setHoveredBeat, setRefreshBeats } = useBeat();
   const { playlists, isSamePlaylist } = usePlaylist();
   const { handleBpmBlur } = useBpmHandlers(handleUpdate, beat);
@@ -543,7 +543,6 @@ const BeatRow = ({
              <SelectableInput
               {...commonSelectableInputProps}
               associationType="genres"
-              items={genres}
               headerIndex='4'
               key={`genres-${beat.id}`}
             />
@@ -552,7 +551,6 @@ const BeatRow = ({
               <SelectableInput
                 {...commonSelectableInputProps}
                 associationType="moods"
-                items={moods}
                 headerIndex='5'
                 key={`moods-${beat.id}`}
               />
@@ -561,7 +559,6 @@ const BeatRow = ({
               <SelectableInput
                 {...commonSelectableInputProps}
                 associationType="keywords"
-                items={keywords}
                 headerIndex='6'
                 key={`keywords-${beat.id}`}
               />
@@ -570,7 +567,6 @@ const BeatRow = ({
               <SelectableInput
                 {...commonSelectableInputProps}
                 associationType="features"
-                items={features}
                 headerIndex='7'
                 key={`features-${beat.id}`}
               />
