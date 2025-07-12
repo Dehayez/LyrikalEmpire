@@ -131,7 +131,7 @@ const filteredAndSortedBeats = useMemo(() => {
     const updateFilterDropdownHeight = () => {
       if (filterDropdownRef.current) {
         const height = filterDropdownRef.current.offsetHeight;
-        setFilterDropdownHeight(height + 60);
+        setFilterDropdownHeight(height + 59);
       }
     };
   
