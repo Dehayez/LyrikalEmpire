@@ -57,6 +57,7 @@ const getTableName = (association_type, res) => {
 
 const getBeats = (req, res) => {
   const { associationType, associationIds, user_id } = req.query;
+  console.log('[getBeats] Called with params:', { associationType, associationIds, user_id });
 
   if (associationType && associationIds) {
     const tableName = getTableName(associationType, res);
@@ -74,16 +75,20 @@ const getBeats = (req, res) => {
     handleQuery(query, [...ids, user_id], res, `Beats with ${associationType} fetched successfully`, true);
   } else {
     // Use a simpler approach with separate queries for each association type
+    console.log('[getBeats] Fetching beats for user_id:', user_id);
     const beatsQuery = 'SELECT * FROM beats WHERE user_id = ? ORDER BY created_at DESC';
     
     db.query(beatsQuery, [user_id])
       .then(async ([beats]) => {
+        console.log('[getBeats] Found beats:', beats.length);
         if (beats.length === 0) {
+          console.log('[getBeats] No beats found, returning empty array');
           return res.status(200).json([]);
         }
         
         const beatIds = beats.map(beat => beat.id);
         const placeholders = beatIds.map(() => '?').join(',');
+        console.log('[getBeats] Beat IDs to fetch associations for:', beatIds.slice(0, 5), `(showing first 5 of ${beatIds.length})`);
         
         // Fetch all associations in parallel
         const [
@@ -124,6 +129,14 @@ const getBeats = (req, res) => {
           `, beatIds)
         ]);
         
+        console.log('[getBeats] Association query results:', {
+          genres: genreResults.length,
+          moods: moodResults.length,
+          keywords: keywordResults.length,
+          features: featureResults.length,
+          lyrics: lyricsResults.length
+        });
+        
         // Group associations by beat_id
         const genresByBeat = {};
         const moodsByBeat = {};
@@ -156,6 +169,11 @@ const getBeats = (req, res) => {
           lyricsByBeat[row.beat_id].push({ lyrics_id: row.lyrics_id });
         });
         
+        console.log('[getBeats] Grouped associations sample:', {
+          genresByBeat: Object.keys(genresByBeat).length > 0 ? genresByBeat[Object.keys(genresByBeat)[0]] : 'none',
+          moodsByBeat: Object.keys(moodsByBeat).length > 0 ? moodsByBeat[Object.keys(moodsByBeat)[0]] : 'none'
+        });
+        
         // Combine beats with their associations
         const beatsWithAssociations = beats.map(beat => ({
           ...beat,
@@ -165,6 +183,9 @@ const getBeats = (req, res) => {
           features: featuresByBeat[beat.id] || [],
           lyrics: lyricsByBeat[beat.id] || []
         }));
+        
+        console.log('[getBeats] Sample beat with associations:', beatsWithAssociations[0]);
+        console.log('[getBeats] Total beats with associations:', beatsWithAssociations.length);
         
         res.status(200).json(beatsWithAssociations);
       })

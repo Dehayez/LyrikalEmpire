@@ -16,7 +16,14 @@ export const getSignedUrl = async (userId, fileName) => {
 };
 
 export const getBeats = async (user_id) => {
-  return await apiRequest('get', '', API_URL, null, { user_id });
+  const result = await apiRequest('get', '', API_URL, null, { user_id });
+  console.log('[beatService] getBeats response:', result);
+  console.log('[beatService] First beat from API:', result[0]);
+  if (result[0]) {
+    console.log('[beatService] First beat moods from API:', result[0].moods);
+    console.log('[beatService] First beat genres from API:', result[0].genres);
+  }
+  return result;
 };
 
 export const addBeat = async (beat, audioFile, user_id, onProgress) => {
